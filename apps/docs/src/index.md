@@ -6,9 +6,7 @@ sidebar: false
 
 Fuel Domains is a Name System for the FUEL network. Our primary goal is to establish a secure, stable, and efficient tool that provides all users and projects within this network with access to a high-quality NS protocol
 
----
-
-# SDK Installation
+## SDK Installation
 
 To start using the `@fuel-domains` SDK in your application, you need to install it using your preferred package manager.
 The installation adds the necessary tools to interact with the name system on the Fuel blockchain network.
@@ -21,9 +19,7 @@ npm install @fuel-domains/sdk
 pnpm install @fuel-domains/sdk
 ```
 
----
-
-# Resolver
+## Resolver
 This method allows you to obtain the resolver and owner of a domain on the Fuel network, essential for verifying ownership and querying domain information.
 
 ## Obtaining Resolver via Provider URL
