@@ -12,7 +12,7 @@ export default defineConfig({
     ['link', { rel: 'icon', href: '/logo.svg', type: 'image/svg+xml' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:url', content: 'https://docs.fuel.domains' }],
-    ['meta', { property: 'og:image', href: '/logo.svg' }],
+    ['meta', { property: 'og:image', href: '/logo.png' }],
   ],
 
   themeConfig: {

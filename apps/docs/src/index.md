@@ -1,8 +1,7 @@
 ---
+layout: doc
 sidebar: false
 ---
-
-# Fuel Domains SDK
 
 ## What is Fuel Domains?
 
