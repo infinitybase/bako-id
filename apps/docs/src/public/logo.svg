@@ -1,26 +1,14 @@
-<svg width="96" height="138" viewBox="0 0 96 138" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="96" height="138" fill="#F5F5F5"/>
-<g id="fueldomains 2" clip-path="url(#clip0_0_1)">
-<rect width="1920" height="1081.51" transform="translate(-78 -48)" fill="#2F2D2E"/>
-<path id="bg" d="M-77.5 -47.5H1841.5V1033.01H-77.5V-47.5Z" fill="#2F2D2E" stroke="black"/>
-<g id="logo">
-<path id="symbol" d="M86.15 53.76L57.94 37.47V-0.460022L10.34 27.02C4.22997 30.55 0.469971 37.06 0.469971 44.11V137.51L57.93 43.51V81.44L96.01 103.42V70.85C96.01 63.8 92.25 57.29 86.14 53.76H86.15Z" fill="url(#paint0_linear_0_1)"/>
-</g>
-<g id="logo_2">
-<path id="symbol_2" d="M85.68 54.22L57.47 37.93V0L9.87 27.48C3.75999 31.01 0 37.52 0 44.57V137.97L57.46 43.97V81.9L95.54 103.88V71.31C95.54 64.26 91.78 57.75 85.67 54.22H85.68Z" fill="url(#paint1_linear_0_1)"/>
-</g>
+<svg width="666" height="666" viewBox="0 0 666 666" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_10974_33648)">
+<path d="M457.93 304.72L364.95 251.04V126.03L208.07 216.6C187.95 228.22 175.55 249.69 175.55 272.93V580.76L364.95 270.94V395.95L490.45 468.41V361.05C490.45 337.81 478.05 316.34 457.93 304.72Z" fill="url(#paint0_linear_10974_33648)"/>
 </g>
 <defs>
-<linearGradient id="paint0_linear_0_1" x1="6.51997" y1="29.24" x2="61.02" y2="123.63" gradientUnits="userSpaceOnUse">
+<linearGradient id="paint0_linear_10974_33648" x1="175.55" y1="126.03" x2="175.55" y2="580.76" gradientUnits="userSpaceOnUse">
 <stop stop-color="#00F48B"/>
 <stop offset="0.99" stop-color="#39A2AE"/>
 </linearGradient>
-<linearGradient id="paint1_linear_0_1" x1="6.05" y1="29.7" x2="60.55" y2="124.09" gradientUnits="userSpaceOnUse">
-<stop stop-color="#00F48B"/>
-<stop offset="0.99" stop-color="#39A2AE"/>
-</linearGradient>
-<clipPath id="clip0_0_1">
-<rect width="1920" height="1081.51" fill="white" transform="translate(-78 -48)"/>
+<clipPath id="clip0_10974_33648">
+<rect width="666" height="666" fill="white"/>
 </clipPath>
 </defs>
 </svg>
