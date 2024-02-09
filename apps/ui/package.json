@@ -13,7 +13,7 @@
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
-    "@fuel-domains/sdk": "workspace/*",
+    "@fuel-domains/sdk": "workspace:^",
     "@fuel-wallet/react": "0.14.3",
     "@fuel-wallet/sdk": "0.14.3",
     "@tanstack/react-query": "^5.18.1",

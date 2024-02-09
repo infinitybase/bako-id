@@ -30,8 +30,8 @@ importers:
         specifier: ^11.11.0
         version: 11.11.0(@emotion/react@11.11.3)(@types/react@18.2.53)(react@18.2.0)
       '@fuel-domains/sdk':
-        specifier: /Users/luisburigo/Documents/dev/infinity/fuel-domains/fuel-domains-app/packages/sdk/fuel-domains-sdk-0.1.5-2.tgz
-        version: file:packages/sdk/fuel-domains-sdk-0.1.5-2.tgz(fuels@0.71.1)
+        specifier: workspace:^
+        version: link:../../packages/sdk
       '@fuel-wallet/react':
         specifier: 0.14.3
         version: 0.14.3(@fuel-ui/css@0.23.0)(@fuel-ui/react@0.23.0)(dexie@3.2.4)(fuels@0.71.1)(react-dom@18.2.0)(react@18.2.0)
@@ -10338,15 +10338,4 @@ packages:
       '@types/react': 18.2.53
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
-    dev: false
-
-  file:packages/sdk/fuel-domains-sdk-0.1.5-2.tgz(fuels@0.71.1):
-    resolution: {integrity: sha512-PLhW99evUOGxejN2Sjf7eSOe+f7Z4Zv+QspkIj6BAP3JTFwlT55YNinNccAXsMSOERs+a7IhDd5zDB9hpq9xTA==, tarball: file:packages/sdk/fuel-domains-sdk-0.1.5-2.tgz}
-    id: file:packages/sdk/fuel-domains-sdk-0.1.5-2.tgz
-    name: '@fuel-domains/sdk'
-    version: 0.1.5
-    peerDependencies:
-      fuels: 0.73.0
-    dependencies:
-      fuels: 0.71.1
     dev: false
