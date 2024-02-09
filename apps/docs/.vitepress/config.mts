@@ -23,7 +23,7 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/vuejs/vitepress' },
+      { icon: 'github', link: 'https://github.com/infinitybase/fuel-domains' },
       { icon: 'x', link: 'https://twitter.com/fuel_domains' },
     ]
   }
