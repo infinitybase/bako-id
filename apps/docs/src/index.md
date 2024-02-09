@@ -2,7 +2,9 @@
 sidebar: false
 ---
 
-# What is Fuel Domains?
+# Fuel Domains SDK
+
+## What is Fuel Domains?
 
 Fuel Domains is a Name System for the FUEL network. Our primary goal is to establish a secure, stable, and efficient tool that provides all users and projects within this network with access to a high-quality NS protocol
 
