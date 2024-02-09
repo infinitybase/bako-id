@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Fuel Domains Docs",
+  title: "Fuel Domains",
   description: "Fuel Domains Docs",
   srcDir: 'src',
   outDir: 'dist',
