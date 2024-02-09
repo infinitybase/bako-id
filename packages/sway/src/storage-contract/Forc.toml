@@ -1,0 +1,9 @@
+[project]
+authors = ["Luis Burigo"]
+entry = "main.sw"
+license = "Apache-2.0"
+name = "storage-contract"
+
+[dependencies]
+libraries = { path = "../libraries" }
+ownership = { git = "https://github.com/FuelLabs/sway-libs", tag = "v0.17.2" }
