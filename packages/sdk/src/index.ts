@@ -2,6 +2,7 @@ import { getRegistryContract } from './setup';
 import { Account, Provider } from 'fuels';
 import { getTxParams, InvalidDomainError, isValidDomain, suffixDomain } from './utils';
 import { envrionment } from './config';
+import { Domain, ResolverReturn } from './types';
 
 type RegisterDomainParams = {
   domain: string,
@@ -50,7 +51,7 @@ const register = async (params: RegisterDomainParams) => {
   };
 };
 
-const resolver = async (params: ResolveDomainParams) => {
+const resolver = async (params: ResolveDomainParams): ResolverReturn => {
   const { domain, providerURL } = params;
 
   let provider;
@@ -78,7 +79,11 @@ const resolver = async (params: ResolveDomainParams) => {
     .txParams(txParams)
     .dryRun();
 
-  return value;
+  return value ? {
+    name: domain,
+    owner: value.owner,
+    resolver: value.resolver,
+  } : null;
 };
 
-export { register, resolver };
+export { register, resolver, ResolverReturn, Domain };
