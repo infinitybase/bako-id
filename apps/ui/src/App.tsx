@@ -1,4 +1,4 @@
-import { useAccount, useConnect, useIsConnected, useWallet } from '@fuel-wallet/react';
+import { useAccount, useConnectUI, useIsConnected, useWallet } from '@fuels/react';
 import {
   Button,
   Center,
@@ -16,7 +16,7 @@ import {
   VStack
 } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
-import { register, resolver } from '@fuel-domains/sdk';
+import { Domain, register, resolver } from '@fuel-domains/sdk';
 import { ChangeEvent, useMemo, useState } from 'react';
 import { Address } from 'fuels';
 
@@ -27,9 +27,9 @@ const checkDomain = (domain: string) => {
 
 const useFuelConnect = () => {
   const { isConnected, isLoading } = useIsConnected();
-  const { connect } = useConnect();
+  const { connect } = useConnectUI();
   const { account } = useAccount();
-  const { wallet } = useWallet({ address: account! });
+  const { wallet } = useWallet(account);
 
   return {
     wallet,
@@ -81,6 +81,7 @@ const DomainDetailsDialog = ({ domain, ...props }: Omit<ModalProps & { domain?: 
 function App() {
   const domainDetailsDialog = useDisclosure();
   const [domain, setDomain] = useState('');
+  const [domainInfo, setDomainInfo] = useState<Domain | null>(null)
   const isValidDomain = useMemo(() => {
     return checkDomain(domain);
   }, [domain]);
@@ -97,7 +98,7 @@ function App() {
     mutationFn: resolver
   });
 
-  const avaliableDomain = !!resolveDomainMutation.data;
+  const availableDomain = !!resolveDomainMutation.data;
 
   const handleChangeDomain = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e?.target ?? {};
@@ -112,10 +113,13 @@ function App() {
     const isValid = checkDomain(domain);
     if (!isValid) return;
 
-    return resolveDomainMutation.mutateAsync({
+    const info = await resolveDomainMutation.mutateAsync({
       domain,
       providerURL: wallet!.provider.url
-    });
+    })
+    console.debug(info)
+    setDomainInfo(info)
+    return info;
   };
 
   const handleBuyDomain = async () => {
@@ -123,7 +127,6 @@ function App() {
     if (!isValid || !wallet) return;
 
     registerDomainMutation.mutate({
-      // @ts-ignore
       account: wallet,
       resolver: wallet.address.toB256(),
       domain: domain
@@ -139,7 +142,6 @@ function App() {
   if (!isConnected) {
     return (
       <Center w="full" h="100vh" bgColor="#0b0c0c">
-        {/*@ts-ignore*/}
         <Button onClick={() => connect()}>
           Connect fuel wallet
         </Button>
@@ -147,14 +149,24 @@ function App() {
     );
   }
 
+  const canBuyDomain = () => {
+    if (domainInfo){
+      return false
+    }
+    if (resolveDomainMutation.isPending || !domain) {
+      return true
+    }
+    return true
+  }
+
   return (
-    <Center w="full" h="100vh" bgColor="#0b0c0c">
+    <Center w="full" h="100vh" bgColor="#1e2023">
       <DomainDetailsDialog
-        domain={resolveDomainMutation.data}
+        domain={resolveDomainMutation.data ?? undefined}
         isOpen={domainDetailsDialog.isOpen}
         onClose={domainDetailsDialog.onClose}
       />
-      <VStack spacing={5} maxW={200}>
+      <VStack spacing={5}>
         <FormControl>
           <InputGroup borderRightColor="transparent" size="lg">
             <Input
@@ -172,6 +184,7 @@ function App() {
           </InputGroup>
         </FormControl>
 
+        {/* Buttons */}
         <VStack w="full">
           <Button
             w="full"
@@ -181,22 +194,22 @@ function App() {
           >
             Check domain
           </Button>
-          <Button
-            w="full"
-            hidden={!resolveDomainMutation.data}
-            isDisabled={resolveDomainMutation.isPending}
-            onClick={domainDetailsDialog.onOpen}
-          >
-            View domain
-          </Button>
-          <Button
-            w="full"
-            hidden={avaliableDomain || resolveDomainMutation.isPending}
-            isDisabled={resolveDomainMutation.isPending}
-            onClick={handleBuyDomain}
-          >
-            Buy domain
-          </Button>
+          {/*<Button*/}
+          {/*  w="full"*/}
+          {/*  hidden={!resolveDomainMutation.data}*/}
+          {/*  isDisabled={resolveDomainMutation.isPending}*/}
+          {/*  onClick={domainDetailsDialog.onOpen}*/}
+          {/*>*/}
+          {/*  View domain*/}
+          {/*</Button>*/}
+          {/*<Button*/}
+          {/*  w="full"*/}
+          {/*  hidden={availableDomain || resolveDomainMutation.isPending}*/}
+          {/*  isDisabled={canBuyDomain()}*/}
+          {/*  onClick={handleBuyDomain}*/}
+          {/*>*/}
+          {/*  Buy domain*/}
+          {/*</Button>*/}
         </VStack>
       </VStack>
     </Center>
