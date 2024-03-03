@@ -1,15 +1,18 @@
 const colors = {
+  "yellow-medium": "#B68F40",
+  "yellow-light": "#FFC010",
   brand: {
     200: "#80F9C5",
     500: "#14E293",
   },
   background: {
-    500: "#1e2023",
+    400: "#35302F",
+    500: "#1e2023"
   },
   button: {
     200: "#686361",
-    500: "#00F48BFF",
-    600: "#3ae896",
+    500: "#FFC010",
+    600: "#fdc940",
     700: "#32C8D9",
   },
   input: {
