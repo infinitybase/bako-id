@@ -21,6 +21,13 @@ export const connectRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: Connect,
   path: '/connect',
+  loader: ({ context }) => {
+    if (context.isConnected) {
+      throw redirect({
+        to: '/',
+      })
+    }
+  },
   beforeLoad: ({ context }) => {
     console.debug(context)
     if (context.isConnected) {
