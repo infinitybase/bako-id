@@ -1,0 +1,25 @@
+.texture {
+  width: 70%;
+  background-image: url("./bg-texture.svg");
+  background-position: bottom;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 0;
+  padding: 0 0 calc(100% - 95px) 0;
+}
+
+.transition-all-05 { transition: all 0.5s ease; }
+
+.main-gradient {
+  background: linear-gradient(179deg, rgba(30, 31, 34, 0.9) 0%, rgba(30, 31, 34, 0.9) 37%, rgba(30, 31, 34, 0.9) 47%, rgba(0, 212, 255, 0) 100%)
+}
+
+.text-gradient {
+  background: linear-gradient(132.19deg, #FFC010 0%, #EBA312 48%, #D38015 71%, #B24F18 99%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.divider {
+  background: linear-gradient(132.19deg, #FFC010 0%, #EBA312 48%, #D38015 71%, #B24F18 99%);
+}
