@@ -4,9 +4,13 @@ import { useConnectUI } from '@fuels/react';
 export const Connect = () => {
   const { connect } = useConnectUI();
 
+  const handleConnect = () => {
+    connect()
+  }
+
   return <Box>
     <Button
-      onClick={() => connect()}
+      onClick={handleConnect}
       w="full"
       display="flex"
       gap={2}
