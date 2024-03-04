@@ -4,15 +4,8 @@ import { useIsConnected } from '@fuels/react';
 
 export function InnerApp() {
   const { isConnected} = useIsConnected();
-  console.debug(isConnected)
 
   if(isConnected === null) return;
-
-  if(!isConnected) {
-    // throw redirect({
-    //   to: '/connect',
-    // })
-  }
 
   return <RouterProvider router={router} context={{ isConnected }}/>
 }

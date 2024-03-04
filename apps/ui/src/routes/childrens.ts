@@ -1,17 +1,17 @@
 import { createRoute, redirect } from '@tanstack/react-router';
 import { Home } from '../pages/home.tsx';
-import { Connect } from '../components/helpers';
 import { rootRoute } from '../hooks/__root.ts';
+import { NotConnected } from '../components/auth/notConnected.tsx';
 
 export const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: Home,
   path: '/',
+  shouldReload: true,
   beforeLoad: ({ context }) => {
-    console.debug(context)
     if (!context.isConnected) {
       throw redirect({
-        to: '/connect',
+        to: '/auth',
       })
     }
   }
@@ -19,8 +19,9 @@ export const homeRoute = createRoute({
 
 export const connectRoute = createRoute({
   getParentRoute: () => rootRoute,
-  component: Connect,
-  path: '/connect',
+  component: NotConnected,
+  path: '/auth',
+  shouldReload: true,
   loader: ({ context }) => {
     if (context.isConnected) {
       throw redirect({
@@ -29,7 +30,6 @@ export const connectRoute = createRoute({
     }
   },
   beforeLoad: ({ context }) => {
-    console.debug(context)
     if (context.isConnected) {
       throw redirect({
         to: '/',
