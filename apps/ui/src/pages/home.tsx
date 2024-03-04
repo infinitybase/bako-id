@@ -91,12 +91,12 @@ export const Home = () => {
     {/*  onClose={domainDetailsDialog.onClose}*/}
     {/*/>*/}
     {/* opt-out for a margin top, and items start, aiming better center in screen, counting the header size */}
-    <VStack mt="13rem" textAlign={"center"} spacing={6}>
+    <VStack mt={{ base: '10px', md: "13rem" }} textAlign={"center"} spacing={6} padding={{ base: 4, md: 0 }}>
       <Text
         bgGradient="linear(to-br, #FFC010, #B24F18)"
         bgClip="text"
         fontWeight={700}
-        fontSize={48}
+        fontSize={{ base: 35, md: 48 }}
         lineHeight={1}
         gap={2}
       >
@@ -107,19 +107,21 @@ export const Home = () => {
         Domain
       </Text>
 
-      <Text fontSize={15} color={"text.700"}>
+      <Text fontSize={{ base: 12, md: 15 }} color={"text.700"}>
         Secure & scalable human readable addresses. <br />
         Natively designed with the modular ecosystem in mind.
       </Text>
 
       <Divider w="60%" h="1px" border="none" bgGradient="linear(to-r, #FFC010, #B24F18)" />
 
-      <VStack spacing={5}>
+      <VStack spacing={5} w="full">
         <FormControl>
           <InputGroup borderRightColor="transparent">
             <Input
               value={domain}
-              w="24rem"
+              minW="12rem"
+              w="full"
+              maxW="24rem"
               borderRight="none"
               borderColor="whiteAlpha.50"
               textColor="text.700"

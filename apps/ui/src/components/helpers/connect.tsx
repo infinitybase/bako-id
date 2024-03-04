@@ -14,14 +14,14 @@ export const Connect = () => {
       w="full"
       display="flex"
       gap={2}
-      bgColor="button.500"
+      bgColor={{ base: 'transparent', md: 'button.500' }}
       fontSize="sm"
-      color="background.500"
+      color={{ base: 'button.500', md: 'background.500' }}
       mt={4}
       _hover={{ bgColor: 'button.600' }}
       className="transition-all-05"
     >
-      <Image src="/link.svg" alt="link" width={4} height={4} />
+      <Image src="/link.svg" alt="link" width={4} height={4} fill="button.500" />
       Connect wallet
     </Button>
   </Box>

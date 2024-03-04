@@ -21,7 +21,7 @@ const Layout = () => {
   }
 
   return (
-    <Container w="full" maxW="full" h="100vh" bgColor="background.500" display="flex" flexDir="column" padding={0}>
+    <Container w="full" maxW="full" h="100vh" bgColor="background.500" display="flex" flexDir="column" padding={0} overflow="hidden">
       <Header />
       <Center position="relative" w="full" h="full" overflowX="hidden">
         <BackgroundTexture />
