@@ -12,7 +12,7 @@ export interface ContractConfig {
 
 const connectContracts = (config: ContractConfig) => {
   if (!config.account || !config.registryId) {
-    throw new Error('Account and registryId are required to connect contracts.');
+    throw new Error('Account and registryId are required to helpers contracts.');
   }
   const storage = StorageContractAbi__factory.connect(config.storageId, config.account);
   const registry = RegistryContractAbi__factory.connect(config.registryId, config.account);
@@ -26,7 +26,7 @@ const connectContracts = (config: ContractConfig) => {
 const getRegistryContract = async (config: ContractConfig) => {
   const provider = config.provider || config.account?.provider;
   if (!provider) {
-    throw new Error('Provider is required to connect getRegistryContract.');
+    throw new Error('Provider is required to helpers getRegistryContract.');
   }
   const fakeAccount = getFakeAccount(provider);
   const storage = StorageContractAbi__factory.connect(config.storageId, fakeAccount);
