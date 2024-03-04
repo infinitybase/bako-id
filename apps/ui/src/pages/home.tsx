@@ -7,12 +7,13 @@ import {
   InputRightAddon,
   VStack,
   Text, Divider, HStack,
-  Image, useDisclosure
+  Image
 } from '@chakra-ui/react';
 import { ChangeEvent, useMemo, useState } from 'react';
-import { Domain, register, resolver } from '@fuel-domains/sdk';
+import { resolver } from '@fuel-domains/sdk';
 import { useMutation } from '@tanstack/react-query';
 import { useFuelConnect } from '../hooks';
+import { useNavigate } from '@tanstack/react-router';
 
 const checkDomain = (domain: string) => {
   const regex = /^[a-zA-Z0-9]+$/;
@@ -21,20 +22,19 @@ const checkDomain = (domain: string) => {
 
 export const Home = () => {
   const { wallet } = useFuelConnect();
-  const registerDomainMutation = useMutation({
-    mutationKey: ['registerDomain'],
-    mutationFn: register
-  });
+  // const registerDomainMutation = useMutation({
+  //   mutationKey: ['registerDomain'],
+  //   mutationFn: register
+  // });
 
   const resolveDomainMutation = useMutation({
     mutationKey: ['registerDomain'],
     mutationFn: resolver
   });
 
-  const domainDetailsDialog = useDisclosure();
+  // const domainDetailsDialog = useDisclosure();
+  const navigate = useNavigate()
   const [domain, setDomain] = useState('');
-  const [domainInfo, setDomainInfo] = useState<Domain | null>(null)
-  const [availableDomain, setAvailableDomain] = useState(!!resolveDomainMutation.data)
   const isValidDomain = useMemo(() => {
     return checkDomain(domain);
   }, [domain]);
@@ -42,8 +42,6 @@ export const Home = () => {
   const handleChangeDomain = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e?.target ?? {};
     const isValid = checkDomain(value);
-    setAvailableDomain(false)
-    setDomainInfo(null)
 
     if (isValid || !value) {
       setDomain(value);
@@ -59,30 +57,34 @@ export const Home = () => {
       providerURL: wallet!.provider.url
     })
 
+    console.debug(info?.name)
+
     if(info === null) {
-      setAvailableDomain(true)
+      // redirect to buy domain
+      // setAvailableDomain(true)
+      return
     }
 
-    setDomainInfo(info)
+    navigate({ to: '/$domain', params: { domain: info.name }, startTransition: true }).then()
     return info;
   };
 
-  const handleBuyDomain = async () => {
-    const isValid = checkDomain(domain);
-    if (!isValid || !wallet) return;
-
-    registerDomainMutation.mutate({
-      account: wallet,
-      resolver: wallet.address.toB256(),
-      domain: domain
-    }, {
-      onSuccess: async () => {
-        await handleConfirmDomain();
-        domainDetailsDialog.onOpen();
-      },
-      onError: console.log
-    });
-  };
+  // const handleBuyDomain = async () => {
+  //   const isValid = checkDomain(domain);
+  //   if (!isValid || !wallet) return;
+  //
+  //   registerDomainMutation.mutate({
+  //     account: wallet,
+  //     resolver: wallet.address.toB256(),
+  //     domain: domain
+  //   }, {
+  //     onSuccess: async () => {
+  //       await handleConfirmDomain();
+  //       domainDetailsDialog.onOpen();
+  //     },
+  //     onError: console.log
+  //   });
+  // };
 
   return <Center w="full" h="full" alignItems="start" zIndex={10}>
     {/*<DomainDetailsDialog*/}
@@ -91,7 +93,7 @@ export const Home = () => {
     {/*  onClose={domainDetailsDialog.onClose}*/}
     {/*/>*/}
     {/* opt-out for a margin top, and items start, aiming better center in screen, counting the header size */}
-    <VStack mt={{ base: '10px', md: "13rem" }} textAlign={"center"} spacing={6} padding={{ base: 4, md: 0 }}>
+    <VStack mt={{ base: '5rem', md: "13rem" }} textAlign="center" spacing={6} padding={{ base: 4, md: 0 }}>
       <Text
         bgGradient="linear(to-br, #FFC010, #B24F18)"
         bgClip="text"
@@ -151,22 +153,22 @@ export const Home = () => {
           >
             Check domain
           </Button>
-          <Button
-            w="full"
-            hidden={!domainInfo}
-            isDisabled={resolveDomainMutation.isPending}
-            onClick={domainDetailsDialog.onOpen}
-          >
-            View domain
-          </Button>
-          <Button
-            w="full"
-            hidden={!availableDomain}
-            isDisabled={resolveDomainMutation.isPending}
-            onClick={handleBuyDomain}
-          >
-            Buy domain
-          </Button>
+          {/*<Button*/}
+          {/*  w="full"*/}
+          {/*  hidden={!domainInfo}*/}
+          {/*  isDisabled={resolveDomainMutation.isPending}*/}
+          {/*  onClick={domainDetailsDialog.onOpen}*/}
+          {/*>*/}
+          {/*  View domain*/}
+          {/*</Button>*/}
+          {/*<Button*/}
+          {/*  w="full"*/}
+          {/*  hidden={!availableDomain}*/}
+          {/*  isDisabled={resolveDomainMutation.isPending}*/}
+          {/*  onClick={handleBuyDomain}*/}
+          {/*>*/}
+          {/*  Buy domain*/}
+          {/*</Button>*/}
           <HStack
             cursor="pointer"
             onClick={() => window.open("https://twitter.com/bakoidentity", "_blank")}
