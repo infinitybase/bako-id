@@ -22,17 +22,12 @@ const checkDomain = (domain: string) => {
 
 export const Home = () => {
   const { wallet } = useFuelConnect();
-  // const registerDomainMutation = useMutation({
-  //   mutationKey: ['registerDomain'],
-  //   mutationFn: register
-  // });
 
   const resolveDomainMutation = useMutation({
     mutationKey: ['registerDomain'],
     mutationFn: resolver
   });
 
-  // const domainDetailsDialog = useDisclosure();
   const navigate = useNavigate()
   const [domain, setDomain] = useState('');
   const isValidDomain = useMemo(() => {
@@ -59,9 +54,8 @@ export const Home = () => {
 
     console.debug(info?.name)
 
-    if(info === null) {
-      // redirect to buy domain
-      // setAvailableDomain(true)
+    if(!info) {
+      navigate({ to: '/buy/$domain', params: { domain: domain }, startTransition: true }).then()
       return
     }
 
@@ -69,29 +63,7 @@ export const Home = () => {
     return info;
   };
 
-  // const handleBuyDomain = async () => {
-  //   const isValid = checkDomain(domain);
-  //   if (!isValid || !wallet) return;
-  //
-  //   registerDomainMutation.mutate({
-  //     account: wallet,
-  //     resolver: wallet.address.toB256(),
-  //     domain: domain
-  //   }, {
-  //     onSuccess: async () => {
-  //       await handleConfirmDomain();
-  //       domainDetailsDialog.onOpen();
-  //     },
-  //     onError: console.log
-  //   });
-  // };
-
   return <Center w="full" h="full" alignItems="start" zIndex={10}>
-    {/*<DomainDetailsDialog*/}
-    {/*  domain={resolveDomainMutation.data ?? undefined}*/}
-    {/*  isOpen={domainDetailsDialog.isOpen}*/}
-    {/*  onClose={domainDetailsDialog.onClose}*/}
-    {/*/>*/}
     {/* opt-out for a margin top, and items start, aiming better center in screen, counting the header size */}
     <VStack mt={{ base: '5rem', md: "13rem" }} textAlign="center" spacing={6} padding={{ base: 4, md: 0 }}>
       <Text
@@ -153,22 +125,6 @@ export const Home = () => {
           >
             Check domain
           </Button>
-          {/*<Button*/}
-          {/*  w="full"*/}
-          {/*  hidden={!domainInfo}*/}
-          {/*  isDisabled={resolveDomainMutation.isPending}*/}
-          {/*  onClick={domainDetailsDialog.onOpen}*/}
-          {/*>*/}
-          {/*  View domain*/}
-          {/*</Button>*/}
-          {/*<Button*/}
-          {/*  w="full"*/}
-          {/*  hidden={!availableDomain}*/}
-          {/*  isDisabled={resolveDomainMutation.isPending}*/}
-          {/*  onClick={handleBuyDomain}*/}
-          {/*>*/}
-          {/*  Buy domain*/}
-          {/*</Button>*/}
           <HStack
             cursor="pointer"
             onClick={() => window.open("https://twitter.com/bakoidentity", "_blank")}

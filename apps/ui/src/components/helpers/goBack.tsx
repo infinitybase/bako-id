@@ -9,7 +9,7 @@ export const GoBack = () => {
     history.go(-1)
   }
 
-  return <Button variant="ghost" display="flex" alignSelf="start" gap={3} fontSize="xs">
+  return <Button variant="ghost" display="flex" alignSelf="start" gap={3} px={0} fontSize="xs" _hover={{ background: 'transparent' }}>
     <ChevronLeftIcon onClick={handleGoBack} />
     Back
   </Button>
