@@ -1,6 +1,6 @@
-import { Domain } from "../types";
+import { Domains } from "../types";
 
-const validateDomain = (domain: string, domainsList: Domain[]): string => {
+const validateDomain = (domain: string, domainsList: Domains[]): string => {
   if (domain.length > 0) {
     // Check for characters min length
     const minLength = 3;
