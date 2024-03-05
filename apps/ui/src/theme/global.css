@@ -1,5 +1,5 @@
 .texture {
-  background-image: url("./bg-texture.svg");
+  background-image: url("/apps/ui/public/bg-texture.svg");
   background-position: bottom;
   background-size: contain;
   background-repeat: no-repeat;
