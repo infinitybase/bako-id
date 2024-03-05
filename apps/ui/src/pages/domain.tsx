@@ -61,7 +61,7 @@ const Domain = () => {
     <Center w="full" h="full" display="flex" flexDir="column" py={2} px={{ base: 4, md: 20, xl: 40 }} zIndex={10}>
       <GoBack />
       <Center w="full" h="full">
-        <Card background="background.600" w='full' maxW="2xl" boxShadow='lg'>
+        <Card background="background.600" w='full' maxW="2xl" boxShadow="lg" className="scale-up-hor-center">
           <CardBody>
             <Flex alignItems="center" gap={6}>
               <Box rounded={50} w="6rem" h="6rem" bgGradient="linear(to-br, #FFC010, #B24F18)"></Box>

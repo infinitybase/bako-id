@@ -1,5 +1,5 @@
 .texture {
-  background-image: url("/apps/ui/public/bg-texture.svg");
+  background-image: url("/bg-texture.svg");
   background-position: bottom;
   background-size: contain;
   background-repeat: no-repeat;
@@ -28,3 +28,55 @@
 .divider {
   background: linear-gradient(132.19deg, #FFC010 0%, #EBA312 48%, #D38015 71%, #B24F18 99%);
 }
+
+/*
+Animations
+*/
+
+.scale-up-hor-center {
+  animation: scale-up-hor-center .4s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+.bg-pan-tl {
+  background: linear-gradient(to bottom right, #FFC010, #B24F18);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: bg-pan-tl 3s alternate infinite;
+}
+
+/**
+ * ----------------------------------------
+ * scale-up-hor-center
+ * ----------------------------------------
+ */
+
+@keyframes scale-up-hor-center {
+  0% {
+    -webkit-transform: scaleX(0.4);
+    transform: scaleX(0.4);
+  }
+  100% {
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+  }
+}
+
+
+/**
+ * ----------------------------------------
+ * background top left
+ * ----------------------------------------
+ */
+@keyframes bg-pan-tl {
+  from {
+    background-position: 100% 100%;
+  }
+  50% {
+    background-position: 60% 60%;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
