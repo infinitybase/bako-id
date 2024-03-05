@@ -12,7 +12,6 @@ import {
 import { ChangeEvent, useMemo, useState } from 'react';
 import { resolver } from '@fuel-domains/sdk';
 import { useMutation } from '@tanstack/react-query';
-import { useFuelConnect } from '../hooks';
 import { useNavigate } from '@tanstack/react-router';
 
 const checkDomain = (domain: string) => {
@@ -21,8 +20,6 @@ const checkDomain = (domain: string) => {
 };
 
 export const Home = () => {
-  const { wallet } = useFuelConnect();
-
   const resolveDomainMutation = useMutation({
     mutationKey: ['registerDomain'],
     mutationFn: resolver
@@ -49,7 +46,7 @@ export const Home = () => {
 
     const info = await resolveDomainMutation.mutateAsync({
       domain,
-      providerURL: wallet!.provider.url
+      providerURL: "https://beta-5.fuel.network/graphql"
     })
 
     console.debug(info?.name)

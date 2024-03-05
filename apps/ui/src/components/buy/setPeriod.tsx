@@ -26,10 +26,12 @@ interface SelectPeriodProps {
   networkFee: number;
   domain: string;
   onSubmit: () => void;
-  name: string
+  name: string,
+  isLoading: boolean
+  walletExists: boolean
 }
 
-export function SetPeriod({ networkFee, onSubmit, name }: SelectPeriodProps) {
+export function SetPeriod({ networkFee, onSubmit, name, isLoading, walletExists }: SelectPeriodProps) {
   // const { isOpen, onClose, onOpen } = useDisclosure();
   // const [domain, setDomain] = useState<string>("");
   const [items, setItems] = useState<Domains[]>([{
@@ -214,6 +216,8 @@ export function SetPeriod({ networkFee, onSubmit, name }: SelectPeriodProps) {
           <Box w="full" pb={10}>
             <Button
               w="full"
+              isLoading={isLoading}
+              isDisabled={!walletExists}
               onClick={onSubmit}
               background="button.500"
               color="background.500"

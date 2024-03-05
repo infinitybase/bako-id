@@ -70,7 +70,7 @@ export const Buy = () => {
   return (
     <Center w="full" h="full" display="flex" flexDir="column" py={2} px={{ base: 4, md: 20, xl: 40 }} zIndex={10}>
       <GoBack />
-      <SetPeriod domain={domain} networkFee={0} onSubmit={handleBuyDomain} name={domain} />
+      <SetPeriod domain={domain} networkFee={0} onSubmit={handleBuyDomain} name={domain} isLoading={resolveDomainMutation.isPending || registerDomainMutation.isPending} walletExists={!!wallet} />
     </Center>
   )
 }
