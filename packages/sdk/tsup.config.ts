@@ -1,7 +1,7 @@
 import {defineConfig} from 'tsup';
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({ path: '../../.env' });
 
 export default defineConfig({
   sourcemap: true,
