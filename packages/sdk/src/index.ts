@@ -51,7 +51,7 @@ const register = async (params: RegisterDomainParams) => {
   };
 };
 
-const resolver = async (params: ResolveDomainParams): Promise<ResolverReturn> => {
+const resolver = async (params: ResolveDomainParams): ResolverReturn => {
   const { domain, providerURL } = params;
 
   let provider;
