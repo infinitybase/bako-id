@@ -1,18 +1,16 @@
 import {
   Button,
-  Center, Flex,
-  FormControl,
-  Input,
-  InputGroup,
-  InputRightAddon,
+  Center,
+  Flex,
   VStack,
   Text, Divider, HStack,
-  Image
+  Image, Box
 } from '@chakra-ui/react';
 import { ChangeEvent, useMemo, useState } from 'react';
 import { resolver } from '@fuel-domains/sdk';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
+import { DomainsInput } from '../components/inputs';
 
 const checkDomain = (domain: string) => {
   const regex = /^[a-zA-Z0-9]+$/;
@@ -40,7 +38,9 @@ export const Home = () => {
     }
   };
 
-  const handleConfirmDomain = async () => {
+  const handleConfirmDomain = async (e: React.FormEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    console.debug(e)
     const isValid = checkDomain(domain);
     if (!isValid) return;
 
@@ -49,22 +49,19 @@ export const Home = () => {
       providerURL: "https://beta-5.fuel.network/graphql"
     })
 
-    console.debug(info?.name)
-
     if(!info) {
       navigate({ to: '/buy/$domain', params: { domain: domain }, startTransition: true }).then()
       return
     }
 
     navigate({ to: '/$domain', params: { domain: info.name }, startTransition: true }).then()
-    return info;
   };
 
   return <Center w="full" h="full" alignItems="start" zIndex={10}>
     {/* opt-out for a margin top, and items start, aiming better center in screen, counting the header size */}
     <VStack mt={{ base: '5rem', md: "13rem" }} textAlign="center" spacing={6} padding={{ base: 4, md: 0 }}>
       <Text
-        bgGradient="linear(to-br, #FFC010, #B24F18)"
+        className="bg-pan-tl"
         bgClip="text"
         fontWeight={700}
         fontSize={{ base: 35, md: 48 }}
@@ -84,56 +81,35 @@ export const Home = () => {
       </Text>
 
       <Divider w="60%" h="1px" border="none" bgGradient="linear(to-r, #FFC010, #B24F18)" />
+        <Box as="form" w="full" display="flex" flexDir="column" gap={4} onSubmit={handleConfirmDomain}>
+          <DomainsInput onChange={handleChangeDomain} errorMessage={undefined} />
 
-      <VStack spacing={5} w="full">
-        <FormControl>
-          <InputGroup borderRightColor="transparent">
-            <Input
-              value={domain}
-              minW="12rem"
+          {/* Buttons */}
+          <VStack w="full" display="flex" flexDir="column" gap={2}>
+            <Button
               w="full"
-              maxW="24rem"
-              borderRight="none"
-              borderColor="whiteAlpha.50"
-              textColor="text.700"
-              background="background.400"
-              onChange={handleChangeDomain}
-              _focus={{}}
-              _hover={{}}
-              _focusVisible={{}}
-            />
-            <InputRightAddon borderLeftColor="transparent" bgColor="background.400">
-              @
-            </InputRightAddon>
-          </InputGroup>
-        </FormControl>
-
-        {/* Buttons */}
-        <VStack w="full" display="flex" flexDir="column" gap={2}>
-          <Button
-            w="full"
-            isLoading={resolveDomainMutation.isPending}
-            isDisabled={!isValidDomain}
-            onClick={handleConfirmDomain}
-            background="button.500"
-            color="background.500"
-            fontSize={14}
-            _hover={{ bgColor: 'button.600' }}
-          >
-            Check domain
-          </Button>
-          <HStack
-            cursor="pointer"
-            onClick={() => window.open("https://twitter.com/bakoidentity", "_blank")}
-            alignSelf="flex-end"
-          >
-            <Text fontSize={11} color="yellow-medium" fontWeight={"bold"}>
-              Learn more
-            </Text>
-            <Image w={4} src="/arrow-share.svg" />
-          </HStack>
-        </VStack>
-      </VStack>
+              type="submit"
+              isLoading={resolveDomainMutation.isPending}
+              isDisabled={!isValidDomain}
+              background="button.500"
+              color="background.500"
+              fontSize={14}
+              _hover={{ bgColor: 'button.600' }}
+            >
+              Check domain
+            </Button>
+            <HStack
+              cursor="pointer"
+              onClick={() => window.open("https://twitter.com/bakoidentity", "_blank")}
+              alignSelf="flex-end"
+            >
+              <Text fontSize={11} color="yellow-medium" fontWeight={"bold"}>
+                Learn more
+              </Text>
+              <Image w={4} src="/arrow-share.svg" />
+            </HStack>
+          </VStack>
+        </Box>
       <Flex w="full" justifyContent="center">
         <Text
           position={"absolute"}
