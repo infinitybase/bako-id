@@ -73,7 +73,7 @@ const Domain = () => {
                 :
                 <Fade in={!!data?.name}>
                   <Flex flexDir="column" gap={2}>
-                    <Heading size='md'>{data.name}</Heading>
+                    <Heading size='md' color="text.700">{data.name}</Heading>
                     <Text fontSize='xs' color="grey.200">Fuel</Text>
                   </Flex>
                 </Fade>
@@ -90,12 +90,12 @@ const Domain = () => {
                       className="transition-all-05"
                       variant="outiline"
                       rounded={8}
-                      colorScheme="grey.200"
                       p={2}
                       borderColor="grey.300"
                       borderWidth={1}
                       background="semi-transparent"
                       display="flex"
+                      color="text.700"
                       gap={3}
                       _hover={{ background: 'transparent', transform: 'translate(0px, -3px)' }}
                       onClick={copy}
@@ -116,12 +116,12 @@ const Domain = () => {
                       className="transition-all-05"
                       variant="outiline"
                       rounded={8}
-                      colorScheme="grey.200"
                       p={2}
                       borderColor="grey.300"
                       borderWidth={1}
                       background="semi-transparent"
                       display="flex"
+                      color="text.700"
                       gap={3}
                       _hover={{ background: 'transparent', transform: 'translate(0px, -3px)' }}
                       onClick={copy}
