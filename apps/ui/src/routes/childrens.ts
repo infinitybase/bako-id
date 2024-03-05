@@ -3,6 +3,7 @@ import { Home } from '../pages/home.tsx';
 import { rootRoute } from '../hooks/__root.ts';
 import { NotConnected } from '../components/auth/notConnected.tsx';
 import { Domain } from '../pages/domain.tsx';
+import { Buy } from '../pages/buy.tsx';
 
 export const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -43,4 +44,10 @@ export const domainRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: Domain,
   path: '/$domain'
+})
+
+export const buyRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  component: Buy,
+  path: '/buy/$domain'
 })
