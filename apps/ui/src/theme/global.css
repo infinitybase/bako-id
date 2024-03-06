@@ -29,6 +29,15 @@
   background: linear-gradient(132.19deg, #FFC010 0%, #EBA312 48%, #D38015 71%, #B24F18 99%);
 }
 
+.rotate-div {
+  transform: rotate(180deg)!important;
+}
+
+.rotate-base {
+  transform: rotate(0);
+  transition: transform 0.3s ease-in-out;
+}
+
 /*
 Animations
 */

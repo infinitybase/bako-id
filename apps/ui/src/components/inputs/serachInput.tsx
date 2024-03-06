@@ -13,7 +13,7 @@ interface InputProps {
   available?: boolean;
 }
 
-export const DomainsInput = ({
+export const SearchInput = ({
   onChange,
   errorMessage,
   available

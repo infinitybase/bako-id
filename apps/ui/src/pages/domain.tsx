@@ -17,12 +17,9 @@ import {
 } from '@chakra-ui/react';
 import { CopyIcon } from '@chakra-ui/icons';
 import { GoBack } from '../components/helpers';
+import { formatAddress } from '../utils/formatter.ts';
 
 
-
-function shortString(str: string) {
-  return str.slice(0, 5) + "..." + str.slice(-4);
-}
 
 const Domain = () => {
   const { domain } = useParams({ strict: false })
@@ -100,7 +97,7 @@ const Domain = () => {
                       _hover={{ background: 'transparent', transform: 'translate(0px, -3px)' }}
                       onClick={copy}
                     >
-                      {shortString(data.resolver)}
+                      {formatAddress(data.resolver)}
                       <CopyIcon />
                     </Button>
                   </Fade>
@@ -126,7 +123,7 @@ const Domain = () => {
                       _hover={{ background: 'transparent', transform: 'translate(0px, -3px)' }}
                       onClick={copy}
                     >
-                      {shortString(data.owner)}
+                      {formatAddress(data.owner)}
                       <CopyIcon />
                     </Button>
                   </Fade>

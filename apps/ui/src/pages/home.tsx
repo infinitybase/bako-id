@@ -10,7 +10,7 @@ import { ChangeEvent, useMemo, useState } from 'react';
 import { resolver } from '@fuel-domains/sdk';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { DomainsInput } from '../components/inputs';
+import { SearchInput } from '../components/inputs';
 
 const checkDomain = (domain: string) => {
   const regex = /^[a-zA-Z0-9]+$/;
@@ -82,7 +82,7 @@ export const Home = () => {
 
       <Divider w="60%" h="1px" border="none" bgGradient="linear(to-r, #FFC010, #B24F18)" />
         <Box as="form" w="full" display="flex" flexDir="column" gap={4} onSubmit={handleConfirmDomain}>
-          <DomainsInput onChange={handleChangeDomain} errorMessage={undefined} />
+          <SearchInput onChange={handleChangeDomain} errorMessage={undefined} />
 
           {/* Buttons */}
           <VStack w="full" display="flex" flexDir="column" gap={2}>
