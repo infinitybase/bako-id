@@ -10,7 +10,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { validateDomain } from "../../utils/validator";
-import { DomainsInput } from '../inputs';
+import { SearchInput } from '../inputs';
 import { Domains } from '../../types';
 import { PlusSquareIcon } from '@chakra-ui/icons';
 
@@ -55,10 +55,9 @@ export default function Modal({
         <ModalCloseButton color="white" />
         <ModalBody pb={8}>
           <VStack spacing={8}>
-            <DomainsInput
+            <SearchInput
               errorMessage={error}
               onChange={(e) => setDomain(e.target.value)}
-              placeholder="Search for a name"
             />
             <Button
               onClick={handleClick}
