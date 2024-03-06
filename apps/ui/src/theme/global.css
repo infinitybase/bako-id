@@ -1,5 +1,5 @@
 .texture {
-  background-image: url("/bg-texture.svg");
+  background-image: url("../assets/bg-texture.svg");
   background-position: bottom;
   background-size: contain;
   background-repeat: no-repeat;

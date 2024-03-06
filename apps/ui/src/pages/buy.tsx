@@ -58,7 +58,7 @@ export const Buy = () => {
           duration: 2000,
           isClosable: true,
         })
-        navigate({ to: '/$domain', params: { domain: domain }, startTransition: true }).then()
+        navigate({ to: '/checkout/$domain', params: { domain: domain }, startTransition: true }).then()
       },
       onError: console.log
     });

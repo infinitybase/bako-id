@@ -11,6 +11,7 @@ import { resolver } from '@fuel-domains/sdk';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { SearchInput } from '../components/inputs';
+import link from '../assets/arrow-share.svg'
 
 const checkDomain = (domain: string) => {
   const regex = /^[a-zA-Z0-9]+$/;
@@ -106,7 +107,7 @@ export const Home = () => {
               <Text fontSize={11} color="yellow-medium" fontWeight={"bold"}>
                 Learn more
               </Text>
-              <Image w={4} src="/arrow-share.svg" />
+              <Image w={4} src={link} />
             </HStack>
           </VStack>
         </Box>

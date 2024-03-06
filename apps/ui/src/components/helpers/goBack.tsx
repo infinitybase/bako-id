@@ -1,12 +1,12 @@
 import { Button } from '@chakra-ui/react';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
-import { useRouter } from '@tanstack/react-router';
+  import { useNavigate } from '@tanstack/react-router';
 
 export const GoBack = () => {
-  const { history } = useRouter()
+  const navigate = useNavigate()
 
   const handleGoBack = () => {
-    history.go(-1)
+    navigate({ to: '/' })
   }
 
   return <Button variant="ghost" display="flex" alignSelf="start" gap={3} px={0} fontSize="xs" _hover={{ background: 'transparent' }}>
