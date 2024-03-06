@@ -78,7 +78,7 @@ export function SetPeriod({ networkFee, onSubmit, name, isLoading, walletExists 
                   {index > 0 && <Divider w="80%" borderColor="link.500" />}
 
                   <VStack w="full" spacing={0}>
-                    <TextInput value={`${name}@`} />
+                    <TextInput value={`@${name}`} />
                     <Flex
                       w="full"
                       border="none"

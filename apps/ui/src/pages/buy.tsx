@@ -17,9 +17,6 @@ export const Buy = () => {
   const toast = useToast()
   const navigate = useNavigate()
 
-  console.debug(domain)
-  console.debug(wallet)
-
   const resolveDomainMutation = useMutation({
     mutationKey: ['registerDomain'],
     mutationFn: resolver
@@ -70,7 +67,7 @@ export const Buy = () => {
   return (
     <Center w="full" h="full" display="flex" flexDir="column" py={2} px={{ base: 4, md: 20, xl: 40 }} zIndex={10}>
       <GoBack />
-      <SetPeriod domain={domain} networkFee={0} onSubmit={handleBuyDomain} name={domain} isLoading={resolveDomainMutation.isPending || registerDomainMutation.isPending} walletExists={!!wallet} />
+      <SetPeriod domain={domain} networkFee={0.003872} onSubmit={handleBuyDomain} name={domain} isLoading={resolveDomainMutation.isPending || registerDomainMutation.isPending} walletExists={!!wallet} />
     </Center>
   )
 }

@@ -69,7 +69,8 @@ export const NumericInput = ({
         _active={{ bgColor: "inherit" }}
         _focus={{ bgColor: "inherit" }}
         _hover={{ bgColor: "transparent" }}
-        isDisabled={value >= 3}
+        // isDisabled={value >= 3}
+        isDisabled={true}
       >
         +
       </Button>
