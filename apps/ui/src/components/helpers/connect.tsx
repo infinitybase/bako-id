@@ -1,5 +1,6 @@
 import { Box, Button, Image } from '@chakra-ui/react';
 import { useConnectUI } from '@fuels/react';
+import link from '../../assets/link.svg'
 
 export const Connect = () => {
   const { connect } = useConnectUI();
@@ -20,7 +21,7 @@ export const Connect = () => {
       _hover={{ bgColor: 'button.600' }}
       className="transition-all-05"
     >
-      <Image src="/link.svg" alt="link" width={4} height={4} fill="button.500" />
+      <Image src={link} alt="link" width={4} height={4} fill="button.500" />
       Connect wallet
     </Button>
   </Box>
