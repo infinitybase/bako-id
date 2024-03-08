@@ -9,7 +9,7 @@ export const GoBack = () => {
     navigate({ to: '/' })
   }
 
-  return <Button variant="ghost" display="flex" alignSelf="start" gap={3} px={0} fontSize="xs" _hover={{ background: 'transparent' }}>
+  return <Button variant="ghost" display="flex" alignSelf="start" gap={3} px={0} fontSize="xs" _hover={{ background: 'transparent' }} color="white">
     <ChevronLeftIcon onClick={handleGoBack} />
     Back
   </Button>
