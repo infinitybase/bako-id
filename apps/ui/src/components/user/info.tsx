@@ -34,6 +34,7 @@ export const Info = ({ name, account }: { name: string, account: string | Abstra
               alignItems="center"
               w="7rem"
               color="white"
+              justifyContent="center"
             >
               <Box rounded={50} w="2rem" h="2rem" bgGradient="linear(to-br, #FFC010, #B24F18)" />
               {name}
@@ -42,7 +43,7 @@ export const Info = ({ name, account }: { name: string, account: string | Abstra
             </Box>
           </MenuButton>
           <MenuList background="background.600" minW="fit-content" >
-            <Box as="button" w="full" flex={0.5} p={2} fontSize="sm" display="flex" alignItems='center' gap={2} cursor="pointer" onClick={copy}>
+            <Box as="button" w="full" flex={0.5} p={2} fontSize="sm" display="flex" alignItems='center' gap={2} cursor="pointer" onClick={copy} color="white">
               {formatAddress(account.toString())}
               <CopyIcon />
             </Box>
