@@ -1,5 +1,5 @@
 import { Connect } from '../helpers';
-import { Center, Image, Skeleton } from '@chakra-ui/react';
+import { Box, Center, Image, Skeleton } from '@chakra-ui/react';
 import { useIsConnected } from '@fuels/react';
 import { Info } from '../user';
 import { useFuelConnect } from '../../hooks';
@@ -17,7 +17,7 @@ export const Header = () => {
     if(wallet) {
       return <Info name="user" account={wallet.address} />
     }
-    if(!isFetching && wallet === null) return <Connect />
+    if(!isFetching && wallet === null) return <Box><Connect /></Box>
   }
 
   return (

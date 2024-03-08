@@ -1,4 +1,4 @@
-import { Box, Button, Image } from '@chakra-ui/react';
+import { Button, Image } from '@chakra-ui/react';
 import { useConnectUI } from '@fuels/react';
 import link from '../../assets/link.svg'
 
@@ -8,8 +8,7 @@ export const Connect = () => {
     connect()
   }
 
-  return <Box>
-    <Button
+  return <Button
       onClick={handleConnect}
       w="full"
       display="flex"
@@ -24,5 +23,4 @@ export const Connect = () => {
       <Image src={link} alt="link" width={4} height={4} fill="button.500" />
       Connect wallet
     </Button>
-  </Box>
 }

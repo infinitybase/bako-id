@@ -1,28 +1,22 @@
-import { useState } from "react";
 import { Box, Button, Input } from "@chakra-ui/react";
+import { useState } from 'react';
 
 interface NumericInputProps {
-  initialValue: number;
   index: number;
   onChange: (index: number, newValue: number) => void;
 }
 
-export const NumericInput = ({
-                               initialValue,
-                               index,
-                               onChange,
-                             }: NumericInputProps) => {
-  const [value, setValue] = useState(initialValue);
-
+export const NumericInput = ({index, onChange }: NumericInputProps) => {
+  const [period, setPeriod] = useState(1)
   const decrement = () => {
-    const newValue = Math.max(value - 1, 1);
-    setValue(newValue);
+    const newValue = Math.max(period - 1, 1);
+    setPeriod(prev => prev - 1)
     onChange(index, newValue);
   };
 
   const increment = () => {
-    const newValue = value + 1;
-    setValue(newValue);
+    const newValue = period + 1;
+    setPeriod(prev => prev + 1)
     onChange(index, newValue);
   };
 
@@ -39,7 +33,7 @@ export const NumericInput = ({
         color="brand.200"
         backgroundColor="inherit"
         fontSize={24}
-        isDisabled={value <= 1}
+        isDisabled={period <= 1}
         onClick={decrement}
         _active={{ backgroundColor: "inherit" }}
         _focus={{
@@ -53,7 +47,7 @@ export const NumericInput = ({
       </Button>
       <Input
         color="grey.200"
-        value={`${value} years`}
+        value={`${period} years`}
         type="text"
         textAlign="center"
         backgroundColor="inherit"
@@ -70,7 +64,7 @@ export const NumericInput = ({
         _focus={{ bgColor: "inherit" }}
         _hover={{ bgColor: "transparent" }}
         // isDisabled={value >= 3}
-        isDisabled={true}
+        // isDisabled={true}
       >
         +
       </Button>

@@ -33,6 +33,7 @@ export const Info = ({ name, account }: { name: string, account: string | Abstra
               gap={2}
               alignItems="center"
               w="7rem"
+              color="white"
             >
               <Box rounded={50} w="2rem" h="2rem" bgGradient="linear(to-br, #FFC010, #B24F18)" />
               {name}

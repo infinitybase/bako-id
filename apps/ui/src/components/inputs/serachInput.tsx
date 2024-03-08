@@ -29,8 +29,8 @@ export const SearchInput = ({
 
   return (
     <>
-      <InputGroup borderRightColor="transparent">
-        <InputLeftAddon borderLeftColor="transparent" bgColor="background.400">
+      <InputGroup borderRightColor="transparent" border="none">
+        <InputLeftAddon borderLeftColor="transparent" bgColor="background.400" color="white" border="none">
           @
         </InputLeftAddon>
         <ChakraInput
