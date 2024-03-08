@@ -1,8 +1,9 @@
 import { Box, Button, Divider, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
 import { AbstractAddress } from 'fuels';
 import { formatAddress } from '../../utils/formatter.ts';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ChevronDownIcon, CopyIcon } from '@chakra-ui/icons';
+import { RoundedUserIcon } from '../helpers/roundedUserIcon.tsx';
 
 export const Info = ({ name, account }: { name: string, account: string | AbstractAddress }) => {
   const [hover, setHover] = useState(false);
@@ -10,6 +11,10 @@ export const Info = ({ name, account }: { name: string, account: string | Abstra
   const copy = () => {
     navigator.clipboard.writeText(account.toString())
   }
+
+  const icon = useMemo(() => {
+    return <RoundedUserIcon width="2em" heigth="2em" />
+  }, [])
 
   return (
     <Menu >
@@ -34,9 +39,8 @@ export const Info = ({ name, account }: { name: string, account: string | Abstra
               alignItems="center"
               w="7rem"
               color="white"
-              justifyContent="center"
             >
-              <Box rounded={50} w="2rem" h="2rem" bgGradient="linear(to-br, #FFC010, #B24F18)" />
+              {icon}
               {name}
 
               { hover || isOpen ? <ChevronDownIcon className={`rotate-base ${isOpen ? undefined : 'rotate-div'}`} /> : null}

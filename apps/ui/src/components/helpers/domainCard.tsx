@@ -1,6 +1,8 @@
 import { Box, Button, Card, CardBody, Fade, Flex, Heading, Skeleton, Stack, Text } from '@chakra-ui/react';
 import { formatAddress } from '../../utils/formatter.ts';
 import { CopyIcon } from '@chakra-ui/icons';
+import { RoundedUserIcon } from './roundedUserIcon.tsx';
+import { useMemo } from 'react';
 
 interface DomainCardProps {
   domain: { name: string, resolver: string, owner: string } | null,
@@ -9,11 +11,17 @@ interface DomainCardProps {
 }
 
 export const DomainCard = ({ domain, isList, copy }: DomainCardProps) => {
+
+  const icon = useMemo(() => {
+    return <RoundedUserIcon width={ isList ? '4em' : '6em' } heigth={ isList ? '4em' : '6em' } />
+  }, [])
+
   return (
     <Card background="background.600" w='full' maxW="2xl" boxShadow="lg" className="scale-up-hor-center">
       <CardBody display="flex" flexDir={ isList ? 'row' : 'column' } justifyContent="space-between">
         <Flex alignItems="center" gap={6}>
-          <Box rounded={50} w={ isList ? '4em' : '6em' } h={ isList ? '4em' : '6em' } bgGradient="linear(to-br, #FFC010, #B24F18)"></Box>
+          {icon}
+          {/*<Box rounded={50}  bgGradient="linear(to-br, #FFC010, #B24F18)"></Box>*/}
           {!domain?.name ?
             <Flex flexDir="column" gap={2}>
               <Skeleton height="1rem" w="7rem" />
