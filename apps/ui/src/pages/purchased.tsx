@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import { resolver } from '@fuel-domains/sdk';
 import { useMutation } from '@tanstack/react-query';
 
-export const Checkout = () => {
+export const Purchased = () => {
   const { domain } = useParams({ strict: false })
   console.debug(domain)
   const resolveDomainMutation = useMutation({
@@ -17,6 +17,7 @@ export const Checkout = () => {
 
   const navigate = useNavigate()
 
+  // @TODO: change this to receive domain info by query params
   useEffect(() => {
     resolveDomainMutation.mutateAsync({
       domain,
