@@ -40,6 +40,7 @@ export const SearchInput = ({
           color="white"
           borderRight="none"
           borderColor="whiteAlpha.50"
+          placeholder="Search for a name"
           textColor="text.700"
           background="background.400"
           type="text"

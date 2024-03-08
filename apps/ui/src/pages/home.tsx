@@ -14,6 +14,7 @@ import { SearchInput } from '../components/inputs';
 import link from '../assets/arrow-share.svg'
 
 const checkDomain = (domain: string) => {
+  if(domain.length < 3) return false
   const regex = /^[a-zA-Z0-9]+$/;
   return regex.test(domain);
 };
@@ -69,16 +70,12 @@ export const Home = () => {
         lineHeight={1}
         gap={2}
       >
-        Ignite Your Identity <br /> with a {" "}
-        <Text as="span" color="white">
-          @
-        </Text>{" "}
-        Domain
+        Your web3 username
       </Text>
 
-      <Text fontSize={{ base: 12, md: 15 }} color={"text.700"}>
-        Secure & scalable human readable addresses. <br />
-        Natively designed with the modular ecosystem in mind.
+      <Text fontSize={{ base: 12, md: 15 }} color={'text.700'}>
+        Your identity across web3, one name for all your crypto addresses,<br />
+        and your decentralised website.
       </Text>
 
       <Divider w="60%" h="1px" border="none" bgGradient="linear(to-r, #FFC010, #B24F18)" />
