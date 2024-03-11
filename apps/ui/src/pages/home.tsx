@@ -7,6 +7,7 @@ import {
   Image, Box
 } from '@chakra-ui/react';
 import { ChangeEvent, useMemo, useState } from 'react';
+import { debounce } from '../utils/debounce.ts'
 import { resolver } from '@fuel-domains/sdk';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
@@ -27,16 +28,30 @@ export const Home = () => {
 
   const navigate = useNavigate()
   const [domain, setDomain] = useState('');
-  const isValidDomain = useMemo(() => {
-    return checkDomain(domain);
-  }, [domain]);
+  const [available, setAvailable] = useState<boolean | null>(null);
 
   const handleChangeDomain = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e?.target ?? {};
+    if(value.length < 3) {
+      setAvailable(null)
+      setDomain(value);
+      return
+    }
     const isValid = checkDomain(value);
 
     if (isValid || !value) {
       setDomain(value);
+      debounce(resolveDomainMutation.mutateAsync({
+        domain: value,
+        providerURL: "https://beta-5.fuel.network/graphql"
+      }).then(info => {
+        if(!info) {
+          console.debug("Info returned from 'https://beta-5.fuel.network/graphql'", info)
+          setAvailable(true)
+          return
+        }
+        setAvailable(false)
+      }),500, null)
     }
   };
 
@@ -59,6 +74,15 @@ export const Home = () => {
     navigate({ to: '/$domain', params: { domain: info.name }, startTransition: true }).then()
   };
 
+  const domainIsAvailable = useMemo(() => {
+    if(resolveDomainMutation.isPending || available === null) return null;
+    if(!available) return false
+    if(available) {
+      console.debug("available", available)
+      return true
+    }
+  }, [resolveDomainMutation, available])
+
   return <Center w="full" h="full" alignItems="start" zIndex={10}>
     {/* opt-out for a margin top, and items start, aiming better center in screen, counting the header size */}
     <VStack mt={{ base: '5rem', md: "13rem" }} textAlign="center" spacing={6} padding={{ base: 4, md: 0 }}>
@@ -80,7 +104,7 @@ export const Home = () => {
 
       <Divider w="60%" h="1px" border="none" bgGradient="linear(to-r, #FFC010, #B24F18)" />
         <Box as="form" w="full" display="flex" flexDir="column" gap={4} onSubmit={handleConfirmDomain}>
-          <SearchInput onChange={handleChangeDomain} errorMessage={undefined} />
+          <SearchInput onChange={handleChangeDomain} errorMessage={undefined} available={domainIsAvailable} />
 
           {/* Buttons */}
           <VStack w="full" display="flex" flexDir="column" gap={2}>
@@ -88,13 +112,13 @@ export const Home = () => {
               w="full"
               type="submit"
               isLoading={resolveDomainMutation.isPending}
-              isDisabled={!isValidDomain}
+              isDisabled={domain.length < 3 || resolveDomainMutation.isPending}
               background="button.500"
               color="background.500"
               fontSize={14}
               _hover={{ bgColor: 'button.600' }}
             >
-              Check domain
+              { domainIsAvailable ? 'Buy Domain' : 'Check domain' }
             </Button>
             <HStack
               cursor="pointer"

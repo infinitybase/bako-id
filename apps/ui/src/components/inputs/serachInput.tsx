@@ -3,14 +3,14 @@ import {
   Input as ChakraInput,
   FormHelperText,
   InputGroup,
-  InputLeftAddon
+  InputLeftAddon, InputRightElement
 } from '@chakra-ui/react';
-// import { ErrorBadge, SuccessBadge } from '../helpers';
+import { ErrorBadge, SuccessBadge } from '../helpers';
 
 interface InputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   errorMessage: string | undefined;
-  available?: boolean;
+  available?: boolean | null;
 }
 
 export const SearchInput = ({
@@ -21,8 +21,6 @@ export const SearchInput = ({
   const [inputValue, setInputValue] = useState("");
   console.debug(available)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // const newOne = e.target.value.replace(".fuel", "");
-    // setInputValue(newOne + ".fuel");
     setInputValue(e.target.value.substring(0));
     onChange(e);
   };
@@ -53,12 +51,12 @@ export const SearchInput = ({
           _hover={{}}
           _focusVisible={{}}
         />
-        {/*{inputValue.length > 3 && (*/}
-        {/*  <InputRightElement*/}
-        {/*    pointerEvents="none"*/}
-        {/*    children={available ? <SuccessBadge /> : <ErrorBadge />}*/}
-        {/*  />*/}
-        {/*)}*/}
+        {available !== null && (
+          <InputRightElement
+            pointerEvents="none"
+            children={available ? <SuccessBadge /> : <ErrorBadge />}
+          />
+        )}
 
       </InputGroup>
 
