@@ -51,7 +51,7 @@ export const Home = () => {
           return
         }
         setAvailable(false)
-      }),500, null)
+      }),300, null)
     }
   };
 
