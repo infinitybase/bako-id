@@ -103,11 +103,6 @@ const _abi = {
           "name": "DomainNotAvailable",
           "type": 0,
           "typeArguments": null
-        },
-        {
-          "name": "DomainNotValid",
-          "type": 0,
-          "typeArguments": null
         }
       ],
       "typeParameters": null
@@ -341,22 +336,6 @@ const _abi = {
     },
     {
       "logId": 4,
-      "loggedType": {
-        "name": "",
-        "type": 5,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 5,
-      "loggedType": {
-        "name": "",
-        "type": 5,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 6,
       "loggedType": {
         "name": "",
         "type": 5,

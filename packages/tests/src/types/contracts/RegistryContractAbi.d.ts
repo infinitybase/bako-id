@@ -28,8 +28,8 @@ export type IdentityInput = Enum<{ Address: AddressInput, ContractId: ContractId
 export type IdentityOutput = Enum<{ Address: AddressOutput, ContractId: ContractIdOutput }>;
 export type PermissionInput = Enum<{ Authorized: IdentityInput, Unauthorized: [], NotFound: [] }>;
 export type PermissionOutput = Enum<{ Authorized: IdentityOutput, Unauthorized: [], NotFound: [] }>;
-export enum RegistryContractErrorInput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable', DomainNotValid = 'DomainNotValid' };
-export enum RegistryContractErrorOutput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable', DomainNotValid = 'DomainNotValid' };
+export enum RegistryContractErrorInput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable' };
+export enum RegistryContractErrorOutput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable' };
 
 export type AddressInput = { value: string };
 export type AddressOutput = AddressInput;

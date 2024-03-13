@@ -1,5 +1,5 @@
 import { Provider, RequireRevertError, TransactionStatus } from 'fuels';
-import { setupContracts, randomName, createWallet, txParams, tryExecute } from './utils';
+import { setupContracts, randomName, createWallet, txParams, tryExecute, setupContractsAndDeploy } from './utils';
 
 describe('Test Registry Contract', () => {
   let provider: Provider;
@@ -11,19 +11,20 @@ describe('Test Registry Contract', () => {
   it('should error on call method without a proxy contract started', async () => {
     const wallet = createWallet(provider);
     const domain = randomName();
-    const { registry } = await setupContracts(wallet);
+    const { registry, storage } = await setupContractsAndDeploy(wallet);
 
     try {
       const { transactionResult: txRegister } = await registry
         .functions
         .register(domain, wallet.address.toB256())
+        .addContracts([storage])
         .txParams(txParams)
         .call();
 
       expect(txRegister.status).toBe(TransactionStatus.failure);
     } catch (e) {
       expect(e).toBeInstanceOf(RequireRevertError);
-      // expect(e.cause.logs[0]).toBe("ProxyNotInitialized");
+      expect(e.cause.logs[0]).toBe("StorageNotInitialized");
     }
   });
 
@@ -38,7 +39,7 @@ describe('Test Registry Contract', () => {
       expect(txRegistryFailure.status).toBe(TransactionStatus.failure);
     } catch (e) {
       expect(e).toBeInstanceOf(RequireRevertError);
-      // expect(e.cause.logs[0]).toBe("AlreadyInitialized");
+      expect(e.cause.logs[0]).toBe("AlreadyInitialized");
     }
   });
 
@@ -54,36 +55,43 @@ describe('Test Registry Contract', () => {
       await registry
         .functions
         .register(domain, wallet.address.toB256())
+        .addContracts([storage])
         .txParams(txParams)
         .call();
 
       const { transactionResult: txRegister } = await registry
         .functions
         .register(domain, wallet.address.toB256())
+        .addContracts([storage])
         .txParams(txParams)
         .call();
 
       expect(txRegister.status).toBe(TransactionStatus.failure);
     } catch (e) {
       expect(e).toBeInstanceOf(RequireRevertError);
-      // expect(e.cause.logs[0]).toBe("DomainNotAvailable");
+      expect(e.cause.logs[0]).toBe("DomainNotAvailable");
     }
   });
 
   it('should create domain register and get resolver', async () => {
     const wallet = createWallet(provider);
-    const { registry } = await setupContracts(wallet);
+    const { registry, storage } = await setupContracts(wallet);
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
 
     const domain = randomName();
     const { transactionResult: txRegister } = await registry
       .functions
       .register(domain, wallet.address.toB256())
+      .addContracts([storage])
       .txParams(txParams)
       .call();
 
     const { value } = await registry
       .functions
       .resolver(domain)
+      .addContracts([storage])
       .txParams(txParams)
       .call();
 
@@ -93,12 +101,16 @@ describe('Test Registry Contract', () => {
 
   it('should error register and get resolver with other domain', async () => {
     const wallet = createWallet(provider);
-    const { registry } = await setupContracts(wallet);
+    const { registry, storage } = await setupContracts(wallet);
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
 
     const domain = randomName();
     await registry
       .functions
       .register(domain, wallet.address.toB256())
+      .addContracts([storage])
       .txParams(txParams)
       .call();
 
@@ -114,12 +126,13 @@ describe('Test Registry Contract', () => {
 
   it('should error resolver without being register', async () => {
     const wallet = createWallet(provider);
-    const { registry } = await setupContracts(wallet);
+    const { registry, storage } = await setupContracts(wallet);
     const domain = randomName();
 
     const { value } = await registry
       .functions
       .resolver(domain)
+      .addContracts([storage])
       .txParams(txParams)
       .call();
 
