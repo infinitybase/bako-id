@@ -28,13 +28,13 @@ enum RegistryContractError {
     StorageNotInitialized: (),
     AlreadyInitialized: (),
     DomainNotAvailable: (),
-    DomainNotValid: (),
+//    DomainNotValid: (),
 }
 
-// .fuel domain in bytes
-const NAME_SULFIX: [u8; 5] = [46, 102, 117, 101, 108];
-const NAME_SULFIX_LEN: u64 = 5;
-const NAME_MIN_LEN: u64 = 2;
+//// .fuel domain in bytes
+//const NAME_SULFIX: [u8; 5] = [46, 102, 117, 101, 108];
+//const NAME_SULFIX_LEN: u64 = 5;
+//const NAME_MIN_LEN: u64 = 2;
 
 storage {
     storage_id: Option<ContractId> = Option::None,
@@ -48,23 +48,23 @@ fn get_storage_id() -> ContractId {
     storage_id.unwrap()
 }
 
-fn assert_name_validity(name: String) {
-    let bytes = name.as_bytes();
-    let mut name_length = bytes.len;
-    let mut sulfix_length = NAME_SULFIX_LEN;
-    let mut is_valid = true;
-
-    require(name_length > (NAME_MIN_LEN + NAME_SULFIX_LEN), RegistryContractError::DomainNotValid);
-    while name_length > (bytes.len - 5) {
-        let letter = bytes.get(name_length - 1).unwrap();
-        if (letter != NAME_SULFIX[sulfix_length - 1]) {
-            is_valid = false;
-        }
-        name_length = name_length - 1;
-        sulfix_length = sulfix_length - 1;
-    }
-    require(is_valid, RegistryContractError::DomainNotValid);
-}
+//fn assert_name_validity(name: String) {
+//    let bytes = name.as_bytes();
+//    let mut name_length = bytes.len;
+//    let mut sulfix_length = NAME_SULFIX_LEN;
+//    let mut is_valid = true;
+//
+//    require(name_length > (NAME_MIN_LEN + NAME_SULFIX_LEN), RegistryContractError::DomainNotValid);
+//    while name_length > (bytes.len - 5) {
+//        let letter = bytes.get(name_length - 1).unwrap();
+//        if (letter != NAME_SULFIX[sulfix_length - 1]) {
+//            is_valid = false;
+//        }
+//        name_length = name_length - 1;
+//        sulfix_length = sulfix_length - 1;
+//    }
+//    require(is_valid, RegistryContractError::DomainNotValid);
+//}
 
 impl FuelDomainsContract for Contract {
     #[storage(read, write)]

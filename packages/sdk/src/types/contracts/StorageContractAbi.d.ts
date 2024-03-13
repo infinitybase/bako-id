@@ -37,7 +37,7 @@ export type ContractIdOutput = ContractIdInput;
 export type RawBytesInput = { ptr: BigNumberish, cap: BigNumberish };
 export type RawBytesOutput = { ptr: BN, cap: BN };
 
-export interface StorageContractAbiInterface extends Interface {
+interface StorageContractAbiInterface extends Interface {
   functions: {
     constructor: FunctionFragment;
     get: FunctionFragment;

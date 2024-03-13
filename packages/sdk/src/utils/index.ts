@@ -11,6 +11,6 @@ const getTxParams = (provider: Provider) => {
 
 class InvalidDomainError extends Error {};
 
-const isValidDomain = (domain: string) => /^@[a-zA-Z0-9]+$|^[a-zA-Z0-9]+$/.test(domain);
+const isValidDomain = (domain: string) => /^@?[a-zA-Z0-9_]+$/.test(domain);
 
 export { getTxParams, isValidDomain, InvalidDomainError };
