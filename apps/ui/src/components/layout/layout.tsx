@@ -27,7 +27,7 @@ const Layout = () => {
         <BackgroundTexture />
         <Outlet />
       </Center>
-      {import.meta.env.DEV && <TanStackRouterDevtools />}
+      {import.meta.env.NODE_ENV === 'development' && <TanStackRouterDevtools />}
     </Container>
   )
 }
