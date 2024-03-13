@@ -7,7 +7,7 @@ import {
   testContract,
   tryExecute,
   txParams,
-  WALLET_PRIVATE_KEYS
+  WALLET_PRIVATE_KEYS, setupContractsAndDeploy
 } from './utils';
 
 describe('Test Storage Contract', () => {
@@ -19,13 +19,13 @@ describe('Test Storage Contract', () => {
 
   it('should error on call method without a storage contract started', async () => {
     const wallet = createWallet(provider);
-    const { storage } = await setupContracts(wallet);
+    const { storage } = await setupContractsAndDeploy(wallet);
 
     try {
       await storage.functions.set(hash(Buffer.from('20')), [10, 10]).txParams(txParams).call();
     } catch (e) {
       expect(e).toBeInstanceOf(RequireRevertError);
-      // expect(e.cause.logs[0]).toBe("NotOwner");
+      expect(e.cause.logs[0].Unauthorized).toBeDefined();
     }
   });
 
@@ -38,10 +38,10 @@ describe('Test Storage Contract', () => {
     try {
       await testCaller.functions.test_set({
         value: storageContract
-      }).txParams(txParams).call();
+      }).addContracts([storage]).txParams(txParams).call();
     } catch (e) {
       expect(e).toBeInstanceOf(RequireRevertError);
-      // expect(e.cause.logs[0]).toBe("NotOwner");
+      expect(e.cause.logs[0].Unauthorized).toBeDefined();
     }
   });
 
