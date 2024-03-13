@@ -1,2 +1,4 @@
 dist
 .env
+.env.prod
+contract-ids.json
