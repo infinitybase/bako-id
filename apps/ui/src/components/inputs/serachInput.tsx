@@ -5,7 +5,7 @@ import {
   InputGroup,
   InputLeftAddon, InputRightElement
 } from '@chakra-ui/react';
-import { ErrorBadge, SuccessBadge } from '../helpers';
+import { UnavailableBadge, AvailableBadge } from '../helpers';
 
 interface InputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -54,7 +54,7 @@ export const SearchInput = ({
         {available !== null && (
           <InputRightElement
             pointerEvents="none"
-            children={available ? <SuccessBadge /> : <ErrorBadge />}
+            children={available ? <AvailableBadge /> : <UnavailableBadge />}
           />
         )}
 

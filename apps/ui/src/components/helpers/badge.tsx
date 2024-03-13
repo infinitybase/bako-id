@@ -8,21 +8,20 @@ interface BadgeProps {
 function Badge({ title, color }: BadgeProps) {
   return (
     <ChakraBadge
+      color={color}
+      fontSize="10px"
       marginRight="5rem"
-      style={{
-        borderRadius: "12px",
-        border: `1px solid ${color}`,
-        color: `${color}`,
-        fontSize: "10px",
-        backgroundColor: "inherit",
-      }}
+      borderRadius="12px"
+      border={`1px solid ${color}`}
+      backgroundColor="inherit"
     >
       {title}
     </ChakraBadge>
   );
 }
 
-export const ErrorBadge = () =>
-  Badge({ title: "Unavailable", color: "#F05D48" });
-export const SuccessBadge = () =>
-  Badge({ title: "Available", color: "#32C8D9" });
+export const UnavailableBadge = () =>
+  <Badge title="Unavailable" color="#F05D48" />;
+
+export const AvailableBadge = () =>
+  <Badge title="Available" color="#32C8D9" />;

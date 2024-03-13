@@ -10,8 +10,6 @@ export const Header = () => {
   const { isFetching } = useIsConnected()
   const navigate = useNavigate()
 
-  console.debug(isFetching)
-  console.debug(wallet)
   const account = () => {
     if(isFetching && wallet === undefined) {
       return <Skeleton height="2.5rem" w="7rem" rounded={8} />
