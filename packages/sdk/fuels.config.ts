@@ -1,5 +1,5 @@
 import { createConfig } from 'fuels';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 
