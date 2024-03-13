@@ -34,7 +34,7 @@ importers:
         version: 11.11.0(@emotion/react@11.11.3)(@types/react@18.2.53)(react@18.2.0)
       '@fuel-domains/sdk':
         specifier: 0.1.6
-        version: 0.1.6(fuels@0.74.0)
+        version: link:../../packages/sdk
       '@fuel-wallet/react':
         specifier: 0.14.3
         version: 0.14.3(@fuel-ui/css@0.23.0)(@fuel-ui/react@0.23.0)(dexie@3.2.4)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0)
