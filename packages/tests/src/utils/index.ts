@@ -1,5 +1,7 @@
 import { Provider, Wallet, WalletUnlocked } from 'fuels';
 import { StorageContractAbi__factory, RegistryContractAbi__factory, TestContractAbi__factory } from '../types';
+import registryHex from '../types/contracts/RegistryContractAbi.hex';
+import storageHex from '../types/contracts/StorageContractAbi.hex';
 import { storageContract, registryContract, testContract } from '../types/contract-ids.json';
 
 const tryExecute = <T>(callback: Promise<T>) => new Promise<T>((resolve) => callback.then(resolve).catch(resolve))
@@ -13,6 +15,16 @@ const txParams = {
   gasPrice: 1,
   gasLimit: 1_000_000
 };
+
+async function setupContractsAndDeploy(wallet: WalletUnlocked) {
+  const storage = await StorageContractAbi__factory.deployContract(storageHex, wallet);
+  const registry = await RegistryContractAbi__factory.deployContract(registryHex, wallet);
+
+  return {
+    storage,
+    registry,
+  }
+}
 
 async function setupContracts(wallet: WalletUnlocked) {
   const registry = RegistryContractAbi__factory.connect(registryContract, wallet);
@@ -61,4 +73,5 @@ export {
   setupContracts,
   registryContract,
   WALLET_PRIVATE_KEYS,
+  setupContractsAndDeploy,
 };

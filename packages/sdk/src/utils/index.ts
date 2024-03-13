@@ -1,8 +1,6 @@
 export * from './wallet';
 import { Provider } from 'fuels';
 
-const SUFFIX_FUEL = '.fuel';
-
 const getTxParams = (provider: Provider) => {
   const gasConfig = provider.getGasConfig();
   return {
@@ -13,8 +11,6 @@ const getTxParams = (provider: Provider) => {
 
 class InvalidDomainError extends Error {};
 
-const isValidDomain = (domain: string) => /^[a-zA-Z0-9]+$/.test(domain);
+const isValidDomain = (domain: string) => /^@?[a-zA-Z0-9_]+$/.test(domain);
 
-const suffixDomain = (domain: string) => `${domain}.${SUFFIX_FUEL}`;
-
-export { getTxParams, isValidDomain, suffixDomain, InvalidDomainError };
+export { getTxParams, isValidDomain, InvalidDomainError };
