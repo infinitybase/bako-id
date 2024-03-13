@@ -1,5 +1,5 @@
 {
-  "registryContract": "0x8bc376628c57286c5e0649b6052c538ab51807ccc57d3377e0f53778bc9906ec",
-  "storageContract": "0x1e1e595a840a01a87fe9f829f988472c7f26c845dfbabcfceb319ee71d4d8580",
-  "testContract": "0xac13a81682d4e56c960543d965ce62dd684f054865c38892d38800e5ff1858c4"
+  "registryContract": "0x8120487be7795163dd51ee8a5af9f8a4dcb20b6121cd206d567437ffa26fb0e5",
+  "storageContract": "0x3bd6f043418fcfdd2425c3827cf13e0a05d5b13e96a802ee3d46b3a03c4a6697",
+  "testContract": "0x79b6329cc395e4ae1c1ccfaae901ee8c35d96f97d570a92a4863ecf56921fbc7"
 }
