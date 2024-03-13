@@ -6,8 +6,8 @@ import {
   Text, Divider, HStack,
   Image, Box
 } from '@chakra-ui/react';
-import { ChangeEvent, useMemo, useState } from 'react';
-import { debounce } from '../utils/debounce.ts'
+import { ChangeEvent, useCallback, useMemo, useState } from 'react';
+import { debounce } from 'lodash';
 import { resolver } from '@fuel-domains/sdk';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
@@ -30,6 +30,20 @@ export const Home = () => {
   const [domain, setDomain] = useState('');
   const [available, setAvailable] = useState<boolean | null>(null);
 
+  const debounceSearch =  useCallback(debounce((value: string) => {
+    resolveDomainMutation.mutateAsync({
+      domain: value,
+      providerURL: "https://beta-5.fuel.network/graphql"
+    }).then(info => {
+      if(!info) {
+        console.debug("Info returned from 'https://beta-5.fuel.network/graphql'", info)
+        setAvailable(true)
+        return
+      }
+      setAvailable(false)
+    })
+  },500), []);
+
   const handleChangeDomain = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e?.target ?? {};
     if(value.length < 3) {
@@ -41,30 +55,16 @@ export const Home = () => {
 
     if (isValid || !value) {
       setDomain(value);
-      debounce(resolveDomainMutation.mutateAsync({
-        domain: value,
-        providerURL: "https://beta-5.fuel.network/graphql"
-      }).then(info => {
-        if(!info) {
-          console.debug("Info returned from 'https://beta-5.fuel.network/graphql'", info)
-          setAvailable(true)
-          return
-        }
-        setAvailable(false)
-      }),300, null)
+      debounceSearch(value);
     }
   };
 
   const handleConfirmDomain = async (e: React.FormEvent<HTMLDivElement>) => {
     e.preventDefault()
-    console.debug(e)
     const isValid = checkDomain(domain);
     if (!isValid) return;
 
-    const info = await resolveDomainMutation.mutateAsync({
-      domain,
-      providerURL: "https://beta-5.fuel.network/graphql"
-    })
+    const info = resolveDomainMutation.data;
 
     if(!info) {
       navigate({ to: '/buy/$domain', params: { domain: domain }, startTransition: true }).then()
