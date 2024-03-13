@@ -53,7 +53,7 @@ fn assert_name_validity(name: String) {
     let mut name_length = bytes.len;
     let mut sulfix_length = NAME_SULFIX_LEN;
     let mut is_valid = true;
-   
+
     require(name_length > (NAME_MIN_LEN + NAME_SULFIX_LEN), RegistryContractError::DomainNotValid);
     while name_length > (bytes.len - 5) {
         let letter = bytes.get(name_length - 1).unwrap();
@@ -81,7 +81,6 @@ impl FuelDomainsContract for Contract {
 
     #[storage(read)]
     fn register(name: String, resolver: b256) {
-        assert_name_validity(name);
         let storage_id = get_storage_id();
         let domain_hash = sha256(name);
 

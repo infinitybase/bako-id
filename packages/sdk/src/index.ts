@@ -1,6 +1,6 @@
 import { getRegistryContract } from './setup';
 import { Account, Provider } from 'fuels';
-import { getTxParams, InvalidDomainError, isValidDomain, suffixDomain } from './utils';
+import { getTxParams, InvalidDomainError, isValidDomain } from './utils';
 import { envrionment } from './config';
 import { Domain, ResolverReturn } from './types';
 
@@ -35,11 +35,10 @@ const register = async (params: RegisterDomainParams) => {
   registry.account = account;
 
   const txParams = getTxParams(account.provider);
-  const fuelDomain = suffixDomain(domain);
 
   const { transactionResult, transactionResponse, gasUsed, transactionId } = await registry
     .functions
-    .register(fuelDomain, resolver)
+    .register(domain, resolver)
     .txParams(txParams)
     .call();
 
@@ -53,6 +52,12 @@ const register = async (params: RegisterDomainParams) => {
 
 const resolver = async (params: ResolveDomainParams): ResolverReturn => {
   const { domain, providerURL } = params;
+
+  const isValid = isValidDomain(domain);
+
+  if (!isValid) {
+    throw new InvalidDomainError('Invalid domain characters.');
+  }
 
   let provider;
   if (params.account) {
@@ -72,10 +77,8 @@ const resolver = async (params: ResolveDomainParams): ResolverReturn => {
     storageId: envrionment.STORAGE_CONTRACT_ID!
   });
 
-  const fuelDomain = suffixDomain(domain);
-
   const { value } = await registry.functions
-    .resolver(fuelDomain)
+    .resolver(domain)
     .txParams(txParams)
     .dryRun();
 

@@ -23,7 +23,7 @@ describe('Test Registry', () => {
       const result = await register({
         account: wallet,
         resolver: wallet.address.toB256(),
-        domain: 'namenotfuel.modl',
+        domain: 'namenotfuel',
       });
 
       expect(result).toBeUndefined();
