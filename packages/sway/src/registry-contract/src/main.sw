@@ -39,7 +39,7 @@ enum RegistryContractError {
 //// .fuel domain in bytes
 //const NAME_SULFIX: [u8; 5] = [46, 102, 117, 101, 108];
 //const NAME_SULFIX_LEN: u64 = 5;
-const NAME_MIN_LEN: u64 = 3;
+const NAME_MIN_LEN: u64 = 2;
 
 storage {
     storage_id: Option<ContractId> = Option::None,
@@ -54,19 +54,21 @@ fn get_storage_id() -> ContractId {
 }
 
 fn assert_name_validity(name: String) {
-    let bytes = name.as_bytes();
-    let mut name_length = bytes.len;
+    let mut bytes = name.as_bytes();
+    let mut name_length = bytes.len();
 
-    require(name_length >= NAME_MIN_LEN, RegistryContractError::DomainNotValid);
+    require(name_length > NAME_MIN_LEN, RegistryContractError::DomainNotValid);
 }
 
 fn get_domain_price(domain: String, period: u64) -> u64 {
     let domain_len = domain.as_bytes().len;
-    let amount = match domain_len {
-        3 => 0_005,
-        4 => 0_001,
-        _ => 0_0002,
+    let mut amount = match domain_len {
+        3 => 5_000,
+        4 => 1_000,
+        _ => 200,
     };
+
+    amount = amount * 1000;
 
     return amount * period;
 }

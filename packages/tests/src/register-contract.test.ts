@@ -1,55 +1,23 @@
-import { Provider, RequireRevertError, TransactionStatus } from 'fuels';
-import { setupContracts, randomName, createWallet, txParams, tryExecute, setupContractsAndDeploy } from './utils';
+import { Provider, RequireRevertError, TransactionStatus, WalletUnlocked } from 'fuels';
+import { createWallet, randomName, setupContracts, setupContractsAndDeploy, tryExecute, txParams } from './utils';
 
-describe('Test Registry Contract', () => {
+describe('[METHODS] Test Registry Contract', () => {
+  let wallet: WalletUnlocked;
   let provider: Provider;
+
+  let contracts: Awaited<ReturnType<typeof setupContractsAndDeploy>>;
 
   beforeAll(async () => {
     provider = await Provider.create('http://localhost:4000/graphql');
+    wallet = createWallet(provider);
+    contracts = await setupContractsAndDeploy(wallet);
   });
 
   it('should error on call method without a proxy contract started', async () => {
-    const wallet = createWallet(provider);
     const domain = randomName();
-    const { registry, storage } = await setupContractsAndDeploy(wallet);
+    const { registry, storage } = contracts;
 
-    try {
-      const { transactionResult: txRegister } = await registry
-        .functions
-        .register(domain, wallet.address.toB256())
-        .addContracts([storage])
-        .txParams(txParams)
-        .call();
-
-      expect(txRegister.status).toBe(TransactionStatus.failure);
-    } catch (e) {
-      expect(e).toBeInstanceOf(RequireRevertError);
-      expect(e.cause.logs[0]).toBe("StorageNotInitialized");
-    }
-  });
-
-  it('should error to initialize proxy contract when proxy already initialized',  async () => {
-    const wallet = createWallet(provider);
-    const { registry } = await setupContracts(wallet);
-
-    await tryExecute(registry.initializeRegistry());
-
-    try {
-      const { txRegistry: txRegistryFailure } = await registry.initializeRegistry();
-      expect(txRegistryFailure.status).toBe(TransactionStatus.failure);
-    } catch (e) {
-      expect(e).toBeInstanceOf(RequireRevertError);
-      expect(e.cause.logs[0]).toBe("AlreadyInitialized");
-    }
-  });
-
-  it('should dont register domain when not available', async () => {
-    const wallet = createWallet(provider);
-    const { registry, storage } = await setupContracts(wallet);
-
-    const domain = randomName();
-
-    await tryExecute(storage.initializeStorage());
+    expect.assertions(2);
 
     try {
       await registry
@@ -58,35 +26,54 @@ describe('Test Registry Contract', () => {
         .addContracts([storage])
         .txParams(txParams)
         .call();
+    } catch (e) {
+      expect(e).toBeInstanceOf(RequireRevertError);
+      expect(e.cause.logs[0]).toBe('StorageNotInitialized');
+    }
+  });
+
+  it('should error to initialize proxy contract when proxy already initialized', async () => {
+    const { registry } = contracts;
+
+    await tryExecute(registry.initializeRegistry());
+
+    try {
+      const { txRegistry: txRegistryFailure } = await registry.initializeRegistry();
+      expect(txRegistryFailure.status).toBe(TransactionStatus.failure);
+    } catch (e) {
+      expect(e).toBeInstanceOf(RequireRevertError);
+      expect(e.cause.logs[0]).toBe('AlreadyInitialized');
+    }
+  });
+
+  it('should dont register domain when not available', async () => {
+    const { registry, storage } = contracts;
+
+    const domain = randomName();
+    await tryExecute(storage.initializeStorage());
+
+    try {
+      await registry.register(domain, wallet.address.toB256());
 
       const { transactionResult: txRegister } = await registry
-        .functions
-        .register(domain, wallet.address.toB256())
-        .addContracts([storage])
-        .txParams(txParams)
-        .call();
+        .register(domain, wallet.address.toB256());
 
       expect(txRegister.status).toBe(TransactionStatus.failure);
     } catch (e) {
       expect(e).toBeInstanceOf(RequireRevertError);
-      expect(e.cause.logs[0]).toBe("DomainNotAvailable");
+      expect(e.cause.logs[0]).toBe('DomainNotAvailable');
     }
   });
 
   it('should create domain register and get resolver', async () => {
-    const wallet = createWallet(provider);
-    const { registry, storage } = await setupContracts(wallet);
+    const { registry, storage } = contracts;
 
     await tryExecute(storage.initializeStorage());
     await tryExecute(registry.initializeRegistry());
 
     const domain = randomName();
     const { transactionResult: txRegister } = await registry
-      .functions
-      .register(domain, wallet.address.toB256())
-      .addContracts([storage])
-      .txParams(txParams)
-      .call();
+      .register(domain, wallet.address.toB256());
 
     const { value } = await registry
       .functions
@@ -100,19 +87,13 @@ describe('Test Registry Contract', () => {
   });
 
   it('should error register and get resolver with other domain', async () => {
-    const wallet = createWallet(provider);
-    const { registry, storage } = await setupContracts(wallet);
+    const { registry, storage } = contracts;
 
     await tryExecute(storage.initializeStorage());
     await tryExecute(registry.initializeRegistry());
 
     const domain = randomName();
-    await registry
-      .functions
-      .register(domain, wallet.address.toB256())
-      .addContracts([storage])
-      .txParams(txParams)
-      .call();
+    await registry.register(domain, wallet.address.toB256());
 
     const wrongDomain = randomName();
     const { value } = await registry
@@ -125,8 +106,7 @@ describe('Test Registry Contract', () => {
   });
 
   it('should error resolver without being register', async () => {
-    const wallet = createWallet(provider);
-    const { registry, storage } = await setupContracts(wallet);
+    const { registry, storage } = contracts;
     const domain = randomName();
 
     const { value } = await registry
