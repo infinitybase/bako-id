@@ -18,7 +18,10 @@ use std::{
     hash::{Hash, sha256},
     string::String,
     contract_id::ContractId,
-    intrinsics::{size_of, size_of_val}
+    constants::BASE_ASSET_ID,
+    intrinsics::{ size_of, size_of_val },
+    call_frames::{ msg_asset_id },
+    context::msg_amount,
 };
 use std::storage::storage_bytes::*;
 use std::bytes::Bytes;
@@ -28,6 +31,8 @@ enum RegistryContractError {
     StorageNotInitialized: (),
     AlreadyInitialized: (),
     DomainNotAvailable: (),
+    IncorrectAssetId: (),
+    InvalidAmount: (),
 //    DomainNotValid: (),
 }
 
@@ -66,6 +71,17 @@ fn get_storage_id() -> ContractId {
 //    require(is_valid, RegistryContractError::DomainNotValid);
 //}
 
+fn get_domain_price(domain: String, period: u64) -> u64 {
+    let domain_len = domain.as_bytes().len;
+    let amount = match domain_len {
+        3 => 0_005,
+        4 => 0_001,
+        _ => 0_0002,
+    };
+
+    return amount * period;
+}
+
 impl FuelDomainsContract for Contract {
     #[storage(read, write)]
     fn constructor(owner: Address, storage_id: ContractId) {
@@ -79,17 +95,28 @@ impl FuelDomainsContract for Contract {
         storage.storage_id.write(Option::Some(storage_id));
     }
 
-    #[storage(read)]
+    #[storage(read), payable]
     fn register(name: String, resolver: b256) {
+        let asset_id = msg_asset_id();
+        let message_amount = msg_amount();
+        require(
+            asset_id == BASE_ASSET_ID,
+            RegistryContractError::IncorrectAssetId,
+        );
+
         let storage_id = get_storage_id();
         let domain_hash = sha256(name);
 
         // Check domain is available
         let storage = abi(StorageContract, storage_id.into());
+
         let domain_available = storage.get(domain_hash).is_none();
         require(domain_available, RegistryContractError::DomainNotAvailable);
 
-        /* TODO: add payable (0.0001 ETH) */
+        // TODO: change to receive the period, the default now is 1 year
+        let domain_price = get_domain_price(name, 1);
+        require(message_amount == domain_price, RegistryContractError::InvalidAmount);
+
         let owner = msg_sender().unwrap().as_address().unwrap().value;
         let domain = FuelDomain::new(owner, resolver);
         storage.set(domain_hash, domain.to_bytes());
