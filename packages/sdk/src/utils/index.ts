@@ -1,16 +1,28 @@
-export * from './wallet';
 import { Provider } from 'fuels';
 
-const getTxParams = (provider: Provider) => {
+export const getTxParams = (provider: Provider) => {
   const gasConfig = provider.getGasConfig();
   return {
     gasPrice: 1,
-    gasLimit: 1_000_000,
+    gasLimit: 1_000_000
   };
 };
 
-class InvalidDomainError extends Error {};
+export class InvalidDomainError extends Error {
+  constructor() {
+    super('Invalid domain characters.');
+    this.name = 'InvalidDomainError';
+  }
+}
 
-const isValidDomain = (domain: string) => /^@?[a-zA-Z0-9_]+$/.test(domain);
+export class NotFoundBalanceError extends Error {
+  constructor() {
+    super('Balance not found.');
+    this.name = 'NotFoundBalanceError';
+  }
+}
 
-export { getTxParams, isValidDomain, InvalidDomainError };
+export const isValidDomain = (domain: string) => /^@?[a-zA-Z0-9_]+$/.test(domain);
+
+export * from './wallet';
+export * from './price';

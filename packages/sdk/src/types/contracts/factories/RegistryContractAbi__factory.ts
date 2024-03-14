@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.73.0
-  Forc version: 0.49.2
-  Fuel-Core version: 0.22.0
+  Fuels version: 0.76.0
+  Forc version: 0.51.1
+  Fuel-Core version: 0.22.1
 */
 
 import { Interface, Contract, ContractFactory } from "fuels";
@@ -101,6 +101,21 @@ const _abi = {
         },
         {
           "name": "DomainNotAvailable",
+          "type": 0,
+          "typeArguments": null
+        },
+        {
+          "name": "IncorrectAssetId",
+          "type": 0,
+          "typeArguments": null
+        },
+        {
+          "name": "InvalidAmount",
+          "type": 0,
+          "typeArguments": null
+        },
+        {
+          "name": "DomainNotValid",
           "type": 0,
           "typeArguments": null
         }
@@ -268,6 +283,10 @@ const _abi = {
           "arguments": [
             "read"
           ]
+        },
+        {
+          "name": "payable",
+          "arguments": []
         }
       ]
     },
@@ -336,6 +355,30 @@ const _abi = {
     },
     {
       "logId": 4,
+      "loggedType": {
+        "name": "",
+        "type": 5,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": 5,
+      "loggedType": {
+        "name": "",
+        "type": 5,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": 6,
+      "loggedType": {
+        "name": "",
+        "type": 5,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": 7,
       "loggedType": {
         "name": "",
         "type": 5,

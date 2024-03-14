@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.73.0
-  Forc version: 0.49.2
-  Fuel-Core version: 0.22.0
+  Fuels version: 0.76.0
+  Forc version: 0.51.1
+  Fuel-Core version: 0.22.1
 */
 
 import type {
@@ -28,8 +28,8 @@ export type IdentityInput = Enum<{ Address: AddressInput, ContractId: ContractId
 export type IdentityOutput = Enum<{ Address: AddressOutput, ContractId: ContractIdOutput }>;
 export type PermissionInput = Enum<{ Authorized: IdentityInput, Unauthorized: [], NotFound: [] }>;
 export type PermissionOutput = Enum<{ Authorized: IdentityOutput, Unauthorized: [], NotFound: [] }>;
-export enum RegistryContractErrorInput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable' };
-export enum RegistryContractErrorOutput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable' };
+export enum RegistryContractErrorInput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable', IncorrectAssetId = 'IncorrectAssetId', InvalidAmount = 'InvalidAmount', DomainNotValid = 'DomainNotValid' };
+export enum RegistryContractErrorOutput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable', IncorrectAssetId = 'IncorrectAssetId', InvalidAmount = 'InvalidAmount', DomainNotValid = 'DomainNotValid' };
 
 export type AddressInput = { value: string };
 export type AddressOutput = AddressInput;
@@ -40,7 +40,7 @@ export type FuelDomainOutput = FuelDomainInput;
 export type RawBytesInput = { ptr: BigNumberish, cap: BigNumberish };
 export type RawBytesOutput = { ptr: BN, cap: BN };
 
-export interface RegistryContractAbiInterface extends Interface {
+interface RegistryContractAbiInterface extends Interface {
   functions: {
     constructor: FunctionFragment;
     register: FunctionFragment;

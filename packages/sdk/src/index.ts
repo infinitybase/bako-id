@@ -1,6 +1,6 @@
 import { getRegistryContract } from './setup';
-import { Account, Provider } from 'fuels';
-import { getTxParams, InvalidDomainError, isValidDomain } from './utils';
+import { Account, BaseAssetId, Provider } from 'fuels';
+import { domainPrices, getTxParams, InvalidDomainError, isValidDomain, NotFoundBalanceError } from './utils';
 import { envrionment } from './config';
 import { Domain, ResolverReturn } from './types';
 
@@ -23,7 +23,7 @@ const register = async (params: RegisterDomainParams) => {
   const isValid = isValidDomain(domain);
 
   if (!isValid) {
-    throw new InvalidDomainError('Invalid domain characters.');
+    throw new InvalidDomainError();
   }
 
   const { registry } = await getRegistryContract({
@@ -35,10 +35,20 @@ const register = async (params: RegisterDomainParams) => {
   registry.account = account;
 
   const txParams = getTxParams(account.provider);
+  const amount = domainPrices(domain);
+  const accountBalance = await account.getBalance();
+  const hasBalance = accountBalance.gte(amount);
+
+  if (!hasBalance) {
+    throw new NotFoundBalanceError();
+  }
 
   const { transactionResult, transactionResponse, gasUsed, transactionId } = await registry
     .functions
     .register(domain, resolver)
+    .callParams({
+      forward: { amount, assetId: BaseAssetId }
+    })
     .txParams(txParams)
     .call();
 
@@ -56,7 +66,7 @@ const resolver = async (params: ResolveDomainParams): ResolverReturn => {
   const isValid = isValidDomain(domain);
 
   if (!isValid) {
-    throw new InvalidDomainError('Invalid domain characters.');
+    throw new InvalidDomainError();
   }
 
   let provider;

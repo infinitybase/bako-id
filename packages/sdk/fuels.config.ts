@@ -8,6 +8,7 @@ export default createConfig({
     '../sway/src/registry-contract',
     '../sway/src/storage-contract'
   ],
+  forcBuildFlags: ['--release'],
   autoStartFuelCore: false,
   providerUrl: process.env.PROVIDER_URL,
   privateKey: process.env.PRIVATE_KEY,
