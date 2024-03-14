@@ -1,5 +1,6 @@
 import { Provider, RequireRevertError, TransactionStatus, WalletUnlocked } from 'fuels';
-import { createWallet, randomName, setupContractsAndDeploy, tryExecute, txParams } from './utils';
+import { createWallet, randomName, setupContractsAndDeploy } from './utils';
+
 describe('[PRICES] Test Registry Contract', () => {
   let wallet: WalletUnlocked;
   let provider: Provider;
