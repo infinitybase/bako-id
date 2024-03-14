@@ -6,4 +6,3 @@ name = "storage-contract"
 
 [dependencies]
 libraries = { path = "../libraries" }
-ownership = { git = "https://github.com/FuelLabs/sway-libs", tag = "v0.17.2" }
