@@ -2,7 +2,7 @@ require('dotenv').config();
 
 import { deployContracts } from './deploy-contract';
 import { Provider, Wallet } from 'fuels';
-import { envrionment } from '../config';
+import { envrionment } from '../src/config';
 
 const { PROVIDER_URL, PRIVATE_KEY } = process.env;
 

@@ -1,7 +1,7 @@
-import { connectContracts, getRegistryContract } from '../setup';
+import { connectContracts, getRegistryContract } from '../src/setup';
 import { Provider, Wallet } from 'fuels';
-import { envrionment } from '../config';
-import { getTxParams } from '../utils';
+import { envrionment } from '../src/config';
+import { getTxParams } from '../src/utils';
 
 require('dotenv').config();
 

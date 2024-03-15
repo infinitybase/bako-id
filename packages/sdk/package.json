@@ -21,8 +21,8 @@
     "build:package": "tsup",
     "test": "jest --verbose",
     "test:watch": "jest --verbose --watch",
-    "start:contracts": "ts-node ./src/scripts/initialize-contracts.ts",
-    "update:storage": "ts-node ./src/scripts/update-registry.ts"
+    "start:contracts": "ts-node scripts/initialize-contracts.ts",
+    "update:storage": "ts-node scripts/update-registry.ts"
   },
   "keywords": [],
   "author": "",
