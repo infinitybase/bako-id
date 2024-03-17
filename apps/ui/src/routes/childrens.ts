@@ -6,7 +6,7 @@ import { Domain } from '../pages/domain.tsx';
 import { Buy } from '../pages/buy.tsx';
 import { Purchased } from '../pages/purchased.tsx';
 import { Domains } from '../pages/domains.tsx';
-import { Profile } from '../pages/profile.tsx';
+import { User } from '../pages/profile.tsx';
 
 export const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -69,6 +69,6 @@ export const domainsRoute = createRoute({
 
 export const profilesRoute = createRoute({
   getParentRoute: () => rootRoute,
-  component: Profile,
+  component: User,
   path: '/user/$user'
 })
