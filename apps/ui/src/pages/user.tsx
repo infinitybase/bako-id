@@ -1,7 +1,7 @@
 import { GoBack } from '../components/helpers';
 import { Box, Button, Center, Divider, Text, VStack } from '@chakra-ui/react';
 import { ProfileComponents } from '../components/profile';
-import { formatAddress } from '../utils/formatter.ts';
+import { formatAddress, formatDate } from '../utils/formatter.ts';
 import { CopyIcon } from '@chakra-ui/icons';
 import { ReactElement, useState } from 'react';
 
@@ -37,13 +37,14 @@ export const User = () => {
   )
 }
 
+// @TODO: rethink this in a better approach to separate the components
 
 const Profile = () => {
   const address = "fuel1yuxap2tnlt4nmr64k6ujlhlqpm9rf8ye5uknqkf30wzwugp0q8wq2fps52"
 
   return <ProfileComponents.Data>
     <Address address={address} />
-    <Ownership owner={address} expiry="march 31, 2024" parent="eth" />
+    <Ownership owner={address} expiry="2024-03-31" parent="eth" />
     <Divider w="full" bg="grey.200" />
     <Button>Action</Button>
   </ProfileComponents.Data>
@@ -82,7 +83,7 @@ const Ownership = ({ owner, expiry, parent }: OwerneshipProps) => {
       <ProfileComponents.InfoButton _hover={{ transform: 'translate(0px, -3px)' }}>
         <Text fontSize='sm' fontWeight={400} color="grey.200">expiry</Text>
         <Text color="background.600" fontSize="sm" fontWeight={500}>
-          {formatAddress(expiry)}
+          {formatDate(expiry)}
         </Text>
         <CopyIcon />
       </ProfileComponents.InfoButton>

@@ -6,7 +6,7 @@ import { Domain } from '../pages/domain.tsx';
 import { Buy } from '../pages/buy.tsx';
 import { Purchased } from '../pages/purchased.tsx';
 import { Domains } from '../pages/domains.tsx';
-import { User } from '../pages/profile.tsx';
+import { User } from '../pages/user.tsx';
 
 export const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
