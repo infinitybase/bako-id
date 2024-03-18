@@ -1,7 +1,7 @@
 {
-  "name": "@fuel-domains/sdk",
-  "version": "0.1.7",
-  "description": "",
+  "name": "@bako-id/sdk",
+  "version": "0.0.1",
+  "description": "SDK to interact with domains in Bako.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",

@@ -4,7 +4,7 @@ import { TwitterShareButton } from "react-share";
 import x from "../assets/x-logo.svg";
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { useEffect } from 'react';
-import { resolver } from '@fuel-domains/sdk';
+import { resolver } from '@bako-id/sdk';
 import { useMutation } from '@tanstack/react-query';
 
 export const Purchased = () => {
