@@ -19,8 +19,8 @@
     "build": "pnpm build:package",
     "build:contracts": "fuels build && fuels deploy",
     "build:package": "tsup",
-    "test": "jest --verbose",
-    "test:watch": "jest --verbose --watch",
+    "test": "jest --verbose --runInBand",
+    "test:watch": "jest --verbose --runInBand --watch",
     "start:contracts": "ts-node scripts/initialize-contracts.ts",
     "update:storage": "ts-node scripts/update-registry.ts"
   },

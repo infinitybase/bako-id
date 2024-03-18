@@ -1,4 +1,4 @@
-import { BaseAssetId, bn, Provider, ScriptTransactionRequest, TransactionStatus, Wallet, WalletUnlocked } from 'fuels';
+import { BaseAssetId, bn, Provider, ScriptTransactionRequest, Wallet, WalletUnlocked } from 'fuels';
 import { register, resolver } from '../src';
 import { InvalidDomainError, NotFoundBalanceError } from '../src/utils';
 
