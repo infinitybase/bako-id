@@ -56,7 +56,7 @@ async function getProviderFromParams(params: GetProviderParams) {
 export async function resolver(params: ResolveDomainParams): ResolverReturn {
   const { domain } = params;
 
-  assertValidDomain(domain);
+  const domainName = assertValidDomain(domain);
 
   const provider = await getProviderFromParams(params);
   const txParams = getTxParams(provider);
@@ -67,12 +67,12 @@ export async function resolver(params: ResolveDomainParams): ResolverReturn {
   });
 
   const { value } = await registry.functions
-    .resolver(domain)
+    .resolver(domainName)
     .txParams(txParams)
     .dryRun();
 
   return value ? {
-    name: domain,
+    name: domainName,
     owner: value.owner,
     resolver: value.resolver,
   } : null;

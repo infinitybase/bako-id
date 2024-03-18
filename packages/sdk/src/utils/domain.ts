@@ -14,9 +14,12 @@ export const isValidDomain = (domain: string): boolean => /^@?[a-zA-Z0-9_]+$/.te
  *
  * @param {string} domain - The domain to be validated.
  * @throws {InvalidDomainError} If the domain is not valid.
+ * @returns {string} - The domain name without handler
  */
 export const assertValidDomain = (domain: string) => {
   if (!isValidDomain(domain)) throw new InvalidDomainError();
+
+  return domain.replace('@', '');
 }
 
 /**

@@ -1,5 +1,5 @@
 import { Provider, Wallet, WalletUnlocked } from 'fuels';
-import { register, resolver } from '../src';
+import { register, resolver } from '../index';
 
 const { PROVIDER_URL, PRIVATE_KEY } = process.env;
 

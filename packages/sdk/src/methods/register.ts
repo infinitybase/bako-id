@@ -47,7 +47,7 @@ async function checkAccountBalance(account: Account, domain: string) {
 export async function register(params: RegisterDomainParams) {
   const { account, domain, resolver } = params;
 
-  assertValidDomain(domain);
+  const domainName = assertValidDomain(domain);
 
   const { registry } = await getRegistryContract({
     account,
@@ -58,11 +58,11 @@ export async function register(params: RegisterDomainParams) {
   registry.account = account;
 
   const txParams = getTxParams(account.provider);
-  const amount = await checkAccountBalance(account, domain);
+  const amount = await checkAccountBalance(account, domainName);
 
   const { transactionResult, transactionResponse, gasUsed, transactionId } = await registry
     .functions
-    .register(domain, resolver)
+    .register(domainName, resolver)
     .callParams({
       forward: { amount, assetId: BaseAssetId }
     })

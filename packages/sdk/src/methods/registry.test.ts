@@ -1,6 +1,6 @@
 import { BaseAssetId, bn, Provider, ScriptTransactionRequest, Wallet, WalletUnlocked } from 'fuels';
-import { register, resolver } from '../src';
-import { InvalidDomainError, NotFoundBalanceError } from '../src/utils';
+import { register, resolver } from '../index';
+import { InvalidDomainError, NotFoundBalanceError } from '../utils';
 
 const { PROVIDER_URL, TEST_WALLET } = process.env;
 
