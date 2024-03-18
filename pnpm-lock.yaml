@@ -21,7 +21,7 @@ importers:
   apps/ui:
     dependencies:
       '@bako-id/sdk':
-        specifier: workspace:^
+        specifier: 0.0.2
         version: link:../../packages/sdk
       '@chakra-ui/icons':
         specifier: ^2.1.1
