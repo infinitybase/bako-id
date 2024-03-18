@@ -78,40 +78,32 @@ describe('Test Registry', () => {
   });
 
   it('should register domain and get resolver', async () => {
-    try {
-      const domain = randomName();
+    const domain = randomName();
 
-      const result = await register({
-        account: wallet,
-        resolver: wallet.address.toB256(),
-        domain: domain
-      });
+    const result = await register({
+      account: wallet,
+      resolver: wallet.address.toB256(),
+      domain: domain
+    });
 
-      expect(result.transactionResult.status).toBe('success');
+    expect(result.transactionResult.status).toBe('success');
 
-      const resolvedDomain = await resolver({
-        domain,
-        provider
-      });
+    const resolvedDomain = await resolver({
+      domain,
+      provider
+    });
 
-      expect(resolvedDomain.owner).toBe(wallet.address.toB256());
-      expect(resolvedDomain.resolver).toBe(wallet.address.toB256());
-    } catch (e) {
-      console.log(e);
-    }
+    expect(resolvedDomain.owner).toBe(wallet.address.toB256());
+    expect(resolvedDomain.resolver).toBe(wallet.address.toB256());
   });
 
   it('should error when register domain without balance', async () => {
-    expect.assertions(1);
+    const registerResult = register({
+      account: fakeWallet,
+      resolver: wallet.address.toB256(),
+      domain: `do${randomName(1)}`,
+    });
 
-    try {
-      await register({
-        account: fakeWallet,
-        resolver: wallet.address.toB256(),
-        domain: `do${randomName(1)}`,
-      });
-    } catch (e) {
-      expect(e).toBeInstanceOf(NotFoundBalanceError);
-    }
+    await expect(registerResult).rejects.toBeInstanceOf(NotFoundBalanceError);
   });
 });
