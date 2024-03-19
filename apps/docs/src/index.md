@@ -1,66 +1,38 @@
 ---
 layout: doc
-sidebar: false
+title: Intro
 ---
 
-# Fuel Domains SDK
+# What is Bako ID?
+`Bako ID` is a Name System for the FUEL network. Our primary goal is to establish a secure, stable, and efficient 
+tool that provides all users and projects within this network with access to a high-quality NS protocol
 
-## What is Fuel Domains?
+<DomainPreview />
 
-Fuel Domains is a Name System for the FUEL network. Our primary goal is to establish a secure, stable, and efficient tool that provides all users and projects within this network with access to a high-quality NS protocol
+## What is Identity?
+Identity or `@` allow you to create your own identifier in web3, mapping your human-readable handler `@bako_id` 
+to an address such as a `B256Address`.
+The Identity is owned by its owner, however, when using it, it is possible to add another address for its resolution.
 
-## SDK Installation
+| Property | Description                         |
+|----------|-------------------------------------|
+| Owner    | Address of the identity owner       |
+| Resolver | Address for the identity resolution |
 
-To start using the `@fuel-domains` SDK in your application, you need to install it using your preferred package manager.
-The installation adds the necessary tools to interact with the name system on the Fuel blockchain network.
 
-```bash
-# NPM
-npm install @fuel-domains/sdk
+## Handler prices
+The identity price is calculated by the number of characters, for example, registering the identity `@now` will cost `0.005 ETH`.
 
-# PNPM
-pnpm install @fuel-domains/sdk
-```
+::: info About identity size and chars
+ Your `@` identity is not considered in the price calculation, only the subsequent characters.
+:::
 
-## Resolver
-This method allows you to obtain the resolver and owner of a domain on the Fuel network, essential for verifying ownership and querying domain information.
+| Domain size     |   Price    |
+|-----------------|:----------:|
+| 3 chars         | 0.005 ETH  |
+| 4 chars         | 0.001 ETH  |
+| 5 or more chars | 0.0002 ETH |
 
-## Obtaining Resolver via Provider URL
-Demonstrates how to use the resolver method to access data from a domain using the URL of a specific provider, facilitating the querying of domain information.
 
-```ts
-import { resolver } from '@fuel-domains/sdk';
 
-const providerURL = 'https://beta-5.fuel.network/graphql';
 
-// Get domain resolver
-const fuelDomain = await resolver({
-  domain: 'fueldomain',
-  providerURL,
-});
-console.log(fuelDomain);
-```
-
-## Wallet
-This code snippet illustrates how to perform a domain resolver query using a wallet as a parameter.
-
-```ts
-import { resolver } from '@fuel-domains/sdk';
-
-const result = await resolver({
-  domain: 'fueldomain',
-  account: wallet,
-});
-```
-
-## Using a Provider
-Here, we demonstrate how to use the resolver method with a provider directly. This approach allows interaction with domains using a specific service provider, facilitating integration with different infrastructures within the Fuel network.
-
-```ts
-import { resolver } from '@fuel-domains/sdk';
-
-const result = await resolver({
-  domain: 'fueldomain',
-  provider,
-});
-```

@@ -2,6 +2,8 @@
 import { h } from 'vue'
 import type { Theme } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
+import DomainPreview from '../components/domain-preview.vue';
+import ContractDeployment from '../components/contract-deployments.vue';
 import './style.css'
 
 export default {
@@ -13,5 +15,7 @@ export default {
   },
   enhanceApp({ app, router, siteData }) {
     // ...
+    app.component('DomainPreview', DomainPreview);
+    app.component('ContractDeployment', ContractDeployment);
   }
 } satisfies Theme

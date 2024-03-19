@@ -1,11 +1,16 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig } from 'vitepress';
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Fuel Domains",
-  description: "Fuel Domains Docs",
+  title: 'Bako ID',
+  description: 'Bako ID Docs',
   srcDir: 'src',
   outDir: 'dist',
+  markdown: {
+    image: {
+      lazyLoading: true,
+    }
+  },
 
   appearance: 'force-dark',
   head: [
@@ -13,6 +18,12 @@ export default defineConfig({
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:url', content: 'https://docs.fuel.domains' }],
     ['meta', { property: 'og:image', href: '/logo.png' }],
+    ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
+    ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
+    ['link', {
+      href: 'https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap',
+      rel: 'stylesheet'
+    }]
   ],
 
   themeConfig: {
@@ -23,9 +34,24 @@ export default defineConfig({
       { text: 'Waitlist', link: 'https://fuel.domains/' }
     ],
 
+    sidebar: [
+      {
+        text: 'Learn', collapsed: false, items: [
+          { text: 'Introduction', link: '/' },
+          { text: 'Architecture', link: '/learn/architecture' },
+        ]
+      },
+      {
+        text: 'Developers', collapsed: false, items: [
+          { text: 'SDK Installation', link: '/sdk/install' },
+          { text: 'Getting a domain', link: '/sdk/resolver' },
+        ]
+      }
+    ],
+
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/infinitybase/fuel-domains' },
-      { icon: 'x', link: 'https://twitter.com/fuel_domains' },
+      { icon: 'github', link: 'https://github.com/infinitybase/bako-id' },
+      { icon: 'x', link: 'https://twitter.com/bakoidentity' }
     ]
   }
-})
+});
