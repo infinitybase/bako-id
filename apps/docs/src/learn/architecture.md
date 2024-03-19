@@ -23,3 +23,14 @@ handler and perform a search by its name.
 These methods make the call in storage, both to validate if the handler exists when creating and for the search.
 
 <ContractDeployment name="register" />
+
+## Methods execution
+When executing the Registry contract method, a series of processing is carried out, from byte conversion 
+to method call validations.
+
+
+In the demonstration below, we briefly explain how the execution process of the `register` method works.
+![Register explanation](/register-example.png)
+
+And here is a brief explanation of the `resolver` method.
+![Resolver explanation](/resolver-example.png)

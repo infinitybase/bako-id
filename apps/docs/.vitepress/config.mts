@@ -6,6 +6,11 @@ export default defineConfig({
   description: 'Bako ID Docs',
   srcDir: 'src',
   outDir: 'dist',
+  markdown: {
+    image: {
+      lazyLoading: true,
+    }
+  },
 
   appearance: 'force-dark',
   head: [
