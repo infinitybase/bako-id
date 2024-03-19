@@ -33,8 +33,7 @@ export default defineConfig({
       {
         text: 'Learn', collapsed: false, items: [
           { text: 'Introduction', link: '/' },
-          { text: 'Protocol', link: '/sdk/install' },
-          { text: 'Getting a domain', link: '/sdk/resolver' },
+          { text: 'Architecture', link: '/learn/architecture' },
         ]
       },
       {
