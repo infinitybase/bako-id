@@ -7,6 +7,8 @@ title: Architecture
 Bako ID has 2 contracts for its core functioning, these contracts are one responsible for registering and searching
 the handler `Register`  and another for the storage of its handlers `Storage`.
 
+![Register explanation](/contracts-grapqh.png)
+
 ## Storage Contract
 This contract was conceived in a more abstract way to consider how the handler can be stored and, primarily, to ensure
 that it will never be lost even with updates.
