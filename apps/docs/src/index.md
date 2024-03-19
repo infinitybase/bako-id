@@ -9,22 +9,22 @@ tool that provides all users and projects within this network with access to a h
 
 <DomainPreview />
 
-## What is handlers?
-Handlers or `@` allow you to create your own identifier in web3, mapping your human-readable handler `@bako_id` 
+## What is Identity?
+Identity or `@` allow you to create your own identifier in web3, mapping your human-readable handler `@bako_id` 
 to an address such as a `B256Address`.
-The handler is owned by its owner, however, when using it, it is possible to add another address for its resolution.
+The Identity is owned by its owner, however, when using it, it is possible to add another address for its resolution.
 
-| Property | Description                          |
-|----------|--------------------------------------|
-| Owner    | Address of the handler's owner       |
-| Resolver | Address for the handler's resolution |
+| Property | Description                         |
+|----------|-------------------------------------|
+| Owner    | Address of the identity owner       |
+| Resolver | Address for the identity resolution |
 
 
 ## Handler prices
-The handle price is calculated by the number of characters, for example, registering the handler `@now` will cost `0.005 ETH`.
+The identity price is calculated by the number of characters, for example, registering the identity `@now` will cost `0.005 ETH`.
 
-::: info About handler size and chars
- Your `@` handler is not considered in the price calculation, only the subsequent characters.
+::: info About identity size and chars
+ Your `@` identity is not considered in the price calculation, only the subsequent characters.
 :::
 
 | Domain size     |   Price    |

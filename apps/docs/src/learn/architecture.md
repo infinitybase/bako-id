@@ -5,12 +5,12 @@ title: Architecture
 
 # Smart Contracts
 Bako ID has 2 contracts for its core functioning, these contracts are one responsible for registering and searching
-the handler `Register`  and another for the storage of its handlers `Storage`.
+the identity `Register` and another for the storage of its identities `Storage`.
 
 ![Register explanation](/contracts-grapqh.png)
 
 ## Storage Contract
-This contract was conceived in a more abstract way to consider how the handler can be stored and, primarily, to ensure
+This contract was conceived in a more abstract way to consider how the identity can be stored and, primarily, to ensure
 that it will never be lost even with updates.
 
 The security of this contract is guaranteed through validations, which allow only the owner of this contract and its
