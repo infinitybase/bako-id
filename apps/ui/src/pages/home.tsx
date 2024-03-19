@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { debounce } from 'lodash';
-import { resolver } from '@fuel-domains/sdk';
+import { resolver } from '@bako-id/sdk';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { SearchInput } from '../components/inputs';

@@ -1,13 +1,13 @@
 {
-  "name": "@fuel-domains/tests",
+  "name": "@bako-id/tests",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "build:contracts": "fuels build",
     "deploy": "fuels deploy",
-    "test": "jest --verbose",
-    "test:watch": "jest --verbose --watch"
+    "test": "jest --verbose --runInBand",
+    "test:watch": "jest --verbose --runInBand --watch"
   },
   "keywords": [],
   "author": "",

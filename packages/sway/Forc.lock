@@ -1,19 +1,11 @@
 [[package]]
 name = "core"
-source = "path+from-root-B77DA2F383183718"
+source = "path+from-root-4F1FAAE4510FEB23"
 
 [[package]]
 name = "libraries"
 source = "member"
 dependencies = ["std"]
-
-[[package]]
-name = "ownership"
-source = "git+https://github.com/FuelLabs/sway-libs?tag=v0.17.2#5d69f665207158517eba14c35c7d28cb1cb93aa9"
-dependencies = [
-    "src_5",
-    "std",
-]
 
 [[package]]
 name = "registry-contract"
@@ -24,13 +16,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "src_5"
-source = "git+https://github.com/FuelLabs/sway-standards?tag=v0.2.2#6989cf8224b0d8aabea62f3d3c648fc754948705"
-dependencies = ["std"]
-
-[[package]]
 name = "std"
-source = "git+https://github.com/fuellabs/sway?tag=v0.48.1#6886ef050ce62afd3fe3186ed562fd33bd76bffa"
+source = "git+https://github.com/fuellabs/sway?tag=v0.51.1#d1e8f019c1da46273c3d3a72b385ce356ba2bc20"
 dependencies = ["core"]
 
 [[package]]
@@ -38,6 +25,5 @@ name = "storage-contract"
 source = "member"
 dependencies = [
     "libraries",
-    "ownership",
     "std",
 ]

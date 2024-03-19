@@ -2,28 +2,28 @@
 ![Waitlist](https://img.shields.io/badge/Fuel_Domais-Waitlist-green?link=https%3A%2F%2Ffuel.domains)
 
 
-# 📦 Fuel Domains SDK
+# 📦 Bako ID SDK
 
-Fuel Domains SDK enable to register a `.fuel` domain in [Fuel Network](https://www.fuel.network/).
+Bako ID SDK enable to register a `@` handler domain in [Fuel Network](https://www.fuel.network/).
 Compatible with BETA-5
 
 ## Installation
 
 ```bash
-npm install fuels @fuel-domains/sdk
+npm install fuels @bako-id/sdk
 ```
 
 ## Getting Started
 
 ### Domain resolver
 ```ts
-import { resolver } from '@fuel-domains/sdk';
+import { resolver } from '@bako-id/sdk';
 
 const providerURL = 'https://beta-5.fuel.network/graphql';
 
 // Get domain resolver
 const fuelDomain = await resolver({
-  domain: 'fueldomain',
+  domain: '@my_domain',
   providerURL,
 });
 console.log(fuelDomain); // { owner: '0x000...', resolver: '0x000...' }
@@ -41,7 +41,7 @@ const wallet: Wallet;
 await register({
   account: wallet,
   resolver: '0x0000...',
-  domain: 'fueldomain',
+  domain: '@my_domain',
 });
 ```
 

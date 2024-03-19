@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { Domain as IDomain, resolver } from '@fuel-domains/sdk';
+import { Domain as IDomain, resolver } from '@bako-id/sdk';
 import { useParams } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import {

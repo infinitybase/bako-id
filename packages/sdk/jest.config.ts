@@ -6,7 +6,7 @@ dotenv.config();
 const config: JestConfigWithTsJest = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testMatch: ['**/tests/**/*.test.ts'],
+  testMatch: ['**/src/**/*.test.ts'],
   transform: {
     '^.+\\.ts?$': [
       'ts-jest',

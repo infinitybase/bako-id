@@ -1,0 +1,41 @@
+import { assertValidDomain, domainPrices, isValidDomain } from './domain';
+import { InvalidDomainError } from './errors';
+import { bn } from 'fuels';
+
+describe('Domain utils', () => {
+  test('Domain validations', () => {
+    const validDomain = isValidDomain('@valid_domain');
+    expect(validDomain).toBeTruthy();
+
+    const invalidDomains = [
+      isValidDomain('@invalid-domain'),
+      isValidDomain('invalid domain'),
+      isValidDomain('invalid@domain'),
+      isValidDomain('invalid domain-'),
+    ];
+
+    const expectValue = invalidDomains.every(Boolean);
+    expect(expectValue).toBeFalsy();
+  });
+
+  test('Domain name value', () => {
+    const validDomain = assertValidDomain('@domain');
+    expect(validDomain).toBeDefined();
+    expect(validDomain).not.toContain('@');
+
+    const invalidDomain = () => assertValidDomain('invalid@domain');
+    expect(invalidDomain).toThrow(InvalidDomainError);
+  });
+
+  test('Domain price validation', () => {
+    const getDomainPrice = (domain: string) => domainPrices(assertValidDomain(domain));
+
+    const threeChars = getDomainPrice('@now');
+    const fourChars = getDomainPrice('@noww');
+    const fiveChars = getDomainPrice('@nowww');
+
+    expect(threeChars.eq(bn.parseUnits('0.005'))).toBeTruthy();
+    expect(fourChars.eq(bn.parseUnits('0.001'))).toBeTruthy();
+    expect(fiveChars.eq(bn.parseUnits('0.0002'))).toBeTruthy();
+  })
+});

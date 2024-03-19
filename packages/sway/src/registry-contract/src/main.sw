@@ -18,7 +18,10 @@ use std::{
     hash::{Hash, sha256},
     string::String,
     contract_id::ContractId,
-    intrinsics::{size_of, size_of_val}
+    constants::BASE_ASSET_ID,
+    intrinsics::{ size_of, size_of_val },
+    call_frames::{ msg_asset_id },
+    context::msg_amount,
 };
 use std::storage::storage_bytes::*;
 use std::bytes::Bytes;
@@ -28,13 +31,15 @@ enum RegistryContractError {
     StorageNotInitialized: (),
     AlreadyInitialized: (),
     DomainNotAvailable: (),
-//    DomainNotValid: (),
+    IncorrectAssetId: (),
+    InvalidAmount: (),
+    DomainNotValid: (),
 }
 
 //// .fuel domain in bytes
 //const NAME_SULFIX: [u8; 5] = [46, 102, 117, 101, 108];
 //const NAME_SULFIX_LEN: u64 = 5;
-//const NAME_MIN_LEN: u64 = 2;
+const NAME_MIN_LEN: u64 = 2;
 
 storage {
     storage_id: Option<ContractId> = Option::None,
@@ -48,23 +53,25 @@ fn get_storage_id() -> ContractId {
     storage_id.unwrap()
 }
 
-//fn assert_name_validity(name: String) {
-//    let bytes = name.as_bytes();
-//    let mut name_length = bytes.len;
-//    let mut sulfix_length = NAME_SULFIX_LEN;
-//    let mut is_valid = true;
-//
-//    require(name_length > (NAME_MIN_LEN + NAME_SULFIX_LEN), RegistryContractError::DomainNotValid);
-//    while name_length > (bytes.len - 5) {
-//        let letter = bytes.get(name_length - 1).unwrap();
-//        if (letter != NAME_SULFIX[sulfix_length - 1]) {
-//            is_valid = false;
-//        }
-//        name_length = name_length - 1;
-//        sulfix_length = sulfix_length - 1;
-//    }
-//    require(is_valid, RegistryContractError::DomainNotValid);
-//}
+fn assert_name_validity(name: String) {
+    let mut bytes = name.as_bytes();
+    let mut name_length = bytes.len();
+
+    require(name_length > NAME_MIN_LEN, RegistryContractError::DomainNotValid);
+}
+
+fn get_domain_price(domain: String, period: u64) -> u64 {
+    let domain_len = domain.as_bytes().len;
+    let mut amount = match domain_len {
+        3 => 5_000,
+        4 => 1_000,
+        _ => 200,
+    };
+
+    amount = amount * 1000;
+
+    return amount * period;
+}
 
 impl FuelDomainsContract for Contract {
     #[storage(read, write)]
@@ -79,17 +86,30 @@ impl FuelDomainsContract for Contract {
         storage.storage_id.write(Option::Some(storage_id));
     }
 
-    #[storage(read)]
+    #[storage(read), payable]
     fn register(name: String, resolver: b256) {
+        let asset_id = msg_asset_id();
+        let message_amount = msg_amount();
+        require(
+            asset_id == BASE_ASSET_ID,
+            RegistryContractError::IncorrectAssetId,
+        );
+
+        assert_name_validity(name);
+
         let storage_id = get_storage_id();
         let domain_hash = sha256(name);
 
         // Check domain is available
         let storage = abi(StorageContract, storage_id.into());
+
         let domain_available = storage.get(domain_hash).is_none();
         require(domain_available, RegistryContractError::DomainNotAvailable);
 
-        /* TODO: add payable (0.0001 ETH) */
+        // TODO: change to receive the period, the default now is 1 year
+        let domain_price = get_domain_price(name, 1);
+        require(message_amount == domain_price, RegistryContractError::InvalidAmount);
+
         let owner = msg_sender().unwrap().as_address().unwrap().value;
         let domain = FuelDomain::new(owner, resolver);
         storage.set(domain_hash, domain.to_bytes());

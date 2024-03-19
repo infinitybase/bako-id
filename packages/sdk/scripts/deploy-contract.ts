@@ -1,5 +1,5 @@
-import { getTxParams } from '../utils';
-import { connectContracts, ContractConfig } from '../setup';
+import { getTxParams } from '../src/utils';
+import { connectContracts, ContractConfig } from '../src/setup';
 
 export const deployContracts = async (config: ContractConfig) => {
     const { storageId, registryId, account } = config;

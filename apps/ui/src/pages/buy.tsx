@@ -1,6 +1,6 @@
 import { Center, useToast, VStack, Stack, Text, Button } from '@chakra-ui/react';
 import { useFuelConnect } from '../hooks';
-import { register, resolver } from '@fuel-domains/sdk';
+import { register, resolver } from '@bako-id/sdk';
 import { Connect, GoBack } from '../components/helpers';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { BuyComponents } from '../components/buy';

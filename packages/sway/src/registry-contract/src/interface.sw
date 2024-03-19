@@ -12,7 +12,7 @@ abi FuelDomainsContract {
     #[storage(read, write)]
     fn constructor(owner: Address, storage_id: ContractId);
 
-    #[storage(read)]
+    #[storage(read), payable]
     fn register(name: String, resolver: b256);
 
     #[storage(read)]

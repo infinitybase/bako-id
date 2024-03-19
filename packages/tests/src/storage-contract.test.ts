@@ -1,8 +1,6 @@
-import { hash, Provider, RequireRevertError, TransactionStatus } from 'fuels';
+import { hash, Provider, RequireRevertError, TransactionStatus, WalletUnlocked } from 'fuels';
 import {
   createWallet,
-  storageContract,
-  registryContract,
   setupContracts,
   testContract,
   tryExecute,
@@ -11,18 +9,22 @@ import {
 } from './utils';
 
 describe('Test Storage Contract', () => {
+  let wallet: WalletUnlocked;
   let provider: Provider;
+
+  let contracts: Awaited<ReturnType<typeof setupContractsAndDeploy>>
 
   beforeAll(async () => {
     provider = await Provider.create('http://localhost:4000/graphql');
+    wallet = createWallet(provider);
+    contracts = await setupContractsAndDeploy(wallet);
   });
 
   it('should error on call method without a storage contract started', async () => {
-    const wallet = createWallet(provider);
-    const { storage } = await setupContractsAndDeploy(wallet);
-
+    expect.assertions(2);
     try {
-      await storage.functions.set(hash(Buffer.from('20')), [10, 10]).txParams(txParams).call();
+      await contracts.storage
+        .functions.set(hash(Buffer.from('20')), [10, 10]).txParams(txParams).call();
     } catch (e) {
       expect(e).toBeInstanceOf(RequireRevertError);
       expect(e.cause.logs[0].Unauthorized).toBeDefined();
@@ -30,15 +32,14 @@ describe('Test Storage Contract', () => {
   });
 
   it('should error on call storage by other contract', async () => {
-    const wallet = createWallet(provider);
-    const { storage, testCaller } = await setupContracts(wallet);
+    const { testCaller } = await setupContracts(wallet);
 
-    await tryExecute(storage.initializeStorage());
+    expect.assertions(2);
 
     try {
       await testCaller.functions.test_set({
-        value: storageContract
-      }).addContracts([storage]).txParams(txParams).call();
+        value: contracts.storage.id.toB256(),
+      }).addContracts([contracts.storage]).txParams(txParams).call();
     } catch (e) {
       expect(e).toBeInstanceOf(RequireRevertError);
       expect(e.cause.logs[0].Unauthorized).toBeDefined();
@@ -46,41 +47,33 @@ describe('Test Storage Contract', () => {
   });
 
   it('should error on initialize storage when already initialized', async () => {
-    const wallet = createWallet(provider);
-    const { storage } = await setupContracts(wallet);
-
-    await tryExecute(storage.initializeStorage());
+    await tryExecute(contracts.storage.initializeStorage());
+    expect.assertions(1);
 
     try {
-      const { txProxy } = await storage.initializeStorage();
-
-      expect(txProxy.status).toBe(TransactionStatus.failure);
+      await contracts.storage.initializeStorage();
     } catch (e) {
       expect(e).toBeInstanceOf(RequireRevertError);
-      // expect(e.cause.logs[0]).toBe("NotOwner");
     }
   });
 
   it('should get contract implementation', async () => {
-    const wallet = createWallet(provider);
-    const { storage } = await setupContracts(wallet);
+    await tryExecute(contracts.storage.initializeStorage());
 
-    await tryExecute(storage.initializeStorage());
-
-    const { transactionResult, value } = await storage.functions.get_implementation().txParams(txParams).call();
+    const { transactionResult, value } = await contracts.storage.functions.get_implementation().txParams(txParams).call();
 
     expect(transactionResult.status).toBe(TransactionStatus.success);
-    expect(value.value).toBe(registryContract);
+    expect(value.value).toBe(contracts.registry.id.toB256());
   });
 
   it('should error on change contract implementation', async () => {
-    const wallet = createWallet(provider);
     const walletFake = createWallet(provider, WALLET_PRIVATE_KEYS.FAKE);
-    const { storage, testCaller } = await setupContracts(wallet);
+    const { testCaller } = await setupContracts(wallet);
+
+    const storage = { ...contracts.storage };
+    const storage2 = storage.connect(walletFake);
 
     await tryExecute(storage.initializeStorage());
-
-    const { storage: storage2 } = await setupContracts(walletFake);
 
     // Change implementation to testContract
     const {
@@ -92,14 +85,17 @@ describe('Test Storage Contract', () => {
 
     // Execute method in testContract
     const { transactionResult: transactionResult2 } = await testCaller.functions.test_set({
-      value: storageContract
+      value: storage.id.toB256(),
     }).txParams(txParams).call();
     expect(transactionResult2.status).toBe(TransactionStatus.success);
 
     // Change implementation to registryContract
-    const { transactionResult: transactionResult3 } = await storage.functions.set_implementation({ value: registryContract }).txParams(txParams).call();
+    const { transactionResult: transactionResult3 } = await storage.functions
+      .set_implementation({ value: contracts.registry.id.toB256() })
+      .txParams(txParams)
+      .call();
     const { value: value2 } = await storage.functions.get_implementation().txParams(txParams).call();
-    expect(value2.value).toBe(registryContract);
+    expect(value2.value).toBe(contracts.registry.id.toB256());
     expect(transactionResult3.status).toBe(TransactionStatus.success);
 
     try {
@@ -111,19 +107,16 @@ describe('Test Storage Contract', () => {
       expect(transactionResult.status).toBe(TransactionStatus.failure);
     } catch (e) {
       expect(e).toBeInstanceOf(RequireRevertError);
-      // expect(e.cause.logs[0]).toBe("NotOwner");
     }
   });
 
   it('should try change owner of storage', async () => {
-    const wallet = createWallet(provider);
     const walletFake = createWallet(provider, WALLET_PRIVATE_KEYS.FAKE);
 
-    const { storage } = await setupContracts(wallet);
+    const storage = { ...contracts.storage };
+    const storage2 = storage.connect(walletFake);
 
     await tryExecute(storage.initializeStorage());
-
-    const { storage: storage2 } = await setupContracts(walletFake);
 
     // Change owner to walletFake
     const {
@@ -147,7 +140,7 @@ describe('Test Storage Contract', () => {
     try {
       // Try change owner with other wallet
       await storage2.functions.set_owner({ value: walletFake.address.toB256() }).txParams(txParams).call();
-      expect(transactionResult.status).toBe(TransactionStatus.success);
+      expect(transactionResult.status).toBe(TransactionStatus.failure);
     } catch (e) {
       expect(e).toBeInstanceOf(RequireRevertError);
     }

@@ -1,16 +1,13 @@
-export * from './wallet';
 import { Provider } from 'fuels';
 
-const getTxParams = (provider: Provider) => {
+export * from './wallet';
+export * from './errors';
+export * from './domain';
+
+export const getTxParams = (provider: Provider) => {
   const gasConfig = provider.getGasConfig();
   return {
     gasPrice: 1,
-    gasLimit: 1_000_000,
+    gasLimit: 1_000_000
   };
 };
-
-class InvalidDomainError extends Error {};
-
-const isValidDomain = (domain: string) => /^@?[a-zA-Z0-9_]+$/.test(domain);
-
-export { getTxParams, isValidDomain, InvalidDomainError };
