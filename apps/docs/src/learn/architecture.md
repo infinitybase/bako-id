@@ -30,7 +30,7 @@ to method call validations.
 
 
 In the demonstration below, we briefly explain how the execution process of the `register` method works.
-![Register explanation](/register-example.png)
+![Register explanation](/register-example.svg)
 
 And here is a brief explanation of the `resolver` method.
-![Resolver explanation](/resolver-example.png)
+![Resolver explanation](/resolver-example.svg)
