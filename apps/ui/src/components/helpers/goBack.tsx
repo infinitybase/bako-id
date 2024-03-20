@@ -6,10 +6,20 @@ export const GoBack = () => {
   const navigate = useNavigate()
 
   const handleGoBack = () => {
-    navigate({ to: '/' })
+    navigate({ to: '/' }).then()
   }
 
-  return <Button variant="ghost" display="flex" alignSelf="start" gap={3} px={0} fontSize="xs" _hover={{ background: 'transparent' }} color="white">
+  return <Button
+    variant="ghost"
+    display="flex"
+    alignSelf="start"
+    gap={3}
+    px={0}
+    pl={{ base: 2, md: 7 }}
+    fontSize="xs"
+    _hover={{}}
+    color="white"
+  >
     <ChevronLeftIcon onClick={handleGoBack} />
     Back
   </Button>
