@@ -4,7 +4,7 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.76.0
+  Fuels version: 0.77.0
   Forc version: 0.51.1
   Fuel-Core version: 0.22.1
 */
@@ -132,7 +132,7 @@ const _abi = {
         },
         {
           "name": "len",
-          "type": 12,
+          "type": 13,
           "typeArguments": null
         }
       ],
@@ -161,7 +161,7 @@ const _abi = {
         },
         {
           "name": "cap",
-          "type": 12,
+          "type": 13,
           "typeArguments": null
         }
       ],
@@ -169,6 +169,18 @@ const _abi = {
     },
     {
       "typeId": 12,
+      "type": "struct String",
+      "components": [
+        {
+          "name": "bytes",
+          "type": 9,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": null
+    },
+    {
+      "typeId": 13,
       "type": "u64",
       "components": null,
       "typeParameters": null
@@ -275,6 +287,63 @@ const _abi = {
           "name": "storage",
           "arguments": [
             "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "resolver",
+          "type": 1,
+          "typeArguments": null
+        }
+      ],
+      "name": "reverse_get",
+      "output": {
+        "name": "",
+        "type": 3,
+        "typeArguments": [
+          {
+            "name": "",
+            "type": 12,
+            "typeArguments": null
+          }
+        ]
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "name",
+          "type": 12,
+          "typeArguments": null
+        },
+        {
+          "name": "resolver",
+          "type": 1,
+          "typeArguments": null
+        }
+      ],
+      "name": "reverse_set",
+      "output": {
+        "name": "",
+        "type": 0,
+        "typeArguments": null
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "write"
           ]
         }
       ]
@@ -415,6 +484,14 @@ const _abi = {
     },
     {
       "logId": 7,
+      "loggedType": {
+        "name": "",
+        "type": 4,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": 8,
       "loggedType": {
         "name": "",
         "type": 4,

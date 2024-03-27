@@ -318,6 +318,35 @@ const _abi = {
           ]
         }
       ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "resolver",
+          "type": 1,
+          "typeArguments": null
+        }
+      ],
+      "name": "reverse_name",
+      "output": {
+        "name": "",
+        "type": 3,
+        "typeArguments": [
+          {
+            "name": "",
+            "type": 13,
+            "typeArguments": null
+          }
+        ]
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
     }
   ],
   "loggedTypes": [
@@ -383,6 +412,28 @@ const _abi = {
         "name": "",
         "type": 5,
         "typeArguments": []
+      }
+    },
+    {
+      "logId": 8,
+      "loggedType": {
+        "name": "",
+        "type": 5,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": 9,
+      "loggedType": {
+        "name": "",
+        "type": 3,
+        "typeArguments": [
+          {
+            "name": "",
+            "type": 13,
+            "typeArguments": []
+          }
+        ]
       }
     }
   ],

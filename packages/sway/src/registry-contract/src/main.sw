@@ -113,6 +113,7 @@ impl FuelDomainsContract for Contract {
         let owner = msg_sender().unwrap().as_address().unwrap().value;
         let domain = FuelDomain::new(owner, resolver);
         storage.set(domain_hash, domain.to_bytes());
+        storage.reverse_set(name, resolver);
     }
 
     #[storage(read)]
@@ -128,5 +129,16 @@ impl FuelDomainsContract for Contract {
             },
             _ => None,
         }
+    }
+
+    #[storage(read)]
+    fn reverse_name(resolver: b256) -> Option<String> {
+        let storage_id = get_storage_id();
+        let storage = abi(StorageContract, storage_id.into());
+        let name = storage.reverse_get(resolver);
+
+        log(name);
+
+        return name
     }
 }

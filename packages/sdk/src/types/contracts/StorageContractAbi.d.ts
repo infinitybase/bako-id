@@ -4,7 +4,7 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.76.0
+  Fuels version: 0.77.0
   Forc version: 0.51.1
   Fuel-Core version: 0.22.1
 */
@@ -19,6 +19,7 @@ import type {
   FunctionFragment,
   Interface,
   InvokeFunction,
+  StdString,
 } from 'fuels';
 
 import type { Option, Enum } from "./common";
@@ -37,12 +38,14 @@ export type ContractIdOutput = ContractIdInput;
 export type RawBytesInput = { ptr: BigNumberish, cap: BigNumberish };
 export type RawBytesOutput = { ptr: BN, cap: BN };
 
-export interface StorageContractAbiInterface extends Interface {
+interface StorageContractAbiInterface extends Interface {
   functions: {
     constructor: FunctionFragment;
     get: FunctionFragment;
     get_implementation: FunctionFragment;
     get_owner: FunctionFragment;
+    reverse_get: FunctionFragment;
+    reverse_set: FunctionFragment;
     set: FunctionFragment;
     set_implementation: FunctionFragment;
     set_owner: FunctionFragment;
@@ -52,6 +55,8 @@ export interface StorageContractAbiInterface extends Interface {
   encodeFunctionData(functionFragment: 'get', values: [string]): Uint8Array;
   encodeFunctionData(functionFragment: 'get_implementation', values: []): Uint8Array;
   encodeFunctionData(functionFragment: 'get_owner', values: []): Uint8Array;
+  encodeFunctionData(functionFragment: 'reverse_get', values: [string]): Uint8Array;
+  encodeFunctionData(functionFragment: 'reverse_set', values: [StdString, string]): Uint8Array;
   encodeFunctionData(functionFragment: 'set', values: [string, Bytes]): Uint8Array;
   encodeFunctionData(functionFragment: 'set_implementation', values: [ContractIdInput]): Uint8Array;
   encodeFunctionData(functionFragment: 'set_owner', values: [AddressInput]): Uint8Array;
@@ -60,6 +65,8 @@ export interface StorageContractAbiInterface extends Interface {
   decodeFunctionData(functionFragment: 'get', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'get_implementation', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'get_owner', data: BytesLike): DecodedValue;
+  decodeFunctionData(functionFragment: 'reverse_get', data: BytesLike): DecodedValue;
+  decodeFunctionData(functionFragment: 'reverse_set', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'set', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'set_implementation', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'set_owner', data: BytesLike): DecodedValue;
@@ -72,6 +79,8 @@ export class StorageContractAbi extends Contract {
     get: InvokeFunction<[key: string], Option<Bytes>>;
     get_implementation: InvokeFunction<[], Option<ContractIdOutput>>;
     get_owner: InvokeFunction<[], Option<AddressOutput>>;
+    reverse_get: InvokeFunction<[resolver: string], Option<StdString>>;
+    reverse_set: InvokeFunction<[name: StdString, resolver: string], void>;
     set: InvokeFunction<[key: string, bytes_domain: Bytes], void>;
     set_implementation: InvokeFunction<[registry_id: ContractIdInput], void>;
     set_owner: InvokeFunction<[owner: AddressInput], void>;

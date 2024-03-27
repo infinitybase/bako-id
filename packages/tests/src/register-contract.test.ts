@@ -118,4 +118,29 @@ describe('[METHODS] Test Registry Contract', () => {
 
     expect(value).toBeUndefined();
   });
+
+  it('should get name by resolver', async () => {
+   try {
+     const { registry, storage } = contracts;
+
+     await tryExecute(storage.initializeStorage());
+     await tryExecute(registry.initializeRegistry());
+
+     const address = wallet.address;
+
+     const domain = randomName();
+     await registry.register(domain, address.toB256());
+
+     const { value, transactionResponse } = await registry
+       .functions
+       .reverse_name(address.toB256())
+       .addContracts([storage])
+       .txParams(txParams)
+       .call();
+
+     expect(value).toBe(wallet.address.toB256());
+   } catch (e) {
+     console.log(e);
+   }
+  });
 });

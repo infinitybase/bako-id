@@ -2,7 +2,7 @@ import { Account, Provider } from 'fuels';
 import { ResolverReturn } from '../types';
 import { assertValidDomain, getTxParams } from '../utils';
 import { getRegistryContract } from '../setup';
-import { envrionment } from '../config';
+import { config } from '../config';
 
 type ResolveDomainParams = {
   domain: string,
@@ -63,7 +63,7 @@ export async function resolver(params: ResolveDomainParams): ResolverReturn {
 
   const { registry } = await getRegistryContract({
     provider,
-    storageId: envrionment.STORAGE_CONTRACT_ID!
+    storageId: config.STORAGE_CONTRACT_ID!
   });
 
   const { value } = await registry.functions

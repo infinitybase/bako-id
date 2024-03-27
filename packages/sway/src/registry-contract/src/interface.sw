@@ -17,4 +17,7 @@ abi FuelDomainsContract {
 
     #[storage(read)]
     fn resolver(name: String) -> Option<FuelDomain>;
+
+    #[storage(read)]
+    fn reverse_name(resolver: b256) -> Option<String>;
 }
