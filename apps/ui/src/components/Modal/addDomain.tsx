@@ -1,18 +1,18 @@
+import { PlusSquareIcon } from '@chakra-ui/icons';
 import {
+  Button,
+  Modal as ChakraModal,
+  Icon,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Button,
-  Modal as ChakraModal,
-  Icon,
   VStack,
-} from "@chakra-ui/react";
-import { validateDomain } from "../../utils/validator";
-import { SearchInput } from '../inputs';
+} from '@chakra-ui/react';
 import { Domains } from '../../types';
-import { PlusSquareIcon } from '@chakra-ui/icons';
+import { validateDomain } from '../../utils/validator';
+import { SearchInput } from '../inputs';
 
 interface ModalProps {
   items: Domains[];
@@ -24,13 +24,13 @@ interface ModalProps {
 }
 
 export default function Modal({
-                                items,
-                                setItems,
-                                onClose,
-                                isOpen,
-                                domain,
-                                setDomain,
-                              }: ModalProps) {
+  items,
+  setItems,
+  onClose,
+  isOpen,
+  domain,
+  setDomain,
+}: ModalProps) {
   const handleClick = () => {
     setItems([...items, { name: domain, period: 1 }]);
     onClose();
@@ -42,14 +42,14 @@ export default function Modal({
     <ChakraModal size="sm" onClose={onClose} isOpen={isOpen} isCentered>
       <ModalOverlay
         bg="rgba(21, 22, 24, 0.7)"
-        style={{ backdropFilter: "blur(6px)" }}
+        style={{ backdropFilter: 'blur(6px)' }}
       />
       ;
       <ModalContent
         borderRadius={10}
-        sx={{ backgroundColor: "background.500" }}
+        sx={{ backgroundColor: 'background.500' }}
       >
-        <ModalHeader alignItems={"center"} color="white">
+        <ModalHeader alignItems={'center'} color="white">
           Add domain
         </ModalHeader>
         <ModalCloseButton color="white" />
@@ -62,7 +62,7 @@ export default function Modal({
             <Button
               onClick={handleClick}
               leftIcon={<Icon fontSize={18} as={PlusSquareIcon} />}
-              backgroundColor={"brand.500"}
+              backgroundColor={'brand.500'}
               color="background.500"
               w="full"
               display="flex"
