@@ -5,6 +5,7 @@ import {
   Divider,
   HStack,
   Icon,
+  Stack,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -19,26 +20,39 @@ export const Home = () => {
   return (
     <Center w="full" h="full" alignItems="center" zIndex={10}>
       <Card
-        h="40%"
-        maxW="35%"
+        h={['70%', '50%', '45%']}
+        maxW={['95%', '70%', '35%']}
         variant="glassmorphic"
         border="1px solid rgba(243, 242, 241, 0.05)"
-        padding={12}
+        padding={[6, 8, 12]}
+        mt={[12, 12, 0]}
+        mb={['auto', 'auto', 0]}
       >
-        <VStack px="8" textAlign="center" spacing={8}>
+        <Stack
+          w="full"
+          direction="column"
+          px={[0, 8]}
+          textAlign="center"
+          spacing={8}
+        >
           <Text
             className="bg-pan-tl"
             bgClip="text"
             fontWeight={700}
-            fontSize={{ base: 35, md: 42 }}
+            fontSize={{ base: 26, md: 42 }}
             gap={2}
           >
             Bring your Farcaster username to Handles
           </Text>
 
-          <HStack w="100%" justify="space-around">
+          <Stack
+            direction={['column', 'row']}
+            w="full"
+            gap={[4, 0]}
+            justify="space-around"
+          >
             <Button
-              w={isConnected ? '95%' : '45%'}
+              w={['full', isConnected ? '90%' : '45%']}
               p={6}
               bgColor="button.500"
               rounded="lg"
@@ -47,12 +61,17 @@ export const Home = () => {
               <Text ml={2}>Farcaster</Text>
             </Button>
             {!isConnected && (
-              <Button w="45%" p={6} bgColor="button.500" rounded="lg">
+              <Button
+                w={['full', '45%']}
+                p={6}
+                bgColor="button.500"
+                rounded="lg"
+              >
                 <Icon as={TwitterIcon} />
                 <Text ml={2}>Twitter</Text>
               </Button>
             )}
-          </HStack>
+          </Stack>
 
           <HStack
             h={8}
@@ -73,7 +92,7 @@ export const Home = () => {
               className="bg-pan-tl"
               bgClip="text"
               fontWeight={700}
-              fontSize={{ base: 35, md: 42 }}
+              fontSize={{ base: 26, md: 42 }}
             >
               Search new Handles
             </Text>
@@ -140,7 +159,7 @@ export const Home = () => {
               </HStack>
             </VStack>
           </Box> */}
-        </VStack>
+        </Stack>
       </Card>
     </Center>
   );

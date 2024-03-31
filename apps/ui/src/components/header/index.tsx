@@ -1,13 +1,16 @@
-import { Box, Center, Image, Skeleton } from '@chakra-ui/react';
+import { Box, Center, Flex, Icon, Image, Skeleton } from '@chakra-ui/react';
 import { useIsConnected } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useFuelConnect } from '../../hooks';
+import { useScreenSize } from '../../hooks/useScreenSize';
 import { Connect } from '../helpers';
+import { QuestionIcon } from '../icons/question';
 import { Info } from '../user';
 
 export const Header = () => {
   const { wallet } = useFuelConnect();
   const { isFetching } = useIsConnected();
+  const { isMobile } = useScreenSize();
   const navigate = useNavigate();
 
   const account = () => {
@@ -36,14 +39,30 @@ export const Header = () => {
       display="flex"
       justifyContent="space-between"
       alignItems="center"
+      bgColor="background.900"
       py={2}
-      px={{ base: 0, md: 20, xl: 40 }}
+      px={[0, 8, 8]}
       className="transition-all-05"
     >
       <button onClick={goHome}>
         <Image src="/bakoID-logo.svg" width={190} height={75} alt="Bako logo" />
       </button>
-      {account()}
+
+      <Flex w="fit-content" align="center" justify="flex-end">
+        {account()}
+        {!isMobile && (
+          <Icon
+            _hover={{
+              cursor: 'pointer',
+              opacity: 0.8,
+            }}
+            ml={4}
+            as={QuestionIcon}
+            w={6}
+            h={6}
+          />
+        )}
+      </Flex>
     </Center>
   );
 };

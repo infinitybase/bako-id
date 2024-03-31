@@ -32,7 +32,7 @@ export const SearchInput = ({
         <ChakraInput
           value={inputValue}
           color="white"
-          p={6}
+          h={12}
           placeholder="Search for an available Handles"
           textColor="text.700"
           background="input.900"
@@ -57,7 +57,7 @@ export const SearchInput = ({
         {available === null && (
           <InputRightElement
             h={12}
-            children={<SearchIcon h={5} w={5} mr={4} color="grey.100" />}
+            children={<SearchIcon h={5} w={5} mr={[1, 4]} color="grey.100" />}
           />
         )}
       </InputGroup>
