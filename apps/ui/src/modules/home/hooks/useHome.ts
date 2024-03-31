@@ -1,14 +1,28 @@
 import { isValidDomain } from '@bako-id/sdk';
+import { useFuel } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
 import { debounce } from 'lodash';
-import { ChangeEvent, useCallback, useMemo, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDomain } from '../../../hooks';
 
 export const useHome = () => {
   const navigate = useNavigate();
+  const {
+    fuel: { isConnected: WalletConnected, connect },
+  } = useFuel();
   const { resolveDomain } = useDomain();
   const [domain, setDomain] = useState('');
   const [available, setAvailable] = useState<boolean | null>(null);
+  const [isConnected, setIsConnected] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkConnection = async () => {
+      await WalletConnected().then((result) => {
+        setIsConnected(result);
+      });
+    };
+    checkConnection();
+  }, [connect]);
 
   const debounceSearch = useCallback(
     debounce((value: string) => {
@@ -82,6 +96,7 @@ export const useHome = () => {
   return {
     domain,
     setDomain,
+    isConnected,
     available,
     handleChangeDomain,
     handleConfirmDomain,

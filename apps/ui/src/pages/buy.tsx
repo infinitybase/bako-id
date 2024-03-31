@@ -1,14 +1,105 @@
-import { Button, Center, Stack, Text, VStack } from '@chakra-ui/react';
+import { register, resolver } from '@bako-id/sdk';
+import {
+  Button,
+  Center,
+  Stack,
+  Text,
+  VStack,
+  useToast,
+} from '@chakra-ui/react';
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate, useParams } from '@tanstack/react-router';
+import { useState } from 'react';
 import { BuyComponents } from '../components/buy';
 import { Connect, GoBack } from '../components/helpers';
+import { useFuelConnect } from '../hooks';
+import { Domains } from '../types';
 import { calculateDomainPrice } from '../utils/calculator.ts';
+
+const checkDomain = (domain: string) => {
+  const regex = /^[a-zA-Z0-9]+$/;
+  return regex.test(domain);
+};
 
 // This component maybe too big, but it's all the page needs
 export const Buy = () => {
+  const resolveDomainMutation = useMutation({
+    mutationKey: ['registerDomain'],
+    mutationFn: resolver,
+  });
+
+  const registerDomainMutation = useMutation({
+    mutationKey: ['registerDomain'],
+    mutationFn: register,
+  });
+
+  const { domain } = useParams({ strict: false });
+
+  const { wallet } = useFuelConnect();
+  const toast = useToast();
+  const navigate = useNavigate();
+  const [domains, setDomains] = useState<Domains[]>([
+    {
+      name: domain,
+      period: 1,
+    },
+  ]);
+
   const totalPrice = domains.reduce(
     (previous, current) => previous + calculateDomainPrice(current.name, 1),
     0,
   );
+
+  const handleConfirmDomain = async () => {
+    const isValid = checkDomain(domain);
+    if (!isValid) return;
+
+    const info = await resolveDomainMutation.mutateAsync({
+      domain,
+      providerURL: wallet!.provider.url,
+    });
+
+    console.debug(info?.name);
+    return info;
+  };
+
+  const handleBuyDomain = async () => {
+    const isValid = checkDomain(domain);
+    if (!isValid || !wallet) return;
+
+    registerDomainMutation.mutate(
+      {
+        account: wallet,
+        resolver: wallet.address.toB256(),
+        domain: domain,
+      },
+      {
+        onSuccess: async () => {
+          await handleConfirmDomain();
+          // domainDetailsDialog.onOpen();
+          toast({
+            title: 'Success!',
+            status: 'success',
+            duration: 2000,
+            isClosable: true,
+          });
+          navigate({
+            to: '/checkout/$domain',
+            params: { domain: domain },
+            startTransition: true,
+          }).then();
+        },
+        onError: console.log,
+      },
+    );
+  };
+
+  const handlePeriodChange = (index: number, newValue: number) => {
+    const newItems = [...domains];
+    // period not specified
+    newItems[index] = { ...newItems[index], period: newValue };
+    setDomains(newItems);
+  };
 
   const button = () => {
     if (wallet) {
