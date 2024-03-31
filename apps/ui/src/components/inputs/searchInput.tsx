@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import { SearchIcon } from '@chakra-ui/icons';
 import {
   Input as ChakraInput,
   FormHelperText,
   InputGroup,
-  InputLeftAddon, InputRightElement
+  InputRightElement,
 } from '@chakra-ui/react';
-import { UnavailableBadge, AvailableBadge } from '../helpers';
+import React, { useState } from 'react';
+import { AvailableBadge, UnavailableBadge } from '../helpers';
 
 interface InputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -16,10 +17,10 @@ interface InputProps {
 export const SearchInput = ({
   onChange,
   errorMessage,
-  available
+  available,
 }: InputProps) => {
-  const [inputValue, setInputValue] = useState("");
-  console.debug(available)
+  const [inputValue, setInputValue] = useState('');
+  console.debug(available);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value.substring(0));
     onChange(e);
@@ -27,37 +28,38 @@ export const SearchInput = ({
 
   return (
     <>
-      <InputGroup borderRightColor="transparent" border="none">
-        <InputLeftAddon borderLeftColor="transparent" bgColor="background.400" color="white" border="none">
-          @
-        </InputLeftAddon>
+      <InputGroup>
         <ChakraInput
           value={inputValue}
-          minW="12rem"
-          w="full"
           color="white"
-          borderRight="none"
-          borderColor="whiteAlpha.50"
-          placeholder="Search for a name"
+          p={6}
+          placeholder="Search for an available Handles"
           textColor="text.700"
-          background="background.400"
+          background="input.900"
           type="text"
           errorBorderColor="error.500"
           onChange={handleChange}
-          border="none"
+          border="1px solid"
+          borderColor="grey.500"
           borderRadius={10}
-          sx={{ _placeholder: { color: "text.500" } }}
+          sx={{ _placeholder: { color: 'grey.200' } }}
           _focus={{}}
           _hover={{}}
           _focusVisible={{}}
         />
         {available !== null && (
           <InputRightElement
+            h={12}
             pointerEvents="none"
             children={available ? <AvailableBadge /> : <UnavailableBadge />}
           />
         )}
-
+        {available === null && (
+          <InputRightElement
+            h={12}
+            children={<SearchIcon h={5} w={5} mr={4} color="grey.100" />}
+          />
+        )}
       </InputGroup>
 
       {errorMessage && (
@@ -65,4 +67,4 @@ export const SearchInput = ({
       )}
     </>
   );
-}
+};
