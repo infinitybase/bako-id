@@ -11,7 +11,7 @@
   background-size: contain;
   background-repeat: no-repeat;
   height: 0;
-  padding: 0 0 calc(40%) 0;
+  padding: 0 0 calc(100%) 0;
 }
 
 .transition-all-05 {
