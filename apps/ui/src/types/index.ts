@@ -24,6 +24,15 @@ export interface IChildren {
   children?: ReactElement | ReactElement[];
 }
 
+/**
+ * Represents the payload for registering a domain.
+ *
+ * @param {fuels.BN} gasUsed - The gas used for the transaction.
+ * @param {string} transactionId - The transaction ID.
+ * @param {fuels.TransactionResult<void>} transactionResult - The transaction result.
+ * @param {fuels.TransactionResponse} transactionResponse - The transaction response.
+ */
+
 export interface RegisterDomainResponse {
   gasUsed: fuels.BN;
   transactionId: string;
@@ -58,6 +67,7 @@ export interface RegisterDomainPayload {
  *
  * @returns {Promise<ResolverReturn>} - A promise that resolves to the result of resolving the domain.
  */
+
 export interface ResolverDomainPayload {
   domain: string;
   account?: fuels.Account;
