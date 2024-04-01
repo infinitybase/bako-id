@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.71.1
-  Forc version: 0.48.1
-  Fuel-Core version: 0.22.0
+  Fuels version: 0.78.0
+  Forc version: 0.51.1
+  Fuel-Core version: 0.22.1
 */
 
 import type {
@@ -56,7 +56,7 @@ interface StorageContractAbiInterface extends Interface {
   encodeFunctionData(functionFragment: 'get_implementation', values: []): Uint8Array;
   encodeFunctionData(functionFragment: 'get_owner', values: []): Uint8Array;
   encodeFunctionData(functionFragment: 'reverse_get', values: [string]): Uint8Array;
-  encodeFunctionData(functionFragment: 'reverse_set', values: [StdString, string]): Uint8Array;
+  encodeFunctionData(functionFragment: 'reverse_set', values: [string, StdString]): Uint8Array;
   encodeFunctionData(functionFragment: 'set', values: [string, Bytes]): Uint8Array;
   encodeFunctionData(functionFragment: 'set_implementation', values: [ContractIdInput]): Uint8Array;
   encodeFunctionData(functionFragment: 'set_owner', values: [AddressInput]): Uint8Array;
@@ -79,8 +79,8 @@ export class StorageContractAbi extends Contract {
     get: InvokeFunction<[key: string], Option<Bytes>>;
     get_implementation: InvokeFunction<[], Option<ContractIdOutput>>;
     get_owner: InvokeFunction<[], Option<AddressOutput>>;
-    reverse_get: InvokeFunction<[resolver: string], Option<StdString>>;
-    reverse_set: InvokeFunction<[name: StdString, resolver: string], void>;
+    reverse_get: InvokeFunction<[resolver: string], StdString>;
+    reverse_set: InvokeFunction<[key: string, value: StdString], void>;
     set: InvokeFunction<[key: string, bytes_domain: Bytes], void>;
     set_implementation: InvokeFunction<[registry_id: ContractIdInput], void>;
     set_owner: InvokeFunction<[owner: AddressInput], void>;

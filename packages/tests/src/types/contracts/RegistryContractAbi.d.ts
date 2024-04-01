@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.71.1
-  Forc version: 0.48.1
-  Fuel-Core version: 0.22.0
+  Fuels version: 0.78.0
+  Forc version: 0.51.1
+  Fuel-Core version: 0.22.1
 */
 
 import type {
@@ -65,6 +65,6 @@ export class RegistryContractAbi extends Contract {
     constructor: InvokeFunction<[owner: AddressInput, storage_id: ContractIdInput], void>;
     register: InvokeFunction<[name: StdString, resolver: string], void>;
     resolver: InvokeFunction<[name: StdString], Option<FuelDomainOutput>>;
-    reverse_name: InvokeFunction<[resolver: string], Option<StdString>>;
+    reverse_name: InvokeFunction<[resolver: string], StdString>;
   };
 }

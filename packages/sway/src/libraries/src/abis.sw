@@ -29,8 +29,8 @@ abi StorageContract {
     fn get(hash: b256) -> Option<Bytes>;
 
     #[storage(write)]
-    fn reverse_set(name: String, resolver: b256);
+    fn reverse_set(key: b256, value: String);
 
     #[storage(read)]
-    fn reverse_get(resolver: b256) -> Option<String>;
+    fn reverse_get(resolver: b256) -> String;
 }

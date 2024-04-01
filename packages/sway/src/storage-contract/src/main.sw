@@ -95,14 +95,17 @@ impl StorageContract for Contract {
     }
 
     #[storage(write)]
-    fn reverse_set(name: String, resolver: b256) {
+    fn reverse_set(key: b256, value: String) {
         with_permission(IMPLEMENTATION);
-        storage.reverse_handles.insert(resolver, StorageString {});
-        storage.reverse_handles.get(resolver).write_slice(name);
+        storage.reverse_handles.insert(key, StorageString {});
+        storage.reverse_handles.get(key).write_slice(value);
     }
 
     #[storage(read)]
-    fn reverse_get(resolver: b256) -> Option<String> {
-        storage.reverse_handles.get(resolver).read_slice()
+    fn reverse_get(resolver: b256) -> String {
+        return storage.reverse_handles
+                .get(resolver)
+                .read_slice()
+                .unwrap_or(String::new());
     }
 }

@@ -1,4 +1,4 @@
-import { Provider, RequireRevertError, TransactionStatus, WalletUnlocked } from 'fuels';
+import { Address, Provider, RequireRevertError, TransactionStatus, WalletUnlocked } from 'fuels';
 import { createWallet, randomName, setupContractsAndDeploy, tryExecute, txParams } from './utils';
 
 describe('[METHODS] Test Registry Contract', () => {
@@ -120,27 +120,43 @@ describe('[METHODS] Test Registry Contract', () => {
   });
 
   it('should get name by resolver', async () => {
-   try {
-     const { registry, storage } = contracts;
+    const { registry, storage } = contracts;
 
-     await tryExecute(storage.initializeStorage());
-     await tryExecute(registry.initializeRegistry());
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
 
-     const address = wallet.address;
+    const address = wallet.address;
 
-     const domain = randomName();
-     await registry.register(domain, address.toB256());
+    const domain = 'luisburigo';
+    await registry.register(domain, address.toB256());
 
-     const { value, transactionResponse } = await registry
-       .functions
-       .reverse_name(address.toB256())
-       .addContracts([storage])
-       .txParams(txParams)
-       .call();
+    const { value } = await registry
+      .functions
+      .reverse_name(address.toB256())
+      .addContracts([storage])
+      .txParams(txParams)
+      .call();
 
-     expect(value).toBe(wallet.address.toB256());
-   } catch (e) {
-     console.log(e);
-   }
+    expect(value).toBe(domain);
+  });
+
+  it('should empty name when not found handle', async () => {
+    const { registry, storage } = contracts;
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+
+    const address = wallet.address;
+
+    await registry.register(randomName(), address.toB256());
+
+    const { value } = await registry
+      .functions
+      .reverse_name(Address.fromRandom().toB256())
+      .addContracts([storage])
+      .txParams(txParams)
+      .call();
+
+    expect(value).toBe('');
   });
 });

@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.71.1
-  Forc version: 0.48.1
-  Fuel-Core version: 0.22.0
+  Fuels version: 0.78.0
+  Forc version: 0.51.1
+  Fuel-Core version: 0.22.1
 */
 
 import { Interface, Contract, ContractFactory } from "fuels";
@@ -302,14 +302,8 @@ const _abi = {
       "name": "reverse_get",
       "output": {
         "name": "",
-        "type": 3,
-        "typeArguments": [
-          {
-            "name": "",
-            "type": 12,
-            "typeArguments": null
-          }
-        ]
+        "type": 12,
+        "typeArguments": null
       },
       "attributes": [
         {
@@ -323,13 +317,13 @@ const _abi = {
     {
       "inputs": [
         {
-          "name": "name",
-          "type": 12,
+          "name": "key",
+          "type": 1,
           "typeArguments": null
         },
         {
-          "name": "resolver",
-          "type": 1,
+          "name": "value",
+          "type": 12,
           "typeArguments": null
         }
       ],
