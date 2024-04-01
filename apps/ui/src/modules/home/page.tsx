@@ -10,12 +10,11 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { FarcasterIcon } from '../../components/icons/farcaster';
-import { TwitterIcon } from '../../components/icons/twitter';
 import { SearchInput } from '../../components/inputs';
 import { useHome } from './hooks';
 
 export const Home = () => {
-  const { handleChangeDomain, domainIsAvailable, isConnected } = useHome();
+  const { handleChangeDomain, domainIsAvailable } = useHome();
 
   return (
     <Center w="full" h="full" alignItems="center" zIndex={10}>
@@ -51,16 +50,11 @@ export const Home = () => {
             gap={[4, 0]}
             justify="space-around"
           >
-            <Button
-              w={['full', isConnected ? '90%' : '45%']}
-              p={6}
-              bgColor="button.500"
-              rounded="lg"
-            >
+            <Button w="95%" p={6} bgColor="button.500" rounded="lg">
               <Icon as={FarcasterIcon} />
               <Text ml={2}>Farcaster</Text>
             </Button>
-            {!isConnected && (
+            {/* {!isConnected && (
               <Button
                 w={['full', '45%']}
                 p={6}
@@ -70,7 +64,7 @@ export const Home = () => {
                 <Icon as={TwitterIcon} />
                 <Text ml={2}>Twitter</Text>
               </Button>
-            )}
+            )} */}
           </Stack>
 
           <HStack
@@ -97,7 +91,7 @@ export const Home = () => {
               Search new Handles
             </Text>
 
-            <VStack w="full" h="full" spacing={5}>
+            <VStack w="95%" h="full" spacing={5}>
               <SearchInput
                 onChange={handleChangeDomain}
                 errorMessage={undefined}
