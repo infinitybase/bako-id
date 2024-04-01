@@ -20,13 +20,13 @@ export const Home = () => {
   return (
     <Center w="full" h="full" alignItems="center" zIndex={10}>
       <Card
-        h={['70%', '50%', 'auto']}
-        maxW={['95%', '70%', 'auto']}
+        h={['auto', 'auto', 'auto', 'auto']}
+        maxW={['95%', '70%', '70%', 'auto']}
         variant="glassmorphic"
         border="1px solid rgba(243, 242, 241, 0.05)"
-        padding={[6, 8, 12]}
-        mt={[12, 12, 0]}
-        mb={['auto', 'auto', 20]}
+        padding={[6, 8, 10, 12]}
+        mt={[12, 12, 0, 0]}
+        mb={['auto', 'auto', 0, 20]}
       >
         <Stack
           w="full"
@@ -39,7 +39,7 @@ export const Home = () => {
             className="bg-pan-tl"
             bgClip="text"
             fontWeight={700}
-            fontSize={{ base: 26, md: 42 }}
+            fontSize={{ base: 26, md: 38, lg: 40, xl: 48 }}
             gap={2}
           >
             Bring your Farcaster username to Handles
@@ -74,7 +74,7 @@ export const Home = () => {
           </Stack>
 
           <HStack
-            h={8}
+            h={2}
             display="flex"
             alignItems="center"
             justify="space-around"
