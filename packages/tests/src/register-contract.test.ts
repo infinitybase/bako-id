@@ -159,4 +159,26 @@ describe('[METHODS] Test Registry Contract', () => {
 
     expect(value).toBe('');
   });
+
+  it('should get primary domain', async () => {
+    const { registry, storage } = contracts;
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+
+    const address = wallet.address.toB256();
+
+    const [primaryDomain, secondaryDomain] = [randomName(), randomName()];
+    await registry.register(primaryDomain, address);
+    await registry.register(secondaryDomain, address);
+
+    const { value } = await registry
+      .functions
+      .reverse_name(address)
+      .addContracts([storage])
+      .txParams(txParams)
+      .call();
+
+    expect(value).toBe(primaryDomain);
+  });
 });

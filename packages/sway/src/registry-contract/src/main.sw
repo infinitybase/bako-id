@@ -113,7 +113,10 @@ impl FuelDomainsContract for Contract {
         let owner = msg_sender().unwrap().as_address().unwrap().value;
         let domain = FuelDomain::new(owner, resolver);
         storage.set(domain_hash, domain.to_bytes());
-        storage.reverse_set(resolver, name);
+        
+        if (storage.reverse_get(resolver).is_empty()) {
+            storage.reverse_set(resolver, name);
+        }
     }
 
     #[storage(read)]
