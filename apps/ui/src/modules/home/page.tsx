@@ -20,13 +20,13 @@ export const Home = () => {
   return (
     <Center w="full" h="full" alignItems="center" zIndex={10}>
       <Card
-        h={['70%', '50%', '45%']}
-        maxW={['95%', '70%', '35%']}
+        h={['70%', '50%', 'auto']}
+        maxW={['95%', '70%', 'auto']}
         variant="glassmorphic"
         border="1px solid rgba(243, 242, 241, 0.05)"
         padding={[6, 8, 12]}
         mt={[12, 12, 0]}
-        mb={['auto', 'auto', 0]}
+        mb={['auto', 'auto', 20]}
       >
         <Stack
           w="full"
