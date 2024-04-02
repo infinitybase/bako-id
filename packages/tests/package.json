@@ -7,7 +7,7 @@
     "build:contracts": "fuels build",
     "deploy": "fuels deploy",
     "test": "jest --verbose --runInBand",
-    "test:watch": "jest --verbose --runInBand --watch"
+    "pretest": "pnpm fuels build && pnpm fuels deploy"
   },
   "keywords": [],
   "author": "",
