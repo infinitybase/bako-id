@@ -53,12 +53,26 @@ describe('Test resolver', () => {
       resolver,
     });
 
-    const result = await reverseResolver({
-      resolver,
-      provider,
-    });
+    await expect(
+      reverseResolver({
+        resolver,
+        provider,
+      }),
+    ).resolves.toBe(name);
 
-    expect(result).toBe(name);
+    await expect(
+      reverseResolver({
+        resolver,
+        providerURL: provider.url,
+      }),
+    ).resolves.toBe(name);
+
+    await expect(
+      reverseResolver({
+        resolver,
+        account: wallet,
+      }),
+    ).resolves.toBe(name);
   });
 
   it('should return null on search by resolver without a domain', async () => {
