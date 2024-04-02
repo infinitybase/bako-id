@@ -59,11 +59,12 @@ const baseStyle = defineStyle({
   fontWeight: 'normal',
   textTransform: 'initial',
   borderWidth: 1,
-  padding: 1.5,
+  padding: 0.5,
+  paddingInline: 3,
   display: 'flex',
   alignItems: 'center',
   gap: 2,
-  borderRadius: 8,
+  borderRadius: 'md',
   maxWidth: 'min-content',
 });
 
