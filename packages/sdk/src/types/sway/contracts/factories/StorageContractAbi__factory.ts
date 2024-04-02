@@ -11,7 +11,7 @@
 
 import { Interface, Contract, ContractFactory } from "fuels";
 import type { Provider, Account, AbstractAddress, BytesLike, DeployContractOptions, StorageSlot } from "fuels";
-import type { RegistryContractAbi, RegistryContractAbiInterface } from "../RegistryContractAbi";
+import type { StorageContractAbi, StorageContractAbiInterface } from "../StorageContractAbi";
 
 const _abi = {
   "types": [
@@ -87,35 +87,10 @@ const _abi = {
     },
     {
       "typeId": 5,
-      "type": "enum RegistryContractError",
+      "type": "enum StorageContractError",
       "components": [
         {
-          "name": "StorageNotInitialized",
-          "type": 0,
-          "typeArguments": null
-        },
-        {
           "name": "AlreadyInitialized",
-          "type": 0,
-          "typeArguments": null
-        },
-        {
-          "name": "DomainNotAvailable",
-          "type": 0,
-          "typeArguments": null
-        },
-        {
-          "name": "IncorrectAssetId",
-          "type": 0,
-          "typeArguments": null
-        },
-        {
-          "name": "InvalidAmount",
-          "type": 0,
-          "typeArguments": null
-        },
-        {
-          "name": "DomainNotValid",
           "type": 0,
           "typeArguments": null
         }
@@ -152,12 +127,12 @@ const _abi = {
       "components": [
         {
           "name": "buf",
-          "type": 12,
+          "type": 11,
           "typeArguments": null
         },
         {
           "name": "len",
-          "type": 14,
+          "type": 13,
           "typeArguments": null
         }
       ],
@@ -177,23 +152,6 @@ const _abi = {
     },
     {
       "typeId": 11,
-      "type": "struct FuelDomain",
-      "components": [
-        {
-          "name": "owner",
-          "type": 1,
-          "typeArguments": null
-        },
-        {
-          "name": "resolver",
-          "type": 1,
-          "typeArguments": null
-        }
-      ],
-      "typeParameters": null
-    },
-    {
-      "typeId": 12,
       "type": "struct RawBytes",
       "components": [
         {
@@ -203,14 +161,14 @@ const _abi = {
         },
         {
           "name": "cap",
-          "type": 14,
+          "type": 13,
           "typeArguments": null
         }
       ],
       "typeParameters": null
     },
     {
-      "typeId": 13,
+      "typeId": 12,
       "type": "struct String",
       "components": [
         {
@@ -222,7 +180,7 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 14,
+      "typeId": 13,
       "type": "u64",
       "components": null,
       "typeParameters": null
@@ -237,7 +195,7 @@ const _abi = {
           "typeArguments": null
         },
         {
-          "name": "storage_id",
+          "name": "registry_id",
           "type": 10,
           "typeArguments": null
         }
@@ -261,17 +219,115 @@ const _abi = {
     {
       "inputs": [
         {
-          "name": "name",
-          "type": 13,
+          "name": "key",
+          "type": 1,
           "typeArguments": null
-        },
+        }
+      ],
+      "name": "get",
+      "output": {
+        "name": "",
+        "type": 3,
+        "typeArguments": [
+          {
+            "name": "",
+            "type": 9,
+            "typeArguments": null
+          }
+        ]
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [],
+      "name": "get_implementation",
+      "output": {
+        "name": "",
+        "type": 3,
+        "typeArguments": [
+          {
+            "name": "",
+            "type": 10,
+            "typeArguments": null
+          }
+        ]
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [],
+      "name": "get_owner",
+      "output": {
+        "name": "",
+        "type": 3,
+        "typeArguments": [
+          {
+            "name": "",
+            "type": 8,
+            "typeArguments": null
+          }
+        ]
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
         {
           "name": "resolver",
           "type": 1,
           "typeArguments": null
         }
       ],
-      "name": "register",
+      "name": "reverse_get",
+      "output": {
+        "name": "",
+        "type": 12,
+        "typeArguments": null
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "key",
+          "type": 1,
+          "typeArguments": null
+        },
+        {
+          "name": "value",
+          "type": 12,
+          "typeArguments": null
+        }
+      ],
+      "name": "reverse_set",
       "output": {
         "name": "",
         "type": 0,
@@ -281,40 +337,7 @@ const _abi = {
         {
           "name": "storage",
           "arguments": [
-            "read"
-          ]
-        },
-        {
-          "name": "payable",
-          "arguments": []
-        }
-      ]
-    },
-    {
-      "inputs": [
-        {
-          "name": "name",
-          "type": 13,
-          "typeArguments": null
-        }
-      ],
-      "name": "resolver",
-      "output": {
-        "name": "",
-        "type": 3,
-        "typeArguments": [
-          {
-            "name": "",
-            "type": 11,
-            "typeArguments": null
-          }
-        ]
-      },
-      "attributes": [
-        {
-          "name": "storage",
-          "arguments": [
-            "read"
+            "write"
           ]
         }
       ]
@@ -322,28 +345,75 @@ const _abi = {
     {
       "inputs": [
         {
-          "name": "resolver",
+          "name": "key",
           "type": 1,
           "typeArguments": null
+        },
+        {
+          "name": "bytes_domain",
+          "type": 9,
+          "typeArguments": null
         }
       ],
-      "name": "reverse_name",
+      "name": "set",
       "output": {
         "name": "",
-        "type": 3,
-        "typeArguments": [
-          {
-            "name": "",
-            "type": 13,
-            "typeArguments": null
-          }
-        ]
+        "type": 0,
+        "typeArguments": null
       },
       "attributes": [
         {
           "name": "storage",
           "arguments": [
-            "read"
+            "write"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "registry_id",
+          "type": 10,
+          "typeArguments": null
+        }
+      ],
+      "name": "set_implementation",
+      "output": {
+        "name": "",
+        "type": 0,
+        "typeArguments": null
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read",
+            "write"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "owner",
+          "type": 8,
+          "typeArguments": null
+        }
+      ],
+      "name": "set_owner",
+      "output": {
+        "name": "",
+        "type": 0,
+        "typeArguments": null
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read",
+            "write"
           ]
         }
       ]
@@ -370,7 +440,7 @@ const _abi = {
       "logId": 2,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 4,
         "typeArguments": []
       }
     },
@@ -378,7 +448,7 @@ const _abi = {
       "logId": 3,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 4,
         "typeArguments": []
       }
     },
@@ -386,7 +456,7 @@ const _abi = {
       "logId": 4,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 4,
         "typeArguments": []
       }
     },
@@ -394,7 +464,7 @@ const _abi = {
       "logId": 5,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 4,
         "typeArguments": []
       }
     },
@@ -402,7 +472,7 @@ const _abi = {
       "logId": 6,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 4,
         "typeArguments": []
       }
     },
@@ -410,7 +480,7 @@ const _abi = {
       "logId": 7,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 4,
         "typeArguments": []
       }
     },
@@ -418,7 +488,7 @@ const _abi = {
       "logId": 8,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 4,
         "typeArguments": []
       }
     }
@@ -429,49 +499,41 @@ const _abi = {
 
 const _storageSlots: StorageSlot[] = [
   {
-    "key": "de9090cb50e71c2588c773487d1da7066d0c719849a7e58dc8b6397a25c567c0",
-    "value": "0000000000000000000000000000000000000000000000000000000000000000"
-  },
-  {
     "key": "f383b0ce51358be57daa3b725fe44acdb2d880604e367199080b4379c41bb6ed",
-    "value": "0000000000000000000000000000000000000000000000000000000000000000"
-  },
-  {
-    "key": "f383b0ce51358be57daa3b725fe44acdb2d880604e367199080b4379c41bb6ee",
     "value": "0000000000000000000000000000000000000000000000000000000000000000"
   }
 ];
 
-export class RegistryContractAbi__factory {
+export class StorageContractAbi__factory {
   static readonly abi = _abi;
 
   static readonly storageSlots = _storageSlots;
 
-  static createInterface(): RegistryContractAbiInterface {
-    return new Interface(_abi) as unknown as RegistryContractAbiInterface
+  static createInterface(): StorageContractAbiInterface {
+    return new Interface(_abi) as unknown as StorageContractAbiInterface
   }
 
   static connect(
     id: string | AbstractAddress,
     accountOrProvider: Account | Provider
-  ): RegistryContractAbi {
-    return new Contract(id, _abi, accountOrProvider) as unknown as RegistryContractAbi
+  ): StorageContractAbi {
+    return new Contract(id, _abi, accountOrProvider) as unknown as StorageContractAbi
   }
 
   static async deployContract(
     bytecode: BytesLike,
     wallet: Account,
     options: DeployContractOptions = {}
-  ): Promise<RegistryContractAbi> {
+  ): Promise<StorageContractAbi> {
     const factory = new ContractFactory(bytecode, _abi, wallet);
 
-    const { storageSlots } = RegistryContractAbi__factory;
+    const { storageSlots } = StorageContractAbi__factory;
 
     const contract = await factory.deployContract({
       storageSlots,
       ...options,
     });
 
-    return contract as unknown as RegistryContractAbi;
+    return contract as unknown as StorageContractAbi;
   }
 }

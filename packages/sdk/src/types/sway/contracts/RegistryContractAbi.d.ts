@@ -65,6 +65,6 @@ export class RegistryContractAbi extends Contract {
     constructor: InvokeFunction<[owner: AddressInput, storage_id: ContractIdInput], void>;
     register: InvokeFunction<[name: StdString, resolver: string], void>;
     resolver: InvokeFunction<[name: StdString], Option<FuelDomainOutput>>;
-    reverse_name: InvokeFunction<[resolver: string], Option<StdString>>;
+    reverse_name: InvokeFunction<[resolver: string], StdString>;
   };
 }

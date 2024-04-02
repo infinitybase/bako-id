@@ -1,21 +1,22 @@
-import { Account, Provider } from 'fuels';
+import { Account, Address, Provider } from 'fuels';
 import { ResolverReturn } from '../types';
 import { assertValidDomain, getTxParams } from '../utils';
 import { getRegistryContract } from '../setup';
 import { config } from '../config';
 
-type ResolveDomainParams = {
-  domain: string,
-  account?: Account,
-  provider?: Provider,
-  providerURL?: string,
-}
+type ResolveDomainParams = GetProviderParams & {
+  domain: string;
+};
+
+type ReverseResolverDomainParams = GetProviderParams & {
+  resolver: Address | string;
+};
 
 type GetProviderParams = {
-  account?: Account,
-  provider?: Provider,
-  providerURL?: string,
-}
+  account?: Account;
+  provider?: Provider;
+  providerURL?: string;
+};
 
 /**
  * Returns a provider based on the provided parameters.
@@ -63,7 +64,7 @@ export async function resolver(params: ResolveDomainParams): ResolverReturn {
 
   const { registry } = await getRegistryContract({
     provider,
-    storageId: config.STORAGE_CONTRACT_ID!
+    storageId: config.STORAGE_CONTRACT_ID!,
   });
 
   const { value } = await registry.functions
@@ -71,9 +72,42 @@ export async function resolver(params: ResolveDomainParams): ResolverReturn {
     .txParams(txParams)
     .dryRun();
 
-  return value ? {
-    name: domainName,
-    owner: value.owner,
-    resolver: value.resolver,
-  } : null;
+  return value
+    ? {
+        name: domainName,
+        owner: value.owner,
+        resolver: value.resolver,
+      }
+    : null;
+}
+
+/**
+ * Resolves the reverse name associated with a given resolver address.
+ *
+ * @param {ReverseResolverDomainParams} params - The parameters for the reverse resolver.
+ * @param {string | Address} params.resolver - The resolver address to resolve.
+ * @returns {Promise<string | null>} - The resolved reverse name, or null if not found.
+ */
+export async function reverseResolver(params: ReverseResolverDomainParams) {
+  const { resolver } = params;
+
+  const resolverAddress =
+    typeof resolver === 'string'
+      ? Address.fromAddressOrString(resolver)
+      : resolver;
+
+  const provider = await getProviderFromParams(params);
+  const txParams = getTxParams(provider);
+
+  const { registry } = await getRegistryContract({
+    provider,
+    storageId: config.STORAGE_CONTRACT_ID!,
+  });
+
+  const { value } = await registry.functions
+    .reverse_name(resolverAddress.toB256())
+    .txParams(txParams)
+    .dryRun();
+
+  return !!value ? value : null;
 }

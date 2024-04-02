@@ -2,7 +2,7 @@ require('dotenv').config();
 
 import { deployContracts } from './deploy-contract';
 import { Provider, Wallet } from 'fuels';
-import { config } from '../src/config';
+import { config } from '../src';
 
 const { PROVIDER_URL, PRIVATE_KEY } = process.env;
 
@@ -13,7 +13,7 @@ const initializeContracts = async () => {
   await deployContracts({
     account: mainWallet,
     storageId: config.STORAGE_CONTRACT_ID!,
-    registryId: config.REGISTRY_CONTRACT_ID
+    registryId: config.REGISTRY_CONTRACT_ID,
   });
 };
 
