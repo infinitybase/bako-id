@@ -11,7 +11,7 @@ Demonstrates how to use the resolver method to access data from a identity using
 provider instance or a account instance.
 
 ```ts
-import { resolver } from '@fuel-domains/sdk';
+import { resolver } from '@bako-id/sdk';
 import { Provider, Wallet } from 'fuels';
 
 const providerURL = 'https://beta-5.fuel.network/graphql';
@@ -43,7 +43,7 @@ as primary to the resolver. In this method, as with `resolver()`, you can search
 through its instance, or from a wallet.
 
 ```ts
-import { reverseResolver } from '@fuel-domains/sdk';
+import { reverseResolver } from '@bako-id/sdk';
 import { Provider, Wallet } from 'fuels';
 
 const providerURL = 'https://beta-5.fuel.network/graphql';
