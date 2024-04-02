@@ -128,8 +128,8 @@ const DrawerConnector = (props: DrawerConnectorProps) => {
     >
       <DrawerOverlay />
       <DrawerContent maxH="full">
-        <DrawerHeader mb={7}>
-          <VStack alignItems="flex-start" spacing={5}>
+        <DrawerHeader mb={4}>
+          <VStack alignItems="flex-start" spacing={2}>
             <HStack
               w="full"
               display="flex"
@@ -146,9 +146,8 @@ const DrawerConnector = (props: DrawerConnectorProps) => {
               </Heading>
               <CloseIcon w={3} h={3} />
             </HStack>
-            <Text color="grey.100" fontSize="small" fontWeight="light">
-              Personalize your preferences: set your name, email, and email
-              notification preferences.
+            <Text color="grey.100" fontSize="small" fontWeight="medium">
+              Select your preferred access mode
             </Text>
           </VStack>
         </DrawerHeader>
