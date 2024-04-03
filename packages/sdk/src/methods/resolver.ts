@@ -4,15 +4,7 @@ import { assertValidDomain, getTxParams } from '../utils';
 import { getRegistryContract } from '../setup';
 import { config } from '../config';
 
-type ResolveDomainParams = GetProviderParams & {
-  domain: string;
-};
-
-type ReverseResolverDomainParams = GetProviderParams & {
-  resolver: Address | string;
-};
-
-type GetProviderParams = {
+type ResolverProviderParams = {
   account?: Account;
   provider?: Provider;
   providerURL?: string;
@@ -21,7 +13,7 @@ type GetProviderParams = {
 /**
  * Returns a provider based on the provided parameters.
  *
- * @param {GetProviderParams} params - The parameters for retrieving the provider.
+ * @param {ResolverProviderParams} params - The parameters for retrieving the provider.
  * @property {string} params.account - An optional account object.
  * @property {string} params.providerURL - An optional URL for creating a provider.
  * @property {string} params.provider - An optional provider object.
@@ -30,7 +22,13 @@ type GetProviderParams = {
  *
  * @returns {Promise<Provider>} The retrieved provider.
  */
-async function getProviderFromParams(params: GetProviderParams) {
+async function getProviderFromParams(
+  params?: ResolverProviderParams,
+): Promise<Provider> {
+  if (!params) {
+    return Provider.create(config.PROVIDER_DEPLOYED!);
+  }
+
   let provider;
 
   if (params.account) {
@@ -47,16 +45,16 @@ async function getProviderFromParams(params: GetProviderParams) {
 }
 
 /**
- * Resolves domain using the given parameters.
+ * Resolves the domain using the specified domain and parameters.
  *
+ * @param {string} domain - The domain to be resolved.
  * @param {ResolveDomainParams} params - The parameters for resolving the domain.
- * @param {string} params.domain - The domain to resolve.
- *
- * @returns {Promise<ResolverReturn>} - A promise that resolves to the result of resolving the domain.
+ * @returns {Promise<ResolverReturn>} The resolved domain information or null if it is not found.
  */
-export async function resolver(params: ResolveDomainParams): ResolverReturn {
-  const { domain } = params;
-
+export async function resolver(
+  domain: string,
+  params?: ResolverProviderParams,
+): ResolverReturn {
   const domainName = assertValidDomain(domain);
 
   const provider = await getProviderFromParams(params);
@@ -84,13 +82,14 @@ export async function resolver(params: ResolveDomainParams): ResolverReturn {
 /**
  * Resolves the reverse name associated with a given resolver address.
  *
- * @param {ReverseResolverDomainParams} params - The parameters for the reverse resolver.
- * @param {string | Address} params.resolver - The resolver address to resolve.
+ * @param {string | Address} resolver - The resolver address to resolve.
+ * @param {ResolverProviderParams} [params] - The parameters for the reverse resolver.
  * @returns {Promise<string | null>} - The resolved reverse name, or null if not found.
  */
-export async function reverseResolver(params: ReverseResolverDomainParams) {
-  const { resolver } = params;
-
+export async function reverseResolver(
+  resolver: Address | string,
+  params?: ResolverProviderParams,
+): Promise<string | null> {
   const resolverAddress =
     typeof resolver === 'string'
       ? Address.fromAddressOrString(resolver)

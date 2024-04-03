@@ -93,8 +93,7 @@ describe('Test Registry', () => {
 
     expect(result.transactionResult.status).toBe('success');
 
-    const resolvedDomain = await resolver({
-      domain,
+    const resolvedDomain = await resolver(domain, {
       provider,
     });
 

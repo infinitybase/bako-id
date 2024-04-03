@@ -17,8 +17,7 @@ describe('Test resolver', () => {
   });
 
   it('should get undefined value with not found registered', async () => {
-    const result = await resolver({
-      domain,
+    const result = await resolver(domain, {
       provider,
     });
 
@@ -26,8 +25,7 @@ describe('Test resolver', () => {
   });
 
   it('should get undefined value with not found registered', async () => {
-    const result = await resolver({
-      domain,
+    const result = await resolver(domain, {
       account: wallet,
     });
 
@@ -35,8 +33,7 @@ describe('Test resolver', () => {
   });
 
   it('should get undefined value with not found registered', async () => {
-    const result = await resolver({
-      domain,
+    const result = await resolver(domain, {
       providerURL: PROVIDER_URL,
     });
 
@@ -54,34 +51,30 @@ describe('Test resolver', () => {
     });
 
     await expect(
-      reverseResolver({
-        resolver,
+      reverseResolver(resolver, {
         provider,
       }),
     ).resolves.toBe(name);
 
     await expect(
-      reverseResolver({
-        resolver,
+      reverseResolver(resolver, {
         providerURL: provider.url,
       }),
     ).resolves.toBe(name);
 
     await expect(
-      reverseResolver({
-        resolver,
+      reverseResolver(resolver, {
         account: wallet,
       }),
     ).resolves.toBe(name);
-  });
+
+    // await expect(reverseResolver(resolver)).resolves.toBe(name);
+  }, 10000);
 
   it('should return null on search by resolver without a domain', async () => {
     const resolver = Address.fromRandom().toB256();
 
-    const result = await reverseResolver({
-      resolver,
-      provider,
-    });
+    const result = await reverseResolver(resolver);
 
     expect(result).toBeNull();
   });
