@@ -1,8 +1,8 @@
 import { createRoute } from '@tanstack/react-router';
 import { NotConnected } from '../components/auth/notConnected.tsx';
 import { rootRoute } from '../hooks/__root.ts';
+import { Buy } from '../modules/buy/page.tsx';
 import { Home } from '../modules/home/page.tsx';
-import { Buy } from '../pages/buy.tsx';
 import { Domain } from '../pages/domain.tsx';
 import { Domains } from '../pages/domains.tsx';
 import { Purchased } from '../pages/purchased.tsx';
