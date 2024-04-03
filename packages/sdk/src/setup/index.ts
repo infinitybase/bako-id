@@ -1,7 +1,7 @@
 import { Account, CoinQuantity, BN, WalletLocked, Provider, TransactionRequest, Address, BaseAssetId, bn, Wallet, InvocationScopeLike } from 'fuels';
 import { RegistryContractAbi__factory, StorageContractAbi__factory } from '../types';
 import { getTxParams, getFakeAccount } from '../utils';
-import { envrionment } from '../config';
+import { config } from '../config';
 
 export interface ContractConfig {
   storageId: string,

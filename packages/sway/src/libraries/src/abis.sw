@@ -1,6 +1,10 @@
 library;
 
-use std::bytes::Bytes;
+use std::{
+    hash::{Hash, sha256},
+    string::String,
+    bytes::Bytes,
+};
 
 abi StorageContract {
     #[storage(read, write)]
@@ -23,4 +27,10 @@ abi StorageContract {
 
     #[storage(read)]
     fn get(hash: b256) -> Option<Bytes>;
+
+    #[storage(write)]
+    fn reverse_set(key: b256, value: String);
+
+    #[storage(read)]
+    fn reverse_get(resolver: b256) -> String;
 }

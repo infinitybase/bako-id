@@ -1,6 +1,6 @@
-import { FuelDomainOutput } from './contracts/RegistryContractAbi';
+import { FuelDomainOutput } from './sway/contracts/RegistryContractAbi';
 
-export * from './contracts';
+export * from './sway/contracts';
 
 export type Nullable<T> = T | null;
 

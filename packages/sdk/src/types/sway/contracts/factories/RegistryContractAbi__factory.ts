@@ -4,7 +4,7 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.76.0
+  Fuels version: 0.77.0
   Forc version: 0.51.1
   Fuel-Core version: 0.22.1
 */
@@ -318,6 +318,29 @@ const _abi = {
           ]
         }
       ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "resolver",
+          "type": 1,
+          "typeArguments": null
+        }
+      ],
+      "name": "reverse_name",
+      "output": {
+        "name": "",
+        "type": 13,
+        "typeArguments": null
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
     }
   ],
   "loggedTypes": [
@@ -379,6 +402,14 @@ const _abi = {
     },
     {
       "logId": 7,
+      "loggedType": {
+        "name": "",
+        "type": 5,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": 8,
       "loggedType": {
         "name": "",
         "type": 5,

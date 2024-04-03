@@ -1,6 +1,6 @@
 import { connectContracts, getRegistryContract } from '../src/setup';
 import { Provider, Wallet } from 'fuels';
-import { envrionment } from '../src/config';
+import { config } from '../src/config';
 import { getTxParams } from '../src/utils';
 
 require('dotenv').config();
@@ -18,7 +18,7 @@ const updataStorageRegistry = async () => {
   const { registry, storage } = connectContracts({
     account: mainWallet,
     storageId: STORAGE_ID!,
-    registryId: envrionment.REGISTRY_CONTRACT_ID,
+    registryId: config.REGISTRY_CONTRACT_ID,
   });
 
   await storage.functions.set_implementation({

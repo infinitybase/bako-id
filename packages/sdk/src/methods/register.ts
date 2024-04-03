@@ -1,7 +1,7 @@
 import { Account, BaseAssetId } from 'fuels';
 import { assertValidDomain, domainPrices, getTxParams, NotFoundBalanceError } from '../utils';
 import { getRegistryContract } from '../setup';
-import { envrionment } from '../config';
+import { config } from '../config';
 
 type RegisterDomainParams = {
   domain: string,
@@ -51,7 +51,7 @@ export async function register(params: RegisterDomainParams) {
 
   const { registry } = await getRegistryContract({
     account,
-    storageId: envrionment.STORAGE_CONTRACT_ID!
+    storageId: config.STORAGE_CONTRACT_ID!
   });
 
   // Change account for the user account!

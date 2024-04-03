@@ -1,19 +1,24 @@
-import { BaseAssetId, bn, Provider, ScriptTransactionRequest, Wallet, WalletUnlocked } from 'fuels';
+import {
+  BaseAssetId,
+  bn,
+  Provider,
+  ScriptTransactionRequest,
+  Wallet,
+  WalletUnlocked,
+} from 'fuels';
 import { register, resolver } from '../index';
-import { InvalidDomainError, NotFoundBalanceError } from '../utils';
+import { InvalidDomainError, NotFoundBalanceError, randomName } from '../utils';
 
 const { PROVIDER_URL, TEST_WALLET } = process.env;
 
-function randomName(size = 5) {
-  const name = (Math.random() + 2).toString(32).substring(2);
-  return `${name}`.slice(0, size);
-}
-
-async function createFakeWallet(provider: Provider, mainWallet: WalletUnlocked) {
+async function createFakeWallet(
+  provider: Provider,
+  mainWallet: WalletUnlocked,
+) {
   const fakeWallet = Wallet.generate({ provider });
   const quantity = {
     assetId: BaseAssetId,
-    amount: bn.parseUnits('0.0000001')
+    amount: bn.parseUnits('0.0000001'),
   };
   const resourcesToSpend = await mainWallet.getResourcesToSpend([quantity]);
   const { minGasPrice } = provider.getGasConfig();
@@ -45,7 +50,7 @@ describe('Test Registry', () => {
     const invalidSuffix = register({
       account: wallet,
       resolver: wallet.address.toB256(),
-      domain: 'namenotfuel@'
+      domain: 'namenotfuel@',
     });
 
     await expect(invalidSuffix).rejects.toBeInstanceOf(InvalidDomainError);
@@ -53,7 +58,7 @@ describe('Test Registry', () => {
     const invalidPreffix = register({
       account: wallet,
       resolver: wallet.address.toB256(),
-      domain: '#namenotfuel'
+      domain: '#namenotfuel',
     });
 
     await expect(invalidPreffix).rejects.toBeInstanceOf(InvalidDomainError);
@@ -61,7 +66,7 @@ describe('Test Registry', () => {
     const invalidChars = register({
       account: wallet,
       resolver: wallet.address.toB256(),
-      domain: 'namen otfuel'
+      domain: 'namen otfuel',
     });
 
     await expect(invalidChars).rejects.toBeInstanceOf(InvalidDomainError);
@@ -71,7 +76,7 @@ describe('Test Registry', () => {
     const result = await register({
       account: wallet,
       resolver: wallet.address.toB256(),
-      domain: `bako_${randomName(3)}`
+      domain: `bako_${randomName(3)}`,
     });
 
     expect(result.transactionResult).toBeDefined();
@@ -83,14 +88,13 @@ describe('Test Registry', () => {
     const result = await register({
       account: wallet,
       resolver: wallet.address.toB256(),
-      domain: domain
+      domain: domain,
     });
 
     expect(result.transactionResult.status).toBe('success');
 
-    const resolvedDomain = await resolver({
-      domain,
-      provider
+    const resolvedDomain = await resolver(domain, {
+      provider,
     });
 
     expect(resolvedDomain.owner).toBe(wallet.address.toB256());

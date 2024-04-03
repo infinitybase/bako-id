@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.71.1
-  Forc version: 0.48.1
-  Fuel-Core version: 0.22.0
+  Fuels version: 0.78.0
+  Forc version: 0.51.1
+  Fuel-Core version: 0.22.1
 */
 
 import { Interface, Contract, ContractFactory } from "fuels";
@@ -279,14 +279,14 @@ const _abi = {
       },
       "attributes": [
         {
-          "name": "payable",
-          "arguments": []
-        },
-        {
           "name": "storage",
           "arguments": [
             "read"
           ]
+        },
+        {
+          "name": "payable",
+          "arguments": []
         }
       ]
     },
@@ -309,6 +309,29 @@ const _abi = {
             "typeArguments": null
           }
         ]
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "resolver",
+          "type": 1,
+          "typeArguments": null
+        }
+      ],
+      "name": "reverse_name",
+      "output": {
+        "name": "",
+        "type": 13,
+        "typeArguments": null
       },
       "attributes": [
         {
@@ -379,6 +402,14 @@ const _abi = {
     },
     {
       "logId": 7,
+      "loggedType": {
+        "name": "",
+        "type": 5,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": 8,
       "loggedType": {
         "name": "",
         "type": 5,

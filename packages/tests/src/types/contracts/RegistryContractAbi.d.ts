@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.71.1
-  Forc version: 0.48.1
-  Fuel-Core version: 0.22.0
+  Fuels version: 0.78.0
+  Forc version: 0.51.1
+  Fuel-Core version: 0.22.1
 */
 
 import type {
@@ -45,15 +45,18 @@ interface RegistryContractAbiInterface extends Interface {
     constructor: FunctionFragment;
     register: FunctionFragment;
     resolver: FunctionFragment;
+    reverse_name: FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: 'constructor', values: [AddressInput, ContractIdInput]): Uint8Array;
   encodeFunctionData(functionFragment: 'register', values: [StdString, string]): Uint8Array;
   encodeFunctionData(functionFragment: 'resolver', values: [StdString]): Uint8Array;
+  encodeFunctionData(functionFragment: 'reverse_name', values: [string]): Uint8Array;
 
   decodeFunctionData(functionFragment: 'constructor', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'register', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'resolver', data: BytesLike): DecodedValue;
+  decodeFunctionData(functionFragment: 'reverse_name', data: BytesLike): DecodedValue;
 }
 
 export class RegistryContractAbi extends Contract {
@@ -62,5 +65,6 @@ export class RegistryContractAbi extends Contract {
     constructor: InvokeFunction<[owner: AddressInput, storage_id: ContractIdInput], void>;
     register: InvokeFunction<[name: StdString, resolver: string], void>;
     resolver: InvokeFunction<[name: StdString], Option<FuelDomainOutput>>;
+    reverse_name: InvokeFunction<[resolver: string], StdString>;
   };
 }
