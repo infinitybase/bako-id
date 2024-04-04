@@ -7,15 +7,15 @@ import { Domains } from '../types';
 import { useRegisterDomainRequests } from './useRegisterDomainRequests';
 import { useResolveDomainRequests } from './useResolveDomainRequests';
 
-export const useDomain = () => {
+export const useDomain = (newDomain?: string) => {
+  const { domain } = useParams({ strict: false });
   const toast = useToast();
   const navigate = useNavigate();
   const { wallet } = useFuelConnect();
 
   const registerDomain = useRegisterDomainRequests();
-  const resolveDomain = useResolveDomainRequests();
+  const resolveDomain = useResolveDomainRequests(domain ?? newDomain);
 
-  const { domain } = useParams({ strict: false });
   const [domains, setDomains] = useState<Domains[]>([
     {
       name: domain,
