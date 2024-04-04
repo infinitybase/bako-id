@@ -1,13 +1,18 @@
 import { Account, BaseAssetId } from 'fuels';
-import { assertValidDomain, domainPrices, getTxParams, NotFoundBalanceError } from '../utils';
+import {
+  assertValidDomain,
+  domainPrices,
+  getTxParams,
+  NotFoundBalanceError,
+} from '../utils';
 import { getRegistryContract } from '../setup';
 import { config } from '../config';
 
 type RegisterDomainParams = {
-  domain: string,
-  resolver: string,
-  account: Account,
-}
+  domain: string;
+  resolver: string;
+  account: Account;
+};
 
 /**
  * Checks if the account has sufficient balance to cover the given domain price.
@@ -51,7 +56,7 @@ export async function register(params: RegisterDomainParams) {
 
   const { registry } = await getRegistryContract({
     account,
-    storageId: config.STORAGE_CONTRACT_ID!
+    storageId: config.STORAGE_CONTRACT_ID!,
   });
 
   // Change account for the user account!
@@ -60,19 +65,64 @@ export async function register(params: RegisterDomainParams) {
   const txParams = getTxParams(account.provider);
   const amount = await checkAccountBalance(account, domainName);
 
-  const { transactionResult, transactionResponse, gasUsed, transactionId } = await registry
-    .functions
-    .register(domainName, resolver)
-    .callParams({
-      forward: { amount, assetId: BaseAssetId }
-    })
-    .txParams(txParams)
-    .call();
+  const { transactionResult, transactionResponse, gasUsed, transactionId } =
+    await registry.functions
+      .register(domainName, resolver)
+      .callParams({
+        forward: { amount, assetId: BaseAssetId },
+      })
+      .txParams(txParams)
+      .call();
 
   return {
     gasUsed,
     transactionId,
     transactionResult,
-    transactionResponse
+    transactionResponse,
+  };
+}
+
+/**
+ * Simulates the cost of bako handle registration.
+ *
+ * @param {RegisterDomainParams} params - The parameters for domain registration.
+ * @param {string} params.account - The user's account.
+ * @param {string} params.domain - The domain to be registered.
+ * @param {string} params.resolver - The resolver for the domain.
+ *
+ * @return {Promise<Object>} - An object containing the fee and transaction request.
+ * @return {BigNumber} fee - The total fee for handling the transaction.
+ * @return {TransactionRequest} transactionRequest - The transaction request object.
+ */
+export async function simulateHandleCost(params: RegisterDomainParams) {
+  const { account, domain, resolver } = params;
+
+  const domainName = assertValidDomain(domain);
+
+  const { registry } = await getRegistryContract({
+    account,
+    storageId: config.STORAGE_CONTRACT_ID!,
+  });
+
+  // Change account for the user account!
+  registry.account = account;
+
+  const txParams = getTxParams(account.provider);
+  const amount = await checkAccountBalance(account, domainName);
+
+  const transactionRequest = await registry.functions
+    .register(domainName, resolver)
+    .callParams({
+      forward: { amount, assetId: BaseAssetId },
+    })
+    .txParams(txParams)
+    .getTransactionRequest();
+
+  const { usedFee, minFee } =
+    await account.provider.getTransactionCost(transactionRequest);
+
+  return {
+    fee: usedFee.add(minFee),
+    transactionRequest,
   };
 }
