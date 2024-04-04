@@ -1,12 +1,10 @@
 import { Box, Button, Icon, Text } from '@chakra-ui/react';
 import { DrawerConnector } from '..';
 import { useFuelConnect } from '../../hooks';
-import { useScreenSize } from '../../hooks/useScreenSize';
 import { WalletIcon } from '../icons/wallet';
 
-export const Connect = () => {
+export const ConnectButton = () => {
   const { connectors } = useFuelConnect();
-  const { isMobile } = useScreenSize();
 
   return (
     <>
@@ -16,36 +14,25 @@ export const Connect = () => {
         w="full"
         display="flex"
         gap={2}
-        bgColor={{ base: 'transparent', md: 'button.500' }}
+        bgColor="button.500"
         fontSize="sm"
-        color={{ base: 'button.500', md: 'background.500' }}
         _hover={{ bgColor: 'button.600' }}
         className="transition-all-05"
       >
         {!connectors.isConnecting ? (
           <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
-            {!isMobile && (
-              <Icon
-                as={WalletIcon}
-                alignSelf="center"
-                h={4}
-                w={4}
-                color="background.500"
-              />
-            )}
-            <Text>Connect Wallet</Text>
-            {isMobile && (
-              <Icon
-                as={WalletIcon}
-                alignSelf="center"
-                h={4}
-                w={4}
-                color="button.500"
-              />
-            )}
+            <Icon
+              as={WalletIcon}
+              alignSelf="center"
+              h={4}
+              w={4}
+              color="background.500"
+            />
+
+            <Text color="background.500">Connect Wallet</Text>
           </Box>
         ) : (
-          <Text>Connecting...</Text>
+          <Text color="background.500">Connecting...</Text>
         )}
       </Button>
       <DrawerConnector
