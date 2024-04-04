@@ -1,5 +1,5 @@
 import { Box, Text, VStack } from '@chakra-ui/react';
-import { IChildren } from '../../types';
+import type { IChildren } from '../../types';
 import Add from '../Add';
 
 const Domains = ({ children }: IChildren) => {
@@ -8,9 +8,7 @@ const Domains = ({ children }: IChildren) => {
       <Text color="section.200" fontWeight={600} marginBottom={4}>
         Domains
       </Text>
-      <VStack spacing={5}>
-        {children}
-      </VStack>
+      <VStack spacing={5}>{children}</VStack>
       {/*<Modal*/}
       {/*  domain={domain}*/}
       {/*  setDomain={setDomain}*/}
@@ -20,13 +18,13 @@ const Domains = ({ children }: IChildren) => {
       {/*  onClose={onClose}*/}
       {/*/>*/}
       <Add
-        // onClick={() => {
-        //   setDomain("");
-        //   onOpen();
-        // }}
+      // onClick={() => {
+      //   setDomain("");
+      //   onOpen();
+      // }}
       />
     </Box>
-  )
-}
+  );
+};
 
-export { Domains }
+export { Domains };

@@ -5,22 +5,16 @@ import { Coin } from '../../types';
 const { ETH } = Coin;
 
 interface CheckoutProps {
-  length: number,
-  totalPrice: number,
-  networkFee: number
+  length: number;
+  totalPrice: number;
+  networkFee: number;
 }
 
 export const Checkout = ({ length, totalPrice, networkFee }: CheckoutProps) => {
-
-  const multipleBuys = length > 1 ? 'Domains' : 'Domain'
+  const multipleBuys = length > 1 ? 'Domains' : 'Domain';
 
   return (
-    <VStack
-      w="full"
-      bg="input.500"
-      p=".5rem 1rem 1rem 1rem"
-      borderRadius={8}
-    >
+    <VStack w="full" bg="input.500" p=".5rem 1rem 1rem 1rem" borderRadius={8}>
       <HStack w="full">
         <Text fontSize="medium" fontWeight={600} color="white">
           {`${length} Domain`}
@@ -83,5 +77,5 @@ export const Checkout = ({ length, totalPrice, networkFee }: CheckoutProps) => {
         </HStack>
       </VStack>
     </VStack>
-  )
-}
+  );
+};

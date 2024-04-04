@@ -6,6 +6,6 @@ export const useFuelConnect = () => {
 
   return {
     wallet,
-    currentAccount: account
+    currentAccount: account,
   };
 };

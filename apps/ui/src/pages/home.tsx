@@ -9,7 +9,7 @@ import {
   Image,
   Box,
 } from '@chakra-ui/react';
-import { ChangeEvent, useCallback, useMemo, useState } from 'react';
+import { type ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { debounce } from 'lodash';
 import { resolver } from '@bako-id/sdk';
 import { useMutation } from '@tanstack/react-query';
@@ -39,7 +39,7 @@ export const Home = () => {
         if (!info) {
           console.debug(
             "Info returned from 'https://beta-5.fuel.network/graphql'",
-            info,
+            info
           );
           setAvailable(true);
           return;
@@ -47,7 +47,7 @@ export const Home = () => {
         setAvailable(false);
       });
     }, 500),
-    [],
+    []
   );
 
   const handleChangeDomain = (e: ChangeEvent<HTMLInputElement>) => {

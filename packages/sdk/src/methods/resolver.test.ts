@@ -1,4 +1,4 @@
-import { Address, Provider, Wallet, WalletUnlocked } from 'fuels';
+import { Address, Provider, Wallet, type WalletUnlocked } from 'fuels';
 import { register, resolver } from '../index';
 import { randomName } from '../utils';
 import { reverseResolver } from './resolver';
@@ -9,7 +9,7 @@ describe('Test resolver', () => {
   let wallet: WalletUnlocked;
   let provider: Provider;
 
-  let domain = 'bako_id_not_found';
+  const domain = 'bako_id_not_found';
 
   beforeAll(async () => {
     provider = await Provider.create(PROVIDER_URL);
@@ -53,19 +53,19 @@ describe('Test resolver', () => {
     await expect(
       reverseResolver(resolver, {
         provider,
-      }),
+      })
     ).resolves.toBe(name);
 
     await expect(
       reverseResolver(resolver, {
         providerURL: provider.url,
-      }),
+      })
     ).resolves.toBe(name);
 
     await expect(
       reverseResolver(resolver, {
         account: wallet,
-      }),
+      })
     ).resolves.toBe(name);
 
     // await expect(reverseResolver(resolver)).resolves.toBe(name);

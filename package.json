@@ -9,6 +9,7 @@
     "test:packages": "turbo run test --filter='./packages/*'"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.6.4",
     "turbo": "1.8.8"
   },
   "keywords": [],

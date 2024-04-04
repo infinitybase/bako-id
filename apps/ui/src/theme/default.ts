@@ -1,11 +1,11 @@
-import { extendTheme } from "@chakra-ui/react";
-import { colors } from "./colors";
+import { extendTheme } from '@chakra-ui/react';
+import { colors } from './colors';
 import { breakpoints } from './breakpoints.ts';
 
 const defaultTheme = extendTheme({
-  initialColorMode: "dark",
+  initialColorMode: 'dark',
   colors,
-  breakpoints
+  breakpoints,
 });
 
 export { defaultTheme };

@@ -28,7 +28,8 @@ describe('Domain utils', () => {
   });
 
   test('Domain price validation', () => {
-    const getDomainPrice = (domain: string) => domainPrices(assertValidDomain(domain));
+    const getDomainPrice = (domain: string) =>
+      domainPrices(assertValidDomain(domain));
 
     const threeChars = getDomainPrice('@now');
     const fourChars = getDomainPrice('@noww');
@@ -37,5 +38,5 @@ describe('Domain utils', () => {
     expect(threeChars.eq(bn.parseUnits('0.005'))).toBeTruthy();
     expect(fourChars.eq(bn.parseUnits('0.001'))).toBeTruthy();
     expect(fiveChars.eq(bn.parseUnits('0.0002'))).toBeTruthy();
-  })
+  });
 });

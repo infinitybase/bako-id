@@ -1,4 +1,4 @@
-import { Account, BaseAssetId } from 'fuels';
+import { type Account, BaseAssetId } from 'fuels';
 import {
   assertValidDomain,
   domainPrices,

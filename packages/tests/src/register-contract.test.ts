@@ -3,7 +3,7 @@ import {
   Provider,
   RequireRevertError,
   TransactionStatus,
-  WalletUnlocked,
+  type WalletUnlocked,
 } from 'fuels';
 import {
   createWallet,
@@ -69,7 +69,7 @@ describe('[METHODS] Test Registry Contract', () => {
 
       const { transactionResult: txRegister } = await registry.register(
         domain,
-        wallet.address.toB256(),
+        wallet.address.toB256()
       );
 
       expect(txRegister.status).toBe(TransactionStatus.failure);
@@ -88,7 +88,7 @@ describe('[METHODS] Test Registry Contract', () => {
     const domain = randomName();
     const { transactionResult: txRegister } = await registry.register(
       domain,
-      wallet.address.toB256(),
+      wallet.address.toB256()
     );
 
     const { value } = await registry.functions

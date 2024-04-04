@@ -1,4 +1,4 @@
-import { Badge as ChakraBadge } from "@chakra-ui/react";
+import { Badge as ChakraBadge } from '@chakra-ui/react';
 
 interface BadgeProps {
   title: string;
@@ -20,8 +20,8 @@ function Badge({ title, color }: BadgeProps) {
   );
 }
 
-export const UnavailableBadge = () =>
-  <Badge title="Unavailable" color="#F05D48" />;
+export const UnavailableBadge = () => (
+  <Badge title="Unavailable" color="#F05D48" />
+);
 
-export const AvailableBadge = () =>
-  <Badge title="Available" color="#32C8D9" />;
+export const AvailableBadge = () => <Badge title="Available" color="#32C8D9" />;

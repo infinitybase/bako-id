@@ -1,5 +1,5 @@
-import { Account, Address, Provider } from 'fuels';
-import { ResolverReturn } from '../types';
+import { type Account, Address, Provider } from 'fuels';
+import type { ResolverReturn } from '../types';
 import { assertValidDomain, getTxParams } from '../utils';
 import { getRegistryContract } from '../setup';
 import { config } from '../config';
@@ -23,7 +23,7 @@ type ResolverProviderParams = {
  * @returns {Promise<Provider>} The retrieved provider.
  */
 async function getProviderFromParams(
-  params?: ResolverProviderParams,
+  params?: ResolverProviderParams
 ): Promise<Provider> {
   if (!params) {
     return Provider.create(config.PROVIDER_DEPLOYED!);
@@ -53,7 +53,7 @@ async function getProviderFromParams(
  */
 export async function resolver(
   domain: string,
-  params?: ResolverProviderParams,
+  params?: ResolverProviderParams
 ): ResolverReturn {
   const domainName = assertValidDomain(domain);
 
@@ -88,7 +88,7 @@ export async function resolver(
  */
 export async function reverseResolver(
   resolver: Address | string,
-  params?: ResolverProviderParams,
+  params?: ResolverProviderParams
 ): Promise<string | null> {
   const resolverAddress =
     typeof resolver === 'string'
@@ -108,5 +108,5 @@ export async function reverseResolver(
     .txParams(txParams)
     .dryRun();
 
-  return !!value ? value : null;
+  return value ? value : null;
 }

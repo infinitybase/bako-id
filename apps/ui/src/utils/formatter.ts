@@ -1,17 +1,17 @@
 const coinSymbol = {
-  USD: "$",
-  ETH: "ETH",
+  USD: '$',
+  ETH: 'ETH',
 };
 
 enum Coin {
-  USD = "USD",
-  ETH = "ETH",
+  USD = 'USD',
+  ETH = 'ETH',
 }
 
 const formatCoin = (value: number, selectedCoin: Coin) => {
-  if (!value) return "--.--";
+  if (!value) return '--.--';
 
-  const formatted = value.toLocaleString("en-US", {
+  const formatted = value.toLocaleString('en-US', {
     // minimumFractionDigits: 2,
     // maximumFractionDigits: 2,
   });

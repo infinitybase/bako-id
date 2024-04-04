@@ -1,4 +1,4 @@
-import { FuelDomainOutput } from './sway/contracts/RegistryContractAbi';
+import type { FuelDomainOutput } from './sway/contracts/RegistryContractAbi';
 
 export * from './sway/contracts';
 
@@ -6,6 +6,6 @@ export type Nullable<T> = T | null;
 
 export type Domain = FuelDomainOutput & {
   name: string;
-}
+};
 
-export type ResolverReturn = Promise<Nullable<Domain>>
+export type ResolverReturn = Promise<Nullable<Domain>>;

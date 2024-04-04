@@ -4,7 +4,7 @@ import {
   Provider,
   ScriptTransactionRequest,
   Wallet,
-  WalletUnlocked,
+  type WalletUnlocked,
 } from 'fuels';
 import { register, resolver } from '../index';
 import { InvalidDomainError, NotFoundBalanceError, randomName } from '../utils';
@@ -13,7 +13,7 @@ const { PROVIDER_URL, TEST_WALLET } = process.env;
 
 async function createFakeWallet(
   provider: Provider,
-  mainWallet: WalletUnlocked,
+  mainWallet: WalletUnlocked
 ) {
   const fakeWallet = Wallet.generate({ provider });
   const quantity = {

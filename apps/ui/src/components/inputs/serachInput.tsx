@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import type React from 'react';
+import { useState } from 'react';
 import {
   Input as ChakraInput,
   FormHelperText,
   InputGroup,
-  InputLeftAddon, InputRightElement
+  InputLeftAddon,
+  InputRightElement,
 } from '@chakra-ui/react';
 import { UnavailableBadge, AvailableBadge } from '../helpers';
 
@@ -16,10 +18,10 @@ interface InputProps {
 export const SearchInput = ({
   onChange,
   errorMessage,
-  available
+  available,
 }: InputProps) => {
-  const [inputValue, setInputValue] = useState("");
-  console.debug(available)
+  const [inputValue, setInputValue] = useState('');
+  console.debug(available);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value.substring(0));
     onChange(e);
@@ -28,7 +30,12 @@ export const SearchInput = ({
   return (
     <>
       <InputGroup borderRightColor="transparent" border="none">
-        <InputLeftAddon borderLeftColor="transparent" bgColor="background.400" color="white" border="none">
+        <InputLeftAddon
+          borderLeftColor="transparent"
+          bgColor="background.400"
+          color="white"
+          border="none"
+        >
           @
         </InputLeftAddon>
         <ChakraInput
@@ -46,7 +53,7 @@ export const SearchInput = ({
           onChange={handleChange}
           border="none"
           borderRadius={10}
-          sx={{ _placeholder: { color: "text.500" } }}
+          sx={{ _placeholder: { color: 'text.500' } }}
           _focus={{}}
           _hover={{}}
           _focusVisible={{}}
@@ -57,7 +64,6 @@ export const SearchInput = ({
             children={available ? <AvailableBadge /> : <UnavailableBadge />}
           />
         )}
-
       </InputGroup>
 
       {errorMessage && (
@@ -65,4 +71,4 @@ export const SearchInput = ({
       )}
     </>
   );
-}
+};

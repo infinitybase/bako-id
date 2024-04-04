@@ -1,14 +1,15 @@
 import { Button, Image } from '@chakra-ui/react';
 import { useConnectUI } from '@fuels/react';
-import link from '../../assets/link.svg'
+import link from '../../assets/link.svg';
 
 export const Connect = () => {
   const { connect } = useConnectUI();
   const handleConnect = () => {
-    connect()
-  }
+    connect();
+  };
 
-  return <Button
+  return (
+    <Button
       onClick={handleConnect}
       w="full"
       display="flex"
@@ -23,4 +24,5 @@ export const Connect = () => {
       Connect
       <Image src={link} alt="link" width={4} height={4} fill="button.500" />
     </Button>
-}
+  );
+};

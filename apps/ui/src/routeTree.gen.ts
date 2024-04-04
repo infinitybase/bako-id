@@ -10,39 +10,39 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as ChildrensImport } from './routes/childrens'
-import { Route as IndexImport } from './routes/index'
+import { Route as rootRoute } from './routes/__root';
+import { Route as ChildrensImport } from './routes/childrens';
+import { Route as IndexImport } from './routes/index';
 
 // Create/Update Routes
 
 const ChildrensRoute = ChildrensImport.update({
   path: '/childrens',
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
+      preLoaderRoute: typeof IndexImport;
+      parentRoute: typeof rootRoute;
+    };
     '/childrens': {
-      preLoaderRoute: typeof ChildrensImport
-      parentRoute: typeof rootRoute
-    }
+      preLoaderRoute: typeof ChildrensImport;
+      parentRoute: typeof rootRoute;
+    };
   }
 }
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren([IndexRoute, ChildrensRoute])
+export const routeTree = rootRoute.addChildren([IndexRoute, ChildrensRoute]);
 
 /* prettier-ignore-end */

@@ -3,9 +3,9 @@ import { router } from '../../routes';
 import { useIsConnected } from '@fuels/react';
 
 export function InnerApp() {
-  const { isConnected} = useIsConnected();
+  const { isConnected } = useIsConnected();
 
-  if(isConnected === null) return;
+  if (isConnected === null) return;
 
-  return <RouterProvider router={router} context={{ isConnected }}/>
+  return <RouterProvider router={router} context={{ isConnected }} />;
 }

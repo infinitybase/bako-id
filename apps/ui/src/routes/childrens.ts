@@ -19,7 +19,7 @@ export const homeRoute = createRoute({
   //     })
   //   }
   // }
-})
+});
 
 export const connectRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -40,28 +40,28 @@ export const connectRoute = createRoute({
   //     })
   //   }
   // }
-})
+});
 
 export const domainRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: Domain,
-  path: '/$domain'
-})
+  path: '/$domain',
+});
 
 export const buyRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: Buy,
-  path: '/buy/$domain'
-})
+  path: '/buy/$domain',
+});
 
 export const checkoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: Purchased,
-  path: '/checkout/$domain'
-})
+  path: '/checkout/$domain',
+});
 
 export const domainsRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: Domains,
-  path: '/user/domains'
-})
+  path: '/user/domains',
+});

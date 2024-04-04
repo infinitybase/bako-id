@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { Domain as IDomain, resolver } from '@bako-id/sdk';
+import { type Domain as IDomain, resolver } from '@bako-id/sdk';
 import { useParams } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { Center, useToast } from '@chakra-ui/react';

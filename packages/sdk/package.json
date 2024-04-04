@@ -15,9 +15,7 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "build": "pnpm build:package",
     "build:contracts": "fuels build && fuels deploy",

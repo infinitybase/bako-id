@@ -5,5 +5,5 @@ import { Checkout } from './checkout.tsx';
 export const BuyComponents = {
   Domains: Domains,
   Info: Info,
-  Checkout: Checkout
-}
+  Checkout: Checkout,
+};

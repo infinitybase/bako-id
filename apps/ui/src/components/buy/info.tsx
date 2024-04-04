@@ -8,8 +8,8 @@ import { Coin } from '../../types';
 const { ETH } = Coin;
 
 interface InfoProps {
-  name: string,
-  index: number,
+  name: string;
+  index: number;
   periodHandle: (index: number, newValue: number) => void;
 }
 
@@ -29,22 +29,13 @@ const Info = ({ name, index, periodHandle }: InfoProps) => {
           justifyContent="space-around"
           alignItems="center"
         >
-          <NumericInput
-            index={index}
-            onChange={periodHandle}
-            key={0}
-          />
-          <Flex
-            gap={3}
-            alignItems="center"
-            w="80%"
-            justifyContent="flex-end"
-          >
+          <NumericInput index={index} onChange={periodHandle} key={0} />
+          <Flex gap={3} alignItems="center" w="80%" justifyContent="flex-end">
             <Text color="white" fontSize="sm">
               {formatCoin(calculateDomainPrice(name, 1), ETH)}
             </Text>
             <DeleteIcon
-              cursor={"pointer"}
+              cursor={'pointer'}
               color="error.500"
               // onClick={() => {
               //   index === 0 && items.length === 1
@@ -56,7 +47,7 @@ const Info = ({ name, index, periodHandle }: InfoProps) => {
         </Flex>
       </VStack>
     </VStack>
-  )
-}
+  );
+};
 
-export { Info }
+export { Info };

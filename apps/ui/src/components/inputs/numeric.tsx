@@ -1,4 +1,4 @@
-import { Box, Button, Input } from "@chakra-ui/react";
+import { Box, Button, Input } from '@chakra-ui/react';
 import { useState } from 'react';
 
 interface NumericInputProps {
@@ -6,17 +6,17 @@ interface NumericInputProps {
   onChange: (index: number, newValue: number) => void;
 }
 
-export const NumericInput = ({index, onChange }: NumericInputProps) => {
-  const [period, setPeriod] = useState(1)
+export const NumericInput = ({ index, onChange }: NumericInputProps) => {
+  const [period, setPeriod] = useState(1);
   const decrement = () => {
     const newValue = Math.max(period - 1, 1);
-    setPeriod(prev => prev - 1)
+    setPeriod((prev) => prev - 1);
     onChange(index, newValue);
   };
 
   const increment = () => {
     const newValue = period + 1;
-    setPeriod(prev => prev + 1)
+    setPeriod((prev) => prev + 1);
     onChange(index, newValue);
   };
 
@@ -35,13 +35,13 @@ export const NumericInput = ({index, onChange }: NumericInputProps) => {
         fontSize={24}
         isDisabled={period <= 1}
         onClick={decrement}
-        _active={{ backgroundColor: "inherit" }}
+        _active={{ backgroundColor: 'inherit' }}
         _focus={{
-          backgroundColor: "inherit",
-          boxShadow: "none",
-          outline: "none",
+          backgroundColor: 'inherit',
+          boxShadow: 'none',
+          outline: 'none',
         }}
-        _hover={{ bgColor: "transparent" }}
+        _hover={{ bgColor: 'transparent' }}
       >
         -
       </Button>
@@ -60,9 +60,9 @@ export const NumericInput = ({index, onChange }: NumericInputProps) => {
         backgroundColor="inherit"
         fontSize={24}
         onClick={increment}
-        _active={{ bgColor: "inherit" }}
-        _focus={{ bgColor: "inherit" }}
-        _hover={{ bgColor: "transparent" }}
+        _active={{ bgColor: 'inherit' }}
+        _focus={{ bgColor: 'inherit' }}
+        _hover={{ bgColor: 'transparent' }}
         // isDisabled={value >= 3}
         // isDisabled={true}
       >

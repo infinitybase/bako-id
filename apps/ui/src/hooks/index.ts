@@ -1,1 +1,1 @@
-export * from './useFuelConnect'
+export * from './useFuelConnect';

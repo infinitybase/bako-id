@@ -13,7 +13,7 @@ import { useNavigate, useParams } from '@tanstack/react-router';
 import { BuyComponents } from '../components/buy';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Domains } from '../types';
+import type { Domains } from '../types';
 import { calculateDomainPrice } from '../utils/calculator.ts';
 
 const checkDomain = (domain: string) => {
@@ -47,7 +47,7 @@ export const Buy = () => {
 
   const totalPrice = domains.reduce(
     (previous, current) => previous + calculateDomainPrice(current.name, 1),
-    0,
+    0
   );
 
   const handleConfirmDomain = async () => {
@@ -88,7 +88,7 @@ export const Buy = () => {
           }).then();
         },
         onError: console.log,
-      },
+      }
     );
   };
 
