@@ -9,10 +9,36 @@ import {
 import { BuyComponents } from '../../components';
 import { BuyOrConnectButton } from '../../components/buttons';
 import { GoBack } from '../../components/helpers';
+import { BuyError } from '../../components/helpers/buyError';
+import { useFuelConnect } from '../../hooks';
+import { useScreenSize } from '../../hooks/useScreenSize';
 import { useBuy } from './hooks/useBuy';
 
 export const Buy = () => {
-  const { domains, handlePeriodChange } = useBuy();
+  const { wallet } = useFuelConnect();
+  const {
+    domains,
+    handlePeriodChange,
+    buyError,
+    totalPrice,
+    handleBuyDomain,
+    isLoadingBalance,
+    signInLoad,
+    walletBalance,
+  } = useBuy();
+
+  const { isMobile } = useScreenSize();
+
+  const BuyButton = (
+    <BuyOrConnectButton
+      handleBuyDomain={handleBuyDomain}
+      isLoadingBalance={isLoadingBalance}
+      signInLoad={signInLoad}
+      totalPrice={totalPrice}
+      wallet={!!wallet}
+      walletBalance={Number(walletBalance)}
+    />
+  );
 
   return (
     <Box
@@ -20,16 +46,18 @@ export const Buy = () => {
       h="full"
       display="flex"
       alignItems="center"
+      mt={[12, 24, 0]}
       gap={12}
       flexDirection="column"
+      overflow="hidden"
     >
-      <GoBack />
+      {!isMobile && <GoBack />}
       <Card
         border="1px solid"
         borderColor="stroke.500"
         p={6}
-        w="35%"
-        h="60%"
+        w={['95%', '70%', '35%']}
+        h={['70%', '55%', '60%']}
         alignSelf="center"
         display="flex"
         flexDir="column"
@@ -67,8 +95,18 @@ export const Buy = () => {
             />
           </VStack>
         </CardBody>
-        <BuyOrConnectButton />
+        <BuyError
+          totalPrice={totalPrice}
+          walletBalance={Number(walletBalance)}
+          buyError={buyError}
+        />
+        {!isMobile && BuyButton}
       </Card>
+      {isMobile && (
+        <Box w="full" p={5} position="absolute" bottom={0}>
+          {BuyButton}
+        </Box>
+      )}
     </Box>
   );
 };

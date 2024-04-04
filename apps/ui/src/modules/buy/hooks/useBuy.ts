@@ -17,6 +17,7 @@ export enum Coin {
   ETH = 'ETH',
 }
 export const useBuy = () => {
+  const { domain } = useParams({ strict: false });
   const { wallet } = useFuelConnect();
   const { balance, fetchUSD } = useCalculateDomain();
   const { balance: walletBalance, isLoading: isLoadingBalance } = useBalance({
@@ -24,8 +25,7 @@ export const useBuy = () => {
   });
   const { registerDomain, resolveDomain } = useDomain();
   const [selectedCoin, setSelectedCoin] = useState<Coin>(Coin.ETH);
-
-  const { domain } = useParams({ strict: false });
+  const [signInLoad, setSignInLoad] = useState<boolean>(false);
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -74,7 +74,8 @@ export const useBuy = () => {
   const handleBuyDomain = async () => {
     const isValid = isValidDomain(domain);
     console.log(wallet);
-    if (!isValid || !wallet) return;
+    if (!isValid || !wallet || !walletBalance) return;
+    setSignInLoad(true);
 
     registerDomain.mutate(
       {
@@ -97,9 +98,11 @@ export const useBuy = () => {
             params: { domain: domain },
             startTransition: true,
           }).then();
+          setSignInLoad(false);
         },
         onError: (error: unknown) => {
           setBuyError((error as Error).message);
+          setSignInLoad(false);
         },
       },
     );
@@ -145,6 +148,7 @@ export const useBuy = () => {
     domains,
     selectedCoin,
     buyError,
+    signInLoad,
     walletBalance: walletBalance?.format(),
     isLoadingBalance,
     formatCoin,
