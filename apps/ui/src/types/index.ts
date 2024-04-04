@@ -1,5 +1,5 @@
-import * as fuels from 'fuels';
-import { ReactElement } from 'react';
+import type * as fuels from 'fuels';
+import type { ReactElement } from 'react';
 
 export enum Coin {
   USD = 'USD',

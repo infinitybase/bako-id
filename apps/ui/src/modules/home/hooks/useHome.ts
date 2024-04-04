@@ -2,7 +2,13 @@ import { isValidDomain } from '@bako-id/sdk';
 import { useFuel } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
 import { debounce } from 'lodash';
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  type ChangeEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useDomain } from '../../../hooks';
 
 export const useHome = () => {
@@ -35,7 +41,7 @@ export const useHome = () => {
           if (!info) {
             console.debug(
               "Info returned from 'https://beta-5.fuel.network/graphql'",
-              info,
+              info
             );
             setAvailable(true);
             return;
@@ -43,7 +49,7 @@ export const useHome = () => {
           setAvailable(false);
         });
     }, 500),
-    [],
+    []
   );
 
   const handleChangeDomain = (e: ChangeEvent<HTMLInputElement>) => {

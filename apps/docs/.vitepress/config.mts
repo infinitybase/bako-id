@@ -9,7 +9,7 @@ export default defineConfig({
   markdown: {
     image: {
       lazyLoading: true,
-    }
+    },
   },
 
   appearance: 'force-dark',
@@ -19,11 +19,17 @@ export default defineConfig({
     ['meta', { property: 'og:url', content: 'https://docs.fuel.domains' }],
     ['meta', { property: 'og:image', href: '/logo.png' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
-    ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
-    ['link', {
-      href: 'https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap',
-      rel: 'stylesheet'
-    }]
+    [
+      'link',
+      { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+    ],
+    [
+      'link',
+      {
+        href: 'https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap',
+        rel: 'stylesheet',
+      },
+    ],
   ],
 
   themeConfig: {
@@ -31,27 +37,31 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Waitlist', link: 'https://fuel.domains/' }
+      { text: 'Waitlist', link: 'https://fuel.domains/' },
     ],
 
     sidebar: [
       {
-        text: 'Learn', collapsed: false, items: [
+        text: 'Learn',
+        collapsed: false,
+        items: [
           { text: 'Introduction', link: '/' },
           { text: 'Architecture', link: '/learn/architecture' },
-        ]
+        ],
       },
       {
-        text: 'Developers', collapsed: false, items: [
+        text: 'Developers',
+        collapsed: false,
+        items: [
           { text: 'SDK Installation', link: '/sdk/install' },
           { text: 'Getting a domain', link: '/sdk/resolver' },
-        ]
-      }
+        ],
+      },
     ],
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/infinitybase/bako-id' },
-      { icon: 'x', link: 'https://twitter.com/bakoidentity' }
-    ]
-  }
+      { icon: 'x', link: 'https://twitter.com/bakoidentity' },
+    ],
+  },
 });

@@ -1,7 +1,7 @@
 import { domainPrices, isValidDomain } from '@bako-id/sdk';
 import { useEffect, useMemo, useState } from 'react';
 import { useCalculateDomain, useDomain, useFuelConnect } from '../../../hooks';
-import { Domains } from '../../../types';
+import type { Domains } from '../../../types';
 
 import { useToast } from '@chakra-ui/react';
 import { useBalance } from '@fuels/react';
@@ -123,6 +123,7 @@ export const useBuy = () => {
     setSelectedCoin(coin);
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     fetchUSD();
   }, [selectedCoin]);

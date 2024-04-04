@@ -1,4 +1,4 @@
-import { Provider, Wallet, WalletUnlocked } from 'fuels';
+import { Provider, Wallet, type WalletUnlocked } from 'fuels';
 import { register, resolver } from '../index';
 
 const { PROVIDER_URL, PRIVATE_KEY } = process.env;
@@ -7,12 +7,12 @@ describe('Test resolver', () => {
   let wallet: WalletUnlocked;
   let provider: Provider;
 
-  let domain = 'bako_id_not_found';
+  const domain = 'bako_id_not_found';
 
   beforeAll(async () => {
     provider = await Provider.create(PROVIDER_URL);
     wallet = Wallet.fromPrivateKey(PRIVATE_KEY, provider);
-  })
+  });
 
   it('should get undefined value with not found registered', async () => {
     const result = await resolver({
@@ -40,4 +40,4 @@ describe('Test resolver', () => {
 
     expect(result).toBeNull();
   });
-})
+});

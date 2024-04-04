@@ -8,6 +8,7 @@
     "build:doc": "turbo run docs:build"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.6.4",
     "turbo": "1.8.8"
   },
   "keywords": [],

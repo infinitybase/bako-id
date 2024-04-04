@@ -10,7 +10,7 @@ import {
   ModalOverlay,
   VStack,
 } from '@chakra-ui/react';
-import { Domains } from '../../types';
+import type { Domains } from '../../types';
 import { validateDomain } from '../../utils/validator';
 import { SearchInput } from '../inputs';
 

@@ -1,21 +1,21 @@
-import { Account, Provider } from 'fuels';
-import { ResolverReturn } from '../types';
-import { assertValidDomain, getTxParams } from '../utils';
-import { getRegistryContract } from '../setup';
+import { type Account, Provider } from 'fuels';
 import { envrionment } from '../config';
+import { getRegistryContract } from '../setup';
+import type { ResolverReturn } from '../types';
+import { assertValidDomain, getTxParams } from '../utils';
 
 type ResolveDomainParams = {
-  domain: string,
-  account?: Account,
-  provider?: Provider,
-  providerURL?: string,
-}
+  domain: string;
+  account?: Account;
+  provider?: Provider;
+  providerURL?: string;
+};
 
 type GetProviderParams = {
-  account?: Account,
-  provider?: Provider,
-  providerURL?: string,
-}
+  account?: Account;
+  provider?: Provider;
+  providerURL?: string;
+};
 
 /**
  * Returns a provider based on the provided parameters.
@@ -63,7 +63,7 @@ export async function resolver(params: ResolveDomainParams): ResolverReturn {
 
   const { registry } = await getRegistryContract({
     provider,
-    storageId: envrionment.STORAGE_CONTRACT_ID!
+    storageId: envrionment.STORAGE_CONTRACT_ID!,
   });
 
   const { value } = await registry.functions
@@ -71,9 +71,11 @@ export async function resolver(params: ResolveDomainParams): ResolverReturn {
     .txParams(txParams)
     .dryRun();
 
-  return value ? {
-    name: domainName,
-    owner: value.owner,
-    resolver: value.resolver,
-  } : null;
+  return value
+    ? {
+        name: domainName,
+        owner: value.owner,
+        resolver: value.resolver,
+      }
+    : null;
 }

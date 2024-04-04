@@ -1,5 +1,5 @@
-import {defineConfig} from 'tsup';
 import dotenv from 'dotenv';
+import { defineConfig } from 'tsup';
 
 dotenv.config();
 
@@ -16,5 +16,3 @@ export default defineConfig({
   dts: true,
   replaceNodeEnv: true,
 });
-
-

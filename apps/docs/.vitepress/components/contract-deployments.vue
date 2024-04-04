@@ -15,28 +15,39 @@
 <script setup lang="ts">
 const props = defineProps(['name']);
 
-const shorAddress = (address: string) => `${address.slice(0, 10)}...${address.slice(-4)}`
-const makeExplorerLink = (contractId: string) => `https://app.fuel.network/contract/${contractId}/code`
+const shorAddress = (address: string) =>
+  `${address.slice(0, 10)}...${address.slice(-4)}`;
+const makeExplorerLink = (contractId: string) =>
+  `https://app.fuel.network/contract/${contractId}/code`;
 
 const infos = {
   storage: {
     title: 'Storage Contract',
-    abiUrl: 'https://github.com/infinitybase/bako-id/blob/d664075ed2b1f98d0c056ecb23557b27a4367e0a/packages/sway/src/libraries/src/abis.sw#L5-L26',
-    contractId: shorAddress('0xf9444a1a12114f944d6a673c9fcc98ab7c16b76ea371d4c52a3e314063f8cccf'),
-    explorerUrl: makeExplorerLink('0xf9444a1a12114f944d6a673c9fcc98ab7c16b76ea371d4c52a3e314063f8cccf'),
+    abiUrl:
+      'https://github.com/infinitybase/bako-id/blob/d664075ed2b1f98d0c056ecb23557b27a4367e0a/packages/sway/src/libraries/src/abis.sw#L5-L26',
+    contractId: shorAddress(
+      '0xf9444a1a12114f944d6a673c9fcc98ab7c16b76ea371d4c52a3e314063f8cccf'
+    ),
+    explorerUrl: makeExplorerLink(
+      '0xf9444a1a12114f944d6a673c9fcc98ab7c16b76ea371d4c52a3e314063f8cccf'
+    ),
   },
   register: {
     title: 'Registry Contract',
-    abiUrl: 'https://github.com/infinitybase/bako-id/blob/d664075ed2b1f98d0c056ecb23557b27a4367e0a/packages/sway/src/registry-contract/src/interface.sw#L11-L20',
-    contractId: shorAddress('0x17451bc0d362346968aa204ae892ee9d3ae8c37883b2c04df8768189f0620a4d'),
-    explorerUrl: makeExplorerLink('0x17451bc0d362346968aa204ae892ee9d3ae8c37883b2c04df8768189f0620a4d'),
+    abiUrl:
+      'https://github.com/infinitybase/bako-id/blob/d664075ed2b1f98d0c056ecb23557b27a4367e0a/packages/sway/src/registry-contract/src/interface.sw#L11-L20',
+    contractId: shorAddress(
+      '0x17451bc0d362346968aa204ae892ee9d3ae8c37883b2c04df8768189f0620a4d'
+    ),
+    explorerUrl: makeExplorerLink(
+      '0x17451bc0d362346968aa204ae892ee9d3ae8c37883b2c04df8768189f0620a4d'
+    ),
   },
-}
+};
 
-type InfoType = typeof infos[keyof typeof infos];
+type InfoType = (typeof infos)[keyof typeof infos];
 
-const contractInfo = infos[props.name] as InfoType;
-
+const _contractInfo = infos[props.name] as InfoType;
 </script>
 
 <style scoped>

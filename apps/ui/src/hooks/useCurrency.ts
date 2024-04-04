@@ -3,7 +3,7 @@ import { useState } from 'react';
 export const useCalculateDomain = () => {
   const [balance, setBalance] = useState<number>(0.0);
 
-  const convert = `ETH-USD`;
+  const convert = 'ETH-USD';
 
   const fetchUSD = async () =>
     await fetch(`https://economia.awesomeapi.com.br/last/${convert}`)

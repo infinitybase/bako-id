@@ -3,7 +3,7 @@ import { useToast } from '@chakra-ui/react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useFuelConnect } from '.';
-import { Domains } from '../types';
+import type { Domains } from '../types';
 import { useRegisterDomainRequests } from './useRegisterDomainRequests';
 import { useResolveDomainRequests } from './useResolveDomainRequests';
 
@@ -63,7 +63,7 @@ export const useDomain = (newDomain?: string) => {
           }).then();
         },
         onError: console.log,
-      },
+      }
     );
   };
 

@@ -1,13 +1,18 @@
-import { Account, BaseAssetId } from 'fuels';
-import { assertValidDomain, domainPrices, getTxParams, NotFoundBalanceError } from '../utils';
-import { getRegistryContract } from '../setup';
+import { type Account, BaseAssetId } from 'fuels';
 import { envrionment } from '../config';
+import { getRegistryContract } from '../setup';
+import {
+  NotFoundBalanceError,
+  assertValidDomain,
+  domainPrices,
+  getTxParams,
+} from '../utils';
 
 type RegisterDomainParams = {
-  domain: string,
-  resolver: string,
-  account: Account,
-}
+  domain: string;
+  resolver: string;
+  account: Account;
+};
 
 /**
  * Checks if the account has sufficient balance to cover the given domain price.
@@ -51,7 +56,7 @@ export async function register(params: RegisterDomainParams) {
 
   const { registry } = await getRegistryContract({
     account,
-    storageId: envrionment.STORAGE_CONTRACT_ID!
+    storageId: envrionment.STORAGE_CONTRACT_ID!,
   });
 
   // Change account for the user account!
@@ -60,19 +65,19 @@ export async function register(params: RegisterDomainParams) {
   const txParams = getTxParams(account.provider);
   const amount = await checkAccountBalance(account, domainName);
 
-  const { transactionResult, transactionResponse, gasUsed, transactionId } = await registry
-    .functions
-    .register(domainName, resolver)
-    .callParams({
-      forward: { amount, assetId: BaseAssetId }
-    })
-    .txParams(txParams)
-    .call();
+  const { transactionResult, transactionResponse, gasUsed, transactionId } =
+    await registry.functions
+      .register(domainName, resolver)
+      .callParams({
+        forward: { amount, assetId: BaseAssetId },
+      })
+      .txParams(txParams)
+      .call();
 
   return {
     gasUsed,
     transactionId,
     transactionResult,
-    transactionResponse
+    transactionResponse,
   };
 }

@@ -1,4 +1,4 @@
-import { Domains } from "../types";
+import type { Domains } from '../types';
 
 const validateDomain = (domain: string, domainsList: Domains[]): string => {
   if (domain.length > 0) {
@@ -10,14 +10,14 @@ const validateDomain = (domain: string, domainsList: Domains[]): string => {
     // Check for invladid characters
     const lettersAndNumbers: RegExp = /^[a-zA-Z0-9]+$/;
     if (!lettersAndNumbers.test(domain))
-      return `Domain must contain only letters and numbers`;
+      return 'Domain must contain only letters and numbers';
 
     // Check for duplicated domains on current list
     const duplicated = domainsList.find(({ name }) => name === domain);
-    if (duplicated) return `Duplicated domain.`;
+    if (duplicated) return 'Duplicated domain.';
   }
 
-  return "";
+  return '';
 };
 
 export { validateDomain };

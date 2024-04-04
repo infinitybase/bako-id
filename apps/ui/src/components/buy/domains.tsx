@@ -1,5 +1,5 @@
 import { Box, VStack } from '@chakra-ui/react';
-import { IChildren } from '../../types';
+import type { IChildren } from '../../types';
 
 const Domains = ({ children }: IChildren) => {
   return (

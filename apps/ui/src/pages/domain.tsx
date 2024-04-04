@@ -1,9 +1,9 @@
-import { Domain as IDomain, resolver } from '@bako-id/sdk';
+import { type Domain as IDomain, resolver } from '@bako-id/sdk';
 import { Center, useToast } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
-import { DomainCard, GoBack } from '../components/helpers';
+import { DomainCard, GoBack } from '../components';
 
 const Domain = () => {
   const { domain } = useParams({ strict: false });
@@ -14,6 +14,7 @@ const Domain = () => {
   const [data, setData] = useState<IDomain | null>(null);
   const toast = useToast();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     resolveDomainMutation.mutateAsync(domain).then((data) => setData(data));
   }, []);

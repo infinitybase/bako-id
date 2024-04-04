@@ -1,5 +1,16 @@
-import { Provider, RequireRevertError, TransactionStatus, WalletUnlocked } from 'fuels';
-import { createWallet, randomName, setupContractsAndDeploy, tryExecute, txParams } from './utils';
+import {
+  Provider,
+  RequireRevertError,
+  TransactionStatus,
+  type WalletUnlocked,
+} from 'fuels';
+import {
+  createWallet,
+  randomName,
+  setupContractsAndDeploy,
+  tryExecute,
+  txParams,
+} from './utils';
 
 describe('[METHODS] Test Registry Contract', () => {
   let wallet: WalletUnlocked;
@@ -20,8 +31,7 @@ describe('[METHODS] Test Registry Contract', () => {
     expect.assertions(2);
 
     try {
-      await registry
-        .functions
+      await registry.functions
         .register(domain, wallet.address.toB256())
         .addContracts([storage])
         .txParams(txParams)
@@ -38,7 +48,8 @@ describe('[METHODS] Test Registry Contract', () => {
     await tryExecute(registry.initializeRegistry());
 
     try {
-      const { txRegistry: txRegistryFailure } = await registry.initializeRegistry();
+      const { txRegistry: txRegistryFailure } =
+        await registry.initializeRegistry();
       expect(txRegistryFailure.status).toBe(TransactionStatus.failure);
     } catch (e) {
       expect(e).toBeInstanceOf(RequireRevertError);
@@ -55,8 +66,10 @@ describe('[METHODS] Test Registry Contract', () => {
     try {
       await registry.register(domain, wallet.address.toB256());
 
-      const { transactionResult: txRegister } = await registry
-        .register(domain, wallet.address.toB256());
+      const { transactionResult: txRegister } = await registry.register(
+        domain,
+        wallet.address.toB256()
+      );
 
       expect(txRegister.status).toBe(TransactionStatus.failure);
     } catch (e) {
@@ -72,11 +85,12 @@ describe('[METHODS] Test Registry Contract', () => {
     await tryExecute(registry.initializeRegistry());
 
     const domain = randomName();
-    const { transactionResult: txRegister } = await registry
-      .register(domain, wallet.address.toB256());
+    const { transactionResult: txRegister } = await registry.register(
+      domain,
+      wallet.address.toB256()
+    );
 
-    const { value } = await registry
-      .functions
+    const { value } = await registry.functions
       .resolver(domain)
       .addContracts([storage])
       .txParams(txParams)
@@ -96,8 +110,7 @@ describe('[METHODS] Test Registry Contract', () => {
     await registry.register(domain, wallet.address.toB256());
 
     const wrongDomain = randomName();
-    const { value } = await registry
-      .functions
+    const { value } = await registry.functions
       .resolver(wrongDomain)
       .txParams(txParams)
       .call();
@@ -109,8 +122,7 @@ describe('[METHODS] Test Registry Contract', () => {
     const { registry, storage } = contracts;
     const domain = randomName();
 
-    const { value } = await registry
-      .functions
+    const { value } = await registry.functions
       .resolver(domain)
       .addContracts([storage])
       .txParams(txParams)

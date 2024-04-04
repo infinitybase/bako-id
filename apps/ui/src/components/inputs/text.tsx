@@ -2,7 +2,7 @@ import {
   Box,
   Input as ChakraInput,
   InputGroup,
-  InputProps,
+  type InputProps,
 } from '@chakra-ui/react';
 
 interface CustomInputProps extends InputProps {

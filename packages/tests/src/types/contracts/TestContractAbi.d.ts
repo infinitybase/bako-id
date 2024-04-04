@@ -27,11 +27,23 @@ interface TestContractAbiInterface extends Interface {
     test_set: FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: 'test_get', values: [ContractIdInput]): Uint8Array;
-  encodeFunctionData(functionFragment: 'test_set', values: [ContractIdInput]): Uint8Array;
+  encodeFunctionData(
+    functionFragment: 'test_get',
+    values: [ContractIdInput]
+  ): Uint8Array;
+  encodeFunctionData(
+    functionFragment: 'test_set',
+    values: [ContractIdInput]
+  ): Uint8Array;
 
-  decodeFunctionData(functionFragment: 'test_get', data: BytesLike): DecodedValue;
-  decodeFunctionData(functionFragment: 'test_set', data: BytesLike): DecodedValue;
+  decodeFunctionData(
+    functionFragment: 'test_get',
+    data: BytesLike
+  ): DecodedValue;
+  decodeFunctionData(
+    functionFragment: 'test_set',
+    data: BytesLike
+  ): DecodedValue;
 }
 
 export class TestContractAbi extends Contract {
