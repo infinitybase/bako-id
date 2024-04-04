@@ -24,7 +24,7 @@ export const Checkout = ({ networkFee }: CheckoutProps) => {
           Details
         </Text>
         <Spacer />
-        <HStack p={2} spacing={2} borderRadius="lg">
+        <HStack py={2} spacing={2} borderRadius="lg">
           <Button
             w={12}
             h={7}

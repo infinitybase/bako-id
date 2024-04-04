@@ -3,11 +3,11 @@ import { useFuel } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
 import { debounce } from 'lodash';
 import {
-  type ChangeEvent,
   useCallback,
   useEffect,
   useMemo,
   useState,
+  type ChangeEvent,
 } from 'react';
 import { useDomain } from '../../../hooks';
 
@@ -21,6 +21,7 @@ export const useHome = () => {
   const [available, setAvailable] = useState<boolean | null>(null);
   const [isConnected, setIsConnected] = useState<boolean | null>(null);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const checkConnection = async () => {
       await WalletConnected().then((result) => {
@@ -41,7 +42,7 @@ export const useHome = () => {
           if (!info) {
             console.debug(
               "Info returned from 'https://beta-5.fuel.network/graphql'",
-              info
+              info,
             );
             setAvailable(true);
             return;
@@ -49,7 +50,7 @@ export const useHome = () => {
           setAvailable(false);
         });
     }, 500),
-    []
+    [],
   );
 
   const handleChangeDomain = (e: ChangeEvent<HTMLInputElement>) => {

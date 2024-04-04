@@ -26,7 +26,7 @@ export const useBuy = () => {
   const { registerDomain, resolveDomain } = useDomain();
   const [selectedCoin, setSelectedCoin] = useState<Coin>(Coin.ETH);
   const [signInLoad, setSignInLoad] = useState<boolean>(false);
-
+  registerDomain.error;
   const toast = useToast();
   const navigate = useNavigate();
 

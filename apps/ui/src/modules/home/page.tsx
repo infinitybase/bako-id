@@ -25,8 +25,8 @@ export const Home = () => {
         variant="glassmorphic"
         border="1px solid rgba(243, 242, 241, 0.05)"
         padding={[6, 8, 10, 12]}
-        mt={[12, 12, 0, 0]}
-        mb={['auto', 'auto', 0, 20]}
+        mt={[12, 12, 6, 0]}
+        mb={['auto', 'auto', 'auto', 20]}
       >
         <Stack
           w="full"

@@ -46,18 +46,18 @@ export const Buy = () => {
       h="full"
       display="flex"
       alignItems="center"
-      mt={[12, 24, 0]}
-      gap={12}
+      mt={[12, 24, 0, 0]}
+      gap={[12, 12, 0, 12]}
+      mb={[0, 0, 'auto', 0]}
       flexDirection="column"
-      overflow="hidden"
     >
       {!isMobile && <GoBack />}
       <Card
         border="1px solid"
         borderColor="stroke.500"
         p={6}
-        w={['95%', '70%', '35%']}
-        h={['70%', '55%', '60%']}
+        w={['95%', '70%', '50%', '45%']}
+        h={['60%', '55%', '75%', '70%']}
         alignSelf="center"
         display="flex"
         flexDir="column"
@@ -80,7 +80,13 @@ export const Buy = () => {
               ))}
             </BuyComponents.Domains>
           </VStack>
-          <VStack h="full" w="full" alignItems="start" mt={12} spacing={5}>
+          <VStack
+            h="full"
+            w="full"
+            alignItems="start"
+            mt={[12, 12, 6, 12]}
+            spacing={5}
+          >
             <Box>
               <Text color="section.200" fontWeight="bold">
                 Your purchase
@@ -103,7 +109,13 @@ export const Buy = () => {
         {!isMobile && BuyButton}
       </Card>
       {isMobile && (
-        <Box w="full" p={5} position="absolute" bottom={0}>
+        <Box
+          w="full"
+          p={5}
+          position="absolute"
+          bottom={0}
+          bgColor="background.900"
+        >
           {BuyButton}
         </Box>
       )}
