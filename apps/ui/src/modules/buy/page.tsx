@@ -1,54 +1,74 @@
-import { Center, Stack, Text, VStack } from '@chakra-ui/react';
-import { BuyOrConnectButton } from '../../components/buttons/buyOrConnect';
-import { BuyComponents } from '../../components/buy';
+import {
+  Box,
+  Card,
+  CardBody,
+  CardHeader,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
+import { BuyComponents } from '../../components';
+import { BuyOrConnectButton } from '../../components/buttons';
 import { GoBack } from '../../components/helpers';
 import { useBuy } from './hooks/useBuy';
 
 export const Buy = () => {
-  const { domains, handlePeriodChange, totalPrice } = useBuy();
+  const { domains, handlePeriodChange } = useBuy();
+
   return (
-    <Center
+    <Box
       w="full"
       h="full"
       display="flex"
-      flexDir="column"
-      py={2}
-      px={{ base: 4, md: 20, xl: 40 }}
-      zIndex={10}
+      alignItems="center"
+      gap={12}
+      flexDirection="column"
     >
       <GoBack />
-      <Stack
-        w="full"
-        h="full"
-        direction={{ base: 'column', md: 'row' }}
-        justifyContent="center"
-        alignItems={{ base: 'center', md: 'start' }}
-        gap={{ base: 6, md: 28, lg: 40 }}
-        mt={2}
+      <Card
+        border="1px solid"
+        borderColor="stroke.500"
+        p={6}
+        w="35%"
+        h="60%"
+        alignSelf="center"
+        display="flex"
+        flexDir="column"
       >
-        <VStack w="full" maxW="420px" alignItems="start">
-          <BuyComponents.Domains>
-            {domains.map(({ name }, index) => (
-              <BuyComponents.Info
-                name={name}
-                index={index}
-                periodHandle={handlePeriodChange}
-              />
-            ))}
-          </BuyComponents.Domains>
-        </VStack>
-        <VStack h="full" w="full" maxW="420px" alignItems="start" spacing={4}>
-          <Text color="section.200" fontWeight={600}>
-            Your purchase
+        <CardHeader color="section.200" fontSize="md" fontWeight="bold">
+          Handles
+          <Text fontSize="xs" color="grey.subtitle" fontWeight="normal">
+            Set how many years do you want to be owner of this Handles.
           </Text>
-          <BuyComponents.Checkout
-            length={domains.length}
-            totalPrice={totalPrice}
-            networkFee={0.003872}
-          />
-          <BuyOrConnectButton />
-        </VStack>
-      </Stack>
-    </Center>
+        </CardHeader>
+        <CardBody>
+          <VStack mt={3}>
+            <BuyComponents.Domains>
+              {domains.map(({ name }, index) => (
+                <BuyComponents.Info
+                  name={name}
+                  index={index}
+                  periodHandle={handlePeriodChange}
+                />
+              ))}
+            </BuyComponents.Domains>
+          </VStack>
+          <VStack h="full" w="full" alignItems="start" mt={12} spacing={5}>
+            <Box>
+              <Text color="section.200" fontWeight="bold">
+                Your purchase
+              </Text>
+              <Text color="grey.subtitle" fontSize="xs">
+                Select the token that you want to use for this purchase.
+              </Text>
+            </Box>
+            <BuyComponents.Checkout
+              length={domains.length}
+              networkFee={0.003872}
+            />
+          </VStack>
+        </CardBody>
+        <BuyOrConnectButton />
+      </Card>
+    </Box>
   );
 };
