@@ -10,8 +10,8 @@ export const useHome = () => {
   const {
     fuel: { isConnected: WalletConnected, connect },
   } = useFuel();
-  const { resolveDomain } = useDomain();
   const [domain, setDomain] = useState('');
+  const { resolveDomain } = useDomain(domain);
   const [available, setAvailable] = useState<boolean | null>(null);
   const [isConnected, setIsConnected] = useState<boolean | null>(null);
 
