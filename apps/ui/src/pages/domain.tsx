@@ -1,4 +1,4 @@
-import { type Domain as IDomain, resolver } from '@bako-id/sdk';
+import { resolver, type Domain as IDomain } from '@bako-id/sdk';
 import { Center, useToast } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';

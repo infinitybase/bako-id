@@ -1,5 +1,5 @@
-import { type Account, BaseAssetId } from 'fuels';
-import { envrionment } from '../config';
+import { BaseAssetId, type Account } from 'fuels';
+import { config } from '../config';
 import { getRegistryContract } from '../setup';
 import {
   NotFoundBalanceError,
@@ -56,7 +56,7 @@ export async function register(params: RegisterDomainParams) {
 
   const { registry } = await getRegistryContract({
     account,
-    storageId: envrionment.STORAGE_CONTRACT_ID!,
+    storageId: config.STORAGE_CONTRACT_ID!,
   });
 
   // Change account for the user account!
@@ -79,5 +79,50 @@ export async function register(params: RegisterDomainParams) {
     transactionId,
     transactionResult,
     transactionResponse,
+  };
+}
+
+/**
+ * Simulates the cost of bako handle registration.
+ *
+ * @param {RegisterDomainParams} params - The parameters for domain registration.
+ * @param {string} params.account - The user's account.
+ * @param {string} params.domain - The domain to be registered.
+ * @param {string} params.resolver - The resolver for the domain.
+ *
+ * @return {Promise<Object>} - An object containing the fee and transaction request.
+ * @return {BigNumber} fee - The total fee for handling the transaction.
+ * @return {TransactionRequest} transactionRequest - The transaction request object.
+ */
+export async function simulateHandleCost(params: RegisterDomainParams) {
+  const { account, domain, resolver } = params;
+
+  const domainName = assertValidDomain(domain);
+
+  const { registry } = await getRegistryContract({
+    account,
+    storageId: config.STORAGE_CONTRACT_ID!,
+  });
+
+  // Change account for the user account!
+  registry.account = account;
+
+  const txParams = getTxParams(account.provider);
+  const amount = await checkAccountBalance(account, domainName);
+
+  const transactionRequest = await registry.functions
+    .register(domainName, resolver)
+    .callParams({
+      forward: { amount, assetId: BaseAssetId },
+    })
+    .txParams(txParams)
+    .getTransactionRequest();
+
+  const { usedFee, minFee } =
+    await account.provider.getTransactionCost(transactionRequest);
+
+  return {
+    fee: usedFee.add(minFee),
+    transactionRequest,
   };
 }

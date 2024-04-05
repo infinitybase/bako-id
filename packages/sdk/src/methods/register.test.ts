@@ -1,24 +1,19 @@
 import {
   BaseAssetId,
+  bn,
   Provider,
   ScriptTransactionRequest,
   Wallet,
   type WalletUnlocked,
-  bn,
 } from 'fuels';
 import { register, resolver } from '../index';
-import { InvalidDomainError, NotFoundBalanceError } from '../utils';
+import { InvalidDomainError, NotFoundBalanceError, randomName } from '../utils';
 
 const { PROVIDER_URL, TEST_WALLET } = process.env;
 
-function randomName(size = 5) {
-  const name = (Math.random() + 2).toString(32).substring(2);
-  return `${name}`.slice(0, size);
-}
-
 async function createFakeWallet(
   provider: Provider,
-  mainWallet: WalletUnlocked
+  mainWallet: WalletUnlocked,
 ) {
   const fakeWallet = Wallet.generate({ provider });
   const quantity = {
@@ -46,8 +41,8 @@ describe('Test Registry', () => {
   let fakeWallet: WalletUnlocked;
 
   beforeAll(async () => {
-    provider = await Provider.create(PROVIDER_URL);
-    wallet = Wallet.fromPrivateKey(TEST_WALLET, provider);
+    provider = await Provider.create(PROVIDER_URL!);
+    wallet = Wallet.fromPrivateKey(TEST_WALLET!, provider);
     fakeWallet = await createFakeWallet(provider, wallet);
   });
 
@@ -98,13 +93,12 @@ describe('Test Registry', () => {
 
     expect(result.transactionResult.status).toBe('success');
 
-    const resolvedDomain = await resolver({
-      domain,
+    const resolvedDomain = await resolver(domain, {
       provider,
     });
 
-    expect(resolvedDomain.owner).toBe(wallet.address.toB256());
-    expect(resolvedDomain.resolver).toBe(wallet.address.toB256());
+    expect(resolvedDomain?.owner).toBe(wallet.address.toB256());
+    expect(resolvedDomain?.resolver).toBe(wallet.address.toB256());
   });
 
   it('should error when register domain without balance', async () => {

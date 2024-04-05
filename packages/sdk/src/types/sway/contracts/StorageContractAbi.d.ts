@@ -4,14 +4,14 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.78.0
+  Fuels version: 0.77.0
   Forc version: 0.51.1
   Fuel-Core version: 0.22.1
 */
 
 import type {
-  BN,
   BigNumberish,
+  BN,
   Bytes,
   BytesLike,
   Contract,
@@ -22,7 +22,7 @@ import type {
   StdString,
 } from 'fuels';
 
-import type { Enum, Option } from './common';
+import type { Option, Enum } from './common';
 
 export type IdentityInput = Enum<{
   Address: AddressInput;
@@ -56,7 +56,7 @@ export type ContractIdOutput = ContractIdInput;
 export type RawBytesInput = { ptr: BigNumberish; cap: BigNumberish };
 export type RawBytesOutput = { ptr: BN; cap: BN };
 
-interface StorageContractAbiInterface extends Interface {
+export interface StorageContractAbiInterface extends Interface {
   functions: {
     constructor: FunctionFragment;
     get: FunctionFragment;

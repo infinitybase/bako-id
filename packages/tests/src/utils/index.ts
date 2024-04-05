@@ -1,10 +1,10 @@
 import {
-  type BN,
   BaseAssetId,
-  type Provider,
   Wallet,
-  type WalletUnlocked,
   bn,
+  type BN,
+  type Provider,
+  type WalletUnlocked,
 } from 'fuels';
 import {
   RegistryContractAbi__factory,
@@ -53,11 +53,11 @@ export const domainPrices = (domain: string, period = 1) => {
 async function setupContractsAndDeploy(wallet: WalletUnlocked) {
   const storage = await StorageContractAbi__factory.deployContract(
     storageHex,
-    wallet
+    wallet,
   );
   const registry = await RegistryContractAbi__factory.deployContract(
     registryHex,
-    wallet
+    wallet,
   );
 
   const initializeStorage = async () => {
@@ -68,7 +68,7 @@ async function setupContractsAndDeploy(wallet: WalletUnlocked) {
         },
         {
           value: registry.id.toB256(),
-        }
+        },
       )
       .txParams(txParams)
       .call();
@@ -84,7 +84,7 @@ async function setupContractsAndDeploy(wallet: WalletUnlocked) {
         },
         {
           value: storage.id.toB256(),
-        }
+        },
       )
       .txParams(txParams)
       .call();
@@ -94,13 +94,13 @@ async function setupContractsAndDeploy(wallet: WalletUnlocked) {
 
   const register = async (
     domain: string,
-    _account: string,
-    calculateAmount = true
+    account: string,
+    calculateAmount = true,
   ) => {
     const amount = domainPrices(domain);
     const callBuilder = registry.functions.register(
       domain,
-      wallet.address.toB256()
+      account ?? wallet.address.toB256(),
     );
 
     if (calculateAmount) {
@@ -124,7 +124,7 @@ async function setupContractsAndDeploy(wallet: WalletUnlocked) {
 async function setupContracts(wallet: WalletUnlocked) {
   const registry = RegistryContractAbi__factory.connect(
     registryContract,
-    wallet
+    wallet,
   );
   const storage = StorageContractAbi__factory.connect(storageContract, wallet);
   const testCaller = TestContractAbi__factory.connect(testContract, wallet);
@@ -132,12 +132,12 @@ async function setupContracts(wallet: WalletUnlocked) {
   const register = async (
     domain: string,
     _account: string,
-    calculateAmount = true
+    calculateAmount = true,
   ) => {
     const amount = domainPrices(domain);
     const callBuilder = registry.functions.register(
       domain,
-      wallet.address.toB256()
+      wallet.address.toB256(),
     );
 
     if (calculateAmount) {
@@ -157,7 +157,7 @@ async function setupContracts(wallet: WalletUnlocked) {
         },
         {
           value: storageContract,
-        }
+        },
       )
       .txParams(txParams)
       .call();
@@ -173,7 +173,7 @@ async function setupContracts(wallet: WalletUnlocked) {
         },
         {
           value: registryContract,
-        }
+        },
       )
       .txParams(txParams)
       .call();
@@ -190,7 +190,7 @@ async function setupContracts(wallet: WalletUnlocked) {
 
 function createWallet(
   provider: Provider,
-  privateKey = WALLET_PRIVATE_KEYS.MAIN
+  privateKey = WALLET_PRIVATE_KEYS.MAIN,
 ) {
   return Wallet.fromPrivateKey(privateKey, provider);
 }
@@ -201,14 +201,14 @@ function randomName(size = 10) {
 }
 
 export {
-  txParams,
-  tryExecute,
-  randomName,
-  createWallet,
-  testContract,
-  storageContract,
-  setupContracts,
-  registryContract,
   WALLET_PRIVATE_KEYS,
+  createWallet,
+  randomName,
+  registryContract,
+  setupContracts,
   setupContractsAndDeploy,
+  storageContract,
+  testContract,
+  tryExecute,
+  txParams,
 };

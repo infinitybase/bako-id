@@ -9,5 +9,5 @@ export default createConfig({
   autoStartFuelCore: false,
   providerUrl: process.env.PROVIDER_URL,
   privateKey: process.env.PRIVATE_KEY,
-  output: './src/types',
+  output: './src/types/sway',
 });

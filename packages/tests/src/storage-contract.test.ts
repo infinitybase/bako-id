@@ -1,18 +1,18 @@
 import {
+  hash,
   Provider,
   RequireRevertError,
   TransactionStatus,
   type WalletUnlocked,
-  hash,
 } from 'fuels';
 import {
-  WALLET_PRIVATE_KEYS,
   createWallet,
   setupContracts,
   setupContractsAndDeploy,
   testContract,
   tryExecute,
   txParams,
+  WALLET_PRIVATE_KEYS,
 } from './utils';
 
 describe('Test Storage Contract', () => {

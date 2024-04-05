@@ -4,12 +4,11 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.71.1
-  Forc version: 0.48.1
-  Fuel-Core version: 0.22.0
+  Fuels version: 0.78.0
+  Forc version: 0.51.1
+  Fuel-Core version: 0.22.1
 */
 
-import { Contract, ContractFactory, Interface } from 'fuels';
 import type {
   AbstractAddress,
   Account,
@@ -18,6 +17,7 @@ import type {
   Provider,
   StorageSlot,
 } from 'fuels';
+import { Contract, ContractFactory, Interface } from 'fuels';
 import type {
   StorageContractAbi,
   StorageContractAbiInterface,
@@ -140,7 +140,7 @@ const _abi = {
         },
         {
           name: 'len',
-          type: 12,
+          type: 13,
           typeArguments: null,
         },
       ],
@@ -169,7 +169,7 @@ const _abi = {
         },
         {
           name: 'cap',
-          type: 12,
+          type: 13,
           typeArguments: null,
         },
       ],
@@ -177,6 +177,18 @@ const _abi = {
     },
     {
       typeId: 12,
+      type: 'struct String',
+      components: [
+        {
+          name: 'bytes',
+          type: 9,
+          typeArguments: null,
+        },
+      ],
+      typeParameters: null,
+    },
+    {
+      typeId: 13,
       type: 'u64',
       components: null,
       typeParameters: null,
@@ -275,6 +287,53 @@ const _abi = {
         {
           name: 'storage',
           arguments: ['read'],
+        },
+      ],
+    },
+    {
+      inputs: [
+        {
+          name: 'resolver',
+          type: 1,
+          typeArguments: null,
+        },
+      ],
+      name: 'reverse_get',
+      output: {
+        name: '',
+        type: 12,
+        typeArguments: null,
+      },
+      attributes: [
+        {
+          name: 'storage',
+          arguments: ['read'],
+        },
+      ],
+    },
+    {
+      inputs: [
+        {
+          name: 'key',
+          type: 1,
+          typeArguments: null,
+        },
+        {
+          name: 'value',
+          type: 12,
+          typeArguments: null,
+        },
+      ],
+      name: 'reverse_set',
+      output: {
+        name: '',
+        type: 0,
+        typeArguments: null,
+      },
+      attributes: [
+        {
+          name: 'storage',
+          arguments: ['write'],
         },
       ],
     },
@@ -412,6 +471,14 @@ const _abi = {
         typeArguments: [],
       },
     },
+    {
+      logId: 8,
+      loggedType: {
+        name: '',
+        type: 4,
+        typeArguments: [],
+      },
+    },
   ],
   messagesTypes: [],
   configurables: [],
@@ -435,19 +502,19 @@ export class StorageContractAbi__factory {
 
   static connect(
     id: string | AbstractAddress,
-    accountOrProvider: Account | Provider
+    accountOrProvider: Account | Provider,
   ): StorageContractAbi {
     return new Contract(
       id,
       _abi,
-      accountOrProvider
+      accountOrProvider,
     ) as unknown as StorageContractAbi;
   }
 
   static async deployContract(
     bytecode: BytesLike,
     wallet: Account,
-    options: DeployContractOptions = {}
+    options: DeployContractOptions = {},
   ): Promise<StorageContractAbi> {
     const factory = new ContractFactory(bytecode, _abi, wallet);
 

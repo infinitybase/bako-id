@@ -1,4 +1,5 @@
 import {
+  Address,
   Provider,
   RequireRevertError,
   TransactionStatus,
@@ -68,7 +69,7 @@ describe('[METHODS] Test Registry Contract', () => {
 
       const { transactionResult: txRegister } = await registry.register(
         domain,
-        wallet.address.toB256()
+        wallet.address.toB256(),
       );
 
       expect(txRegister.status).toBe(TransactionStatus.failure);
@@ -87,7 +88,7 @@ describe('[METHODS] Test Registry Contract', () => {
     const domain = randomName();
     const { transactionResult: txRegister } = await registry.register(
       domain,
-      wallet.address.toB256()
+      wallet.address.toB256(),
     );
 
     const { value } = await registry.functions
@@ -129,5 +130,65 @@ describe('[METHODS] Test Registry Contract', () => {
       .call();
 
     expect(value).toBeUndefined();
+  });
+
+  it('should get name by resolver', async () => {
+    const { registry, storage } = contracts;
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+
+    const address = Address.fromRandom();
+
+    const domain = 'bako_handle';
+    await registry.register(domain, address.toB256());
+
+    const { value } = await registry.functions
+      .reverse_name(address.toB256())
+      .addContracts([storage])
+      .txParams(txParams)
+      .call();
+
+    expect(value).toBe(domain);
+  });
+
+  it('should empty name when not found handle', async () => {
+    const { registry, storage } = contracts;
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+
+    const address = wallet.address;
+
+    await registry.register(randomName(), address.toB256());
+
+    const { value } = await registry.functions
+      .reverse_name(Address.fromRandom().toB256())
+      .addContracts([storage])
+      .txParams(txParams)
+      .call();
+
+    expect(value).toBe('');
+  });
+
+  it('should get primary domain', async () => {
+    const { registry, storage } = contracts;
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+
+    const address = Address.fromRandom().toB256();
+
+    const [primaryDomain, secondaryDomain] = [randomName(), randomName()];
+    await registry.register(primaryDomain, address);
+    await registry.register(secondaryDomain, address);
+
+    const { value } = await registry.functions
+      .reverse_name(address)
+      .addContracts([storage])
+      .txParams(txParams)
+      .call();
+
+    expect(value).toBe(primaryDomain);
   });
 });

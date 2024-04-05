@@ -19,20 +19,15 @@ export const Purchased = () => {
 
   // @TODO: change this to receive domain info by query params
   useEffect(() => {
-    resolveDomainMutation
-      .mutateAsync({
-        domain,
-        providerURL: 'https://beta-5.fuel.network/graphql',
-      })
-      .then((data) => {
-        if (data === null) {
-          navigate({
-            to: '/',
-            params: { domain: domain },
-            startTransition: true,
-          }).then();
-        }
-      });
+    resolveDomainMutation.mutateAsync(domain).then((data) => {
+      if (data === null) {
+        navigate({
+          to: '/',
+          params: { domain: domain },
+          startTransition: true,
+        }).then();
+      }
+    });
   }, []);
 
   return (

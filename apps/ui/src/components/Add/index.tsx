@@ -1,9 +1,9 @@
 import { PlusSquareIcon } from '@chakra-ui/icons';
 import {
-  type ButtonProps,
   Button as ChakraButton,
   Icon,
   Text,
+  type ButtonProps,
 } from '@chakra-ui/react';
 
 interface AddProps extends ButtonProps {}

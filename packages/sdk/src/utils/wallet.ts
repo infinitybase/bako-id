@@ -1,10 +1,10 @@
 import {
-  type BN,
   BaseAssetId,
+  WalletLocked,
+  type BN,
   type CoinQuantity,
   type Provider,
   type TransactionRequest,
-  WalletLocked,
 } from 'fuels';
 
 export class FakeAccount extends WalletLocked {
@@ -15,7 +15,7 @@ export class FakeAccount extends WalletLocked {
   async fund<T extends TransactionRequest>(
     request: T,
     coinQuantities: CoinQuantity[],
-    _fee: BN
+    _fee: BN,
   ) {
     await request.fundWithFakeUtxos(coinQuantities);
   }
