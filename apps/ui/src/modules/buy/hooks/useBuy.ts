@@ -113,8 +113,8 @@ export const useBuy = () => {
     if (!value) return '--.--';
 
     const formatted = value.toLocaleString('en-US', {
-      minimumFractionDigits: 6,
-      maximumFractionDigits: 6,
+      minimumFractionDigits: 4,
+      maximumFractionDigits: 4,
     });
 
     return `${coinSymbol[selectedCoin]} ${formatted}`;
