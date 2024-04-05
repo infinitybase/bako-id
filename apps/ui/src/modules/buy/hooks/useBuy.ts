@@ -23,7 +23,7 @@ export const useBuy = () => {
   const { balance: walletBalance, isLoading: isLoadingBalance } = useBalance({
     address: wallet?.address.toAddress(),
   });
-  const { registerDomain, resolveDomain } = useDomain();
+  const { registerDomain, resolveDomain, simulateHandle } = useDomain();
   const [selectedCoin, setSelectedCoin] = useState<Coin>(Coin.ETH);
   const [signInLoad, setSignInLoad] = useState<boolean>(false);
   registerDomain.error;
@@ -39,6 +39,18 @@ export const useBuy = () => {
     },
   ]);
 
+  const totalPrice = useMemo(() => {
+    return domains.reduce((previous, current) => {
+      const domainPrice = domainPrices(current.name, 1).format();
+
+      return selectedCoin === Coin.USD
+        ? previous +
+            (Number(domainPrice) + Number(simulateHandle.data?.fee.format())) *
+              balance
+        : previous + Number(domainPrice);
+    }, 0);
+  }, [balance, domains, selectedCoin]);
+
   const handlePeriodChange = (index: number, newValue: number) => {
     const newItems = [...domains];
     // period not specified
@@ -46,17 +58,6 @@ export const useBuy = () => {
     setDomains(newItems);
     setPeriod(newValue);
   };
-
-  const totalPrice = useMemo(() => {
-    return domains.reduce((previous, current) => {
-      const domainPrice = domainPrices(current.name, 1).format();
-
-      console.log(domainPrice);
-      return selectedCoin === Coin.USD
-        ? previous + Number(domainPrice) * balance
-        : previous + Number(domainPrice);
-    }, 0);
-  }, [balance, domains, selectedCoin]);
 
   const handleConfirmDomain = async () => {
     const isValid = isValidDomain(domain);
@@ -112,8 +113,8 @@ export const useBuy = () => {
     if (!value) return '--.--';
 
     const formatted = value.toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+      minimumFractionDigits: 6,
+      maximumFractionDigits: 6,
     });
 
     return `${coinSymbol[selectedCoin]} ${formatted}`;
@@ -145,6 +146,11 @@ export const useBuy = () => {
   return {
     handleBuyDomain,
     handlePeriodChange,
+    handleCost: {
+      ...simulateHandle,
+      data: simulateHandle.data,
+    },
+    balance,
     totalPrice,
     domains,
     selectedCoin,

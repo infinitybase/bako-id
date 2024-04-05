@@ -9,8 +9,11 @@ interface CheckoutProps {
 }
 
 export const Checkout = ({ networkFee }: CheckoutProps) => {
-  const { totalPrice, handleChangeCoin, selectedCoin, formatCoin } = useBuy();
+  const { totalPrice, handleChangeCoin, selectedCoin, formatCoin, balance } =
+    useBuy();
   // const multipleBuys = length > 1 ? 'Domains' : 'Domain';
+
+  const formattedFee = selectedCoin === USD ? networkFee * balance : networkFee;
 
   return (
     <VStack
@@ -70,7 +73,7 @@ export const Checkout = ({ networkFee }: CheckoutProps) => {
           </Text>
           <Spacer />
           <Text color="text.500" fontSize="sm">
-            {formatCoin(networkFee, selectedCoin)}
+            {formatCoin(formattedFee, selectedCoin)}
           </Text>
         </Flex>
         <HStack w="full">
@@ -79,7 +82,7 @@ export const Checkout = ({ networkFee }: CheckoutProps) => {
           </Text>
           <Spacer />
           <Text color="text.500" fontSize="sm">
-            {formatCoin(totalPrice + networkFee, selectedCoin)}
+            {formatCoin(totalPrice + formattedFee, selectedCoin)}
           </Text>
         </HStack>
       </VStack>

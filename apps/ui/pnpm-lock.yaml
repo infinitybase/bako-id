@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@bako-id/sdk':
-    specifier: 0.0.2
-    version: 0.0.2(fuels@0.76.0)
+    specifier: 0.0.6-dev
+    version: 0.0.6-dev(fuels@0.76.0)
   '@chakra-ui/icons':
     specifier: ^2.1.1
     version: 2.1.1(@chakra-ui/system@2.6.2)(react@18.2.0)
@@ -328,10 +328,10 @@ packages:
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
 
-  /@bako-id/sdk@0.0.2(fuels@0.76.0):
-    resolution: {integrity: sha512-uTKr2GAf148Wq6rfSg+k1PHEcn7Uqc+vuX+LxLbr56CkVz3WuptBR/L3RqtWtNULrSeifqQsYe1c3U2/twkgcw==}
+  /@bako-id/sdk@0.0.6-dev(fuels@0.76.0):
+    resolution: {integrity: sha512-HXOWuZ08jwnIP+CbWa7y+f3Tg6neKLDSgHo+CbGxs5CQpgSSb4z/nqKyYadbbbY4mOuS90gGzZgv26SYTEABVw==}
     peerDependencies:
-      fuels: 0.76.0
+      fuels: 0.78.0
     dependencies:
       fuels: 0.76.0(dexie@3.2.5)
     dev: false
@@ -4602,8 +4602,8 @@ packages:
     dev: true
     optional: true
 
-  /@scure/base@1.1.5:
-    resolution: {integrity: sha512-Brj9FiG2W1MRQSTB212YVPRrcbjkv48FoZi/u4l/zds/ieRrqsh7aUf6CLwkAq61oKXr/ZlTzlY66gLIj3TFTQ==}
+  /@scure/base@1.1.6:
+    resolution: {integrity: sha512-ok9AWwhcgYuGG3Zfhyqg+zwl+Wn5uE+dwC0NV/2qQkx4dABbb/bx96vWu8NSj+BNjjSjno+JRYRjle1jV08k3g==}
     dev: false
 
   /@scure/bip32@1.3.3:
@@ -4611,14 +4611,14 @@ packages:
     dependencies:
       '@noble/curves': 1.3.0
       '@noble/hashes': 1.3.3
-      '@scure/base': 1.1.5
+      '@scure/base': 1.1.6
     dev: false
 
   /@scure/bip39@1.2.2:
     resolution: {integrity: sha512-HYf9TUXG80beW+hGAt3TRM8wU6pQoYur9iNypTROm42dorCGmLnFe3eWjz3gOq6G62H2WRh0FCzAR1PI+29zIA==}
     dependencies:
       '@noble/hashes': 1.3.3
-      '@scure/base': 1.1.5
+      '@scure/base': 1.1.6
     dev: false
 
   /@socket.io/component-emitter@3.1.0:

@@ -6,6 +6,7 @@ import { useFuelConnect } from '.';
 import type { Domains } from '../types';
 import { useRegisterDomainRequests } from './useRegisterDomainRequests';
 import { useResolveDomainRequests } from './useResolveDomainRequests';
+import { useSimulateHandleCostRequest } from './useSimulateHandleCostRequest';
 
 export const useDomain = (newDomain?: string) => {
   const { domain } = useParams({ strict: false });
@@ -15,6 +16,11 @@ export const useDomain = (newDomain?: string) => {
 
   const registerDomain = useRegisterDomainRequests();
   const resolveDomain = useResolveDomainRequests(domain ?? newDomain);
+  const simulateHandle = useSimulateHandleCostRequest(
+    wallet!,
+    wallet?.address.toB256() ?? '',
+    domain,
+  );
 
   const [domains, setDomains] = useState<Domains[]>([
     {
@@ -63,7 +69,7 @@ export const useDomain = (newDomain?: string) => {
           }).then();
         },
         onError: console.log,
-      }
+      },
     );
   };
 
@@ -77,6 +83,7 @@ export const useDomain = (newDomain?: string) => {
   return {
     registerDomain,
     resolveDomain,
+    simulateHandle,
     handleBuyDomain,
     handlePeriodChange,
     domains,

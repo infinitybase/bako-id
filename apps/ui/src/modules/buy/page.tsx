@@ -25,6 +25,7 @@ export const Buy = () => {
     isLoadingBalance,
     signInLoad,
     walletBalance,
+    handleCost: { data },
   } = useBuy();
 
   const { isMobile } = useScreenSize();
@@ -73,6 +74,7 @@ export const Buy = () => {
             <BuyComponents.Domains>
               {domains.map(({ name }, index) => (
                 <BuyComponents.Info
+                  key={name}
                   name={name}
                   index={index}
                   periodHandle={handlePeriodChange}
@@ -97,7 +99,7 @@ export const Buy = () => {
             </Box>
             <BuyComponents.Checkout
               length={domains.length}
-              networkFee={0.003872}
+              networkFee={Number(data?.fee.format())}
             />
           </VStack>
         </CardBody>
