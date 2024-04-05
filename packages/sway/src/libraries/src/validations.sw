@@ -37,8 +37,6 @@ fn is_valid_ascii_letter(value: u8) -> bool {
     let ascii_arr_size = 63;
     let mut count: u64 = 0;
 
-    log(count < ascii_arr_size + 1);
-
     while count < ascii_arr_size + 1 {
         if (ASCII_HANDLE_VALID_CHARS[count] == value) {
             return true
@@ -112,8 +110,6 @@ fn test_valid_ascii() {
     // Valid chars
     assert(is_valid_ascii_letter(48));
     assert(is_valid_ascii_letter(95));
-
-    log(is_valid_ascii_letter(48));
 
     // Invalid chars
     assert(!is_valid_ascii_letter(200));
