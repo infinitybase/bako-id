@@ -6,6 +6,7 @@ use ::interface::{FuelDomainsContract};
 use libraries::{
     abis::{StorageContract},
     structures::{FuelDomain},
+    validations::{assert_name_validity},
     permissions::{
         Permission,
         OWNER,
@@ -33,13 +34,7 @@ enum RegistryContractError {
     DomainNotAvailable: (),
     IncorrectAssetId: (),
     InvalidAmount: (),
-    DomainNotValid: (),
 }
-
-//// .fuel domain in bytes
-//const NAME_SULFIX: [u8; 5] = [46, 102, 117, 101, 108];
-//const NAME_SULFIX_LEN: u64 = 5;
-const NAME_MIN_LEN: u64 = 2;
 
 storage {
     storage_id: Option<ContractId> = Option::None,
@@ -51,13 +46,6 @@ fn get_storage_id() -> ContractId {
     let storage_id = storage.storage_id.read();
     require(storage_id.is_some(), RegistryContractError::StorageNotInitialized);
     storage_id.unwrap()
-}
-
-fn assert_name_validity(name: String) {
-    let mut bytes = name.as_bytes();
-    let mut name_length = bytes.len();
-
-    require(name_length > NAME_MIN_LEN, RegistryContractError::DomainNotValid);
 }
 
 fn get_domain_price(domain: String, period: u64) -> u64 {
@@ -95,7 +83,7 @@ impl FuelDomainsContract for Contract {
             RegistryContractError::IncorrectAssetId,
         );
 
-        assert_name_validity(name);
+        let name = assert_name_validity(name);
 
         let storage_id = get_storage_id();
         let domain_hash = sha256(name);

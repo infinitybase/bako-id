@@ -1,18 +1,20 @@
 import {
-  hash,
   Provider,
   RequireRevertError,
   TransactionStatus,
   type WalletUnlocked,
+  hash,
 } from 'fuels';
 import {
+  WALLET_PRIVATE_KEYS,
   createWallet,
+  expectContainLogError,
+  expectRequireRevertError,
   setupContracts,
+  setupContractsAndDeploy,
   testContract,
   tryExecute,
   txParams,
-  WALLET_PRIVATE_KEYS,
-  setupContractsAndDeploy,
 } from './utils';
 
 describe('Test Storage Contract', () => {
@@ -35,7 +37,7 @@ describe('Test Storage Contract', () => {
         .txParams(txParams)
         .call();
     } catch (e) {
-      expect(e).toBeInstanceOf(RequireRevertError);
+      expectRequireRevertError(e);
       expect(e.cause.logs[0].Unauthorized).toBeDefined();
     }
   });
@@ -54,7 +56,7 @@ describe('Test Storage Contract', () => {
         .txParams(txParams)
         .call();
     } catch (e) {
-      expect(e).toBeInstanceOf(RequireRevertError);
+      expectRequireRevertError(e);
       expect(e.cause.logs[0].Unauthorized).toBeDefined();
     }
   });
@@ -66,7 +68,7 @@ describe('Test Storage Contract', () => {
     try {
       await contracts.storage.initializeStorage();
     } catch (e) {
-      expect(e).toBeInstanceOf(RequireRevertError);
+      expectRequireRevertError(e);
     }
   });
 
@@ -133,7 +135,7 @@ describe('Test Storage Contract', () => {
 
       expect(transactionResult.status).toBe(TransactionStatus.failure);
     } catch (e) {
-      expect(e).toBeInstanceOf(RequireRevertError);
+      expectRequireRevertError(e);
     }
   });
 
@@ -175,7 +177,7 @@ describe('Test Storage Contract', () => {
         .call();
       expect(transactionResult.status).toBe(TransactionStatus.failure);
     } catch (e) {
-      expect(e).toBeInstanceOf(RequireRevertError);
+      expectRequireRevertError(e);
     }
   });
 });

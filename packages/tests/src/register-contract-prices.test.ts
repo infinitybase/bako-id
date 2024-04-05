@@ -4,7 +4,13 @@ import {
   TransactionStatus,
   type WalletUnlocked,
 } from 'fuels';
-import { createWallet, randomName, setupContractsAndDeploy } from './utils';
+import {
+  createWallet,
+  expectContainLogError,
+  expectRequireRevertError,
+  randomName,
+  setupContractsAndDeploy,
+} from './utils';
 
 describe('[PRICES] Test Registry Contract', () => {
   let wallet: WalletUnlocked;
@@ -34,8 +40,8 @@ describe('[PRICES] Test Registry Contract', () => {
 
       expect(transactionResult.status).toBe(TransactionStatus.failure);
     } catch (e) {
-      expect(e).toBeInstanceOf(RequireRevertError);
-      expect(e.cause.logs[0]).toBe('InvalidAmount');
+      expectRequireRevertError(e);
+      expectContainLogError(e.cause.logs, 'InvalidAmount');
     }
   });
 
