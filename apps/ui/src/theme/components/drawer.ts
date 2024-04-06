@@ -68,7 +68,7 @@ const Modal = defineStyleConfig({
       ...glassmorphic,
       dialog: {
         ...glassmorphic.dialog,
-        bg: '#17181B',
+        bg: '#151413',
       },
     },
   },
