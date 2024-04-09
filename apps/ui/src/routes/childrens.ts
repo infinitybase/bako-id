@@ -1,6 +1,7 @@
 import { createRoute } from '@tanstack/react-router';
 import { NotConnected } from '../components/auth/notConnected.tsx';
 import { rootRoute } from '../hooks/__root.ts';
+import { Buy } from '../modules/buy/page.tsx';
 import { Home } from '../modules/home/page.tsx';
 import { Purchased } from '../modules/purchased/page.tsx';
 import { Domain } from '../pages/domain.tsx';
@@ -49,7 +50,7 @@ export const domainRoute = createRoute({
 
 export const buyRoute = createRoute({
   getParentRoute: () => rootRoute,
-  component: Purchased,
+  component: Buy,
   path: '/buy/$domain',
 });
 
