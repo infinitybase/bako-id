@@ -1,10 +1,9 @@
-import { Button } from '@chakra-ui/react';
+import { Button, ButtonProps } from '@chakra-ui/react';
 import { ExploreIcon } from '../icons/explore';
 
-export const ViewOnExploreButton = () => {
+export const ViewOnExploreButton = (props: ButtonProps) => {
   return (
     <Button
-      onClick={() => {}}
       variant="ghost"
       size="xs"
       fontWeight="normal"
@@ -14,6 +13,7 @@ export const ViewOnExploreButton = () => {
         bgColor: 'transparent',
         color: 'button.500',
       }}
+      {...props}
     >
       View on Explore
     </Button>
