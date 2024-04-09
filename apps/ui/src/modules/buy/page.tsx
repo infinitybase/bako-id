@@ -12,6 +12,7 @@ import { GoBack } from '../../components/helpers';
 import { BuyError } from '../../components/helpers/buyError';
 import { useFuelConnect } from '../../hooks';
 import { useScreenSize } from '../../hooks/useScreenSize';
+import { Domains } from '../../types';
 import { useBuy } from './hooks/useBuy';
 
 export const Buy = () => {
@@ -72,7 +73,7 @@ export const Buy = () => {
         <CardBody>
           <VStack mt={3}>
             <BuyComponents.Domains>
-              {domains.map(({ name }, index) => (
+              {domains.map(({ name }: Domains, index) => (
                 <BuyComponents.Info
                   key={name}
                   name={name}
