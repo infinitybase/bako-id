@@ -57,7 +57,7 @@ export const buyRoute = createRoute({
 export const checkoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: Purchased,
-  path: '/checkout/$domain',
+  path: '/checkout/$domain/$transactionId',
 });
 
 export const domainsRoute = createRoute({
