@@ -1,13 +1,17 @@
-import { simulateHandleCost } from '@bako-id/sdk';
+import { register } from '@bako-id/sdk';
 import { useMutation, type UseMutationOptions } from '@tanstack/react-query';
-import type { RegisterDomainPayload } from '../types';
+import type { RegisterDomainPayload, RegisterDomainResponse } from '../types';
 
 const useRegisterDomainRequests = (
-  options?: UseMutationOptions<unknown, unknown, RegisterDomainPayload>,
+  options?: UseMutationOptions<
+    RegisterDomainResponse,
+    unknown,
+    RegisterDomainPayload
+  >,
 ) => {
   return useMutation({
     mutationKey: ['registerDomain'],
-    mutationFn: simulateHandleCost,
+    mutationFn: register,
     ...options,
   });
 };

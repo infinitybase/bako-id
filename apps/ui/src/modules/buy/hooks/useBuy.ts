@@ -26,7 +26,7 @@ export const useBuy = () => {
   const { registerDomain, resolveDomain, simulateHandle } = useDomain();
   const [selectedCoin, setSelectedCoin] = useState<Coin>(Coin.ETH);
   const [signInLoad, setSignInLoad] = useState<boolean>(false);
-  registerDomain.error;
+
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -85,7 +85,7 @@ export const useBuy = () => {
         domain: domain,
       },
       {
-        onSuccess: async () => {
+        onSuccess: async ({ transactionId }) => {
           await handleConfirmDomain();
           // domainDetailsDialog.onOpen();
           toast({
@@ -95,8 +95,8 @@ export const useBuy = () => {
             isClosable: true,
           });
           navigate({
-            to: '/checkout/$domain',
-            params: { domain: domain },
+            to: '/checkout/$domain/$transactionId',
+            params: { domain: domain, transactionId },
             startTransition: true,
           }).then();
           setSignInLoad(false);
