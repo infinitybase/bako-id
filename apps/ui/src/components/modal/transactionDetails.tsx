@@ -28,7 +28,7 @@ export const TransactionDomainDetailsModal = ({
         <VStack spacing={4}>
           <TextInput leftAddon leftAddonName="handle" value={domain} />
           <TextInput leftAddon leftAddonName="action" value="Registration" />
-          <TextInput leftAddon leftAddonName="duration" value={'1'} />
+          <TextInput leftAddon leftAddonName="duration" value={'1 year'} />
           <TextInput leftAddon leftAddonName="cost" value={cost.toString()} />
         </VStack>
       </Dialog.Body>
