@@ -3,7 +3,6 @@ import { NotConnected } from '../components/auth/notConnected.tsx';
 import { rootRoute } from '../hooks/__root.ts';
 import { Buy } from '../modules/buy/page.tsx';
 import { Home } from '../modules/home/page.tsx';
-import { Purchased } from '../modules/purchased/page.tsx';
 import { Domain } from '../pages/domain.tsx';
 import { Domains } from '../pages/domains.tsx';
 
@@ -54,11 +53,11 @@ export const buyRoute = createRoute({
   path: '/buy/$domain',
 });
 
-export const checkoutRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  component: Purchased,
-  path: '/checkout/$domain/$transactionId',
-});
+// export const checkoutRoute = createRoute({
+//   getParentRoute: () => rootRoute,
+//   component: ,
+//   path: '/checkout/$domain/$transactionId',
+// });
 
 export const domainsRoute = createRoute({
   getParentRoute: () => rootRoute,

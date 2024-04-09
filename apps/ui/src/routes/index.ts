@@ -2,7 +2,6 @@ import { createRouter } from '@tanstack/react-router';
 import { rootRoute } from '../hooks/__root.ts';
 import {
   buyRoute,
-  checkoutRoute,
   connectRoute,
   domainRoute,
   domainsRoute,
@@ -14,7 +13,6 @@ const routeTree = rootRoute.addChildren([
   connectRoute,
   domainRoute,
   buyRoute,
-  checkoutRoute,
   domainsRoute,
 ]);
 
