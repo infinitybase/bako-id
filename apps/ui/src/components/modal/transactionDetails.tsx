@@ -6,7 +6,7 @@ interface ITransactionDetailsModal {
   isOpen: boolean;
   onClose: () => void;
   domain: string;
-  cost: number;
+  cost: string;
   modalTitle: string;
 }
 

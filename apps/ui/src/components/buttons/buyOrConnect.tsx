@@ -1,11 +1,10 @@
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import { WalletIcon } from '..';
-import { useCustomToast } from '../toast/hooks';
 import { ConnectButton } from './connectButton';
 
 interface IBuyOrConnectProps {
   wallet: boolean;
-  handleBuyDomain: () => Promise<void>;
+  handleBuyDomain: () => void;
   walletBalance: number;
   totalPrice: number;
   isLoadingBalance: boolean;
@@ -20,17 +19,6 @@ export const BuyOrConnectButton = ({
   wallet,
   walletBalance,
 }: IBuyOrConnectProps) => {
-  const { successToast } = useCustomToast();
-
-  const handleBuy = async () => {
-    await handleBuyDomain().then(() => {
-      successToast({
-        title: 'Transaction success',
-        description: 'Your handle has been registered successfully',
-      });
-    });
-  };
-
   if (wallet) {
     return (
       <Box
@@ -44,7 +32,7 @@ export const BuyOrConnectButton = ({
           w="full"
           isLoading={isLoadingBalance}
           isDisabled={!wallet || Number(walletBalance) < totalPrice}
-          onClick={handleBuy}
+          onClick={handleBuyDomain}
           background="button.500"
           color="background.500"
           fontSize={14}
