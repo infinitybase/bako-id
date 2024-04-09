@@ -10,6 +10,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { TransactionResult } from 'fuels';
 import { TwitterShareButton } from 'react-share';
 import {
   CheckoutCard,
@@ -21,11 +22,19 @@ import { TransactionsDetailsButton } from '../../components/buttons/transactions
 import { ViewOnExploreButton } from '../../components/buttons/viewOnExploreButton';
 import { TransactionDomainDetailsModal } from '../../components/modal/transactionDetails';
 import { useScreenSize } from '../../hooks/useScreenSize';
-import { usePurchased } from './hooks/usePurchased';
 
-export const Purchased = () => {
+interface IPurchased {
+  domain: string;
+  transactionId: string;
+  transaction: TransactionResult;
+}
+
+export const Purchased = ({
+  domain,
+  transactionId,
+  transaction,
+}: IPurchased) => {
   const modal = useDisclosure();
-  const { domain, transactionId } = usePurchased();
   const { isMobile } = useScreenSize();
 
   return (
@@ -119,7 +128,7 @@ export const Purchased = () => {
         isOpen={modal.isOpen}
         onClose={modal.onClose}
         domain={domain}
-        cost={0.12837}
+        cost={transaction?.fee?.format()}
       />
     </Box>
   );

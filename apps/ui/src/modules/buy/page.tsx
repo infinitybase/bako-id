@@ -13,6 +13,7 @@ import { BuyError } from '../../components/helpers/buyError';
 import { useFuelConnect } from '../../hooks';
 import { useScreenSize } from '../../hooks/useScreenSize';
 import { Domains } from '../../types';
+import { Purchased } from '../purchased/page';
 import { useBuy } from './hooks/useBuy';
 
 export const Buy = () => {
@@ -27,9 +28,21 @@ export const Buy = () => {
     signInLoad,
     walletBalance,
     handleCost: { data },
+    registerDomain,
+    domain,
   } = useBuy();
 
   const { isMobile } = useScreenSize();
+
+  if (registerDomain.isSuccess || registerDomain.data) {
+    return (
+      <Purchased
+        domain={domain}
+        transactionId={registerDomain.data.transactionId}
+        transaction={registerDomain.data.transactionResult}
+      />
+    );
+  }
 
   const BuyButton = (
     <BuyOrConnectButton

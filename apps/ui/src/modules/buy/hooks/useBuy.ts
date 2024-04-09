@@ -4,7 +4,8 @@ import { useCalculateDomain, useDomain, useFuelConnect } from '../../../hooks';
 import type { Domains } from '../../../types';
 
 import { useBalance } from '@fuels/react';
-import { useNavigate, useParams } from '@tanstack/react-router';
+import { useParams } from '@tanstack/react-router';
+import { useCustomToast } from '../../../components/toast';
 
 const coinSymbol = {
   USD: '$',
@@ -16,7 +17,7 @@ export enum Coin {
   ETH = 'ETH',
 }
 export const useBuy = () => {
-  const navigate = useNavigate();
+  const { successToast } = useCustomToast();
   const { domain } = useParams({ strict: false });
   const { wallet } = useFuelConnect();
   const { balance, fetchUSD } = useCalculateDomain();
@@ -81,14 +82,18 @@ export const useBuy = () => {
         domain: domain,
       },
       {
-        onSuccess: async ({ transactionId }) => {
+        onSuccess: async () => {
           await handleConfirmDomain();
           // domainDetailsDialog.onOpen();
-          navigate({
-            to: '/checkout/$domain/$transactionId',
-            params: { domain: domain, transactionId },
-            startTransition: true,
-          }).then();
+          successToast({
+            title: 'Transaction success',
+            description: 'Your handle has been registered successfully',
+          });
+          // navigate({
+          //   to: '/checkout/$domain/$transactionId',
+          //   params: { domain: domain, transactionId },
+          //   startTransition: true,
+          // }).then();
           setSignInLoad(false);
         },
         onError: (error: unknown) => {
@@ -134,6 +139,7 @@ export const useBuy = () => {
     };
   }, [buyError]);
 
+  console.log(simulateHandle.data?.fee.format());
   return {
     handleBuyDomain,
     handlePeriodChange,
@@ -141,9 +147,11 @@ export const useBuy = () => {
       ...simulateHandle,
       data: simulateHandle.data,
     },
+    registerDomain,
     balance,
     totalPrice,
     domains,
+    domain,
     selectedCoin,
     buyError,
     signInLoad,
