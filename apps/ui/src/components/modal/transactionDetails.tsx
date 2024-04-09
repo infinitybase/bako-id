@@ -1,12 +1,11 @@
 import { VStack } from '@chakra-ui/react';
 import { TextInput } from '..';
-import { Domains } from '../../types';
 import { Dialog } from '../dialog';
 
 interface ITransactionDetailsModal {
   isOpen: boolean;
   onClose: () => void;
-  domain: Domains;
+  domain: string;
   cost: number;
   modalTitle: string;
 }
@@ -27,13 +26,9 @@ export const TransactionDomainDetailsModal = ({
     >
       <Dialog.Body>
         <VStack spacing={4}>
-          <TextInput leftAddon leftAddonName="handle" value={domain.name} />
+          <TextInput leftAddon leftAddonName="handle" value={domain} />
           <TextInput leftAddon leftAddonName="action" value="Registration" />
-          <TextInput
-            leftAddon
-            leftAddonName="duration"
-            value={domain.period?.toString()}
-          />
+          <TextInput leftAddon leftAddonName="duration" value={'1'} />
           <TextInput leftAddon leftAddonName="cost" value={cost.toString()} />
         </VStack>
       </Dialog.Body>
