@@ -20,6 +20,7 @@ const colors = {
   },
   input: {
     500: '#35302F',
+    600: '#201F1D',
     900: '#151413',
   },
   text: {
@@ -61,6 +62,7 @@ const colors = {
     100: '#CFCCC9',
   },
   section: {
+    500: '#868079',
     200: '#F5F5F5',
   },
   gradient: {

@@ -1,4 +1,4 @@
-import { Box, type BoxProps, Flex, Text } from '@chakra-ui/react';
+import { Box, Flex, Text, type BoxProps } from '@chakra-ui/react';
 import { ErrorIcon } from '../icons/errorIcon';
 
 interface IBuyErrorProps extends BoxProps {
@@ -13,7 +13,7 @@ export const BuyError = ({
   walletBalance,
 }: IBuyErrorProps) => {
   return (
-    <Box w="full" h="fit-content" display="flex" mb={3}>
+    <Box maxW="full" h="fit-content" display="flex" mb={3}>
       {buyError && (
         <Box
           w="full"

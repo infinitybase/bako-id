@@ -1,5 +1,4 @@
 export * from './Add';
-export * from './Modal';
 export * from './auth';
 export * from './buy';
 export * from './card';
@@ -9,4 +8,5 @@ export * from './helpers';
 export * from './icons';
 export * from './inputs';
 export * from './layout';
+export * from './modal';
 export * from './user';

@@ -5,7 +5,6 @@ import { Buy } from '../modules/buy/page.tsx';
 import { Home } from '../modules/home/page.tsx';
 import { Domain } from '../pages/domain.tsx';
 import { Domains } from '../pages/domains.tsx';
-import { Purchased } from '../pages/purchased.tsx';
 
 export const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -54,11 +53,11 @@ export const buyRoute = createRoute({
   path: '/buy/$domain',
 });
 
-export const checkoutRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  component: Purchased,
-  path: '/checkout/$domain',
-});
+// export const checkoutRoute = createRoute({
+//   getParentRoute: () => rootRoute,
+//   component: ,
+//   path: '/checkout/$domain/$transactionId',
+// });
 
 export const domainsRoute = createRoute({
   getParentRoute: () => rootRoute,
