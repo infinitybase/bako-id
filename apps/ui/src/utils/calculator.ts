@@ -3,8 +3,8 @@
 // 3 digitos - 0.05  -> (1 ano = 0.05 / 2 anos = 0.1)
 
 const calculateDomainPrice = (domain: string, period: number) => {
-  if(!domain) return 0
-  console.debug(domain)
+  if (!domain) return 0;
+  console.debug(domain);
   let multiplier = 0;
   if (domain.length === 3) multiplier = 0.05;
   if (domain.length === 4) multiplier = 0.01;

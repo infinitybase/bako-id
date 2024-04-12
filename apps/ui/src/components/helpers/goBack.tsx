@@ -1,16 +1,33 @@
-import { Button } from '@chakra-ui/react';
-import { ChevronLeftIcon } from '@chakra-ui/icons';
-  import { useNavigate } from '@tanstack/react-router';
+import { Box, Button, Text } from '@chakra-ui/react';
+import { useNavigate } from '@tanstack/react-router';
+import { HomeIcon } from '../icons/homeIcon';
 
 export const GoBack = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate({ to: '/' })
-  }
+    navigate({ to: '/' });
+  };
 
-  return <Button variant="ghost" display="flex" alignSelf="start" gap={3} px={0} fontSize="xs" _hover={{ background: 'transparent' }} color="white">
-    <ChevronLeftIcon onClick={handleGoBack} />
-    Back
-  </Button>
-}
+  return (
+    <Button
+      onClick={handleGoBack}
+      variant="ghost"
+      alignSelf="start"
+      _hover={{ color: 'button.500' }}
+      color="white"
+      ml={12}
+    >
+      <Box
+        display="flex"
+        alignItems="end"
+        fontSize="xs"
+        gap={1}
+        justifyContent="center"
+      >
+        <HomeIcon w={4} h={4} />
+        <Text>Home</Text>
+      </Box>
+    </Button>
+  );
+};

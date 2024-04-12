@@ -1,5 +1,5 @@
-import {defineConfig} from 'tsup';
 import dotenv from 'dotenv';
+import { defineConfig } from 'tsup';
 
 dotenv.config();
 
@@ -9,6 +9,7 @@ export default defineConfig({
   treeshake: true,
   env: {
     STORAGE_ID: process.env.STORAGE_ID!,
+    PROVIDER_URL: process.env.PROVIDER_URL!,
   },
   format: ['cjs', 'esm'],
   minify: true,
@@ -16,5 +17,3 @@ export default defineConfig({
   dts: true,
   replaceNodeEnv: true,
 });
-
-

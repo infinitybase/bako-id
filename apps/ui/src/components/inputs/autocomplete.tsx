@@ -3,7 +3,7 @@ import {
   Box,
   Input as ChakraInput,
   InputGroup,
-  InputProps,
+  type InputProps,
   InputRightElement,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';

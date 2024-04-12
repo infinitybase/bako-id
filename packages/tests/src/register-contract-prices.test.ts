@@ -1,11 +1,16 @@
-import { Provider, RequireRevertError, TransactionStatus, WalletUnlocked } from 'fuels';
+import {
+  Provider,
+  RequireRevertError,
+  TransactionStatus,
+  type WalletUnlocked,
+} from 'fuels';
 import { createWallet, randomName, setupContractsAndDeploy } from './utils';
 
 describe('[PRICES] Test Registry Contract', () => {
   let wallet: WalletUnlocked;
   let provider: Provider;
 
-  let contracts: Awaited<ReturnType<typeof setupContractsAndDeploy>>
+  let contracts: Awaited<ReturnType<typeof setupContractsAndDeploy>>;
 
   beforeAll(async () => {
     provider = await Provider.create('http://localhost:4000/graphql');
@@ -21,7 +26,11 @@ describe('[PRICES] Test Registry Contract', () => {
       const { registry } = contracts;
 
       const domain = randomName();
-      const { transactionResult } = await registry.register(domain, wallet.address.toB256(), false);
+      const { transactionResult } = await registry.register(
+        domain,
+        wallet.address.toB256(),
+        false
+      );
 
       expect(transactionResult.status).toBe(TransactionStatus.failure);
     } catch (e) {
@@ -30,13 +39,19 @@ describe('[PRICES] Test Registry Contract', () => {
     }
   });
 
-  it.each([3, 4, 10])('should register domain with %d chars', async (domainLength) => {
-    const { registry } = contracts;
+  it.each([3, 4, 10])(
+    'should register domain with %d chars',
+    async (domainLength) => {
+      const { registry } = contracts;
 
-    const domain = randomName(domainLength);
+      const domain = randomName(domainLength);
 
-    const { transactionResult } = await registry.register(domain, wallet.address.toB256())
+      const { transactionResult } = await registry.register(
+        domain,
+        wallet.address.toB256()
+      );
 
-    expect(transactionResult.status).toBe(TransactionStatus.success);
-  });
+      expect(transactionResult.status).toBe(TransactionStatus.success);
+    }
+  );
 });

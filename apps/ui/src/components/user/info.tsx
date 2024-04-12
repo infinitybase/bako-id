@@ -9,7 +9,7 @@ import {
   MenuList,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
-import { AbstractAddress } from 'fuels';
+import type { AbstractAddress } from 'fuels';
 import { useMemo, useState } from 'react';
 import { formatAddress } from '../../utils/formatter.ts';
 import { RoundedUserIcon } from '../helpers/roundedUserIcon.tsx';

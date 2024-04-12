@@ -1,9 +1,9 @@
 import {
-  Input as ChakraInput,
   Box,
+  Input as ChakraInput,
   InputGroup,
-  InputProps,
-} from "@chakra-ui/react";
+  type InputProps,
+} from '@chakra-ui/react';
 
 interface CustomInputProps extends InputProps {
   value?: string;
@@ -14,12 +14,14 @@ const TextInput = ({ value }: CustomInputProps) => {
     <Box w="full" display="flex" alignItems="center">
       <InputGroup>
         <ChakraInput
-          defaultValue={value ?? ""}
+          defaultValue={value ?? ''}
           type="text"
           readOnly={true}
-          border="none"
-          borderRadius={10}
-          backgroundColor="input.500"
+          h={12}
+          border="1px solid"
+          borderColor="stroke.500"
+          borderRadius="lg"
+          backgroundColor="background.900"
           color="white"
           fontSize={16}
           fontWeight={600}
@@ -29,4 +31,4 @@ const TextInput = ({ value }: CustomInputProps) => {
   );
 };
 
-export { TextInput }
+export { TextInput };

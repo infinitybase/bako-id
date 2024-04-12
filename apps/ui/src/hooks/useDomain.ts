@@ -3,19 +3,25 @@ import { useToast } from '@chakra-ui/react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useFuelConnect } from '.';
-import { Domains } from '../types';
+import type { Domains } from '../types';
 import { useRegisterDomainRequests } from './useRegisterDomainRequests';
 import { useResolveDomainRequests } from './useResolveDomainRequests';
+import { useSimulateHandleCostRequest } from './useSimulateHandleCostRequest';
 
-export const useDomain = () => {
+export const useDomain = (newDomain?: string) => {
+  const { domain } = useParams({ strict: false });
   const toast = useToast();
   const navigate = useNavigate();
   const { wallet } = useFuelConnect();
 
   const registerDomain = useRegisterDomainRequests();
-  const resolveDomain = useResolveDomainRequests();
+  const resolveDomain = useResolveDomainRequests(domain ?? newDomain);
+  const simulateHandle = useSimulateHandleCostRequest(
+    wallet!,
+    wallet?.address.toB256() ?? '',
+    domain,
+  );
 
-  const { domain } = useParams({ strict: false });
   const [domains, setDomains] = useState<Domains[]>([
     {
       name: domain,
@@ -77,6 +83,7 @@ export const useDomain = () => {
   return {
     registerDomain,
     resolveDomain,
+    simulateHandle,
     handleBuyDomain,
     handlePeriodChange,
     domains,

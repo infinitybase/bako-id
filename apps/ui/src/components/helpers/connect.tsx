@@ -22,27 +22,31 @@ export const Connect = () => {
         _hover={{ bgColor: 'button.600' }}
         className="transition-all-05"
       >
-        <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
-          {!isMobile && (
-            <Icon
-              as={WalletIcon}
-              alignSelf="center"
-              h={4}
-              w={4}
-              color="background.500"
-            />
-          )}
-          <Text>Connect wallet</Text>
-          {isMobile && (
-            <Icon
-              as={WalletIcon}
-              alignSelf="center"
-              h={4}
-              w={4}
-              color="button.500"
-            />
-          )}
-        </Box>
+        {!connectors.isConnecting ? (
+          <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
+            {!isMobile && (
+              <Icon
+                as={WalletIcon}
+                alignSelf="center"
+                h={4}
+                w={4}
+                color="background.500"
+              />
+            )}
+            <Text>Connect Wallet</Text>
+            {isMobile && (
+              <Icon
+                as={WalletIcon}
+                alignSelf="center"
+                h={4}
+                w={4}
+                color="button.500"
+              />
+            )}
+          </Box>
+        ) : (
+          <Text>Connecting...</Text>
+        )}
       </Button>
       <DrawerConnector
         isOpen={connectors.drawer.isOpen}

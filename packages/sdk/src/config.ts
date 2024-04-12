@@ -1,8 +1,9 @@
-import contractsId from './types/contract-ids.json';
+import contractsId from './types/sway/contract-ids.json';
 
-const envrionment = {
-  STORAGE_CONTRACT_ID: process.env.STORAGE_ID ,
+const config = {
+  STORAGE_CONTRACT_ID: process.env.STORAGE_ID,
   REGISTRY_CONTRACT_ID: contractsId.registryContract,
+  PROVIDER_DEPLOYED: process.env.PROVIDER_URL,
 };
 
-export { envrionment };
+export { config };

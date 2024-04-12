@@ -1,4 +1,4 @@
-import { BN, bn } from 'fuels';
+import { type BN, bn } from 'fuels';
 import { InvalidDomainError } from './errors';
 
 /**
@@ -7,7 +7,8 @@ import { InvalidDomainError } from './errors';
  * @param {string} domain - The domain to be checked.
  * @returns {boolean} - True if the domain is valid, false otherwise.
  */
-export const isValidDomain = (domain: string): boolean => /^@?[a-zA-Z0-9_]+$/.test(domain);
+export const isValidDomain = (domain: string): boolean =>
+  /^@?[a-zA-Z0-9_]+$/.test(domain);
 
 /**
  * Checks if a given domain is valid and throw error.
@@ -20,7 +21,7 @@ export const assertValidDomain = (domain: string) => {
   if (!isValidDomain(domain)) throw new InvalidDomainError();
 
   return domain.replace('@', '');
-}
+};
 
 /**
  * Calculate the price for a domain name based on its length and period.
@@ -39,7 +40,7 @@ export const domainPrices = (domain: string, period = 1) => {
   const prices = {
     [3]: bn.parseUnits('0.005'),
     [4]: bn.parseUnits('0.001'),
-    default: bn.parseUnits('0.0002')
+    default: bn.parseUnits('0.0002'),
   };
 
   const price: BN = prices[domainSize] || prices.default;

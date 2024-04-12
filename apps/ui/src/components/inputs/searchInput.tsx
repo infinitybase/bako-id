@@ -5,7 +5,8 @@ import {
   InputGroup,
   InputRightElement,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import { AvailableBadge, UnavailableBadge } from '../helpers';
 
 interface InputProps {

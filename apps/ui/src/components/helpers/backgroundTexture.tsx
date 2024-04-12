@@ -11,7 +11,7 @@ export const BackgroundTexture = () => {
       w={{ base: '100%', md: '70%' }}
     >
       {' '}
-      <span className="main-gradient"></span>{' '}
+      <span className="main-gradient" />{' '}
     </Box>
   );
 };

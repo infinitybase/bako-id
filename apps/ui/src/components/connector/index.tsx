@@ -9,15 +9,16 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
-  DrawerProps,
-  Heading,
+  type DrawerProps,
   HStack,
+  Heading,
   Icon,
   Link,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import React, { useCallback, useMemo } from 'react';
+import type React from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { CloseIcon } from '@chakra-ui/icons';
 import { Card } from '../';

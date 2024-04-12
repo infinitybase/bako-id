@@ -1,10 +1,10 @@
+import { PlusSquareIcon } from '@chakra-ui/icons';
 import {
   Button as ChakraButton,
-  Text,
   Icon,
-  ButtonProps,
-} from "@chakra-ui/react";
-import { PlusSquareIcon } from '@chakra-ui/icons';
+  Text,
+  type ButtonProps,
+} from '@chakra-ui/react';
 
 interface AddProps extends ButtonProps {}
 
@@ -21,7 +21,7 @@ export default function Add(props: AddProps) {
       borderColor="button.700"
       color="#32C8D9"
       fontSize="14px"
-      _hover={{ bgColor: "button.700", color: "white" }}
+      _hover={{ bgColor: 'button.700', color: 'white' }}
       {...props}
     >
       <Text>Add more domains</Text>

@@ -20,10 +20,13 @@ use std::{
 };
 use std::{storage::{storable_slice::{write_slice, read_slice}}};
 use std::storage::storage_bytes::*;
+use std::storage::storage_string::*;
 use std::bytes::Bytes;
+use std::string::String;
 
 storage {
     initialized: bool = false,
+    reverse_handles: StorageMap<b256, StorageString> = StorageMap::<b256, StorageString> {},
 }
 
 // Pre-computed hash digest of sha256("implementation")
@@ -89,5 +92,20 @@ impl StorageContract for Contract {
             Some(slice) => Some(Bytes::from(slice)),
             _ => None,
         }
+    }
+
+    #[storage(write)]
+    fn reverse_set(key: b256, value: String) {
+        with_permission(IMPLEMENTATION);
+        storage.reverse_handles.insert(key, StorageString {});
+        storage.reverse_handles.get(key).write_slice(value);
+    }
+
+    #[storage(read)]
+    fn reverse_get(resolver: b256) -> String {
+        return storage.reverse_handles
+                .get(resolver)
+                .read_slice()
+                .unwrap_or(String::new());
     }
 }

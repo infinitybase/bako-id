@@ -4,7 +4,7 @@
 
 # 📦 Bako ID SDK
 
-Bako ID SDK enable to register a `@` handler domain in [Fuel Network](https://www.fuel.network/).
+Bako ID SDK enable to register a `@` handle domain in [Fuel Network](https://www.fuel.network/).
 Compatible with BETA-5
 
 ## Installation
@@ -21,23 +21,20 @@ import { resolver } from '@bako-id/sdk';
 
 const providerURL = 'https://beta-5.fuel.network/graphql';
 
-// Get domain resolver
-const fuelDomain = await resolver({
-  domain: '@my_domain',
-  providerURL,
-});
+// Get Bako handle resolver
+const fuelDomain = await resolver('@my_domain');
 console.log(fuelDomain); // { owner: '0x000...', resolver: '0x000...' }
 ```
 
 ### Domain register
 ```ts
-import { register } from '@fuel-domains/sdk';
+import { register } from '@bako-id/sdk';
 import { Wallet } from 'fuels';
 
 // Fuel Wallet instance
 const wallet: Wallet;
 
-// Register a .fuel domain 
+// Register a Bako handle 
 await register({
   account: wallet,
   resolver: '0x0000...',

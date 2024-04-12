@@ -5,9 +5,11 @@
   "main": "index.js",
   "scripts": {
     "build": "turbo run build",
-    "build:doc": "turbo run docs:build"
+    "build:doc": "turbo run docs:build",
+    "test:packages": "turbo run test --filter='./packages/*'"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.6.4",
     "turbo": "1.8.8"
   },
   "keywords": [],

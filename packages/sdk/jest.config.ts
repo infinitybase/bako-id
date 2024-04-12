@@ -1,5 +1,5 @@
-import type { JestConfigWithTsJest } from 'ts-jest';
 import * as dotenv from 'dotenv';
+import type { JestConfigWithTsJest } from 'ts-jest';
 
 dotenv.config();
 

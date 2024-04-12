@@ -1,5 +1,5 @@
 import { useConnectors } from '@fuels/react';
-import { FueletIcon, FuelIcon, PasskeyIcon } from '../../components/icons';
+import { FuelIcon, FueletIcon, PasskeyIcon } from '../../components/icons';
 
 export enum EConnectors {
   FUEL = 'Fuel Wallet',

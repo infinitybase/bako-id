@@ -1,7 +1,7 @@
-import { Box, Flex, Image, Text, VStack } from "@chakra-ui/react";
-import symbol from "../../assets/logo.svg";
-import logo from "../../assets/footer-logo.svg";
-import texture from "../../assets/texture.svg";
+import { Box, Flex, Image, Text, VStack } from '@chakra-ui/react';
+import logo from '../../assets/footer-logo.svg';
+import symbol from '../../assets/logo.svg';
+import texture from '../../assets/texture.svg';
 
 interface CardProps {
   domain: string;
@@ -39,7 +39,7 @@ export function CheckoutCard({ domain }: CardProps) {
         <Text fontSize={'xxl'}>
           <span
             style={{
-              color: '#fdc940'
+              color: '#fdc940',
             }}
           >
             @

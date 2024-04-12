@@ -1,7 +1,7 @@
 import {
   Box,
   Container as ContainerChakra,
-  ContainerProps as ContainerChakraProps,
+  type ContainerProps as ContainerChakraProps,
 } from '@chakra-ui/react';
 
 import BackgroundTexture from '../../assets/bg-texture.svg';
