@@ -7,6 +7,9 @@ import {
 } from 'fuels';
 import {
   createWallet,
+  expectContainLogError,
+  expectErrorInstance,
+  expectRequireRevertError,
   randomName,
   setupContractsAndDeploy,
   tryExecute,
@@ -37,9 +40,9 @@ describe('[METHODS] Test Registry Contract', () => {
         .addContracts([storage])
         .txParams(txParams)
         .call();
-    } catch (e) {
-      expect(e).toBeInstanceOf(RequireRevertError);
-      expect(e.cause.logs[0]).toBe('StorageNotInitialized');
+    } catch (error) {
+      expectRequireRevertError(error);
+      expectContainLogError(error.cause.logs, 'StorageNotInitialized');
     }
   });
 
@@ -52,9 +55,9 @@ describe('[METHODS] Test Registry Contract', () => {
       const { txRegistry: txRegistryFailure } =
         await registry.initializeRegistry();
       expect(txRegistryFailure.status).toBe(TransactionStatus.failure);
-    } catch (e) {
-      expect(e).toBeInstanceOf(RequireRevertError);
-      expect(e.cause.logs[0]).toBe('AlreadyInitialized');
+    } catch (error) {
+      expectRequireRevertError(error);
+      expectContainLogError(error.cause.logs, 'AlreadyInitialized');
     }
   });
 
@@ -73,9 +76,9 @@ describe('[METHODS] Test Registry Contract', () => {
       );
 
       expect(txRegister.status).toBe(TransactionStatus.failure);
-    } catch (e) {
-      expect(e).toBeInstanceOf(RequireRevertError);
-      expect(e.cause.logs[0]).toBe('DomainNotAvailable');
+    } catch (error) {
+      expectRequireRevertError(error);
+      expectContainLogError(error.cause.logs, 'DomainNotAvailable');
     }
   });
 
@@ -190,5 +193,38 @@ describe('[METHODS] Test Registry Contract', () => {
       .call();
 
     expect(value).toBe(primaryDomain);
+  });
+
+  it('should throw a error when try register a handle with invalid chars', async () => {
+    const { registry, storage } = await setupContractsAndDeploy(wallet);
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+
+    const register = (name: string) =>
+      registry.register(name, wallet.address.toB256());
+
+    const expectErrors = (error: unknown, logs: unknown[]) => {
+      expectRequireRevertError(error);
+      expectContainLogError(logs, 'InvalidChars');
+    };
+
+    try {
+      await register('@invalid-!@#%$!');
+    } catch (error) {
+      expectErrors(error, error.cause.logs);
+    }
+
+    try {
+      await register('my@asd.other');
+    } catch (error) {
+      expectErrors(error, error.cause.logs);
+    }
+
+    try {
+      await register('@my123');
+    } catch (error) {
+      expectErrors(error, error.cause.logs);
+    }
   });
 });

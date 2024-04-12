@@ -23,13 +23,13 @@ type ResolverProviderParams = {
  * @returns {Promise<Provider>} The retrieved provider.
  */
 async function getProviderFromParams(
-  params?: ResolverProviderParams
+  params?: ResolverProviderParams,
 ): Promise<Provider> {
   if (!params) {
     return Provider.create(config.PROVIDER_DEPLOYED!);
   }
 
-  let provider;
+  let provider: Provider | null = null;
 
   if (params.account) {
     provider = params.account.provider;
@@ -53,7 +53,7 @@ async function getProviderFromParams(
  */
 export async function resolver(
   domain: string,
-  params?: ResolverProviderParams
+  params?: ResolverProviderParams,
 ): ResolverReturn {
   const domainName = assertValidDomain(domain);
 
@@ -88,7 +88,7 @@ export async function resolver(
  */
 export async function reverseResolver(
   resolver: Address | string,
-  params?: ResolverProviderParams
+  params?: ResolverProviderParams,
 ): Promise<string | null> {
   const resolverAddress =
     typeof resolver === 'string'

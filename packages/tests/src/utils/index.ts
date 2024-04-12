@@ -1,26 +1,46 @@
-import { BaseAssetId, bn, type BN, type Provider, Wallet, type WalletUnlocked } from 'fuels';
+import {
+  type BN,
+  BaseAssetId,
+  type Provider,
+  RequireRevertError,
+  Wallet,
+  type WalletUnlocked,
+  bn,
+} from 'fuels';
 import {
   RegistryContractAbi__factory,
   StorageContractAbi__factory,
   TestContractAbi__factory,
 } from '../types';
-import registryHex from '../types/contracts/RegistryContractAbi.hex';
-import storageHex from '../types/contracts/StorageContractAbi.hex';
 import {
   registryContract,
   storageContract,
   testContract,
 } from '../types/contract-ids.json';
+import registryHex from '../types/contracts/RegistryContractAbi.hex';
+import storageHex from '../types/contracts/StorageContractAbi.hex';
 
-const tryExecute = <T>(callback: Promise<T>) =>
+export const tryExecute = <T>(callback: Promise<T>) =>
   new Promise<T>((resolve) => callback.then(resolve).catch(resolve));
 
-const WALLET_PRIVATE_KEYS = {
+export const containLogError = (logs: unknown[], value: unknown) =>
+  !!logs.find((_value) => _value === value);
+
+export const expectContainLogError = (logs: unknown[], value: unknown) =>
+  expect(containLogError(logs, value)).toBeTruthy();
+
+export const expectErrorInstance = (expectedError: unknown, error: unknown) =>
+  expect(expectedError).toBeInstanceOf(error);
+
+export const expectRequireRevertError = (expectedError: unknown) =>
+  expect(expectedError).toBeInstanceOf(RequireRevertError);
+
+export const WALLET_PRIVATE_KEYS = {
   MAIN: '0xa449b1ffee0e2205fa924c6740cc48b3b473aa28587df6dab12abc245d1f5298',
   FAKE: '0x12265569a656550e6eceda7ac78a25a2e4584e5742e6420b597c9ced37ff4754',
 };
 
-const txParams = {
+export const txParams = {
   gasPrice: 1,
   gasLimit: 1_000_000,
 };
@@ -43,7 +63,7 @@ export const domainPrices = (domain: string, period = 1) => {
   return price.mul(period);
 };
 
-async function setupContractsAndDeploy(wallet: WalletUnlocked) {
+export async function setupContractsAndDeploy(wallet: WalletUnlocked) {
   const storage = await StorageContractAbi__factory.deployContract(
     storageHex,
     wallet
@@ -114,7 +134,7 @@ async function setupContractsAndDeploy(wallet: WalletUnlocked) {
   };
 }
 
-async function setupContracts(wallet: WalletUnlocked) {
+export async function setupContracts(wallet: WalletUnlocked) {
   const registry = RegistryContractAbi__factory.connect(
     registryContract,
     wallet
@@ -181,27 +201,16 @@ async function setupContracts(wallet: WalletUnlocked) {
   };
 }
 
-function createWallet(
+export function createWallet(
   provider: Provider,
   privateKey = WALLET_PRIVATE_KEYS.MAIN
 ) {
   return Wallet.fromPrivateKey(privateKey, provider);
 }
 
-function randomName(size = 10) {
+export function randomName(size = 10) {
   const name = (Math.random() + 2).toString(32).substring(2);
   return `${name}`.slice(0, size);
 }
 
-export {
-  txParams,
-  tryExecute,
-  randomName,
-  createWallet,
-  testContract,
-  storageContract,
-  setupContracts,
-  registryContract,
-  WALLET_PRIVATE_KEYS,
-  setupContractsAndDeploy,
-};
+export { testContract, storageContract, registryContract };
