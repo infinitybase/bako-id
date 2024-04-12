@@ -29,7 +29,7 @@ async function getProviderFromParams(
     return Provider.create(config.PROVIDER_DEPLOYED!);
   }
 
-  let provider;
+  let provider: Provider | null = null;
 
   if (params.account) {
     provider = params.account.provider;
