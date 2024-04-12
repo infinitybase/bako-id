@@ -4,14 +4,14 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.77.0
+  Fuels version: 0.78.0
   Forc version: 0.51.1
   Fuel-Core version: 0.22.1
 */
 
 import type {
-  BigNumberish,
   BN,
+  BigNumberish,
   Bytes,
   BytesLike,
   Contract,
@@ -22,7 +22,7 @@ import type {
   StdString,
 } from 'fuels';
 
-import type { Option, Enum } from './common';
+import type { Enum, Option } from './common';
 
 export type IdentityInput = Enum<{
   Address: AddressInput;
@@ -32,6 +32,16 @@ export type IdentityOutput = Enum<{
   Address: AddressOutput;
   ContractId: ContractIdOutput;
 }>;
+export enum NameValidationErrorInput {
+  InvalidLenght = 'InvalidLenght',
+  InvalidChars = 'InvalidChars',
+  IsEmpty = 'IsEmpty',
+}
+export enum NameValidationErrorOutput {
+  InvalidLenght = 'InvalidLenght',
+  InvalidChars = 'InvalidChars',
+  IsEmpty = 'IsEmpty',
+}
 export type PermissionInput = Enum<{
   Authorized: IdentityInput;
   Unauthorized: [];
@@ -48,7 +58,6 @@ export enum RegistryContractErrorInput {
   DomainNotAvailable = 'DomainNotAvailable',
   IncorrectAssetId = 'IncorrectAssetId',
   InvalidAmount = 'InvalidAmount',
-  DomainNotValid = 'DomainNotValid',
 }
 export enum RegistryContractErrorOutput {
   StorageNotInitialized = 'StorageNotInitialized',
@@ -56,7 +65,6 @@ export enum RegistryContractErrorOutput {
   DomainNotAvailable = 'DomainNotAvailable',
   IncorrectAssetId = 'IncorrectAssetId',
   InvalidAmount = 'InvalidAmount',
-  DomainNotValid = 'DomainNotValid',
 }
 
 export type AddressInput = { value: string };
@@ -78,36 +86,36 @@ export interface RegistryContractAbiInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: 'constructor',
-    values: [AddressInput, ContractIdInput],
+    values: [AddressInput, ContractIdInput]
   ): Uint8Array;
   encodeFunctionData(
     functionFragment: 'register',
-    values: [StdString, string],
+    values: [StdString, string]
   ): Uint8Array;
   encodeFunctionData(
     functionFragment: 'resolver',
-    values: [StdString],
+    values: [StdString]
   ): Uint8Array;
   encodeFunctionData(
     functionFragment: 'reverse_name',
-    values: [string],
+    values: [string]
   ): Uint8Array;
 
   decodeFunctionData(
     functionFragment: 'constructor',
-    data: BytesLike,
+    data: BytesLike
   ): DecodedValue;
   decodeFunctionData(
     functionFragment: 'register',
-    data: BytesLike,
+    data: BytesLike
   ): DecodedValue;
   decodeFunctionData(
     functionFragment: 'resolver',
-    data: BytesLike,
+    data: BytesLike
   ): DecodedValue;
   decodeFunctionData(
     functionFragment: 'reverse_name',
-    data: BytesLike,
+    data: BytesLike
   ): DecodedValue;
 }
 

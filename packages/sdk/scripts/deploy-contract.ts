@@ -1,5 +1,5 @@
+import { type ContractConfig, connectContracts } from '../src/setup';
 import { getTxParams } from '../src/utils';
-import { connectContracts, ContractConfig } from '../src/setup';
 
 export const deployContracts = async (config: ContractConfig) => {
   const { storageId, registryId, account } = config;
@@ -23,7 +23,7 @@ export const deployContracts = async (config: ContractConfig) => {
       .call();
   } catch (e) {
     console.log(e);
-    throw new Error(`[DEPLOY] Error on deploy Registry Contract: `);
+    throw new Error('[DEPLOY] Error on deploy Registry Contract: ');
   }
 
   try {
@@ -31,7 +31,7 @@ export const deployContracts = async (config: ContractConfig) => {
       .constructor({ value: account!.address.toB256() }, { value: registryId! })
       .txParams(txParams)
       .call();
-  } catch (e) {
+  } catch (_e) {
     throw new Error('[DEPLOY] Error on deploy Storage Contract.');
   }
 };

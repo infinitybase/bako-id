@@ -12,7 +12,7 @@ import { GoBack } from '../../components/helpers';
 import { BuyError } from '../../components/helpers/buyError';
 import { useFuelConnect } from '../../hooks';
 import { useScreenSize } from '../../hooks/useScreenSize';
-import { Domains } from '../../types';
+import type { Domains } from '../../types';
 import { Purchased } from '../purchased/page';
 import { useBuy } from './hooks/useBuy';
 

@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@bako-id/sdk':
-    specifier: 0.0.6-dev
-    version: 0.0.6-dev(fuels@0.76.0)
+    specifier: file:/Users/luisburigo/Documents/dev/infinity/bako/bako-id/packages/sdk/bako-id-sdk-0.0.6-4-dev.tgz
+    version: file:../../packages/sdk/bako-id-sdk-0.0.6-4-dev.tgz(fuels@0.76.0)
   '@chakra-ui/icons':
     specifier: ^2.1.1
     version: 2.1.1(@chakra-ui/system@2.6.2)(react@18.2.0)
@@ -330,14 +330,6 @@ packages:
       '@babel/helper-string-parser': 7.23.4
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
-
-  /@bako-id/sdk@0.0.6-dev(fuels@0.76.0):
-    resolution: {integrity: sha512-HXOWuZ08jwnIP+CbWa7y+f3Tg6neKLDSgHo+CbGxs5CQpgSSb4z/nqKyYadbbbY4mOuS90gGzZgv26SYTEABVw==}
-    peerDependencies:
-      fuels: 0.78.0
-    dependencies:
-      fuels: 0.76.0(dexie@3.2.5)
-    dev: false
 
   /@chakra-ui/accordion@2.3.1(@chakra-ui/system@2.6.2)(framer-motion@11.0.6)(react@18.2.0):
     resolution: {integrity: sha512-FSXRm8iClFyU+gVaXisOSEw0/4Q+qZbFRiuhIAkVU6Boj0FxAMrlo9a8AV5TuF77rgaHytCdHk0Ng+cyUijrag==}
@@ -8322,4 +8314,15 @@ packages:
       '@types/react': 18.2.60
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
+    dev: false
+
+  file:../../packages/sdk/bako-id-sdk-0.0.6-4-dev.tgz(fuels@0.76.0):
+    resolution: {integrity: sha512-Aht5qH0KY+Iz5bRKgDsIOn+aROKb4pZsqHJ/DXB81NJtyyjMVfJ0+2yV8T8t44eF/7Mfsn5YSr77Jce2csM56A==, tarball: file:../../packages/sdk/bako-id-sdk-0.0.6-4-dev.tgz}
+    id: file:../../packages/sdk/bako-id-sdk-0.0.6-4-dev.tgz
+    name: '@bako-id/sdk'
+    version: 0.0.6-4-dev
+    peerDependencies:
+      fuels: 0.78.0
+    dependencies:
+      fuels: 0.76.0(dexie@3.2.5)
     dev: false

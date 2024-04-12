@@ -1,4 +1,4 @@
-import type { FuelDomainOutput } from './contracts/RegistryContractAbi';
+import type { FuelDomainOutput } from './sway/contracts/RegistryContractAbi';
 
 export * from './sway/contracts';
 

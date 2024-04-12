@@ -37,6 +37,7 @@ export const useBuy = () => {
     },
   ]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const totalPrice = useMemo(() => {
     return domains.reduce((previous, current) => {
       const domainPrice = domainPrices(current.name, 1).format();
@@ -97,10 +98,11 @@ export const useBuy = () => {
           setSignInLoad(false);
         },
         onError: (error: unknown) => {
+          console.log(error);
           setBuyError((error as Error).message);
           setSignInLoad(false);
         },
-      },
+      }
     );
   };
 
@@ -139,7 +141,6 @@ export const useBuy = () => {
     };
   }, [buyError]);
 
-  console.log(simulateHandle.data?.fee.format());
   return {
     handleBuyDomain,
     handlePeriodChange,
