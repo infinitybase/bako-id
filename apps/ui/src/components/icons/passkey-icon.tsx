@@ -1,5 +1,4 @@
 import { createIcon } from '@chakra-ui/icons';
-import React from 'react';
 
 const PasskeyIcon = createIcon({
   viewBox: '0 0 56 56',
