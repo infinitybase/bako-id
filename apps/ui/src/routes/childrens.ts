@@ -3,7 +3,7 @@ import { NotConnected } from '../components/auth/notConnected.tsx';
 import { rootRoute } from '../hooks/__root.ts';
 import { Buy } from '../modules/buy/page.tsx';
 import { Home } from '../modules/home/page.tsx';
-import { Domain } from '../pages/domain.tsx';
+import { Profile } from '../modules/profile/page.tsx';
 import { Domains } from '../pages/domains.tsx';
 
 export const homeRoute = createRoute({
@@ -41,16 +41,16 @@ export const connectRoute = createRoute({
   // }
 });
 
-export const domainRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  component: Domain,
-  path: '/$domain',
-});
-
 export const buyRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: Buy,
   path: '/buy/$domain',
+});
+
+export const profileRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  component: Profile,
+  path: '/profile/$domain',
 });
 
 // export const checkoutRoute = createRoute({
