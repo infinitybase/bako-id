@@ -3,37 +3,30 @@ import {
   Box,
   Input as ChakraInput,
   InputGroup,
-  type InputProps,
   InputRightElement,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { AvailableBadge, UnavailableBadge } from '..';
+import { useHome } from '../../modules/home/hooks';
 import { RightArrow } from '../icons/rightArrow';
 
-interface AutocompleteProps extends InputProps {
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  available?: boolean | null;
-}
+export const Autocomplete = () => {
+  const { handleChangeDomain, domainIsAvailable, handleConfirmDomain } =
+    useHome();
 
-export const Autocomplete = ({
-  available,
-  onChange,
-  onSelect,
-}: AutocompleteProps) => {
   const [inputValue, setInputValue] = useState<string>('');
   const [option, setOption] = useState<string>('');
   const [isHovered, setIsHovered] = useState<boolean>(false);
-  console.debug(available);
+  console.debug(domainIsAvailable);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value.substring(0));
-    onChange(e);
+    handleChangeDomain(e);
   };
 
   const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOption(e.target.value);
-    onSelect(e);
+    handleConfirmDomain(e);
   };
 
   useEffect(() => {
@@ -42,7 +35,7 @@ export const Autocomplete = ({
 
   return (
     <>
-      <InputGroup display="flex" flexDirection="column">
+      <InputGroup display="flex" flexDirection="column" zIndex={99}>
         <Box w="full">
           <ChakraInput
             value={inputValue}
@@ -107,7 +100,7 @@ export const Autocomplete = ({
               onMouseLeave={() => setIsHovered(false)}
             />
 
-            {available !== null && (
+            {domainIsAvailable !== null && (
               <InputRightElement
                 position="absolute"
                 zIndex={2}
@@ -115,7 +108,7 @@ export const Autocomplete = ({
                 right={8}
                 pointerEvents="none"
                 children={
-                  available ? (
+                  domainIsAvailable ? (
                     <>
                       <AvailableBadge position="relative" />
                       {isHovered && <RightArrow w={3} h={3} ml={2} mr={2} />}

@@ -1,51 +1,67 @@
 import {
+  As,
   Box,
   Input as ChakraInput,
+  Icon,
   InputGroup,
   InputLeftAddon,
   InputRightAddon,
+  Text,
   type InputProps,
 } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 
 interface CustomInputProps extends InputProps {
-  value?: string;
-  leftAddon?: boolean;
-  leftAddonName?: string | ReactNode;
-  rightAddon?: boolean;
-  rightAddonName?: string | ReactNode;
-  rightAddonClick?: () => void;
+  value: string;
+  iconColor: string;
+  iconBgColor: string;
+  isVerified: boolean;
+  accountIcon: As | undefined;
+  rightAddon: boolean;
+  rightAddonName: string | ReactNode;
+  rightAddonClick: () => void;
 }
 
-const TextInput = (props: CustomInputProps) => {
+const VerifiedAccountInput = (props: CustomInputProps) => {
   const {
     value,
-    leftAddon,
-    leftAddonName,
+    isVerified,
+    accountIcon,
     rightAddon,
     rightAddonName,
     rightAddonClick,
+    iconBgColor,
+    iconColor,
     ...rest
   } = props;
   return (
     <Box w="full" display="flex" alignItems="center">
       <InputGroup>
-        {leftAddon && (
-          <InputLeftAddon
-            bgColor="input.600"
-            borderColor="stroke.500"
-            borderRight="none"
-            alignItems="center"
-            justifyContent="center"
-            fontSize="sm"
-            w="10%"
-            px={8}
-            color="section.500"
-            borderLeftRadius="xl"
+        <InputLeftAddon
+          bgColor={iconBgColor}
+          borderColor="stroke.500"
+          borderRight="none"
+          alignItems="center"
+          justifyContent="center"
+          fontSize="xs"
+          w="10%"
+          px={6}
+          color="section.500"
+          borderLeftRadius="xl"
+          position="relative"
+        >
+          <Icon color={iconColor} as={accountIcon} w={6} h={6} />
+          <Text
+            zIndex={1}
+            left="100%"
+            position="absolute"
+            ml={2}
+            color={isVerified ? 'green' : 'red'}
           >
-            {leftAddonName}
-          </InputLeftAddon>
-        )}
+            {isVerified ? 'Verified' : 'Unverified'}
+          </Text>
+        </InputLeftAddon>
+
         <ChakraInput
           defaultValue={value ?? ''}
           type="text"
@@ -58,7 +74,8 @@ const TextInput = (props: CustomInputProps) => {
           borderRadius="xl"
           backgroundColor="input.600"
           color="grey.100"
-          fontSize="sm"
+          fontSize="xs"
+          textAlign="end"
           fontWeight={600}
           _focus={{
             borderColor: 'section.500',
@@ -94,4 +111,4 @@ const TextInput = (props: CustomInputProps) => {
   );
 };
 
-export { TextInput };
+export { VerifiedAccountInput };
