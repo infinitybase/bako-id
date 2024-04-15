@@ -10,6 +10,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useNavigate } from '@tanstack/react-router';
 import { TransactionResult } from 'fuels';
 import { TwitterShareButton } from 'react-share';
 import {
@@ -36,6 +37,13 @@ export const Purchased = ({
 }: IPurchased) => {
   const modal = useDisclosure();
   const { isMobile } = useScreenSize();
+  const navigate = useNavigate();
+
+  const navigateToMyHandle = () => {
+    navigate({
+      to: `/profile/${domain}`,
+    });
+  };
 
   return (
     <Box
@@ -121,7 +129,9 @@ export const Purchased = ({
             </TwitterShareButton>
           </Button>
         </Stack>
-        <Button variant="secondary">Go to my Handle</Button>
+        <Button variant="secondary" onClick={navigateToMyHandle}>
+          Go to my Handle
+        </Button>
       </Card>
       <TransactionDomainDetailsModal
         modalTitle="Transaction Details"

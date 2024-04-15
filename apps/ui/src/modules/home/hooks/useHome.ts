@@ -29,7 +29,7 @@ export const useHome = () => {
       });
     };
     checkConnection();
-  }, [connect]);
+  }, [WalletConnected, connect]);
 
   const debounceSearch = useCallback(
     debounce((value: string) => {
@@ -85,7 +85,7 @@ export const useHome = () => {
     }
 
     navigate({
-      to: '/$domain',
+      to: '/profile/$domain',
       params: { domain: info.name },
       startTransition: true,
     }).then();

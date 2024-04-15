@@ -11,12 +11,8 @@ import {
 } from '@chakra-ui/react';
 import { FarcasterIcon } from '../../components/icons/farcaster';
 import { Autocomplete } from '../../components/inputs/autocomplete';
-import { useHome } from './hooks';
 
 export const Home = () => {
-  const { handleChangeDomain, domainIsAvailable, handleConfirmDomain } =
-    useHome();
-
   return (
     <Center w="full" h="full" alignItems="center" zIndex={10}>
       <Card
@@ -93,11 +89,7 @@ export const Home = () => {
             </Text>
 
             <VStack w="95%" h="full" spacing={5}>
-              <Autocomplete
-                onSelect={handleConfirmDomain}
-                onChange={handleChangeDomain}
-                available={domainIsAvailable}
-              />
+              <Autocomplete key="home" />
 
               <Text
                 fontSize="sm"
