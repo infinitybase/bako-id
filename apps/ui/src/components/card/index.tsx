@@ -1,21 +1,22 @@
-import { Box, type BoxProps } from '@chakra-ui/react';
+import { CardProps, Card as ChakraCard } from '@chakra-ui/react';
 
-export interface CardProps extends BoxProps {}
+export interface ICardProps extends CardProps {}
 
-const Card = (props: CardProps) => {
+const Card = (props: ICardProps) => {
   const { children, ...rest } = props;
 
   return (
-    <Box
-      borderWidth={1}
-      borderColor="dark.100"
-      bg="dark.300"
-      borderRadius={10}
-      padding={6}
+    <ChakraCard
+      variant="glassmorphic"
+      border="1px solid"
+      borderColor="stroke.500"
+      display="flex"
+      borderRadius="xl"
+      p={6}
       {...rest}
     >
       {children}
-    </Box>
+    </ChakraCard>
   );
 };
 
