@@ -55,11 +55,9 @@ export const Info = ({
       {({ isOpen, onClose }) => (
         <>
           <MenuButton
-            w="full"
             as={Button}
             variant="ghost"
             rounded="md"
-            position="relative"
             _focus={{}}
             _hover={{}}
             _focusVisible={{}}
@@ -93,8 +91,6 @@ export const Info = ({
             background="background.900"
             maxW={['350px', '400px']}
             w="auto"
-            position="relative"
-            right={['unset', 'unset', 'unset', -16]}
             display="flex"
             p={2}
             flexDirection="column"

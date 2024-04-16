@@ -63,10 +63,10 @@ export const Header = () => {
         <Image src="/bakoID-logo.svg" width={190} height={75} alt="Bako logo" />
       </button>
 
-      <Flex w="fit-content" align="center" justify="flex-end" gap={2}>
-        <Flex w="full">
+      <Flex w="fit-content" align="center" justify="flex-end">
+        <Flex w="full" gap={2}>
           <Button
-            w="full"
+            w="fit-content"
             bgColor="transparent"
             _hover={{
               bgColor: 'transparent',
@@ -82,7 +82,7 @@ export const Header = () => {
           {account()}
         </Flex>
         {!isMobile && (
-          <Box w="fit-content" ml={wallet ? 16 : 0}>
+          <Box w="fit-content">
             <Icon
               _hover={{
                 cursor: 'pointer',
