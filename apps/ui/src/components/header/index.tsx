@@ -63,22 +63,24 @@ export const Header = () => {
         <Image src="/bakoID-logo.svg" width={190} height={75} alt="Bako logo" />
       </button>
 
-      <Flex w="fit-content" align="center" justify="flex-end">
+      <Flex w="fit-content" align="center" justify="flex-end" gap={2}>
         <Flex w="full" gap={2}>
-          <Button
-            w="fit-content"
-            bgColor="transparent"
-            _hover={{
-              bgColor: 'transparent',
-              color: 'button.500',
-            }}
-            color="grey.100"
-            fontWeight="normal"
-            fontSize="sm"
-            rightIcon={<FileIcon w={4} h={4} />}
-          >
-            My Handles
-          </Button>
+          {!isMobile && (
+            <Button
+              w="fit-content"
+              bgColor="transparent"
+              _hover={{
+                bgColor: 'transparent',
+                color: 'button.500',
+              }}
+              color="grey.100"
+              fontWeight="normal"
+              fontSize="sm"
+              rightIcon={<FileIcon w={4} h={4} />}
+            >
+              My Handles
+            </Button>
+          )}
           {account()}
         </Flex>
         {!isMobile && (

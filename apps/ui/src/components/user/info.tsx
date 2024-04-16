@@ -15,6 +15,7 @@ import { useFuel } from '@fuels/react';
 import type { AbstractAddress } from 'fuels';
 import { useMemo, useState } from 'react';
 import { MdClose } from 'react-icons/md';
+import { useScreenSize } from '../../hooks/useScreenSize.ts';
 import { formatAddress } from '../../utils/formatter.ts';
 import { RoundedUserIcon } from '../helpers/roundedUserIcon.tsx';
 import { BeginnersGuide } from '../icons/beginnersGuide.tsx';
@@ -37,6 +38,7 @@ export const Info = ({
     fuel: { disconnect },
   } = useFuel();
   const { successToast } = useCustomToast();
+  const { isMobile } = useScreenSize();
   const [hover, setHover] = useState(false);
 
   const copy = () => {
@@ -70,13 +72,13 @@ export const Info = ({
               gap={3}
               alignItems="center"
               justifyContent="flex-end"
-              w="15.5rem"
+              w={['14rem', '15.5rem']}
               border="1px solid"
               borderColor="stroke.500"
               borderRadius="xl"
               color="white"
             >
-              {hover || isOpen ? (
+              {(hover || isOpen) && !isMobile ? (
                 <ChevronDownIcon
                   position="relative"
                   className={`rotate-base ${isOpen ? undefined : 'rotate-div'}`}
