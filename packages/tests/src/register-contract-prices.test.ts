@@ -1,9 +1,4 @@
-import {
-  Provider,
-  RequireRevertError,
-  TransactionStatus,
-  type WalletUnlocked,
-} from 'fuels';
+import { Provider, TransactionStatus, type WalletUnlocked } from 'fuels';
 import {
   createWallet,
   expectContainLogError,
