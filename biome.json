@@ -43,13 +43,14 @@
     "ignore": [
       ".vscode",
       ".idea",
-      "**/scripts",
-      "**/node_modules",
-      "**/.turbo",
-      "**/build",
-      "**/dist",
-      "**/sway",
-      "pnpm-lock.yaml"
+      "scripts/**",
+      "node_modules/**",
+      ".turbo/**",
+      "build/**",
+      "dist/**",
+      "sway/**",
+      "pnpm-lock.yaml",
+      "sway/contracts/**"
     ]
   }
 }

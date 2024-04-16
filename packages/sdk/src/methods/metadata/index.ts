@@ -91,3 +91,5 @@ export class UserMetadataContract {
     return this.contract;
   }
 }
+
+export type { Metadata };

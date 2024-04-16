@@ -4,6 +4,8 @@ export {
   register,
   reverseResolver,
   simulateHandleCost,
+  Metadata,
+  UserMetadataContract,
 } from './methods';
 export { domainPrices, isValidDomain } from './utils';
 export { config } from './config';

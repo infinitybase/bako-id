@@ -28,8 +28,8 @@ importers:
   apps/ui:
     dependencies:
       '@bako-id/sdk':
-        specifier: 0.0.6-4-dev
-        version: link:../../packages/sdk
+        specifier: file:/Users/luisburigo/Documents/dev/infinity/bako/bako-id/packages/sdk/bako-id-sdk-0.0.6-5-dev.tgz
+        version: file:packages/sdk/bako-id-sdk-0.0.6-5-dev.tgz(fuels@0.76.0)
       '@chakra-ui/icons':
         specifier: ^2.1.1
         version: 2.1.1(@chakra-ui/system@2.6.2)(react@18.2.0)
@@ -8430,7 +8430,7 @@ packages:
       pretty-format: 29.7.0
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.2(@types/node@20.11.17)(typescript@5.3.3)
+      ts-node: 10.9.2(@types/node@20.11.17)(typescript@5.2.2)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -10076,7 +10076,6 @@ packages:
       typescript: 5.2.2
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
-    dev: true
 
   /ts-node@10.9.2(@types/node@20.11.17)(typescript@5.3.3):
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
@@ -10107,6 +10106,7 @@ packages:
       typescript: 5.3.3
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
+    dev: true
 
   /tslib@2.4.0:
     resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
@@ -10242,7 +10242,6 @@ packages:
     resolution: {integrity: sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==}
     engines: {node: '>=14.17'}
     hasBin: true
-    dev: true
 
   /typescript@5.3.3:
     resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
@@ -10647,4 +10646,15 @@ packages:
       '@types/react': 18.2.53
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
+    dev: false
+
+  file:packages/sdk/bako-id-sdk-0.0.6-5-dev.tgz(fuels@0.76.0):
+    resolution: {integrity: sha512-/lLF0GlfmXWqpmql9GuQeG2TM0G5Rh85MO2najTMC89IsIjkaMMkQWNoSRtoGMmL6RqO7xqrM1ZNOEAUO0j33A==, tarball: file:packages/sdk/bako-id-sdk-0.0.6-5-dev.tgz}
+    id: file:packages/sdk/bako-id-sdk-0.0.6-5-dev.tgz
+    name: '@bako-id/sdk'
+    version: 0.0.6-5-dev
+    peerDependencies:
+      fuels: 0.78.0
+    dependencies:
+      fuels: 0.76.0(dexie@3.2.4)
     dev: false
