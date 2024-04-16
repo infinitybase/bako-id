@@ -36,7 +36,8 @@ const Container = (props: ContainerProps) => {
 
   return (
     <HStack
-      padding={hide ? 4 : 5}
+      px={5}
+      py={3}
       spacing={4}
       boxShadow="lg"
       borderWidth={1}
@@ -83,7 +84,7 @@ const Toast = (props: ToastProps) => {
         fontSize={14}
         noOfLines={2}
         whiteSpace="pre-wrap"
-        lineHeight={1.2}
+        lineHeight={1}
         color={
           colors.description[props.status as keyof typeof colors.description] ??
           'grey.200'

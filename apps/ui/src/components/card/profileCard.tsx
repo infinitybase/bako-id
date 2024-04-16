@@ -18,7 +18,7 @@ export const ProfileCard = ({ domain }: IProfileCard) => {
   return (
     <Card
       w="full"
-      h={['fit-content', 'fit-content', 'fit-content', '20%']}
+      h={['fit-content', 'fit-content', 'fit-content', 'full']}
       flexDirection="row"
       alignItems="flex-start"
       justifyContent="space-between"

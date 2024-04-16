@@ -18,9 +18,7 @@ const useCustomToast = () => {
       isClosable: false,
       title: title ?? 'Success!',
       description: description ?? '',
-      icon: (
-        <Icon fontSize="2xl" color="brand.500" as={BsFillCheckCircleFill} />
-      ),
+      icon: <Icon fontSize="xl" color="brand.500" as={BsFillCheckCircleFill} />,
     });
 
   const warningToast = ({ description, title }: ToastParams) => {

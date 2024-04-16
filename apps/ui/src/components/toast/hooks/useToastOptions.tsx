@@ -8,6 +8,7 @@ const useToastOptions = (options?: UseToastOptions) => {
       alignItems: 'flex-end',
       flexDirection: 'column',
       minW: 'min-content',
+      h: 'min-content',
     },
     position: 'top-right',
     render: (props) => <Toast {...props} />,

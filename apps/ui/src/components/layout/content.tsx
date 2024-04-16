@@ -8,7 +8,7 @@ const Content = (props: ContentProps) => {
       mt={0}
       overflowY="scroll"
       css={{ '&::-webkit-scrollbar': { width: '0' }, scrollbarWidth: 'none' }}
-      minH="calc(100vh - 82px)"
+      minH="calc(100vh - 91px)"
       flex={1}
       py={{
         base: 3,

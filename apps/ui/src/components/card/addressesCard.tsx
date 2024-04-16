@@ -18,7 +18,7 @@ export const AddressesCard = ({ domain }: IAddressesCard) => {
   return (
     <Card
       w="full"
-      h={['45%', '45%', 'full', '35%']}
+      h={['45%', '45%', 'full', 'full']}
       p={6}
       display="flex"
       flexDirection="column"
