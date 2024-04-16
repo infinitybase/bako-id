@@ -20,6 +20,7 @@ const Profile = () => {
       <Box
         w="full"
         h="full"
+        maxH={['100vh', '50vh']}
         position="relative"
         display="flex"
         flexDirection={['column', 'column', 'column', 'row']}
