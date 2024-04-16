@@ -1,5 +1,6 @@
 import { ChevronDownIcon, CopyIcon } from '@chakra-ui/icons';
 import {
+  Avatar,
   Box,
   Button,
   Divider,
@@ -49,7 +50,8 @@ export const Info = ({
   };
 
   const icon = useMemo(() => {
-    return <RoundedUserIcon width="2.4em" heigth="2.4em" />;
+    const path = localStorage.getItem(`@BAKO-ID/AVATAR/${account}`);
+    return <Avatar borderRadius="lg" src={path!} />;
   }, []);
 
   return (
