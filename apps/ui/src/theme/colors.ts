@@ -66,7 +66,7 @@ const colors = {
     200: '#F5F5F5',
   },
   gradient: {
-    glass: 'rgba(18, 18, 18, 0.10)',
+    100: 'rgba(18, 18, 18, 0.95)',
   },
 };
 

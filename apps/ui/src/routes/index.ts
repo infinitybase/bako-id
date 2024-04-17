@@ -3,17 +3,17 @@ import { rootRoute } from '../hooks/__root.ts';
 import {
   buyRoute,
   connectRoute,
-  domainRoute,
   domainsRoute,
   homeRoute,
+  profileRoute,
 } from './childrens.ts';
 
 const routeTree = rootRoute.addChildren([
   homeRoute,
   connectRoute,
-  domainRoute,
   buyRoute,
   domainsRoute,
+  profileRoute,
 ]);
 
 export const router = createRouter({

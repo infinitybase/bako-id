@@ -3,7 +3,7 @@ import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 const primary = defineStyle({
   width: 'full',
   bgColor: 'button.500',
-  color: 'dark.900',
+  color: 'input.900',
   _hover: {
     bgColor: 'button.600',
   },
@@ -41,6 +41,15 @@ const tertiary = defineStyle({
   },
 });
 
+const ghosted = defineStyle({
+  bgColor: 'semi-transparent',
+  color: 'section.200',
+  _hover: {
+    color: 'button.500',
+    bgColor: 'initial',
+  },
+});
+
 const icon = defineStyle({
   bgColor: 'grey.800',
   color: 'grey.200',
@@ -50,6 +59,7 @@ const icon = defineStyle({
 const baseStyle = defineStyle({
   borderRadius: 8,
   fontWeight: 'semibold',
+  color: 'black',
 });
 
 const Button = defineStyleConfig({
@@ -59,6 +69,7 @@ const Button = defineStyleConfig({
     primary,
     secondary,
     tertiary,
+    ghosted,
   },
 });
 

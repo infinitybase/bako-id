@@ -12,8 +12,7 @@ export const useCalculateDomain = () => {
         setBalance(data[convert.replace('-', '')].bid ?? 0.0);
         return data[convert.replace('-', '')].bid ?? 0.0;
       })
-      .catch((e) => {
-        console.log('[BALANCE]: ', e);
+      .catch(() => {
         return 0.0;
       });
 

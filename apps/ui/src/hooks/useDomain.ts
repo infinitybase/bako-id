@@ -9,7 +9,7 @@ export const useDomain = (newDomain?: string) => {
   const { wallet } = useFuelConnect();
 
   const registerDomain = useRegisterDomainRequests();
-  const resolveDomain = useResolveDomainRequests(domain ?? newDomain);
+  const resolveDomain = useResolveDomainRequests(newDomain ?? domain);
   const simulateHandle = useSimulateHandleCostRequest(
     wallet!,
     wallet?.address.toB256() ?? '',

@@ -8,6 +8,7 @@ const commonStyles = {
   container: {
     backgroundColor: 'rgba(243, 242, 241, 0.02)',
     backdropFilter: 'blur(3px)',
+    color: 'section.200',
   },
   header: {
     p: 0,

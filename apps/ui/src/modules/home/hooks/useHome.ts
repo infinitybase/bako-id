@@ -29,7 +29,7 @@ export const useHome = () => {
       });
     };
     checkConnection();
-  }, [connect]);
+  }, [WalletConnected, connect]);
 
   const debounceSearch = useCallback(
     debounce((value: string) => {
@@ -40,10 +40,6 @@ export const useHome = () => {
         })
         .then((info) => {
           if (!info) {
-            console.debug(
-              "Info returned from 'https://beta-5.fuel.network/graphql'",
-              info,
-            );
             setAvailable(true);
             return;
           }
@@ -85,7 +81,7 @@ export const useHome = () => {
     }
 
     navigate({
-      to: '/$domain',
+      to: '/profile/$domain',
       params: { domain: info.name },
       startTransition: true,
     }).then();
@@ -95,7 +91,6 @@ export const useHome = () => {
     if (resolveDomain.isPending || available === null) return null;
     if (!available) return false;
     if (available) {
-      console.debug('available', available);
       return true;
     }
   }, [resolveDomain, available]);
