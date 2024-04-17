@@ -11,7 +11,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
-import { TransactionResult } from 'fuels';
+import type { TransactionResult } from 'fuels';
 import { TwitterShareButton } from 'react-share';
 import {
   CheckoutCard,

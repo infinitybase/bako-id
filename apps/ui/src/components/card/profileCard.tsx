@@ -1,4 +1,4 @@
-import { Domain } from '@bako-id/sdk';
+import type { Domain } from '@bako-id/sdk';
 import { Button, Flex, Icon, Text } from '@chakra-ui/react';
 import { Card } from '.';
 import { useScreenSize } from '../../hooks/useScreenSize';
@@ -45,6 +45,7 @@ export const ProfileCard = ({ domain }: IProfileCard) => {
         onClick={() =>
           window.open(
             `https://app.fuel.network/account/${domain?.owner}/assets`,
+            '_blank',
           )
         }
       >

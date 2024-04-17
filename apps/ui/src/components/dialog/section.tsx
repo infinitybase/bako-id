@@ -1,5 +1,5 @@
-import { Divider, StackProps, Text, VStack } from '@chakra-ui/react';
-import React from 'react';
+import { Divider, type StackProps, Text, VStack } from '@chakra-ui/react';
+import type React from 'react';
 
 export interface DialogSectionProps extends Omit<StackProps, 'title'> {
   title: React.ReactNode;

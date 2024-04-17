@@ -1,12 +1,12 @@
-import { Box, Image, Text, VStack } from '@chakra-ui/react';
+import { Box, type BoxProps, Image, Text, VStack } from '@chakra-ui/react';
 import symbol from '../../assets/logo.svg';
 import texture from '../../assets/texture.svg';
 
-interface CardProps {
+interface CardProps extends BoxProps {
   domain: string;
 }
 
-export function CheckoutCard({ domain }: CardProps) {
+export function CheckoutCard({ domain, ...props }: CardProps) {
   return (
     <Box
       border="3px solid #FFC010"
@@ -19,6 +19,7 @@ export function CheckoutCard({ domain }: CardProps) {
       display="flex"
       backgroundImage={`url(${texture})`}
       backgroundRepeat="repeat"
+      {...props}
     >
       <VStack
         alignItems="center"

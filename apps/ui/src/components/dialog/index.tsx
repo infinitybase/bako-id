@@ -6,7 +6,7 @@ import {
 } from './actions';
 import { DialogBody } from './body';
 
-import { DialogModal, DialogModalProps } from './modal';
+import { DialogModal, type DialogModalProps } from './modal';
 import { DialogSection } from './section';
 
 const Dialog = {

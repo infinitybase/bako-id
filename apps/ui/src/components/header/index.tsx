@@ -59,9 +59,14 @@ export const Header = () => {
       px={[0, 8, 8]}
       className="transition-all-05"
     >
-      <button onClick={goHome}>
-        <Image src="/bakoID-logo.svg" width={190} height={75} alt="Bako logo" />
-      </button>
+      <Image
+        src="/bakoID-logo.svg"
+        cursor="pointer"
+        onClick={goHome}
+        width={190}
+        height={75}
+        alt="Bako logo"
+      />
 
       <Flex w="fit-content" align="center" justify="flex-end" gap={2}>
         <Flex w="full" gap={2}>

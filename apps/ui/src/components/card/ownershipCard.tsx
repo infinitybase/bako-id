@@ -1,8 +1,8 @@
-import { Domain } from '@bako-id/sdk';
+import type { Domain } from '@bako-id/sdk';
 import { CopyIcon } from '@chakra-ui/icons';
 import { Button, Flex, Heading, Icon } from '@chakra-ui/react';
-import { MdOutlineKeyboardDoubleArrowRight } from 'react-icons/md';
 import { Card, TextInput } from '..';
+import { DoubleArrowRightIcon } from '../icons/doubleArrowRightIcon';
 import { ExploreIcon } from '../icons/explore';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
 
@@ -26,7 +26,7 @@ export const OwnershipCard = ({ domain }: IOwnershipCard) => {
           <Button
             variant="ghosted"
             isDisabled={!isMyDomain}
-            rightIcon={<MdOutlineKeyboardDoubleArrowRight />}
+            rightIcon={<DoubleArrowRightIcon />}
           >
             Extend
           </Button>
