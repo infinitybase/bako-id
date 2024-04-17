@@ -4,13 +4,7 @@ export const HowToSendCrypto = createIcon({
   displayName: 'HowToSendCrypto',
   viewBox: '0 0 130 129',
   path: (
-    <svg
-      width="130"
-      height="129"
-      viewBox="0 0 130 129"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <>
       <g filter="url(#filter0_d_14174_17465)">
         <rect
           x="5"
@@ -146,6 +140,6 @@ export const HowToSendCrypto = createIcon({
           />
         </clipPath>
       </defs>
-    </svg>
+    </>
   ),
 });

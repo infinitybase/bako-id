@@ -4,13 +4,7 @@ export const MiningCrypto = createIcon({
   viewBox: '0 0 130 129',
   displayName: 'MiningCrypto',
   path: (
-    <svg
-      width="130"
-      height="129"
-      viewBox="0 0 130 129"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <>
       <g filter="url(#filter0_d_14174_17443)">
         <rect
           x="5"
@@ -139,6 +133,6 @@ export const MiningCrypto = createIcon({
           <stop offset="1" stop-opacity="0.96" />
         </linearGradient>
       </defs>
-    </svg>
+    </>
   ),
 });
