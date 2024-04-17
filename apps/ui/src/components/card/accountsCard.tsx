@@ -9,7 +9,7 @@ export const AccountsCard = () => {
   return (
     <Card
       w={['full', 'full', 'full', '40%']}
-      h={['fit-content', 'fit-content', 'fit-content', '47.5%']}
+      h={['fit-content', 'fit-content', 'fit-content', 'full']}
       display="flex"
       flexDirection="column"
       gap={6}

@@ -14,7 +14,7 @@ export const OwnershipCard = ({ domain }: IOwnershipCard) => {
   return (
     <Card
       w="full"
-      h={['fit-content', 'fit-content', 'fit-content', '35%']}
+      h={['fit-content', 'fit-content', 'fit-content', 'full']}
       p={6}
       display="flex"
       flexDirection="column"
