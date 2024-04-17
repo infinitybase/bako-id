@@ -1,4 +1,4 @@
-import { Domain } from '@bako-id/sdk';
+import type { Domain } from '@bako-id/sdk';
 import { useParams } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { useDomain } from '../../../hooks';

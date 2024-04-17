@@ -1,7 +1,7 @@
 import { simulateHandleCost } from '@bako-id/sdk';
 
 import { useQuery, type UseMutationOptions } from '@tanstack/react-query';
-import { Account } from 'fuels';
+import type { Account } from 'fuels';
 import type { RegisterDomainPayload } from '../types';
 
 const useSimulateHandleCostRequest = (
