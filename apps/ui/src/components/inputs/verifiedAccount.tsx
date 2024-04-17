@@ -1,5 +1,4 @@
 import {
-  type As,
   Box,
   Input as ChakraInput,
   Icon,
@@ -10,35 +9,49 @@ import {
   type InputProps,
 } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
+import { FarcasterIcon, TwitterIcon } from '..';
 
 interface CustomInputProps extends InputProps {
   value: string;
-  iconColor: string;
-  iconBgColor: string;
   isVerified: boolean;
-  accountIcon: As | undefined;
   rightAddon: boolean;
   rightAddonName: string | ReactNode;
   rightAddonClick: () => void;
+  variant: string;
 }
 
 const VerifiedAccountInput = (props: CustomInputProps) => {
   const {
     value,
     isVerified,
-    accountIcon,
     rightAddon,
     rightAddonName,
     rightAddonClick,
-    iconBgColor,
-    iconColor,
     ...rest
   } = props;
+
+  const variants = {
+    twitter: {
+      icon: TwitterIcon,
+      color: 'white',
+      bgColor: 'black',
+      verify: () => {},
+    },
+    farcaster: {
+      icon: FarcasterIcon,
+      color: 'white',
+      bgColor: '#7F5FC7',
+      verify: () => {},
+    },
+  };
+
+  const currentVariant = variants[props.variant as keyof typeof variants];
+
   return (
-    <Box w="full" display="flex" alignItems="center">
+    <Box w="full" display="flex" alignItems="flex-end" flexDirection="column">
       <InputGroup>
         <InputLeftAddon
-          bgColor={iconBgColor}
+          bgColor={currentVariant.bgColor}
           borderColor="stroke.500"
           borderRight="none"
           alignItems="center"
@@ -50,7 +63,12 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
           borderLeftRadius="xl"
           position="relative"
         >
-          <Icon color={iconColor} as={accountIcon} w={6} h={6} />
+          <Icon
+            color={currentVariant.color}
+            as={currentVariant.icon}
+            w={6}
+            h={6}
+          />
           <Text
             zIndex={1}
             left="100%"
@@ -107,6 +125,20 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
           </InputRightAddon>
         )}
       </InputGroup>
+      {!isVerified && (
+        <Text
+          mt={1}
+          mr={2}
+          fontSize="xs"
+          _hover={{
+            cursor: 'pointer',
+            color: 'button.500',
+          }}
+          onClick={() => currentVariant.verify()}
+        >
+          Verify now
+        </Text>
+      )}
     </Box>
   );
 };
