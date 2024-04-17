@@ -105,6 +105,8 @@ export const useBuy = () => {
   };
 
   const formatCoin = (value: number, selectedCoin: Coin) => {
+    if (!value) return '--.--';
+
     const formatted = value.toLocaleString('en-US', {
       minimumFractionDigits: 4,
       maximumFractionDigits: 4,
