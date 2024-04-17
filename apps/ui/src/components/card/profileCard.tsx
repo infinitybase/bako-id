@@ -45,6 +45,7 @@ export const ProfileCard = ({ domain }: IProfileCard) => {
         onClick={() =>
           window.open(
             `https://app.fuel.network/account/${domain?.owner}/assets`,
+            '_blank',
           )
         }
       >

@@ -25,8 +25,14 @@ export const SidebarButton = ({
 
   const handleChangeRoute = (route: string) => {
     setActive(route);
+
+    if (route.toLowerCase() === 'profile') {
+      navigate({ to: `/${route.toLowerCase()}/${domain}` });
+      return;
+    }
+
     navigate({
-      to: `/${route.toLowerCase()}/${domain}`,
+      to: `/profile/${domain}/${route.toLowerCase()}`,
     });
   };
 

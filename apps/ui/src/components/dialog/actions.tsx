@@ -36,8 +36,8 @@ const DialogSecondaryAction = (props: DialogActionProps) => (
     bgColor="transparent"
     border="1px solid white"
     _hover={{
-      borderColor: 'brand.500',
-      color: 'brand.500',
+      borderColor: 'button.500',
+      color: 'button.500',
     }}
     {...props}
   />
