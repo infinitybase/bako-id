@@ -1,12 +1,12 @@
 import {
   Box,
-  BoxProps,
-  ComponentWithAs,
+  type BoxProps,
+  type ComponentWithAs,
   Icon,
-  IconProps,
+  type IconProps,
   Text,
 } from '@chakra-ui/react';
-import { IconType } from 'react-icons/lib';
+import type { IconType } from 'react-icons/lib';
 
 interface SidebarBannerProps extends BoxProps {
   icon: ComponentWithAs<'svg', IconProps> | IconType;

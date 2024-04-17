@@ -5,7 +5,7 @@ import {
   DrawerCloseButton,
   DrawerContent,
   DrawerOverlay,
-  DrawerProps,
+  type DrawerProps,
   Flex,
   FormControl,
   FormHelperText,

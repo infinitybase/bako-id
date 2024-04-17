@@ -49,6 +49,7 @@ export const Info = ({
     });
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const icon = useMemo(() => {
     const path = localStorage.getItem(`@BAKO-ID/AVATAR/${account}`);
     return <Avatar borderRadius="lg" src={path!} />;

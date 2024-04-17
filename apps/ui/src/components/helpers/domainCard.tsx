@@ -22,6 +22,7 @@ interface DomainCardProps {
 }
 
 export const DomainCard = ({ domain, isList, copy }: DomainCardProps) => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const icon = useMemo(() => {
     return (
       <RoundedUserIcon

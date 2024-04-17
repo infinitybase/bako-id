@@ -1,4 +1,4 @@
-import { Button, ButtonProps } from '@chakra-ui/react';
+import { Button, type ButtonProps } from '@chakra-ui/react';
 import { ExploreIcon } from '../icons/explore';
 
 export const ViewOnExploreButton = (props: ButtonProps) => {

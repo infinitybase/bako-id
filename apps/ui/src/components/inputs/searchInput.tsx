@@ -49,17 +49,14 @@ export const SearchInput = ({
           _focusVisible={{}}
         />
         {available !== null && (
-          <InputRightElement
-            h={12}
-            pointerEvents="none"
-            children={available ? <AvailableBadge /> : <UnavailableBadge />}
-          />
+          <InputRightElement h={12} pointerEvents="none">
+            {available ? <AvailableBadge /> : <UnavailableBadge />}
+          </InputRightElement>
         )}
         {available === null && (
-          <InputRightElement
-            h={12}
-            children={<SearchIcon h={5} w={5} mr={[1, 4]} color="grey.100" />}
-          />
+          <InputRightElement h={12}>
+            {<SearchIcon h={5} w={5} mr={[1, 4]} color="grey.100" />}
+          </InputRightElement>
         )}
       </InputGroup>
 

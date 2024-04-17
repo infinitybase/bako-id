@@ -1,5 +1,5 @@
 import {
-  As,
+  type As,
   Box,
   Input as ChakraInput,
   Icon,
@@ -9,7 +9,7 @@ import {
   Text,
   type InputProps,
 } from '@chakra-ui/react';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface CustomInputProps extends InputProps {
   value: string;

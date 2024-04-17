@@ -58,10 +58,9 @@ export const Autocomplete = () => {
           />
 
           {!inputValue && (
-            <InputRightElement
-              h={12}
-              children={<SearchIcon h={5} w={5} mr={[1, 4]} color="grey.100" />}
-            />
+            <InputRightElement h={12}>
+              <SearchIcon h={5} w={5} mr={[1, 4]} color="grey.100" />
+            </InputRightElement>
           )}
           {inputValue && (
             <InputRightElement
@@ -71,10 +70,9 @@ export const Autocomplete = () => {
               }}
               onClick={() => setInputValue('')}
               h={12}
-              children={
-                <SmallCloseIcon h={5} w={5} mr={[1, 4]} color="grey.100" />
-              }
-            />
+            >
+              <SmallCloseIcon h={5} w={5} mr={[1, 4]} color="grey.100" />
+            </InputRightElement>
           )}
         </Box>
 
@@ -107,20 +105,19 @@ export const Autocomplete = () => {
                 top={3}
                 right={8}
                 pointerEvents="none"
-                children={
-                  domainIsAvailable ? (
-                    <>
-                      <AvailableBadge position="relative" />
-                      {isHovered && <RightArrow w={3} h={3} ml={2} mr={2} />}
-                    </>
-                  ) : (
-                    <>
-                      <UnavailableBadge position="relative" right={2} />
-                      {isHovered && <RightArrow w={3} h={3} mr={3} />}
-                    </>
-                  )
-                }
-              />
+              >
+                {domainIsAvailable ? (
+                  <>
+                    <AvailableBadge position="relative" />
+                    {isHovered && <RightArrow w={3} h={3} ml={2} mr={2} />}
+                  </>
+                ) : (
+                  <>
+                    <UnavailableBadge position="relative" right={2} />
+                    {isHovered && <RightArrow w={3} h={3} mr={3} />}
+                  </>
+                )}
+              </InputRightElement>
             )}
           </InputGroup>
         )}

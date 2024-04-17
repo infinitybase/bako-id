@@ -1,4 +1,4 @@
-import { Domain } from '@bako-id/sdk';
+import type { Domain } from '@bako-id/sdk';
 import { CopyIcon } from '@chakra-ui/icons';
 import { Button, Flex, Heading, Icon } from '@chakra-ui/react';
 import { Card, TextInput } from '..';

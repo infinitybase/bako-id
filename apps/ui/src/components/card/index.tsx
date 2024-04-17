@@ -1,4 +1,4 @@
-import { CardProps, Card as ChakraCard } from '@chakra-ui/react';
+import { type CardProps, Card as ChakraCard } from '@chakra-ui/react';
 
 export interface ICardProps extends CardProps {}
 

@@ -6,7 +6,7 @@ import {
   InputRightAddon,
   type InputProps,
 } from '@chakra-ui/react';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface CustomInputProps extends InputProps {
   inputHeight?: number;

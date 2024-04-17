@@ -1,10 +1,10 @@
 import {
   Box,
-  BoxProps,
   Button,
-  ButtonProps,
   Divider,
   HStack,
+  type BoxProps,
+  type ButtonProps,
 } from '@chakra-ui/react';
 
 export interface DialogActionsProps extends BoxProps {

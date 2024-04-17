@@ -1,4 +1,4 @@
-import { Box, BoxProps, Image, Text, VStack } from '@chakra-ui/react';
+import { Box, type BoxProps, Image, Text, VStack } from '@chakra-ui/react';
 import symbol from '../../assets/logo.svg';
 import texture from '../../assets/texture.svg';
 

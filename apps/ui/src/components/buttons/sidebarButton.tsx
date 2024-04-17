@@ -1,6 +1,6 @@
-import { Button, ButtonProps } from '@chakra-ui/react';
+import { Button, type ButtonProps } from '@chakra-ui/react';
 import { useNavigate, useParams } from '@tanstack/react-router';
-import { JSXElementConstructor, ReactElement } from 'react';
+import type { JSXElementConstructor, ReactElement } from 'react';
 
 interface SidebarButtonProps extends ButtonProps {
   title: string;

@@ -1,14 +1,14 @@
 import {
   Box,
-  BoxProps,
+  type BoxProps,
   Button,
-  ComponentWithAs,
+  type ComponentWithAs,
   Flex,
   Icon,
-  IconProps,
+  type IconProps,
   Text,
 } from '@chakra-ui/react';
-import { IconType } from 'react-icons/lib';
+import type { IconType } from 'react-icons/lib';
 import { ExploreIcon } from '../icons/explore';
 
 interface BakoSafeBannerProps extends BoxProps {
