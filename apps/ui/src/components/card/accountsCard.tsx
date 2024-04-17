@@ -1,6 +1,6 @@
 import { CopyIcon, PlusSquareIcon } from '@chakra-ui/icons';
 import { Button, Flex, Heading, Icon, VStack } from '@chakra-ui/react';
-import { Card, FarcasterIcon, TwitterIcon } from '..';
+import { Card } from '..';
 import { VerifiedAccountInput } from '../inputs/verifiedAccount';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
 
@@ -26,22 +26,18 @@ export const AccountsCard = () => {
       <VStack>
         <VerifiedAccountInput
           value={'@xoncraskov'}
-          accountIcon={FarcasterIcon}
+          variant="farcaster"
           isVerified
           rightAddon
-          iconColor="white"
-          iconBgColor="#7F5FC7"
           rightAddonClick={() => {}}
           rightAddonName={<Icon as={CopyIcon} />}
         />
 
         <VerifiedAccountInput
           value={'@jonglazkov'}
-          accountIcon={TwitterIcon}
+          variant="twitter"
           isVerified={false}
           rightAddon
-          iconColor="white"
-          iconBgColor="black"
           rightAddonClick={() => {}}
           rightAddonName={<Icon as={CopyIcon} />}
         />
