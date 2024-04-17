@@ -5,7 +5,7 @@ const primary = defineStyle({
   bgColor: 'button.500',
   color: 'input.900',
   _hover: {
-    bgColor: 'button.600',
+    opacity: 0.8,
   },
   fontSize: 'sm',
 });
