@@ -223,10 +223,8 @@ export const Info = ({
                 maxW="full"
                 overflowX="scroll"
                 onWheel={(e) => {
-                  e.preventDefault();
-                  e.currentTarget.scrollLeft += e.deltaY;
+                  e.currentTarget.scrollLeft += e.deltaY * 0.5;
                 }}
-                scrollBehavior="smooth"
                 css={{
                   '&::-webkit-scrollbar': {
                     width: 0,
