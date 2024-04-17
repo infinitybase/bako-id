@@ -21,7 +21,7 @@ export const SearchInput = ({
   available,
 }: InputProps) => {
   const [inputValue, setInputValue] = useState('');
-  console.debug(available);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value.substring(0));
     onChange(e);

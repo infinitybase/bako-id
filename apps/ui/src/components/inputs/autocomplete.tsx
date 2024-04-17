@@ -17,7 +17,6 @@ export const Autocomplete = () => {
   const [inputValue, setInputValue] = useState<string>('');
   const [option, setOption] = useState<string>('');
   const [isHovered, setIsHovered] = useState<boolean>(false);
-  console.debug(domainIsAvailable);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value.substring(0));

@@ -67,7 +67,6 @@ export const useBuy = () => {
       providerURL: wallet!.provider.url,
     });
 
-    console.debug(info?.name);
     return info;
   };
 
@@ -98,11 +97,10 @@ export const useBuy = () => {
           setSignInLoad(false);
         },
         onError: (error: unknown) => {
-          console.log(error);
           setBuyError((error as Error).message);
           setSignInLoad(false);
         },
-      }
+      },
     );
   };
 
