@@ -12,6 +12,7 @@ export enum Coin {
   USD = 'USD',
   ETH = 'ETH',
 }
+
 export const useBuy = () => {
   const { successToast } = useCustomToast();
   const { domain } = useParams({ strict: false });
@@ -36,11 +37,9 @@ export const useBuy = () => {
     selectedCoin,
   );
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-
   const handlePeriodChange = (index: number, newValue: number) => {
     const newItems = [...domains];
-    // period not specified
+    // TODO: period not specified
     newItems[index] = { ...newItems[index], period: newValue };
     setDomains(newItems);
     setPeriod(newValue);
@@ -72,16 +71,10 @@ export const useBuy = () => {
       {
         onSuccess: async () => {
           await handleConfirmDomain();
-          // domainDetailsDialog.onOpen();
           successToast({
             title: 'Transaction success',
             description: 'Your handle has been registered successfully',
           });
-          // navigate({
-          //   to: '/checkout/$domain/$transactionId',
-          //   params: { domain: domain, transactionId },
-          //   startTransition: true,
-          // }).then();
           setSignInLoad(false);
         },
         onError: (error: unknown) => {
@@ -95,12 +88,6 @@ export const useBuy = () => {
   const handleChangeCoin = (coin: Coin) => {
     setSelectedCoin(coin);
   };
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  // useEffect(() => {
-  //   fetchUSD();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [selectedCoin]);
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
