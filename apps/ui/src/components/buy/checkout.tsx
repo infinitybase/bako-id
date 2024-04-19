@@ -1,19 +1,19 @@
 import { Button, Flex, HStack, Spacer, Text, VStack } from '@chakra-ui/react';
+import { bn } from 'fuels';
 import { useBuy } from '../../modules/buy/hooks';
 import { Coin } from '../../types';
 const { ETH, USD } = Coin;
 
-interface CheckoutProps {
-  length?: number;
-  networkFee: number;
-}
-
-export const Checkout = ({ networkFee }: CheckoutProps) => {
-  const { totalPrice, handleChangeCoin, selectedCoin, formatCoin, balance } =
-    useBuy();
+export const Checkout = () => {
+  const {
+    totalPrice,
+    handleChangeCoin,
+    selectedCoin,
+    formatCoin,
+    fee,
+    domainPrice,
+  } = useBuy();
   // const multipleBuys = length > 1 ? 'Domains' : 'Domain';
-
-  const formattedFee = selectedCoin === USD ? networkFee * balance : networkFee;
 
   return (
     <VStack
@@ -64,7 +64,7 @@ export const Checkout = ({ networkFee }: CheckoutProps) => {
             Handles
           </Text>
           <Text color="text.500" fontSize="sm">
-            {formatCoin(totalPrice, selectedCoin)}
+            {domainPrice ? formatCoin(domainPrice, selectedCoin) : '--.--'}
           </Text>
         </Flex>
         <Flex w="full" justifyContent="space-between">
@@ -73,7 +73,7 @@ export const Checkout = ({ networkFee }: CheckoutProps) => {
           </Text>
           <Spacer />
           <Text color="text.500" fontSize="sm">
-            {formatCoin(formattedFee, selectedCoin)}
+            {fee ? formatCoin(fee ?? bn(0), selectedCoin) : '--.--'}
           </Text>
         </Flex>
         <HStack w="full">
@@ -82,7 +82,9 @@ export const Checkout = ({ networkFee }: CheckoutProps) => {
           </Text>
           <Spacer />
           <Text color="text.500" fontSize="sm">
-            {formatCoin(totalPrice + formattedFee, selectedCoin)}
+            {totalPrice
+              ? formatCoin(totalPrice?.add(fee), selectedCoin)
+              : '--.--'}
           </Text>
         </HStack>
       </VStack>

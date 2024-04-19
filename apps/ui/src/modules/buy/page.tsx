@@ -27,7 +27,6 @@ export const Buy = () => {
     isLoadingBalance,
     signInLoad,
     walletBalance,
-    handleCost: { data },
     registerDomain,
     domain,
   } = useBuy();
@@ -51,7 +50,7 @@ export const Buy = () => {
       signInLoad={signInLoad}
       totalPrice={totalPrice}
       wallet={!!wallet}
-      walletBalance={Number(walletBalance)}
+      walletBalance={walletBalance}
     />
   );
 
@@ -111,15 +110,12 @@ export const Buy = () => {
                 Select the token that you want to use for this purchase.
               </Text>
             </Box>
-            <BuyComponents.Checkout
-              length={domains.length}
-              networkFee={Number(data?.fee.format())}
-            />
+            <BuyComponents.Checkout />
           </VStack>
         </CardBody>
         <BuyError
           totalPrice={totalPrice}
-          walletBalance={Number(walletBalance)}
+          walletBalance={walletBalance}
           buyError={buyError}
         />
         {!isMobile && BuyButton}

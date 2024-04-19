@@ -1,12 +1,13 @@
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import type { BN } from 'fuels';
 import { WalletIcon } from '..';
 import { ConnectButton } from './connectButton';
 
 interface IBuyOrConnectProps {
   wallet: boolean;
   handleBuyDomain: () => void;
-  walletBalance: number;
-  totalPrice: number;
+  walletBalance: BN | null;
+  totalPrice: BN | string;
   isLoadingBalance: boolean;
   signInLoad: boolean;
 }
@@ -31,7 +32,7 @@ export const BuyOrConnectButton = ({
         <Button
           w="full"
           isLoading={isLoadingBalance}
-          isDisabled={!wallet || Number(walletBalance) < totalPrice}
+          isDisabled={!wallet || walletBalance?.lt(totalPrice)}
           onClick={handleBuyDomain}
           background="button.500"
           color="background.500"

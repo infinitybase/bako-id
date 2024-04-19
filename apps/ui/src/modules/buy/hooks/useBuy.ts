@@ -1,30 +1,26 @@
-import { domainPrices, isValidDomain } from '@bako-id/sdk';
-import { useEffect, useMemo, useState } from 'react';
-import { useCalculateDomain, useDomain, useFuelConnect } from '../../../hooks';
+import { isValidDomain } from '@bako-id/sdk';
+import { useEffect, useState } from 'react';
+import { useDomain, useFuelConnect } from '../../../hooks';
 import type { Domains } from '../../../types';
 
 import { useBalance } from '@fuels/react';
 import { useParams } from '@tanstack/react-router';
 import { useCustomToast } from '../../../components/toast';
-
-const coinSymbol = {
-  USD: '$',
-  ETH: 'ETH',
-};
+import { useCheckoutPrice } from '../../../hooks/useCheckoutPrice';
 
 export enum Coin {
   USD = 'USD',
   ETH = 'ETH',
 }
+
 export const useBuy = () => {
   const { successToast } = useCustomToast();
   const { domain } = useParams({ strict: false });
   const { wallet } = useFuelConnect();
-  const { balance, fetchUSD } = useCalculateDomain();
   const { balance: walletBalance, isLoading: isLoadingBalance } = useBalance({
     address: wallet?.address.toAddress(),
   });
-  const { registerDomain, resolveDomain, simulateHandle } = useDomain();
+  const { registerDomain, resolveDomain } = useDomain();
   const [selectedCoin, setSelectedCoin] = useState<Coin>(Coin.ETH);
   const [signInLoad, setSignInLoad] = useState<boolean>(false);
 
@@ -36,23 +32,14 @@ export const useBuy = () => {
       period,
     },
   ]);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  const totalPrice = useMemo(() => {
-    return domains.reduce((previous, current) => {
-      const domainPrice = domainPrices(current.name, 1).format();
-
-      return selectedCoin === Coin.USD
-        ? previous +
-            (Number(domainPrice) + Number(simulateHandle.data?.fee.format())) *
-              balance
-        : previous + Number(domainPrice);
-    }, 0);
-  }, [balance, domains, selectedCoin]);
+  const { totalPrice, domainPrice, fee, formatCoin } = useCheckoutPrice(
+    domains,
+    selectedCoin,
+  );
 
   const handlePeriodChange = (index: number, newValue: number) => {
     const newItems = [...domains];
-    // period not specified
+    // TODO: period not specified
     newItems[index] = { ...newItems[index], period: newValue };
     setDomains(newItems);
     setPeriod(newValue);
@@ -84,16 +71,10 @@ export const useBuy = () => {
       {
         onSuccess: async () => {
           await handleConfirmDomain();
-          // domainDetailsDialog.onOpen();
           successToast({
             title: 'Transaction success',
             description: 'Your handle has been registered successfully',
           });
-          // navigate({
-          //   to: '/checkout/$domain/$transactionId',
-          //   params: { domain: domain, transactionId },
-          //   startTransition: true,
-          // }).then();
           setSignInLoad(false);
         },
         onError: (error: unknown) => {
@@ -104,26 +85,9 @@ export const useBuy = () => {
     );
   };
 
-  const formatCoin = (value: number, selectedCoin: Coin) => {
-    if (!value) return '--.--';
-
-    const formatted = value.toLocaleString('en-US', {
-      minimumFractionDigits: 4,
-      maximumFractionDigits: 4,
-    });
-
-    return `${coinSymbol[selectedCoin]} ${formatted}`;
-  };
-
   const handleChangeCoin = (coin: Coin) => {
     setSelectedCoin(coin);
   };
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    fetchUSD();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCoin]);
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -142,22 +106,19 @@ export const useBuy = () => {
   return {
     handleBuyDomain,
     handlePeriodChange,
-    handleCost: {
-      ...simulateHandle,
-      data: simulateHandle.data,
-    },
     registerDomain,
-    balance,
-    totalPrice,
     domains,
     domain,
     selectedCoin,
     buyError,
     signInLoad,
-    walletBalance: walletBalance?.format(),
+    walletBalance,
     isLoadingBalance,
     formatCoin,
     handleChangeCoin,
     handleConfirmDomain,
+    totalPrice,
+    fee,
+    domainPrice,
   };
 };
