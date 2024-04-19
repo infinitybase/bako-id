@@ -35,7 +35,7 @@ Please note, this action is restricted due to security considerations. It ensure
 case, the user who owns the handle, have the right to modify its associated data. This prevents unwanted modifications and maintains the integrity of the data.
 :::
 
-## Obtaining Metadata by Ke
+## Obtaining Metadata by Key
 The `getMetadata` method is used to retrieve metadata from an identity using a specific key. This method requires a wallet
 instance, a domain, and a metadata key. The metadata key is a string that represents the name of the metadata to be retrieved.
 
