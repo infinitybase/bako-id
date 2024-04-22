@@ -8,7 +8,6 @@ import {
 import {
   WALLET_PRIVATE_KEYS,
   createWallet,
-  expectContainLogError,
   expectRequireRevertError,
   setupContracts,
   setupContractsAndDeploy,

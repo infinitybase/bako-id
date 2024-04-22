@@ -10,8 +10,8 @@
 */
 
 import type {
-  BN,
   BigNumberish,
+  BN,
   Bytes,
   BytesLike,
   Contract,
@@ -22,7 +22,7 @@ import type {
   StdString,
 } from 'fuels';
 
-import type { Enum, Option } from './common';
+import type { Option, Enum } from './common';
 
 export type IdentityInput = Enum<{
   Address: AddressInput;
@@ -86,36 +86,36 @@ export interface RegistryContractAbiInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: 'constructor',
-    values: [AddressInput, ContractIdInput]
+    values: [AddressInput, ContractIdInput],
   ): Uint8Array;
   encodeFunctionData(
     functionFragment: 'register',
-    values: [StdString, string]
+    values: [StdString, string],
   ): Uint8Array;
   encodeFunctionData(
     functionFragment: 'resolver',
-    values: [StdString]
+    values: [StdString],
   ): Uint8Array;
   encodeFunctionData(
     functionFragment: 'reverse_name',
-    values: [string]
+    values: [string],
   ): Uint8Array;
 
   decodeFunctionData(
     functionFragment: 'constructor',
-    data: BytesLike
+    data: BytesLike,
   ): DecodedValue;
   decodeFunctionData(
     functionFragment: 'register',
-    data: BytesLike
+    data: BytesLike,
   ): DecodedValue;
   decodeFunctionData(
     functionFragment: 'resolver',
-    data: BytesLike
+    data: BytesLike,
   ): DecodedValue;
   decodeFunctionData(
     functionFragment: 'reverse_name',
-    data: BytesLike
+    data: BytesLike,
   ): DecodedValue;
 }
 

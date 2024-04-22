@@ -10,8 +10,8 @@
 */
 
 import type {
-  BN,
   BigNumberish,
+  BN,
   Bytes,
   BytesLike,
   Contract,
@@ -22,7 +22,7 @@ import type {
   StdString,
 } from 'fuels';
 
-import type { Enum, Option } from './common';
+import type { Option, Enum } from './common';
 
 export type IdentityInput = Enum<{
   Address: AddressInput;
@@ -71,64 +71,64 @@ export interface StorageContractAbiInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: 'constructor',
-    values: [AddressInput, ContractIdInput]
+    values: [AddressInput, ContractIdInput],
   ): Uint8Array;
   encodeFunctionData(functionFragment: 'get', values: [string]): Uint8Array;
   encodeFunctionData(
     functionFragment: 'get_implementation',
-    values: []
+    values: [],
   ): Uint8Array;
   encodeFunctionData(functionFragment: 'get_owner', values: []): Uint8Array;
   encodeFunctionData(
     functionFragment: 'reverse_get',
-    values: [string]
+    values: [string],
   ): Uint8Array;
   encodeFunctionData(
     functionFragment: 'reverse_set',
-    values: [string, StdString]
+    values: [string, StdString],
   ): Uint8Array;
   encodeFunctionData(
     functionFragment: 'set',
-    values: [string, Bytes]
+    values: [string, Bytes],
   ): Uint8Array;
   encodeFunctionData(
     functionFragment: 'set_implementation',
-    values: [ContractIdInput]
+    values: [ContractIdInput],
   ): Uint8Array;
   encodeFunctionData(
     functionFragment: 'set_owner',
-    values: [AddressInput]
+    values: [AddressInput],
   ): Uint8Array;
 
   decodeFunctionData(
     functionFragment: 'constructor',
-    data: BytesLike
+    data: BytesLike,
   ): DecodedValue;
   decodeFunctionData(functionFragment: 'get', data: BytesLike): DecodedValue;
   decodeFunctionData(
     functionFragment: 'get_implementation',
-    data: BytesLike
+    data: BytesLike,
   ): DecodedValue;
   decodeFunctionData(
     functionFragment: 'get_owner',
-    data: BytesLike
+    data: BytesLike,
   ): DecodedValue;
   decodeFunctionData(
     functionFragment: 'reverse_get',
-    data: BytesLike
+    data: BytesLike,
   ): DecodedValue;
   decodeFunctionData(
     functionFragment: 'reverse_set',
-    data: BytesLike
+    data: BytesLike,
   ): DecodedValue;
   decodeFunctionData(functionFragment: 'set', data: BytesLike): DecodedValue;
   decodeFunctionData(
     functionFragment: 'set_implementation',
-    data: BytesLike
+    data: BytesLike,
   ): DecodedValue;
   decodeFunctionData(
     functionFragment: 'set_owner',
-    data: BytesLike
+    data: BytesLike,
   ): DecodedValue;
 }
 

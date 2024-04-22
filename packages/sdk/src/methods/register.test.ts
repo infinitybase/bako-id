@@ -1,39 +1,9 @@
-import {
-  BaseAssetId,
-  bn,
-  Provider,
-  ScriptTransactionRequest,
-  Wallet,
-  type WalletUnlocked,
-} from 'fuels';
+import { Provider, Wallet, type WalletUnlocked } from 'fuels';
 import { register, resolver } from '../index';
+import { createFakeWallet } from '../test';
 import { InvalidDomainError, NotFoundBalanceError, randomName } from '../utils';
 
 const { PROVIDER_URL, TEST_WALLET } = process.env;
-
-async function createFakeWallet(
-  provider: Provider,
-  mainWallet: WalletUnlocked,
-) {
-  const fakeWallet = Wallet.generate({ provider });
-  const quantity = {
-    assetId: BaseAssetId,
-    amount: bn.parseUnits('0.0000001'),
-  };
-  const resourcesToSpend = await mainWallet.getResourcesToSpend([quantity]);
-  const { minGasPrice } = provider.getGasConfig();
-
-  const request = new ScriptTransactionRequest({
-    gasLimit: 10000,
-    gasPrice: minGasPrice,
-  });
-
-  request.addResources(resourcesToSpend);
-  request.addCoinOutput(fakeWallet.address, quantity.amount, quantity.assetId);
-  await mainWallet.sendTransaction(request, { awaitExecution: true });
-
-  return fakeWallet;
-}
 
 describe('Test Registry', () => {
   let wallet: WalletUnlocked;

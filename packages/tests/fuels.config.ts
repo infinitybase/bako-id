@@ -3,6 +3,7 @@ import { createConfig, hash } from 'fuels';
 export default createConfig({
   contracts: [
     '../sway/src/registry-contract',
+    '../sway/src/metadata-contract',
     '../sway/src/storage-contract',
     './src/sway/test-contract',
   ],
