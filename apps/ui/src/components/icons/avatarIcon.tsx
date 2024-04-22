@@ -47,10 +47,10 @@ const AvatarIcon = createIcon({
           y2="87.4786"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#FFC010" />
-          <stop offset="0.48" stop-color="#EBA312" />
-          <stop offset="0.71" stop-color="#D38015" />
-          <stop offset="0.99" stop-color="#B24F18" />
+          <stop stopColor="#FFC010" />
+          <stop offset="0.48" stopColor="#EBA312" />
+          <stop offset="0.71" stopColor="#D38015" />
+          <stop offset="0.99" stopColor="#B24F18" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_14083_13189"
@@ -60,8 +60,8 @@ const AvatarIcon = createIcon({
           y2="81.1785"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F3AF11" />
-          <stop offset="0.99" stop-color="#D17D15" />
+          <stop stopColor="#F3AF11" />
+          <stop offset="0.99" stopColor="#D17D15" />
         </linearGradient>
         <linearGradient
           id="paint2_linear_14083_13189"
@@ -71,8 +71,8 @@ const AvatarIcon = createIcon({
           y2="81.1785"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F3AF11" />
-          <stop offset="0.99" stop-color="#D17D15" />
+          <stop stopColor="#F3AF11" />
+          <stop offset="0.99" stopColor="#D17D15" />
         </linearGradient>
       </defs>
     </svg>

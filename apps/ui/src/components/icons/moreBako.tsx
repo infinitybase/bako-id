@@ -12,7 +12,7 @@ export const MoreBako = createIcon({
           height="120"
           rx="8.20513"
           fill="url(#paint0_linear_14174_17407)"
-          shape-rendering="crispEdges"
+          shapeRendering="crispEdges"
         />
         <rect
           x="5"
@@ -20,8 +20,8 @@ export const MoreBako = createIcon({
           height="120"
           rx="8.20513"
           fill="url(#paint1_linear_14174_17407)"
-          fill-opacity="0.8"
-          shape-rendering="crispEdges"
+          fillOpacity="0.8"
+          shapeRendering="crispEdges"
         />
         <path
           d="M91.679 55.7934C91.6674 55.7708 91.6611 55.7421 91.6611 55.7078C91.6611 55.6511 91.7 55.6106 91.7779 55.588L92.0106 55.511L92.0915 55.4939C92.1453 55.4939 92.1904 55.5313 92.2262 55.6052C92.3274 55.8673 92.4916 56.0571 92.7189 56.1738C92.9454 56.2904 93.238 56.3488 93.5961 56.3488C94.0195 56.3488 94.3363 56.2819 94.5449 56.1481C94.7534 56.0143 94.8585 55.8214 94.8585 55.5709C94.8585 55.3773 94.8064 55.2271 94.7021 55.1213C94.5978 55.0156 94.4569 54.9401 94.281 54.8942C94.1051 54.8483 93.8646 54.8118 93.5603 54.783C93.1719 54.7488 92.8559 54.699 92.6115 54.6336C92.3663 54.5683 92.1624 54.4454 91.9981 54.2657C91.8339 54.086 91.7522 53.8278 91.7522 53.491C91.7522 53.0919 91.9032 52.7777 92.2044 52.5498C92.5056 52.3219 92.943 52.2075 93.5159 52.2075C94.4468 52.2075 95.0562 52.5187 95.3426 53.1402C95.3605 53.1744 95.3699 53.2055 95.3699 53.2343C95.3699 53.2911 95.3341 53.3338 95.2625 53.3626L95.0383 53.4567C94.9963 53.4739 94.9636 53.4824 94.9395 53.4824C94.9153 53.4824 94.8928 53.4723 94.8725 53.4529C94.8515 53.4326 94.8321 53.4085 94.8142 53.3797C94.7122 53.1627 94.5635 52.9994 94.3666 52.8874C94.1697 52.7761 93.8887 52.7209 93.5252 52.7209C93.1369 52.7209 92.845 52.7855 92.6481 52.913C92.4511 53.0414 92.3523 53.2281 92.3523 53.4739C92.3523 53.6847 92.4076 53.8449 92.5181 53.953C92.6286 54.0611 92.7718 54.1358 92.9477 54.1755C93.1236 54.2151 93.3758 54.2494 93.7043 54.2782C94.0802 54.3124 94.3907 54.3668 94.6351 54.4407C94.8795 54.5146 95.0757 54.6391 95.222 54.8133C95.3683 54.9875 95.4415 55.231 95.4415 55.5453C95.4415 55.956 95.2874 56.2772 94.9807 56.5082C94.6733 56.7393 94.2148 56.8552 93.6062 56.8552C92.6091 56.8552 91.9678 56.5012 91.6814 55.7942L91.679 55.7934Z"
@@ -76,9 +76,9 @@ export const MoreBako = createIcon({
           width="128.205"
           height="128.205"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -112,10 +112,10 @@ export const MoreBako = createIcon({
           y2="113.834"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#FBCE51" />
-          <stop offset="0.34" stop-color="#EBA312" />
-          <stop offset="0.745" stop-color="#D38015" />
-          <stop offset="0.99" stop-color="#B24F18" />
+          <stop stopColor="#FBCE51" />
+          <stop offset="0.34" stopColor="#EBA312" />
+          <stop offset="0.745" stopColor="#D38015" />
+          <stop offset="0.99" stopColor="#B24F18" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_14174_17407"
@@ -125,10 +125,10 @@ export const MoreBako = createIcon({
           y2="120"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-opacity="0" />
-          <stop offset="0.49" stop-opacity="0" />
-          <stop offset="0.78" stop-opacity="0.53" />
-          <stop offset="1" stop-opacity="0.96" />
+          <stop stopOpacity="0" />
+          <stop offset="0.49" stopOpacity="0" />
+          <stop offset="0.78" stopOpacity="0.53" />
+          <stop offset="1" stopOpacity="0.96" />
         </linearGradient>
       </defs>
     </>

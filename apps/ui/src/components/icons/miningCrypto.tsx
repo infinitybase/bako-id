@@ -12,7 +12,7 @@ export const MiningCrypto = createIcon({
           height="120"
           rx="8.20513"
           fill="url(#paint0_linear_14174_17443)"
-          shape-rendering="crispEdges"
+          shapeRendering="crispEdges"
         />
         <rect
           x="5"
@@ -20,8 +20,8 @@ export const MiningCrypto = createIcon({
           height="120"
           rx="8.20513"
           fill="url(#paint1_linear_14174_17443)"
-          fill-opacity="0.8"
-          shape-rendering="crispEdges"
+          fillOpacity="0.8"
+          shapeRendering="crispEdges"
         />
         <path
           d="M39.961 27.1107L49.9738 38.2236C48.958 39.6941 48.1497 41.3273 47.6166 43.0784L36.2399 30.4558C35.4373 29.5634 35.5047 28.1883 36.4027 27.3801L36.8798 26.948C37.7778 26.1398 39.1528 26.2127 39.961 27.1107Z"
@@ -60,8 +60,8 @@ export const MiningCrypto = createIcon({
           fill="#F6F5F5"
         />
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M64.6677 38.9468L70.2915 48.2636L64.6677 57.586L59.0439 48.2636L64.6677 38.9468ZM64.6692 46.0635L69.322 48.2636L64.6692 50.4637L60.0107 48.2636L64.6692 46.0635Z"
           fill="#F6F5F5"
         />
@@ -78,9 +78,9 @@ export const MiningCrypto = createIcon({
           width="128.205"
           height="128.205"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -114,10 +114,10 @@ export const MiningCrypto = createIcon({
           y2="113.834"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#51BDFB" />
-          <stop offset="0.34" stop-color="#125CEB" />
-          <stop offset="0.745" stop-color="#1561D3" />
-          <stop offset="0.99" stop-color="#1843B2" />
+          <stop stopColor="#51BDFB" />
+          <stop offset="0.34" stopColor="#125CEB" />
+          <stop offset="0.745" stopColor="#1561D3" />
+          <stop offset="0.99" stopColor="#1843B2" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_14174_17443"
@@ -127,10 +127,10 @@ export const MiningCrypto = createIcon({
           y2="120"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-opacity="0" />
-          <stop offset="0.49" stop-opacity="0" />
-          <stop offset="0.77" stop-opacity="0.53" />
-          <stop offset="1" stop-opacity="0.96" />
+          <stop stopOpacity="0" />
+          <stop offset="0.49" stopOpacity="0" />
+          <stop offset="0.77" stopOpacity="0.53" />
+          <stop offset="1" stopOpacity="0.96" />
         </linearGradient>
       </defs>
     </>

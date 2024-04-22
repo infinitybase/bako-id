@@ -12,7 +12,7 @@ export const HowToSendCrypto = createIcon({
           height="120"
           rx="8.20513"
           fill="white"
-          shape-rendering="crispEdges"
+          shapeRendering="crispEdges"
         />
         <rect
           x="5"
@@ -20,10 +20,10 @@ export const HowToSendCrypto = createIcon({
           height="120"
           rx="8.20513"
           fill="url(#paint0_linear_14174_17465)"
-          fill-opacity="0.8"
-          shape-rendering="crispEdges"
+          fillOpacity="0.8"
+          shapeRendering="crispEdges"
         />
-        <g clip-path="url(#clip0_14174_17465)">
+        <g clipPath="url(#clip0_14174_17465)">
           <path
             d="M69.1966 57.6533C79.0131 55.3777 85.0927 45.7168 82.7758 36.0751C80.4589 26.4334 70.6229 20.4621 60.8064 22.7377C50.99 25.0134 44.9104 34.6743 47.2273 44.3159C49.5442 53.9576 59.3802 59.9289 69.1966 57.6533Z"
             fill="#53BAE6"
@@ -90,9 +90,9 @@ export const HowToSendCrypto = createIcon({
           width="128.205"
           height="128.205"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -126,10 +126,10 @@ export const HowToSendCrypto = createIcon({
           y2="120"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-opacity="0" />
-          <stop offset="0.49" stop-opacity="0" />
-          <stop offset="0.77" stop-opacity="0.53" />
-          <stop offset="1" stop-opacity="0.96" />
+          <stop stopOpacity="0" />
+          <stop offset="0.49" stopOpacity="0" />
+          <stop offset="0.77" stopOpacity="0.53" />
+          <stop offset="1" stopOpacity="0.96" />
         </linearGradient>
         <clipPath id="clip0_14174_17465">
           <rect

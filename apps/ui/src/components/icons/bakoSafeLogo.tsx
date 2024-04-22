@@ -54,10 +54,10 @@ const BakoSafeLogo = createIcon({
           y2="37.3145"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#FFC010" />
-          <stop offset="0.48" stop-color="#EBA312" />
-          <stop offset="0.71" stop-color="#D38015" />
-          <stop offset="0.99" stop-color="#B24F18" />
+          <stop stopColor="#FFC010" />
+          <stop offset="0.48" stopColor="#EBA312" />
+          <stop offset="0.71" stopColor="#D38015" />
+          <stop offset="0.99" stopColor="#B24F18" />
         </linearGradient>
       </defs>
     </>
