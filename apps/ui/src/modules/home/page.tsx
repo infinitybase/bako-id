@@ -1,15 +1,14 @@
 import {
-  Button,
   Card,
   Center,
   Divider,
   HStack,
-  Icon,
   Stack,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { FarcasterIcon } from '../../components/icons/farcaster';
+
+import { FarcasterButton } from '../../components/buttons/farcasterButton';
 import { Autocomplete } from '../../components/inputs/autocomplete';
 
 export const Home = () => {
@@ -47,10 +46,8 @@ export const Home = () => {
             gap={[4, 0]}
             justify="space-around"
           >
-            <Button w="95%" p={6} bgColor="button.500" rounded="lg">
-              <Icon as={FarcasterIcon} />
-              <Text ml={2}>Farcaster</Text>
-            </Button>
+            <FarcasterButton isBuy />
+
             {/* {!isConnected && (
               <Button
                 w={['full', '45%']}
@@ -104,48 +101,6 @@ export const Home = () => {
               </Text>
             </VStack>
           </VStack>
-
-          {/* <Box
-            as="form"
-            w="full"
-            display="flex"
-            flexDir="column"
-            gap={4}
-            onSubmit={handleConfirmDomain}
-          >
-            <SearchInput
-              onChange={handleChangeDomain}
-              errorMessage={undefined}
-              available={domainIsAvailable}
-            />
-
-            <VStack w="full" display="flex" flexDir="column" gap={2}>
-              <Button
-                w="full"
-                type="submit"
-                isLoading={resolveDomain.isPending}
-                isDisabled={domain.length < 3 || resolveDomain.isPending}
-                background="button.500"
-                color="background.500"
-                fontSize={14}
-                _hover={{ bgColor: 'button.600' }}
-              >
-                {domainIsAvailable ? 'Buy Domain' : 'Check domain'}
-              </Button>
-              <HStack
-                cursor="pointer"
-                onClick={() =>
-                  window.open('https://twitter.com/bakoidentity', '_blank')
-                }
-                alignSelf="flex-end"
-              >
-                <Text fontSize={11} color="yellow-medium" fontWeight={'bold'}>
-                  Learn more
-                </Text>
-                <Image w={4} src={link} />
-              </HStack>
-            </VStack>
-          </Box> */}
         </Stack>
       </Card>
     </Center>
