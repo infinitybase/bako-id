@@ -6,3 +6,7 @@ name = "registry-contract"
 
 [dependencies]
 libraries = { path = "../libraries" }
+asset = { git = "https://github.com/FuelLabs/sway-libs", tag = "v0.18.0" }
+src20 = { git = "https://github.com/FuelLabs/sway-standards", tag = "v0.3.3" }
+src3 = { git = "https://github.com/FuelLabs/sway-standards", tag = "v0.3.3" }
+src7 = { git = "https://github.com/FuelLabs/sway-standards", tag = "v0.3.3" }
