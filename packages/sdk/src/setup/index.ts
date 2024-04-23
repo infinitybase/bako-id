@@ -1,26 +1,15 @@
+import type { Account, Provider } from 'fuels';
 import {
-  type Account,
-  CoinQuantity,
-  BN,
-  WalletLocked,
-  type Provider,
-  TransactionRequest,
-  Address,
-  BaseAssetId,
-  bn,
-  Wallet,
-  InvocationScopeLike,
-} from 'fuels';
-import {
+  MetadataContractAbi__factory,
   RegistryContractAbi__factory,
   StorageContractAbi__factory,
 } from '../types';
-import { getTxParams, getFakeAccount } from '../utils';
-import { config } from '../config';
+import { getFakeAccount, getTxParams } from '../utils';
 
 export interface ContractConfig {
   storageId: string;
   registryId?: string;
+  metadataId?: string;
   account?: Account;
   provider?: Provider;
 }
@@ -43,6 +32,9 @@ const connectContracts = (config: ContractConfig) => {
   return {
     storage,
     registry,
+    metadata: config.metadataId
+      ? MetadataContractAbi__factory.connect(config.metadataId, config.account)
+      : null,
   };
 };
 
@@ -76,4 +68,4 @@ const getRegistryContract = async (config: ContractConfig) => {
   };
 };
 
-export { connectContracts, getRegistryContract, getFakeAccount };
+export { connectContracts, getFakeAccount, getRegistryContract };

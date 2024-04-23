@@ -4,7 +4,6 @@ export const BackgroundTexture = () => {
   return (
     <Box
       className="texture"
-      position="absolute"
       bottom={0}
       left={0}
       maxH={1000}

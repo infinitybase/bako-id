@@ -1,44 +1,39 @@
-import '../../theme/global.css';
-import { Center, Container } from '@chakra-ui/react';
-import { Outlet } from '@tanstack/react-router';
+import { Outlet, useRouterState } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
-import { BackgroundTexture } from '../helpers/backgroundTexture.tsx';
+import '../../theme/global.css';
 import { Header } from '../header';
+import { Container } from './container';
+import { ProfileLayout } from './profile';
+
 // import { useIsConnected } from '@fuels/react';
 
-const Layout = () => {
-  // const { isConnected} = useIsConnected();
-  // const routerState = useRouterState();
-  // const path = routerState.location.pathname
-  // const navigate = useNavigate()
-  //
-  // if(!isConnected && path !== '/auth') {
-  //   navigate({ to: 'auth' }).then()
-  // }
-  //
-  // if(isConnected && path !== '/') {
-  //   navigate({ to: '/' }).then()
-  // }
+interface DashboardLayoutProps {
+  children?: React.ReactNode;
+  hasSideBar?: boolean;
+}
 
-  return (
-    <Container
-      w="full"
-      maxW="full"
-      h="100vh"
-      bgColor="background.500"
-      display="flex"
-      flexDir="column"
-      padding={0}
-      overflow="hidden"
-    >
-      <Header />
-      <Center position="relative" w="full" h="full" overflowX="hidden">
-        <BackgroundTexture />
-        <Outlet />
-      </Center>
-      {import.meta.env.NODE_ENV === 'development' && <TanStackRouterDevtools />}
-    </Container>
-  );
+const Layout = () => (
+  <Container>
+    <Header />
+    <Outlet />
+    {import.meta.env.NODE_ENV === 'development' && <TanStackRouterDevtools />}
+  </Container>
+);
+
+const DashboardLayout = (props: DashboardLayoutProps) => (
+  <ProfileLayout {...props}>
+    <Outlet />
+  </ProfileLayout>
+);
+
+const MainLayout = () => {
+  const { location } = useRouterState();
+
+  if (location.pathname.includes('/profile/')) {
+    return <DashboardLayout />;
+  }
+
+  return <Layout />;
 };
 
-export { Layout };
+export { DashboardLayout, Layout, MainLayout };

@@ -1,15 +1,11 @@
-import { connectContracts, getRegistryContract } from '../src/setup';
 import { Provider, Wallet } from 'fuels';
 import { config } from '../src/config';
+import { connectContracts } from '../src/setup';
 import { getTxParams } from '../src/utils';
 
 require('dotenv').config();
 
-const {
-  PROVIDER_URL,
-  STORAGE_ID,
-  PRIVATE_KEY,
-} = process.env;
+const { PROVIDER_URL, STORAGE_ID, PRIVATE_KEY } = process.env;
 
 const updataStorageRegistry = async () => {
   const provider = await Provider.create(PROVIDER_URL!);
@@ -21,13 +17,18 @@ const updataStorageRegistry = async () => {
     registryId: config.REGISTRY_CONTRACT_ID,
   });
 
-  await storage.functions.set_implementation({
-    value: registry.id.toB256(),
-  }).txParams(txParams).call();
+  await storage.functions
+    .set_implementation({
+      value: registry.id.toB256(),
+    })
+    .txParams(txParams)
+    .call();
 
-  await registry.functions.constructor(
-    { value: mainWallet.address.toB256() },
-    { value: storage.id.toB256() })
+  await registry.functions
+    .constructor(
+      { value: mainWallet.address.toB256() },
+      { value: storage.id.toB256() }
+    )
     .txParams(txParams)
     .call();
 };

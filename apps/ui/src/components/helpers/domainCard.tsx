@@ -1,3 +1,4 @@
+import { CopyIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -10,10 +11,9 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { formatAddress } from '../../utils/formatter.ts';
-import { CopyIcon } from '@chakra-ui/icons';
-import { RoundedUserIcon } from './roundedUserIcon.tsx';
 import { useMemo } from 'react';
+import { formatAddress } from '../../utils/formatter.ts';
+import { RoundedUserIcon } from './roundedUserIcon.tsx';
 
 interface DomainCardProps {
   domain: { name: string; resolver: string; owner: string } | null;
@@ -22,6 +22,7 @@ interface DomainCardProps {
 }
 
 export const DomainCard = ({ domain, isList, copy }: DomainCardProps) => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const icon = useMemo(() => {
     return (
       <RoundedUserIcon

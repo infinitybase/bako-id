@@ -10,6 +10,5 @@ export function generateColor() {
   // consist of 6 letter or digits
   for (let i = 0; i < 6; i++) color += letters[Math.floor(Math.random() * 16)];
 
-  console.log(color);
   return color;
 }

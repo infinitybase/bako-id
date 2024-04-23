@@ -54,7 +54,8 @@ export default defineConfig({
         collapsed: false,
         items: [
           { text: 'SDK Installation', link: '/sdk/install' },
-          { text: 'Getting a domain', link: '/sdk/resolver' },
+          { text: 'Getting a handle', link: '/sdk/resolver' },
+          { text: 'Metadata of handle', link: '/sdk/metadata' },
         ],
       },
     ],

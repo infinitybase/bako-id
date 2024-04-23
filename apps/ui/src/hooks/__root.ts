@@ -1,10 +1,14 @@
 import { createRootRouteWithContext } from '@tanstack/react-router';
-import { Layout } from '../components/layout';
+import { DashboardLayout, MainLayout } from '../components/layout';
 
 interface MyRouterContext {
   isConnected: boolean | null;
 }
 
 export const rootRoute = createRootRouteWithContext<MyRouterContext>()({
-  component: Layout,
+  component: MainLayout,
+});
+
+export const profileRootRoute = createRootRouteWithContext<MyRouterContext>()({
+  component: DashboardLayout,
 });

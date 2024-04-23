@@ -1,6 +1,6 @@
+import { bn } from 'fuels';
 import { assertValidDomain, domainPrices, isValidDomain } from './domain';
 import { InvalidDomainError } from './errors';
-import { bn } from 'fuels';
 
 describe('Domain utils', () => {
   test('Domain validations', () => {

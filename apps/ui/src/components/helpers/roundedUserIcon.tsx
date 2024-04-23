@@ -4,13 +4,16 @@ import { generateColor } from '../../utils/generateColor.ts';
 export const RoundedUserIcon = ({
   width,
   heigth,
-}: { width: string; heigth: string }) => {
+}: {
+  width: string;
+  heigth: string;
+}) => {
   const topColor = generateColor();
   const botColor = generateColor();
 
   return (
     <Box
-      rounded={50}
+      rounded="lg"
       w={width}
       h={heigth}
       bgGradient={`linear(to-br, ${topColor}, ${botColor})`}

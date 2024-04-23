@@ -1,5 +1,5 @@
-import type { ReactElement } from 'react';
 import { Button, type ButtonProps } from '@chakra-ui/react';
+import type { ReactElement } from 'react';
 
 interface InfoButtonProps extends ButtonProps {
   children: ReactElement | ReactElement[];

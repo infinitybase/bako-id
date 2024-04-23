@@ -1,8 +1,8 @@
-import { type Account, Address, Provider } from 'fuels';
+import { Address, Provider, type Account } from 'fuels';
+import { config } from '../config';
+import { getRegistryContract } from '../setup';
 import type { ResolverReturn } from '../types';
 import { assertValidDomain, getTxParams } from '../utils';
-import { getRegistryContract } from '../setup';
-import { config } from '../config';
 
 type ResolverProviderParams = {
   account?: Account;

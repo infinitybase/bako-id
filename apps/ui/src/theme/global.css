@@ -1,13 +1,12 @@
 * {
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
-  font-variation-settings:
-      "slnt" 0;
+  font-variation-settings: 'slnt' 0;
 }
 
 .texture {
-  background-image: url("../assets/bg-texture.svg");
+  background-image: url('../assets/bg-texture.svg');
   background-position: bottom;
   background-size: contain;
   background-repeat: no-repeat;
@@ -15,7 +14,9 @@
   padding: 0 0 calc(100%) 0;
 }
 
-.transition-all-05 { transition: all 0.5s ease; }
+.transition-all-05 {
+  transition: all 0.5s ease;
+}
 
 .main-gradient {
   width: 100%;
@@ -24,21 +25,38 @@
   top: 0;
   left: 0;
   /*background: linear-gradient(179deg, rgba(30, 31, 34, 0.9) 0%, rgba(30, 31, 34, 0.9) 37%, rgba(30, 31, 34, 0.9) 47%, rgba(0, 212, 255, 0) 100%)*/
-  background: linear-gradient(175deg, rgba(30,32,35,0.9766107126444328) 0%, rgba(30,32,35,0.9766107126444328) 60%, rgba(30,32,35,0.4556023092830882) 100%);
+  background: linear-gradient(
+    175deg,
+    rgba(30, 32, 35, 0.9766107126444328) 0%,
+    rgba(30, 32, 35, 0.9766107126444328) 60%,
+    rgba(30, 32, 35, 0.4556023092830882) 100%
+  );
 }
 
 .text-gradient {
-  background: linear-gradient(132.19deg, #FFC010 0%, #EBA312 48%, #D38015 71%, #B24F18 99%);
+  background: linear-gradient(
+    132.19deg,
+    #ffc010 0%,
+    #eba312 48%,
+    #d38015 71%,
+    #b24f18 99%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .divider {
-  background: linear-gradient(132.19deg, #FFC010 0%, #EBA312 48%, #D38015 71%, #B24F18 99%);
+  background: linear-gradient(
+    132.19deg,
+    #ffc010 0%,
+    #eba312 48%,
+    #d38015 71%,
+    #b24f18 99%
+  );
 }
 
 .rotate-div {
-  transform: rotate(180deg)!important;
+  transform: rotate(180deg) !important;
 }
 
 .rotate-base {
@@ -51,11 +69,11 @@ Animations
 */
 
 .scale-up-hor-center {
-  animation: scale-up-hor-center .4s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  animation: scale-up-hor-center 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
 .bg-pan-tl {
-  background: linear-gradient(to bottom right, #FFC010, #B24F18);
+  background: linear-gradient(to bottom right, #ffc010, #b24f18);
   background-size: 200%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -79,7 +97,6 @@ Animations
   }
 }
 
-
 /**
  * ----------------------------------------
  * background top left
@@ -96,4 +113,3 @@ Animations
     background-position: 0 0;
   }
 }
-

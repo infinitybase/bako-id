@@ -1,12 +1,12 @@
-import { type Account, BaseAssetId } from 'fuels';
+import { BaseAssetId, type Account } from 'fuels';
+import { config } from '../config';
+import { getRegistryContract } from '../setup';
 import {
+  NotFoundBalanceError,
   assertValidDomain,
   domainPrices,
   getTxParams,
-  NotFoundBalanceError,
 } from '../utils';
-import { getRegistryContract } from '../setup';
-import { config } from '../config';
 
 type RegisterDomainParams = {
   domain: string;

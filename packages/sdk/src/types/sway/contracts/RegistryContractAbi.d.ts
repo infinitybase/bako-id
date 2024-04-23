@@ -4,7 +4,7 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.77.0
+  Fuels version: 0.78.0
   Forc version: 0.51.1
   Fuel-Core version: 0.22.1
 */
@@ -32,6 +32,16 @@ export type IdentityOutput = Enum<{
   Address: AddressOutput;
   ContractId: ContractIdOutput;
 }>;
+export enum NameValidationErrorInput {
+  InvalidLenght = 'InvalidLenght',
+  InvalidChars = 'InvalidChars',
+  IsEmpty = 'IsEmpty',
+}
+export enum NameValidationErrorOutput {
+  InvalidLenght = 'InvalidLenght',
+  InvalidChars = 'InvalidChars',
+  IsEmpty = 'IsEmpty',
+}
 export type PermissionInput = Enum<{
   Authorized: IdentityInput;
   Unauthorized: [];
@@ -48,7 +58,6 @@ export enum RegistryContractErrorInput {
   DomainNotAvailable = 'DomainNotAvailable',
   IncorrectAssetId = 'IncorrectAssetId',
   InvalidAmount = 'InvalidAmount',
-  DomainNotValid = 'DomainNotValid',
 }
 export enum RegistryContractErrorOutput {
   StorageNotInitialized = 'StorageNotInitialized',
@@ -56,7 +65,6 @@ export enum RegistryContractErrorOutput {
   DomainNotAvailable = 'DomainNotAvailable',
   IncorrectAssetId = 'IncorrectAssetId',
   InvalidAmount = 'InvalidAmount',
-  DomainNotValid = 'DomainNotValid',
 }
 
 export type AddressInput = { value: string };

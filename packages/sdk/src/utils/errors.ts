@@ -22,3 +22,17 @@ export class NotFoundBalanceError extends Error {
     this.name = 'NotFoundBalanceError';
   }
 }
+
+/**
+ * Represents an error that occurs when an account is not the owner of the handle.
+ *
+ * @class
+ * @extends
+ * @name NotOwnerError
+ */
+export class NotOwnerError extends Error {
+  constructor() {
+    super('Account is not the owner of the handle.');
+    this.name = 'NotOwnerError';
+  }
+}

@@ -1,11 +1,10 @@
 import { createRoute } from '@tanstack/react-router';
-import { Home } from '../pages/home.tsx';
-import { rootRoute } from '../hooks/__root.ts';
 import { NotConnected } from '../components/auth/notConnected.tsx';
-import { Domain } from '../pages/domain.tsx';
-import { Buy } from '../pages/buy.tsx';
-import { Purchased } from '../pages/purchased.tsx';
-import { Domains } from '../pages/domains.tsx';
+import { rootRoute } from '../hooks/__root.ts';
+import { Buy } from '../modules/buy/page.tsx';
+import { Home } from '../modules/home/page.tsx';
+import { More } from '../modules/profile/components/more/page.tsx';
+import { Profile } from '../modules/profile/page.tsx';
 
 export const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -42,26 +41,20 @@ export const connectRoute = createRoute({
   // }
 });
 
-export const domainRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  component: Domain,
-  path: '/$domain',
-});
-
 export const buyRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: Buy,
   path: '/buy/$domain',
 });
 
-export const checkoutRoute = createRoute({
+export const profileRoute = createRoute({
   getParentRoute: () => rootRoute,
-  component: Purchased,
-  path: '/checkout/$domain',
+  component: Profile,
+  path: '/profile/$domain',
 });
 
-export const domainsRoute = createRoute({
+export const moreRoute = createRoute({
   getParentRoute: () => rootRoute,
-  component: Domains,
-  path: '/user/domains',
+  component: More,
+  path: '/profile/$domain/more',
 });

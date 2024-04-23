@@ -1,5 +1,5 @@
-import { defineConfig } from 'tsup';
 import dotenv from 'dotenv';
+import { defineConfig } from 'tsup';
 
 dotenv.config();
 

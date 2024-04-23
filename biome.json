@@ -15,7 +15,8 @@
     "rules": {
       "recommended": true,
       "correctness": {
-        "noUnusedVariables": "error"
+        "noUnusedVariables": "error",
+        "noUnusedImports": "error"
       },
       "style": {
         "noNonNullAssertion": "off"
@@ -42,13 +43,14 @@
     "ignore": [
       ".vscode",
       ".idea",
-      "**/scripts",
-      "**/node_modules",
-      "**/.turbo",
-      "**/build",
-      "**/dist",
-      "**/sway",
-      "pnpm-lock.yaml"
+      "scripts/**",
+      "node_modules/**",
+      ".turbo/**",
+      "build/**",
+      "dist/**",
+      "sway/**",
+      "pnpm-lock.yaml",
+      "sway/contracts/**"
     ]
   }
 }

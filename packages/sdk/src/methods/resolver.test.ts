@@ -12,8 +12,8 @@ describe('Test resolver', () => {
   const domain = 'bako_id_not_found';
 
   beforeAll(async () => {
-    provider = await Provider.create(PROVIDER_URL);
-    wallet = Wallet.fromPrivateKey(PRIVATE_KEY, provider);
+    provider = await Provider.create(PROVIDER_URL!);
+    wallet = Wallet.fromPrivateKey(PRIVATE_KEY!, provider);
   });
 
   it('should get undefined value with not found registered', async () => {
@@ -53,19 +53,19 @@ describe('Test resolver', () => {
     await expect(
       reverseResolver(resolver, {
         provider,
-      })
+      }),
     ).resolves.toBe(name);
 
     await expect(
       reverseResolver(resolver, {
         providerURL: provider.url,
-      })
+      }),
     ).resolves.toBe(name);
 
     await expect(
       reverseResolver(resolver, {
         account: wallet,
-      })
+      }),
     ).resolves.toBe(name);
 
     // await expect(reverseResolver(resolver)).resolves.toBe(name);
