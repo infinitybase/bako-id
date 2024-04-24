@@ -14,7 +14,7 @@ export const BuyError = ({
   walletBalance,
 }: IBuyErrorProps) => {
   return (
-    <Box maxW="full" h="fit-content" display="flex" mb={3}>
+    <Box maxW="full" h="auto" display="flex" my={2}>
       {buyError && (
         <Box
           w="full"
