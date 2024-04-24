@@ -19,7 +19,7 @@ import { Info } from '../user';
 
 export const Header = () => {
   const { wallet } = useFuelConnect();
-  const { isFetching, isSuccess } = useIsConnected();
+  const { isFetching } = useIsConnected();
   const [isMobile] = useMediaQuery('(max-width: 48em)');
   const navigate = useNavigate();
 
@@ -42,8 +42,6 @@ export const Header = () => {
         </Box>
       );
   };
-
-  console.log(isSuccess);
 
   const goHome = () => {
     navigate({ to: '/' }).then();
