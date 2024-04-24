@@ -4,15 +4,17 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.78.0
-  Forc version: 0.51.1
+  Fuels version: 0.81.0
+  Forc version: 0.49.3
   Fuel-Core version: 0.22.1
 */
 
 export type { RegistryContractAbi } from './RegistryContractAbi';
-export type { StorageContractAbi } from './StorageContractAbi';
 export type { MetadataContractAbi } from './MetadataContractAbi';
+export type { ResolverContractAbi } from './ResolverContractAbi';
+export type { StorageContractAbi } from './StorageContractAbi';
 
 export { RegistryContractAbi__factory } from './factories/RegistryContractAbi__factory';
-export { StorageContractAbi__factory } from './factories/StorageContractAbi__factory';
 export { MetadataContractAbi__factory } from './factories/MetadataContractAbi__factory';
+export { ResolverContractAbi__factory } from './factories/ResolverContractAbi__factory';
+export { StorageContractAbi__factory } from './factories/StorageContractAbi__factory';

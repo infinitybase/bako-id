@@ -1,3 +1,4 @@
+// @ts-ignore
 import type { FuelDomainOutput } from './sway/contracts/RegistryContractAbi';
 
 export * from './sway/contracts';

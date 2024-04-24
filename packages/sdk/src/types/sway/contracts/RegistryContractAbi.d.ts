@@ -4,8 +4,8 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.78.0
-  Forc version: 0.51.1
+  Fuels version: 0.81.0
+  Forc version: 0.49.3
   Fuel-Core version: 0.22.1
 */
 
@@ -22,112 +22,73 @@ import type {
   StdString,
 } from 'fuels';
 
-import type { Option, Enum } from './common';
+import type { Option, Enum } from "./common";
 
-export type IdentityInput = Enum<{
-  Address: AddressInput;
-  ContractId: ContractIdInput;
-}>;
-export type IdentityOutput = Enum<{
-  Address: AddressOutput;
-  ContractId: ContractIdOutput;
-}>;
-export enum NameValidationErrorInput {
-  InvalidLenght = 'InvalidLenght',
-  InvalidChars = 'InvalidChars',
-  IsEmpty = 'IsEmpty',
-}
-export enum NameValidationErrorOutput {
-  InvalidLenght = 'InvalidLenght',
-  InvalidChars = 'InvalidChars',
-  IsEmpty = 'IsEmpty',
-}
-export type PermissionInput = Enum<{
-  Authorized: IdentityInput;
-  Unauthorized: [];
-  NotFound: [];
-}>;
-export type PermissionOutput = Enum<{
-  Authorized: IdentityOutput;
-  Unauthorized: [];
-  NotFound: [];
-}>;
-export enum RegistryContractErrorInput {
-  StorageNotInitialized = 'StorageNotInitialized',
-  AlreadyInitialized = 'AlreadyInitialized',
-  DomainNotAvailable = 'DomainNotAvailable',
-  IncorrectAssetId = 'IncorrectAssetId',
-  InvalidAmount = 'InvalidAmount',
-}
-export enum RegistryContractErrorOutput {
-  StorageNotInitialized = 'StorageNotInitialized',
-  AlreadyInitialized = 'AlreadyInitialized',
-  DomainNotAvailable = 'DomainNotAvailable',
-  IncorrectAssetId = 'IncorrectAssetId',
-  InvalidAmount = 'InvalidAmount',
-}
+export type IdentityInput = Enum<{ Address: AddressInput, ContractId: ContractIdInput }>;
+export type IdentityOutput = Enum<{ Address: AddressOutput, ContractId: ContractIdOutput }>;
+export type MetadataInput = Enum<{ B256: string, Bytes: Bytes, Int: BigNumberish, String: StdString }>;
+export type MetadataOutput = Enum<{ B256: string, Bytes: Bytes, Int: BN, String: StdString }>;
+export enum NameValidationErrorInput { InvalidLenght = 'InvalidLenght', InvalidChars = 'InvalidChars', IsEmpty = 'IsEmpty' };
+export enum NameValidationErrorOutput { InvalidLenght = 'InvalidLenght', InvalidChars = 'InvalidChars', IsEmpty = 'IsEmpty' };
+export type PermissionInput = Enum<{ Authorized: IdentityInput, Unauthorized: [], NotFound: [] }>;
+export type PermissionOutput = Enum<{ Authorized: IdentityOutput, Unauthorized: [], NotFound: [] }>;
+export enum RegistryContractErrorInput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable', IncorrectAssetId = 'IncorrectAssetId', InvalidAmount = 'InvalidAmount' };
+export enum RegistryContractErrorOutput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable', IncorrectAssetId = 'IncorrectAssetId', InvalidAmount = 'InvalidAmount' };
 
 export type AddressInput = { value: string };
 export type AddressOutput = AddressInput;
+export type AssetIdInput = { value: string };
+export type AssetIdOutput = AssetIdInput;
 export type ContractIdInput = { value: string };
 export type ContractIdOutput = ContractIdInput;
-export type FuelDomainInput = { owner: string; resolver: string };
-export type FuelDomainOutput = FuelDomainInput;
-export type RawBytesInput = { ptr: BigNumberish; cap: BigNumberish };
-export type RawBytesOutput = { ptr: BN; cap: BN };
+export type RawBytesInput = { ptr: BigNumberish, cap: BigNumberish };
+export type RawBytesOutput = { ptr: BN, cap: BN };
 
-export interface RegistryContractAbiInterface extends Interface {
+interface RegistryContractAbiInterface extends Interface {
   functions: {
     constructor: FunctionFragment;
     register: FunctionFragment;
-    resolver: FunctionFragment;
-    reverse_name: FunctionFragment;
+    decimals: FunctionFragment;
+    name: FunctionFragment;
+    symbol: FunctionFragment;
+    total_assets: FunctionFragment;
+    total_supply: FunctionFragment;
+    image_url: FunctionFragment;
+    metadata: FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: 'constructor',
-    values: [AddressInput, ContractIdInput],
-  ): Uint8Array;
-  encodeFunctionData(
-    functionFragment: 'register',
-    values: [StdString, string],
-  ): Uint8Array;
-  encodeFunctionData(
-    functionFragment: 'resolver',
-    values: [StdString],
-  ): Uint8Array;
-  encodeFunctionData(
-    functionFragment: 'reverse_name',
-    values: [string],
-  ): Uint8Array;
+  encodeFunctionData(functionFragment: 'constructor', values: [AddressInput, ContractIdInput]): Uint8Array;
+  encodeFunctionData(functionFragment: 'register', values: [StdString, string]): Uint8Array;
+  encodeFunctionData(functionFragment: 'decimals', values: [AssetIdInput]): Uint8Array;
+  encodeFunctionData(functionFragment: 'name', values: [AssetIdInput]): Uint8Array;
+  encodeFunctionData(functionFragment: 'symbol', values: [AssetIdInput]): Uint8Array;
+  encodeFunctionData(functionFragment: 'total_assets', values: []): Uint8Array;
+  encodeFunctionData(functionFragment: 'total_supply', values: [AssetIdInput]): Uint8Array;
+  encodeFunctionData(functionFragment: 'image_url', values: [StdString]): Uint8Array;
+  encodeFunctionData(functionFragment: 'metadata', values: [AssetIdInput, StdString]): Uint8Array;
 
-  decodeFunctionData(
-    functionFragment: 'constructor',
-    data: BytesLike,
-  ): DecodedValue;
-  decodeFunctionData(
-    functionFragment: 'register',
-    data: BytesLike,
-  ): DecodedValue;
-  decodeFunctionData(
-    functionFragment: 'resolver',
-    data: BytesLike,
-  ): DecodedValue;
-  decodeFunctionData(
-    functionFragment: 'reverse_name',
-    data: BytesLike,
-  ): DecodedValue;
+  decodeFunctionData(functionFragment: 'constructor', data: BytesLike): DecodedValue;
+  decodeFunctionData(functionFragment: 'register', data: BytesLike): DecodedValue;
+  decodeFunctionData(functionFragment: 'decimals', data: BytesLike): DecodedValue;
+  decodeFunctionData(functionFragment: 'name', data: BytesLike): DecodedValue;
+  decodeFunctionData(functionFragment: 'symbol', data: BytesLike): DecodedValue;
+  decodeFunctionData(functionFragment: 'total_assets', data: BytesLike): DecodedValue;
+  decodeFunctionData(functionFragment: 'total_supply', data: BytesLike): DecodedValue;
+  decodeFunctionData(functionFragment: 'image_url', data: BytesLike): DecodedValue;
+  decodeFunctionData(functionFragment: 'metadata', data: BytesLike): DecodedValue;
 }
 
 export class RegistryContractAbi extends Contract {
   interface: RegistryContractAbiInterface;
   functions: {
-    constructor: InvokeFunction<
-      [owner: AddressInput, storage_id: ContractIdInput],
-      void
-    >;
-    register: InvokeFunction<[name: StdString, resolver: string], void>;
-    resolver: InvokeFunction<[name: StdString], Option<FuelDomainOutput>>;
-    reverse_name: InvokeFunction<[resolver: string], StdString>;
+    constructor: InvokeFunction<[owner: AddressInput, storage_id: ContractIdInput], void>;
+    register: InvokeFunction<[name: StdString, resolver: string], AssetIdOutput>;
+    decimals: InvokeFunction<[asset: AssetIdInput], Option<number>>;
+    name: InvokeFunction<[asset: AssetIdInput], StdString>;
+    symbol: InvokeFunction<[asset: AssetIdInput], StdString>;
+    total_assets: InvokeFunction<[], BN>;
+    total_supply: InvokeFunction<[asset: AssetIdInput], Option<BN>>;
+    image_url: InvokeFunction<[name: StdString], StdString>;
+    metadata: InvokeFunction<[asset: AssetIdInput, key: StdString], Option<MetadataOutput>>;
   };
 }

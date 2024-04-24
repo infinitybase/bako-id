@@ -1,14 +1,17 @@
-import { Address, Provider, type Account } from 'fuels';
+import { type Account, Address, Provider } from 'fuels';
 import { config } from '../config';
-import { getRegistryContract } from '../setup';
-import type { ResolverReturn } from '../types';
-import { assertValidDomain, getTxParams } from '../utils';
+import { ResolverContractAbi__factory } from '../types';
+import type { Option } from '../types/sway/contracts/common';
+import { assertValidDomain } from '../utils';
 
 type ResolverProviderParams = {
   account?: Account;
   provider?: Provider;
   providerURL?: string;
 };
+
+const getContract = (account: Provider) =>
+  ResolverContractAbi__factory.connect(config.RESOLVER_CONTRACT_ID, account);
 
 /**
  * Returns a provider based on the provided parameters.
@@ -23,7 +26,7 @@ type ResolverProviderParams = {
  * @returns {Promise<Provider>} The retrieved provider.
  */
 async function getProviderFromParams(
-  params?: ResolverProviderParams,
+  params?: ResolverProviderParams
 ): Promise<Provider> {
   if (!params) {
     return Provider.create(config.PROVIDER_DEPLOYED!);
@@ -49,34 +52,41 @@ async function getProviderFromParams(
  *
  * @param {string} domain - The domain to be resolved.
  * @param {ResolveDomainParams} params - The parameters for resolving the domain.
- * @returns {Promise<ResolverReturn>} The resolved domain information or null if it is not found.
+ * @returns {Option<String>} The resolved domain information or null if it is not found.
  */
 export async function resolver(
   domain: string,
-  params?: ResolverProviderParams,
-): ResolverReturn {
+  params?: ResolverProviderParams
+): Promise<Option<string>> {
   const domainName = assertValidDomain(domain);
-
   const provider = await getProviderFromParams(params);
-  const txParams = getTxParams(provider);
+  const resolverContractAbi = getContract(provider);
 
-  const { registry } = await getRegistryContract({
-    provider,
-    storageId: config.STORAGE_CONTRACT_ID!,
-  });
-
-  const { value } = await registry.functions
+  const { value } = await resolverContractAbi.functions
     .resolver(domainName)
-    .txParams(txParams)
-    .dryRun();
+    .get();
 
-  return value
-    ? {
-        name: domainName,
-        owner: value.owner,
-        resolver: value.resolver,
-      }
-    : null;
+  return value;
+}
+
+/**
+ * Get owner of domain using the specified domain and parameters.
+ *
+ * @param {string} domain - The domain to be resolved.
+ * @param {ResolveDomainParams} params - The parameters for resolving the domain.
+ * @returns {Option<String>} The resolved domain information or null if it is not found.
+ */
+export async function owner(
+  domain: string,
+  params?: ResolverProviderParams
+): Promise<Option<string>> {
+  const domainName = assertValidDomain(domain);
+  const provider = await getProviderFromParams(params);
+  const resolverContractAbi = getContract(provider);
+
+  const { value } = await resolverContractAbi.functions.owner(domainName).get();
+
+  return value;
 }
 
 /**
@@ -86,9 +96,9 @@ export async function resolver(
  * @param {ResolverProviderParams} [params] - The parameters for the reverse resolver.
  * @returns {Promise<string | null>} - The resolved reverse name, or null if not found.
  */
-export async function reverseResolver(
+export async function resolverName(
   resolver: Address | string,
-  params?: ResolverProviderParams,
+  params?: ResolverProviderParams
 ): Promise<string | null> {
   const resolverAddress =
     typeof resolver === 'string'
@@ -96,17 +106,11 @@ export async function reverseResolver(
       : resolver;
 
   const provider = await getProviderFromParams(params);
-  const txParams = getTxParams(provider);
+  const resolverContractAbi = getContract(provider);
 
-  const { registry } = await getRegistryContract({
-    provider,
-    storageId: config.STORAGE_CONTRACT_ID!,
-  });
+  const { value } = await resolverContractAbi.functions
+    .name(resolverAddress.toB256())
+    .get();
 
-  const { value } = await registry.functions
-    .reverse_name(resolverAddress.toB256())
-    .txParams(txParams)
-    .dryRun();
-
-  return value ? value : null;
+  return value || null;
 }

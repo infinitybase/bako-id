@@ -1,4 +1,4 @@
-import { BaseAssetId, type Account } from 'fuels';
+import { type Account, BaseAssetId } from 'fuels';
 import { config } from '../config';
 import { getRegistryContract } from '../setup';
 import {
@@ -118,11 +118,11 @@ export async function simulateHandleCost(params: RegisterDomainParams) {
     .txParams(txParams)
     .getTransactionRequest();
 
-  const { usedFee, minFee } =
+  const { gasUsed, minFee } =
     await account.provider.getTransactionCost(transactionRequest);
 
   return {
-    fee: usedFee.add(minFee),
+    fee: gasUsed.add(minFee),
     transactionRequest,
   };
 }
