@@ -9,19 +9,19 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
-  type DrawerProps,
   HStack,
   Heading,
   Icon,
   Link,
   Text,
   VStack,
+  type DrawerProps,
 } from '@chakra-ui/react';
 import type React from 'react';
 import { useCallback, useMemo } from 'react';
 
-import { CloseIcon } from '@chakra-ui/icons';
 import { Card } from '../';
+import { CloseIcon } from '../icons/close-icon';
 
 type ConnectorType = {
   name: string;
@@ -74,10 +74,13 @@ const CardConnector = (props: ConnectorCardProps) => {
     <Card
       as={HStack}
       w="100%"
+      variant="solid"
       gap={4}
       cursor={connector.isEnabled ? 'pointer' : 'initial'}
-      bgColor="background.300"
       borderColor="grey.300"
+      borderWidth={1}
+      display="flex"
+      flexDirection="row"
       onClick={selectConnector}
       position="relative"
       _hover={{
@@ -145,7 +148,19 @@ const DrawerConnector = (props: DrawerConnectorProps) => {
               >
                 Connect your Wallet
               </Heading>
-              <CloseIcon w={3} h={3} />
+              <Text
+                fontSize="sm"
+                color="grey.100"
+                display="flex"
+                alignItems="center"
+                gap={1}
+                _hover={{
+                  color: 'button.500',
+                }}
+              >
+                Close
+                <CloseIcon w={4} h={4} />
+              </Text>
             </HStack>
             <Text color="grey.100" fontSize="small" fontWeight="medium">
               Select your preferred access mode
@@ -177,7 +192,7 @@ const DrawerConnector = (props: DrawerConnectorProps) => {
             </Text>
             <Link
               fontSize="xs"
-              color="brand.400"
+              color="button.600"
               href="https://www.fuel.network/"
               target="_blank"
             >

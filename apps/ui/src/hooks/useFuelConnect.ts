@@ -51,6 +51,7 @@ export const useFuelConnect = () => {
     localStorage.setItem(`${AVATAR_STORAGE_KEY}/${account}`, IconUtils.user());
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useMemo(() => {
     if (account) {
       generateIcon(account);

@@ -19,7 +19,6 @@ export const Home = () => {
         h={['auto', 'auto', 'auto', 'auto']}
         maxW={['md', 'lg', '50rem', '50rem']}
         border="1px solid rgba(243, 242, 241, 0.05)"
-        variant="solid"
         padding={[6, 8, 10, 12]}
         mt={[12, 12, 6, 0]}
         mx={[2, 0]}
