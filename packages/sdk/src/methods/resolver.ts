@@ -1,51 +1,15 @@
-import { type Account, Address, Provider } from 'fuels';
+import { Address, type Provider } from 'fuels';
 import { config } from '../config';
 import { ResolverContractAbi__factory } from '../types';
 import type { Option } from '../types/sway/contracts/common';
-import { assertValidDomain } from '../utils';
-
-type ResolverProviderParams = {
-  account?: Account;
-  provider?: Provider;
-  providerURL?: string;
-};
+import {
+  type ProviderParams,
+  assertValidDomain,
+  getProviderFromParams,
+} from '../utils';
 
 const getContract = (account: Provider) =>
   ResolverContractAbi__factory.connect(config.RESOLVER_CONTRACT_ID, account);
-
-/**
- * Returns a provider based on the provided parameters.
- *
- * @param {ResolverProviderParams} params - The parameters for retrieving the provider.
- * @property {string} params.account - An optional account object.
- * @property {string} params.providerURL - An optional URL for creating a provider.
- * @property {string} params.provider - An optional provider object.
- *
- * @throws {Error} If provider or account is required.
- *
- * @returns {Promise<Provider>} The retrieved provider.
- */
-async function getProviderFromParams(
-  params?: ResolverProviderParams
-): Promise<Provider> {
-  if (!params) {
-    return Provider.create(config.PROVIDER_DEPLOYED!);
-  }
-
-  let provider: Provider | null = null;
-
-  if (params.account) {
-    provider = params.account.provider;
-  } else if (params.providerURL) {
-    provider = await Provider.create(params.providerURL);
-  } else if (params.provider) {
-    provider = params.provider;
-  }
-
-  if (!provider) throw new Error('Provider or account is required.');
-
-  return provider;
-}
 
 /**
  * Resolves the domain using the specified domain and parameters.
@@ -56,7 +20,7 @@ async function getProviderFromParams(
  */
 export async function resolver(
   domain: string,
-  params?: ResolverProviderParams
+  params?: ProviderParams
 ): Promise<Option<string>> {
   const domainName = assertValidDomain(domain);
   const provider = await getProviderFromParams(params);
@@ -78,7 +42,7 @@ export async function resolver(
  */
 export async function owner(
   domain: string,
-  params?: ResolverProviderParams
+  params?: ProviderParams
 ): Promise<Option<string>> {
   const domainName = assertValidDomain(domain);
   const provider = await getProviderFromParams(params);
@@ -98,7 +62,7 @@ export async function owner(
  */
 export async function resolverName(
   resolver: Address | string,
-  params?: ResolverProviderParams
+  params?: ProviderParams
 ): Promise<string | null> {
   const resolverAddress =
     typeof resolver === 'string'

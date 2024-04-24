@@ -65,20 +65,26 @@ export async function register(params: RegisterDomainParams) {
   const txParams = getTxParams(account.provider);
   const amount = await checkAccountBalance(account, domainName);
 
-  const { transactionResult, transactionResponse, gasUsed, transactionId } =
-    await registry.functions
-      .register(domainName, resolver)
-      .callParams({
-        forward: { amount, assetId: BaseAssetId },
-      })
-      .txParams(txParams)
-      .call();
+  const {
+    transactionResult,
+    transactionResponse,
+    gasUsed,
+    transactionId,
+    value,
+  } = await registry.functions
+    .register(domainName, resolver)
+    .callParams({
+      forward: { amount, assetId: BaseAssetId },
+    })
+    .txParams(txParams)
+    .call();
 
   return {
     gasUsed,
     transactionId,
     transactionResult,
     transactionResponse,
+    assetId: value.value,
   };
 }
 
