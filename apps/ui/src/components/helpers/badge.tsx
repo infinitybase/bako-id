@@ -4,7 +4,7 @@ interface IBadge extends BadgeProps {}
 
 export const UnavailableBadge = (props: IBadge) => (
   <Badge variant="error" {...props}>
-    Unavailable
+    Registered
   </Badge>
 );
 

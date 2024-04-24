@@ -17,11 +17,12 @@ export const Home = () => {
     <Center w="full" h="full" alignItems="center" zIndex={10}>
       <Card
         h={['auto', 'auto', 'auto', 'auto']}
-        maxW={['95%', '70%', '70%', 'auto']}
-        variant="glassmorphic"
+        maxW={['md', 'lg', '50rem', '50rem']}
         border="1px solid rgba(243, 242, 241, 0.05)"
+        variant="solid"
         padding={[6, 8, 10, 12]}
         mt={[12, 12, 6, 0]}
+        mx={[2, 0]}
         mb={['auto', 'auto', 'auto', 20]}
       >
         <Stack
@@ -35,7 +36,7 @@ export const Home = () => {
             className="bg-pan-tl"
             bgClip="text"
             fontWeight={700}
-            fontSize={{ base: 26, md: 38, lg: 40, xl: 48 }}
+            fontSize={{ base: 24, md: 38, lg: 40, xl: 48 }}
             gap={2}
           >
             Bring your Farcaster username to Handles
@@ -47,7 +48,7 @@ export const Home = () => {
             gap={[4, 0]}
             justify="space-around"
           >
-            <Button w="95%" p={6} bgColor="button.500" rounded="lg">
+            <Button p={6} variant="primary">
               <Icon as={FarcasterIcon} />
               <Text ml={2}>Farcaster</Text>
             </Button>
@@ -83,12 +84,12 @@ export const Home = () => {
               className="bg-pan-tl"
               bgClip="text"
               fontWeight={700}
-              fontSize={{ base: 26, md: 42 }}
+              fontSize={{ base: 24, md: 42 }}
             >
               Search new Handles
             </Text>
 
-            <VStack w="95%" h="full" spacing={5}>
+            <VStack w="full" h="full" spacing={5}>
               <Autocomplete key="home" />
 
               <Text

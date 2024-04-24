@@ -1,4 +1,4 @@
-import { ChevronDownIcon, CopyIcon } from '@chakra-ui/icons';
+import { CopyIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Box,
@@ -14,9 +14,8 @@ import {
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
 import type { AbstractAddress } from 'fuels';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { MdClose } from 'react-icons/md';
-import { useScreenSize } from '../../hooks/useScreenSize.ts';
 import { formatAddress } from '../../utils/formatter.ts';
 import { RoundedUserIcon } from '../helpers/roundedUserIcon.tsx';
 import { BeginnersGuide } from '../icons/beginnersGuide.tsx';
@@ -39,8 +38,6 @@ export const Info = ({
     fuel: { disconnect },
   } = useFuel();
   const { successToast } = useCustomToast();
-  const { isMobile } = useScreenSize();
-  const [hover, setHover] = useState(false);
 
   const copy = () => {
     navigator.clipboard.writeText(account.toString());
@@ -56,8 +53,8 @@ export const Info = ({
   }, []);
 
   return (
-    <Menu>
-      {({ isOpen, onClose }) => (
+    <Menu strategy="fixed">
+      {({ onClose }) => (
         <>
           <MenuButton
             as={Button}
@@ -67,34 +64,28 @@ export const Info = ({
             _hover={{}}
             _focusVisible={{}}
             _active={{}}
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
           >
             <Box
               display="flex"
               gap={3}
+              pl={2}
               alignItems="center"
               justifyContent="flex-end"
-              w={['14rem', '15.5rem']}
+              w={['13.5rem', '15.5rem']}
               border="1px solid"
               borderColor="stroke.500"
               borderRadius="xl"
               color="white"
             >
-              {(hover || isOpen) && !isMobile ? (
-                <ChevronDownIcon
-                  position="relative"
-                  className={`rotate-base ${isOpen ? undefined : 'rotate-div'}`}
-                />
-              ) : null}
-
-              {name}
+              <Text maxW="min-content" isTruncated>
+                {name}
+              </Text>
               {icon}
             </Box>
           </MenuButton>
           <MenuList
             background="background.900"
-            maxW={['350px', '400px']}
+            maxW={['20rem', '400px']}
             w="auto"
             display="flex"
             p={2}

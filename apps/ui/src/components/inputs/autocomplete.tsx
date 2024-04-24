@@ -1,3 +1,4 @@
+import { isValidDomain } from '@bako-id/sdk';
 import { SearchIcon, SmallCloseIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -19,8 +20,18 @@ export const Autocomplete = () => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value.substring(0));
-    handleChangeDomain(e);
+    const inputValue = e.target.value.toLowerCase();
+
+    if (inputValue.length > 0) {
+      const valid = isValidDomain(inputValue);
+
+      if (!valid) return;
+
+      setInputValue(inputValue);
+      handleChangeDomain(e);
+    } else {
+      setInputValue('');
+    }
   };
 
   const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,6 +52,7 @@ export const Autocomplete = () => {
             color="white"
             fontWeight="semibold"
             h={12}
+            fontSize={['xs', 'md']}
             placeholder="Search for an available Handles"
             textColor="text.700"
             background="input.900"

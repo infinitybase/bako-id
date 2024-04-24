@@ -6,11 +6,11 @@ import {
   Icon,
   Image,
   Skeleton,
+  useMediaQuery,
 } from '@chakra-ui/react';
 import { useIsConnected } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useFuelConnect } from '../../hooks';
-import { useScreenSize } from '../../hooks/useScreenSize';
 import { formatAddress } from '../../utils/formatter';
 import { Connect } from '../helpers';
 import { FileIcon } from '../icons/fileIcon';
@@ -19,8 +19,8 @@ import { Info } from '../user';
 
 export const Header = () => {
   const { wallet } = useFuelConnect();
-  const { isFetching } = useIsConnected();
-  const { isMobile } = useScreenSize();
+  const { isFetching, isSuccess } = useIsConnected();
+  const [isMobile] = useMediaQuery('(max-width: 48em)');
   const navigate = useNavigate();
 
   const account = () => {
@@ -43,6 +43,8 @@ export const Header = () => {
       );
   };
 
+  console.log(isSuccess);
+
   const goHome = () => {
     navigate({ to: '/' }).then();
   };
@@ -60,17 +62,17 @@ export const Header = () => {
       className="transition-all-05"
     >
       <Image
-        src="/bakoID-logo.svg"
+        src={isMobile ? '/logo.svg' : '/bakoID-logo.svg'}
         cursor="pointer"
         onClick={goHome}
-        width={190}
-        height={75}
+        width={['5rem', 190]}
+        height={['4rem', 75]}
         alt="Bako logo"
       />
 
       <Flex w="fit-content" align="center" justify="flex-end" gap={2}>
         <Flex w="full" gap={2}>
-          {!isMobile && (
+          {!isMobile && wallet !== null && (
             <Button
               w="fit-content"
               bgColor="transparent"
