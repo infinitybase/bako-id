@@ -12,6 +12,7 @@ use asset::{
     mint::{ _mint },
     metadata::*,
 };
+use libraries::{ validations::assert_name_validity };
 
 // TODO: Remove this abi when fix issue in fuels-ts with String decoder 
 // Rewrite the `SRC20` ABI, remove `Option<String>` and use `String`.
@@ -60,6 +61,7 @@ pub fn _decimals() -> u8 {
 // Get image of asset
 #[storage(read)]
 pub fn _image_url(metadatas: StorageKey<StorageMetadata>, name: String) -> String {
+    let name = assert_name_validity(name);
     let image_url_metadata = metadatas.get(
         _asset_id(name), 
         String::from_ascii_str("image_url"),
@@ -86,7 +88,7 @@ pub fn _mint_bako_nft(
         String::from_ascii_str("image_url"), 
         Metadata::String(
             concat_string(
-                String::from_ascii_str("http://localhost:3002/"),
+                String::from_ascii_str("https://assets.bako.id/"),
                 name
             )
         )

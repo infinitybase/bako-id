@@ -1,10 +1,4 @@
-import {
-  Provider,
-  RequireRevertError,
-  TransactionStatus,
-  type WalletUnlocked,
-  hash,
-} from 'fuels';
+import { Provider, TransactionStatus, type WalletUnlocked, hash } from 'fuels';
 import {
   WALLET_PRIVATE_KEYS,
   createWallet,
@@ -37,7 +31,7 @@ describe('Test Storage Contract', () => {
         .call();
     } catch (e) {
       expectRequireRevertError(e);
-      expect(e.cause.logs[0].Unauthorized).toBeDefined();
+      expect(e.metadata.logs[0].Unauthorized).toBeDefined();
     }
   });
 
@@ -56,7 +50,7 @@ describe('Test Storage Contract', () => {
         .call();
     } catch (e) {
       expectRequireRevertError(e);
-      expect(e.cause.logs[0].Unauthorized).toBeDefined();
+      expect(e.metadata.logs[0].Unauthorized).toBeDefined();
     }
   });
 

@@ -1,4 +1,12 @@
 [[package]]
+name = "asset"
+source = "git+https://github.com/FuelLabs/sway-libs?tag=v0.18.0#8d196e9379463d4596ac582a20a84ed52ff58c69"
+dependencies = [
+    "src7",
+    "std",
+]
+
+[[package]]
 name = "core"
 source = "path+from-root-566CA1D5F8BEAFBF"
 
@@ -11,7 +19,11 @@ dependencies = ["std"]
 name = "registry-contract"
 source = "member"
 dependencies = [
+    "asset",
     "libraries",
+    "src20",
+    "src3",
+    "src7",
     "std",
 ]
 
@@ -22,6 +34,21 @@ dependencies = [
     "libraries",
     "std",
 ]
+
+[[package]]
+name = "src20"
+source = "git+https://github.com/FuelLabs/sway-standards?tag=v0.3.3#4198b4b07449ad16104cc8a0501f3013670fdcfd"
+dependencies = ["std"]
+
+[[package]]
+name = "src3"
+source = "git+https://github.com/FuelLabs/sway-standards?tag=v0.3.3#4198b4b07449ad16104cc8a0501f3013670fdcfd"
+dependencies = ["std"]
+
+[[package]]
+name = "src7"
+source = "git+https://github.com/FuelLabs/sway-standards?tag=v0.3.3#4198b4b07449ad16104cc8a0501f3013670fdcfd"
+dependencies = ["std"]
 
 [[package]]
 name = "std"

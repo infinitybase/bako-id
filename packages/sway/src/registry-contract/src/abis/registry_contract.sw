@@ -31,7 +31,7 @@ abi RegistryContract {
 }
 
 #[storage(read), payable]
-pub fn _register(name: String, resolver: b256, bako_id: ContractId) {
+pub fn _register(name: String, resolver: b256, bako_id: ContractId) -> String {
     require(
         msg_asset_id() == BASE_ASSET_ID,
         RegistryContractError::IncorrectAssetId,
@@ -57,6 +57,8 @@ pub fn _register(name: String, resolver: b256, bako_id: ContractId) {
     if (storage.reverse_get(resolver).is_empty()) {
         storage.reverse_set(resolver, name);
     }
+
+    return name;
 }
 
 pub fn domain_price(domain: String, period: u64) -> u64 {

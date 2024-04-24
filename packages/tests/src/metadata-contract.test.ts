@@ -57,7 +57,7 @@ describe('Metadata contract', () => {
         .call();
     } catch (error) {
       expectRequireRevertError(error);
-      expectContainLogError(error.cause.logs, 'StorageNotInitialized');
+      expectContainLogError(error, 'StorageNotInitialized');
     }
   });
 
@@ -99,7 +99,7 @@ describe('Metadata contract', () => {
         .call();
     } catch (error) {
       expectRequireRevertError(error);
-      expectContainLogError(error.cause.logs, 'InvalidPermission');
+      expectContainLogError(error, 'InvalidPermission');
     }
   });
 
