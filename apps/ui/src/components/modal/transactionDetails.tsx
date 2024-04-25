@@ -21,17 +21,42 @@ export const TransactionDomainDetailsModal = ({
     <Dialog.Modal
       motionPreset="slideInBottom"
       modalTitle={modalTitle}
+      size="lg"
       isOpen={isOpen}
       onClose={onClose}
     >
       <Dialog.Body>
-        <VStack spacing={4}>
-          <TextInput leftAddon leftAddonName="handle" value={domain} />
-          <TextInput leftAddon leftAddonName="action" value="Registration" />
-          <TextInput leftAddon leftAddonName="duration" value={'1 year'} />
-          <TextInput leftAddon leftAddonName="cost" value={cost.toString()} />
+        <VStack spacing={2}>
+          <TextInput
+            textColor="grey.100"
+            leftAddon
+            leftAddonName="handles"
+            value={domain}
+          />
+          <TextInput
+            textColor="grey.100"
+            leftAddon
+            leftAddonName="action"
+            value="Registration"
+          />
+          <TextInput
+            textColor="grey.100"
+            leftAddon
+            leftAddonName="duration"
+            value={'1 year'}
+          />
+          <TextInput
+            textColor="grey.100"
+            leftAddon
+            leftAddonName="cost"
+            value={`${cost.toString()} ETH`}
+          />
         </VStack>
       </Dialog.Body>
+
+      <Dialog.SecondaryAction onClick={onClose} mt={5}>
+        Done
+      </Dialog.SecondaryAction>
     </Dialog.Modal>
   );
 };

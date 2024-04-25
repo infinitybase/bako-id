@@ -49,10 +49,9 @@ const TextInput = (props: CustomInputProps) => {
             borderColor="stroke.500"
             borderRight="none"
             alignItems="center"
-            justifyContent="center"
+            justifyContent="flex-start"
             fontSize="sm"
-            w={leftAddonWidth ?? '15%'}
-            px={8}
+            w={leftAddonWidth ?? 'min-content'}
             color={leftAddonColor ?? 'section.500'}
             borderLeftRadius="xl"
           >
