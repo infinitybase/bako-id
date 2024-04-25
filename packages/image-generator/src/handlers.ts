@@ -40,7 +40,7 @@ async function handleJson(domain: string) {
     },
     body: JSON.stringify({
       name: domain,
-      image: `https://images.fuel.domains/${domain}`,
+      image: `https://assets.bako.id/${domain}`,
       attributes: [],
     }),
   };
