@@ -21,6 +21,9 @@ type TokenInfo = {
  *
  * @param {string} handle - The handle of the token.
  * @param {ProviderParams} params - The provider parameters.
+ * @example
+ * const token = await tokenInfo('domain');
+ * console.log(token.image); // https://assets.bako.id/domain
  *
  * @return {Promise<TokenInfo|undefined>} - The token information.
  */
