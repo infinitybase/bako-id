@@ -1,9 +1,10 @@
-import { BaseAssetId, bufferFromString, sha256 } from 'fuels';
+import { BaseAssetId, sha256 } from 'fuels';
 import { config } from '../config';
 import { getRegistryContract } from '../setup';
 import {
   type ProviderParams,
   assertValidDomain,
+  domainToBytes,
   getProviderFromParams,
 } from '../utils';
 
@@ -23,7 +24,7 @@ type TokenInfo = {
  *
  * @return {Promise<TokenInfo|undefined>} - The token information.
  */
-export async function tokenInfo(handle: string, params: ProviderParams) {
+export async function tokenInfo(handle: string, params?: ProviderParams) {
   const handleName = assertValidDomain(handle);
   const provider = await getProviderFromParams(params);
 
@@ -51,7 +52,7 @@ export async function tokenInfo(handle: string, params: ProviderParams) {
     name: tokenName,
     image: tokenImage,
     symbol: tokenSymbol,
-    subId: sha256(bufferFromString(handleName)),
+    subId: sha256(domainToBytes(handleName)),
     contractId: config.REGISTRY_CONTRACT_ID,
   } as TokenInfo;
 }

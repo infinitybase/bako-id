@@ -1,5 +1,10 @@
 import { bn } from 'fuels';
-import { assertValidDomain, domainPrices, isValidDomain } from './domain';
+import {
+  assertValidDomain,
+  domainPrices,
+  domainToBytes,
+  isValidDomain,
+} from './domain';
 import { InvalidDomainError } from './errors';
 
 describe('Domain utils', () => {
@@ -38,5 +43,15 @@ describe('Domain utils', () => {
     expect(threeChars.eq(bn.parseUnits('0.005'))).toBeTruthy();
     expect(fourChars.eq(bn.parseUnits('0.001'))).toBeTruthy();
     expect(fiveChars.eq(bn.parseUnits('0.0002'))).toBeTruthy();
+  });
+
+  test('Domain to bytes', () => {
+    const domain = 'domain';
+    const domainInBytes = [100, 111, 109, 97, 105, 110];
+
+    const domainBytes = domainToBytes(domain);
+    const expectedBytes = Uint8Array.from(domainInBytes);
+
+    expect(domainBytes).toEqual(expectedBytes);
   });
 });
