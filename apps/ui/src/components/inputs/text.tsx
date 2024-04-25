@@ -66,7 +66,7 @@ const TextInput = (props: CustomInputProps) => {
           h={inputHeight ?? 10}
           border="1px solid"
           borderColor="stroke.500"
-          borderLeftColor="transparent"
+          borderLeftColor={leftAddon ? 'transparent' : 'stroke.500'}
           borderRightColor={rightAddon ? 'transparent' : 'stroke.500'}
           borderRadius="xl"
           backgroundColor="input.600"
