@@ -14,25 +14,25 @@ provider instance or a account instance.
 import { resolver } from '@bako-id/sdk';
 import { Provider, Wallet } from 'fuels';
 
+// Get domain resolver with default provider
+const domain = await resolver('@bako_user');
+
 const providerURL = 'https://beta-5.fuel.network/graphql';
 
 // Get domain resolver with Provider URL
-const domain = await resolver({
-  domain: '@bako_user',
+const domain = await resolver('@bako_user', {
   providerURL,
 });
 
 // Get domain resolver by Provider instance
 const provider = await Provider.create('https://beta-5.fuel.network/graphql');
-const domain = await resolver({
-  domain: '@bako_user',
+const domain = await resolver('@bako_user', {
   provider,
 });
 
 // Or by Account instance
 const account = Wallet.fromPrivateKey('<PRIVATE KEY>');
-const domain = await resolver({
-  domain: '@bako_user',
+const domain = await resolver('@bako_user', {
   account,
 });
 ```
@@ -43,29 +43,29 @@ as primary to the resolver. In this method, as with `resolver()`, you can search
 through its instance, or from a wallet.
 
 ```ts
-import { reverseResolver } from '@bako-id/sdk';
+import { resolverName } from '@bako-id/sdk';
 import { Provider, Wallet } from 'fuels';
 
 const providerURL = 'https://beta-5.fuel.network/graphql';
 const account = Wallet.fromPrivateKey('<PRIVATE KEY>');
 const resolver = account.address.toB256();
 
+// Get name resolver with default provider
+const domain = await resolverName(resolver);
+
 // Get name with Provider URL
-const name = await reverseResolver({
-  resolver,
+const name = await resolverName(resolver, {
   providerURL,
 });
 
 // Get name by Provider instance
 const provider = await Provider.create('https://beta-5.fuel.network/graphql');
-const name = await reverseResolver({
-  resolver,
+const name = await resolverName(resolver, {
   provider,
 });
 
 // Or by Account instance
-const name = await reverseResolver({
-  resolver,
+const name = await resolverName(resolver, {
   account,
 });
 ```
