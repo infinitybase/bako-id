@@ -1,7 +1,9 @@
 import { Icon } from '@chakra-ui/icons';
 import { BsFillCheckCircleFill } from 'react-icons/bs';
-import { MdOutlineError } from 'react-icons/md';
 
+import { ErrorIcon } from '../..';
+import { InfoIcon } from '../../icons/infoIcon';
+import { WarningIcon } from '../../icons/warningIcon';
 import { useToastOptions } from './useToastOptions';
 interface ToastParams {
   description?: string;
@@ -21,6 +23,17 @@ const useCustomToast = () => {
       icon: <Icon fontSize="xl" color="brand.500" as={BsFillCheckCircleFill} />,
     });
 
+  const infoToast = ({ description, title }: ToastParams) => {
+    toast({
+      status: 'info',
+      duration: 4000,
+      isClosable: false,
+      title: title ?? 'Info!',
+      description: description ?? '',
+      icon: <Icon fontSize="2xl" color="info.500" as={InfoIcon} />,
+    });
+  };
+
   const warningToast = ({ description, title }: ToastParams) => {
     toast({
       status: 'warning',
@@ -28,7 +41,7 @@ const useCustomToast = () => {
       isClosable: false,
       title: title ?? 'Warning!',
       description: description ?? '',
-      icon: <Icon fontSize="2xl" color="warning.500" as={MdOutlineError} />,
+      icon: <Icon fontSize="2xl" color="warning.500" as={WarningIcon} />,
     });
   };
 
@@ -40,7 +53,9 @@ const useCustomToast = () => {
       title: title ?? 'Error!',
       description:
         description ?? 'Check the provided data and try again, please...',
-      icon: <Icon fontSize="2xl" color="error.600" as={MdOutlineError} />,
+      icon: (
+        <Icon fontSize="2xl" color="error.600" w={5} h={5} as={ErrorIcon} />
+      ),
     });
   };
 
@@ -56,6 +71,7 @@ const useCustomToast = () => {
     errorToast,
     createAndUpdateSuccessToast,
     warningToast,
+    infoToast,
   };
 };
 
