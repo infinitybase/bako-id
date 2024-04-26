@@ -44,7 +44,7 @@ export type ContractIdOutput = ContractIdInput;
 export type RawBytesInput = { ptr: BigNumberish, cap: BigNumberish };
 export type RawBytesOutput = { ptr: BN, cap: BN };
 
-interface RegistryContractAbiInterface extends Interface {
+export interface RegistryContractAbiInterface extends Interface {
   functions: {
     constructor: FunctionFragment;
     register: FunctionFragment;
