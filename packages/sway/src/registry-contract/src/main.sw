@@ -1,12 +1,12 @@
 contract;
 
-mod interface;
+mod abis;
 
-use ::interface::{FuelDomainsContract};
+use abis::{
+    nft_contract::*,
+    registry_contract::*,
+};
 use libraries::{
-    abis::{StorageContract},
-    structures::{FuelDomain},
-    validations::{assert_name_validity},
     permissions::{
         Permission,
         OWNER,
@@ -15,30 +15,30 @@ use libraries::{
         get_permission,
     },
 };
+use asset::{ 
+    base::{
+        _total_assets,
+        _total_supply,
+    },
+    metadata::*,
+};
 use std::{
-    hash::{Hash, sha256},
+    hash::*,
     string::String,
     contract_id::ContractId,
-    constants::BASE_ASSET_ID,
-    intrinsics::{ size_of, size_of_val },
-    call_frames::{ msg_asset_id },
-    context::msg_amount,
+    storage::storage_map::*,
 };
-use std::storage::storage_bytes::*;
-use std::bytes::Bytes;
-use std::constants::{ZERO_B256};
-
-enum RegistryContractError {
-    StorageNotInitialized: (),
-    AlreadyInitialized: (),
-    DomainNotAvailable: (),
-    IncorrectAssetId: (),
-    InvalidAmount: (),
-}
+use src7::{ Metadata };
 
 storage {
+    // Flow control
     storage_id: Option<ContractId> = Option::None,
     initialized: bool = false,
+
+    // NFT
+    total_assets: u64 = 0,
+    total_supply: StorageMap<AssetId, u64> = StorageMap {},
+    metadata: StorageMetadata = StorageMetadata {},
 }
 
 #[storage(read)]
@@ -48,20 +48,7 @@ fn get_storage_id() -> ContractId {
     storage_id.unwrap()
 }
 
-fn get_domain_price(domain: String, period: u64) -> u64 {
-    let domain_len = domain.as_bytes().len;
-    let mut amount = match domain_len {
-        3 => 5_000,
-        4 => 1_000,
-        _ => 200,
-    };
-
-    amount = amount * 1000;
-
-    return amount * period;
-}
-
-impl FuelDomainsContract for Contract {
+impl RegistryContract for Contract {
     #[storage(read, write)]
     fn constructor(owner: Address, storage_id: ContractId) {
         // Check storage already intialized
@@ -74,58 +61,58 @@ impl FuelDomainsContract for Contract {
         storage.storage_id.write(Option::Some(storage_id));
     }
 
-    #[storage(read), payable]
-    fn register(name: String, resolver: b256) {
-        let asset_id = msg_asset_id();
-        let message_amount = msg_amount();
-        require(
-            asset_id == BASE_ASSET_ID,
-            RegistryContractError::IncorrectAssetId,
+    #[storage(read, write), payable]
+    fn register(name: String, resolver: b256) -> AssetId {
+        // TODO: Add reantry guard
+        let name = _register(
+            name, 
+            resolver, 
+            get_storage_id()
         );
+        return _mint_bako_nft(
+            storage.total_assets,
+            storage.total_supply,
+            storage.metadata,
+            name,
+        );
+    }
+}
 
-        let name = assert_name_validity(name);
-
-        let storage_id = get_storage_id();
-        let domain_hash = sha256(name);
-
-        // Check domain is available
-        let storage = abi(StorageContract, storage_id.into());
-
-        let domain_available = storage.get(domain_hash).is_none();
-        require(domain_available, RegistryContractError::DomainNotAvailable);
-
-        // TODO: change to receive the period, the default now is 1 year
-        let domain_price = get_domain_price(name, 1);
-        require(message_amount == domain_price, RegistryContractError::InvalidAmount);
-
-        let owner = msg_sender().unwrap().as_address().unwrap().value;
-        let domain = FuelDomain::new(owner, resolver);
-        storage.set(domain_hash, domain.to_bytes());
-        
-        if (storage.reverse_get(resolver).is_empty()) {
-            storage.reverse_set(resolver, name);
-        }
+impl SRC20 for Contract {
+    #[storage(read)]
+    fn total_assets() -> u64 {
+        _total_assets(storage.total_assets)
     }
 
     #[storage(read)]
-    fn resolver(name: String) -> Option<FuelDomain> {
-        let storage_id = get_storage_id();
-        let domain_hash = sha256(name);
-        let storage = abi(StorageContract, storage_id.into());
-        let bytes_domain = storage.get(domain_hash);
-
-        match bytes_domain {
-            Some(bytes_domain) => {
-                return Some(FuelDomain::from_bytes(bytes_domain));
-            },
-            _ => None,
-        }
+    fn total_supply(asset: AssetId) -> Option<u64> {
+        _total_supply(storage.total_supply, asset)
     }
 
     #[storage(read)]
-    fn reverse_name(resolver: b256) -> String {
-        let storage_id = get_storage_id();
-        let storage = abi(StorageContract, storage_id.into());
-        return storage.reverse_get(resolver);
+    fn name(asset: AssetId) -> String {
+        _name()
+    }
+
+    #[storage(read)]
+    fn symbol(asset: AssetId) -> String {
+        _symbol()
+    }
+
+    #[storage(read)]
+    fn decimals(asset: AssetId) -> Option<u8> {
+        Some(_decimals())
+    }
+}
+
+impl SRC7 for Contract {
+    #[storage(read)]
+    fn metadata(asset: AssetId, key: String) -> Option<Metadata> {
+        storage.metadata.get(asset, key)
+    }
+
+    #[storage(read)]
+    fn image_url(name: String) -> String {
+        _image_url(storage.metadata, name)
     }
 }

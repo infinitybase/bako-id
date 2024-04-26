@@ -4,6 +4,8 @@ import {
   MetadataContractAbi__factory,
   type RegistryContractAbi,
   RegistryContractAbi__factory,
+  type ResolverContractAbi,
+  ResolverContractAbi__factory,
   type StorageContractAbi,
   StorageContractAbi__factory,
   TestContractAbi__factory,
@@ -11,11 +13,13 @@ import {
 import {
   metadataContract,
   registryContract,
+  resolverContract,
   storageContract,
   testContract,
 } from '../types/contract-ids.json';
 import metadataHex from '../types/contracts/MetadataContractAbi.hex';
 import registryHex from '../types/contracts/RegistryContractAbi.hex';
+import resolverHex from '../types/contracts/ResolverContractAbi.hex';
 import storageHex from '../types/contracts/StorageContractAbi.hex';
 import { domainPrices, txParams } from './index';
 
@@ -43,6 +47,16 @@ const initializeRegistry =
 
 const initializeMetadata =
   (storageId: string, contractAbi: MetadataContractAbi) => async () => {
+    const { transactionResult: txRegistry } = await contractAbi.functions
+      .constructor({ value: storageId })
+      .txParams(txParams)
+      .call();
+
+    return { txRegistry };
+  };
+
+const initializeResolver =
+  (storageId: string, contractAbi: ResolverContractAbi) => async () => {
     const { transactionResult: txRegistry } = await contractAbi.functions
       .constructor({ value: storageId })
       .txParams(txParams)
@@ -82,6 +96,10 @@ export async function setupContractsAndDeploy(wallet: WalletUnlocked) {
     metadataHex,
     wallet
   );
+  const resolver = await ResolverContractAbi__factory.deployContract(
+    resolverHex,
+    wallet
+  );
 
   const connect = (wallet: WalletUnlocked) =>
     StorageContractAbi__factory.connect(storage.id, wallet);
@@ -106,6 +124,9 @@ export async function setupContractsAndDeploy(wallet: WalletUnlocked) {
     metadata: Object.assign(metadata, {
       initializeMetadata: initializeMetadata(storage.id.toB256(), metadata),
     }),
+    resolver: Object.assign(resolver, {
+      initializeResolver: initializeResolver(storage.id.toB256(), resolver),
+    }),
   };
 }
 
@@ -117,6 +138,10 @@ export async function setupContracts(wallet: WalletUnlocked) {
   );
   const metadata = MetadataContractAbi__factory.connect(
     metadataContract,
+    wallet
+  );
+  const resolver = ResolverContractAbi__factory.connect(
+    resolverContract,
     wallet
   );
   const testCaller = TestContractAbi__factory.connect(testContract, wallet);
@@ -137,6 +162,9 @@ export async function setupContracts(wallet: WalletUnlocked) {
         registry
       ),
       register: register(registry, storage),
+    }),
+    resolver: Object.assign(resolver, {
+      initializeResolver: initializeResolver(storage.id.toB256(), resolver),
     }),
     metadata,
     testCaller,

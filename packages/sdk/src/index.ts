@@ -1,8 +1,9 @@
-export { Domain, ResolverReturn } from './types';
 export {
+  owner,
   resolver,
   register,
-  reverseResolver,
+  tokenInfo,
+  resolverName,
   simulateHandleCost,
   Metadata,
   UserMetadataContract,

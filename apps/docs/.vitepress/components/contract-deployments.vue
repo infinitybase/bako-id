@@ -26,9 +26,9 @@ const infos = {
   storage: {
     title: 'Storage Contract',
     abiUrl:
-      'https://github.com/infinitybase/bako-id/blob/d664075ed2b1f98d0c056ecb23557b27a4367e0a/packages/sway/src/libraries/src/abis.sw#L5-L26',
+      'https://github.com/infinitybase/bako-id/blob/03b9a9367deae4f164322ec2d883f2c258fda9b0/packages/sway/src/libraries/src/abis.sw#L9-L36',
     contractId: shorAddress(
-      '0xa28d0490692cd32bf2088f327b05c2b7c82442e8a4ac257c2ca3bf2e3eda8779',
+      '0xfd20cda9d9f4c68d41f5342f4f030d22cc47eb2076a917b5434ba41225dc3c62',
     ),
     explorerUrl: makeExplorerLink(
       '0xf9444a1a12114f944d6a673c9fcc98ab7c16b76ea371d4c52a3e314063f8cccf',
@@ -37,9 +37,9 @@ const infos = {
   register: {
     title: 'Registry Contract',
     abiUrl:
-      'https://github.com/infinitybase/bako-id/blob/d664075ed2b1f98d0c056ecb23557b27a4367e0a/packages/sway/src/registry-contract/src/interface.sw#L11-L20',
+      'https://github.com/infinitybase/bako-id/blob/03b9a9367deae4f164322ec2d883f2c258fda9b0/packages/sway/src/registry-contract/src/abis/registry_contract.sw#L25-L31',
     contractId: shorAddress(
-      '0xdbde82e4cbe560ccaa268b6e3de81951ee2a5e0c185dc58763e35c84e863f51b',
+      '0x5fe67d902603cc5e1212c266c5005dd89e914e351fcda85c28004ff6e9172b85',
     ),
     explorerUrl: makeExplorerLink(
       '0x17451bc0d362346968aa204ae892ee9d3ae8c37883b2c04df8768189f0620a4d',

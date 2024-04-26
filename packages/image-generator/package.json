@@ -1,0 +1,20 @@
+{
+  "name": "@bako-id/image-generator",
+  "license": "Appache-2.0",
+  "scripts": {
+    "dev": "sls offline",
+    "install:prod": "rm -rf ./node_modules && npm install --force",
+    "deploy:prod": "pnpm install:prod && sls deploy --stage production"
+  },
+  "dependencies": {
+    "@resvg/resvg-js-linux-x64-gnu": "^2.6.0",
+    "@types/aws-lambda": "^8.10.133",
+    "svg2img": "1.0.0-beta.2"
+  },
+  "devDependencies": {
+    "@types/node": "^16.0.0",
+    "serverless": "^3.38.0",
+    "serverless-offline": "^13.3.3",
+    "serverless-plugin-typescript": "^2.1.5"
+  }
+}

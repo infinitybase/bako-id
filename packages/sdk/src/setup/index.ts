@@ -10,6 +10,7 @@ export interface ContractConfig {
   storageId: string;
   registryId?: string;
   metadataId?: string;
+  resolverId?: string;
   account?: Account;
   provider?: Provider;
 }
@@ -34,6 +35,9 @@ const connectContracts = (config: ContractConfig) => {
     registry,
     metadata: config.metadataId
       ? MetadataContractAbi__factory.connect(config.metadataId, config.account)
+      : null,
+    resolver: config.resolverId
+      ? MetadataContractAbi__factory.connect(config.resolverId, config.account)
       : null,
   };
 };

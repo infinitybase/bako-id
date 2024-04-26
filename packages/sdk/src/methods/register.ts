@@ -1,4 +1,4 @@
-import { BaseAssetId, type Account } from 'fuels';
+import { type Account, BaseAssetId } from 'fuels';
 import { config } from '../config';
 import { getRegistryContract } from '../setup';
 import {
@@ -65,20 +65,26 @@ export async function register(params: RegisterDomainParams) {
   const txParams = getTxParams(account.provider);
   const amount = await checkAccountBalance(account, domainName);
 
-  const { transactionResult, transactionResponse, gasUsed, transactionId } =
-    await registry.functions
-      .register(domainName, resolver)
-      .callParams({
-        forward: { amount, assetId: BaseAssetId },
-      })
-      .txParams(txParams)
-      .call();
+  const {
+    transactionResult,
+    transactionResponse,
+    gasUsed,
+    transactionId,
+    value,
+  } = await registry.functions
+    .register(domainName, resolver)
+    .callParams({
+      forward: { amount, assetId: BaseAssetId },
+    })
+    .txParams(txParams)
+    .call();
 
   return {
     gasUsed,
     transactionId,
     transactionResult,
     transactionResponse,
+    assetId: value.value,
   };
 }
 
@@ -118,11 +124,11 @@ export async function simulateHandleCost(params: RegisterDomainParams) {
     .txParams(txParams)
     .getTransactionRequest();
 
-  const { usedFee, minFee } =
+  const { gasUsed, minFee } =
     await account.provider.getTransactionCost(transactionRequest);
 
   return {
-    fee: usedFee.add(minFee),
+    fee: gasUsed.add(minFee),
     transactionRequest,
   };
 }

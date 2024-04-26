@@ -63,12 +63,15 @@ describe('Test Registry', () => {
 
     expect(result.transactionResult.status).toBe('success');
 
-    const resolvedDomain = await resolver(domain, {
+    const resolverAddress = await resolver(domain, {
       provider,
     });
+    expect(resolverAddress).toBe(wallet.address.toB256());
 
-    expect(resolvedDomain?.owner).toBe(wallet.address.toB256());
-    expect(resolvedDomain?.resolver).toBe(wallet.address.toB256());
+    const ownerAddress = await resolver(domain, {
+      provider,
+    });
+    expect(ownerAddress).toBe(wallet.address.toB256());
   });
 
   it('should error when register domain without balance', async () => {
