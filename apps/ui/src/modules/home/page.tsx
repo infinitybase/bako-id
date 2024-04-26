@@ -48,7 +48,7 @@ export const Home = () => {
             justify="space-around"
           >
             <Button p={6} variant="primary">
-              <Icon as={FarcasterIcon} />
+              <Icon as={FarcasterIcon} w={4} h={4} />
               <Text ml={2}>Farcaster</Text>
             </Button>
             {/* {!isConnected && (

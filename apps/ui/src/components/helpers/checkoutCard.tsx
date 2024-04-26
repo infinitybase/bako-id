@@ -1,4 +1,4 @@
-import { Box, type BoxProps, Image, Text, VStack } from '@chakra-ui/react';
+import { Box, Image, Text, VStack, type BoxProps } from '@chakra-ui/react';
 import symbol from '../../assets/logo.svg';
 import texture from '../../assets/texture.svg';
 
@@ -9,16 +9,16 @@ interface CardProps extends BoxProps {
 export function CheckoutCard({ domain, ...props }: CardProps) {
   return (
     <Box
-      border="3px solid #FFC010"
       borderRadius="lg"
       aspectRatio={1}
-      w={['70%', '50%', '40%', '40%']}
-      p={7}
+      w={['17rem', '50%', '50%', '50%']}
+      p={9}
       justifyContent="center"
       alignItems="center"
       display="flex"
       backgroundImage={`url(${texture})`}
-      backgroundRepeat="repeat"
+      backgroundRepeat="no-repeat"
+      backgroundSize="cover"
       {...props}
     >
       <VStack
