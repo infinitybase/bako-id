@@ -1,13 +1,6 @@
-import {
-  Address,
-  Provider,
-  Wallet,
-  type WalletUnlocked,
-  bufferFromString,
-  sha256,
-} from 'fuels';
+import { Address, Provider, Wallet, type WalletUnlocked, sha256 } from 'fuels';
 import { config, register } from '../index';
-import { randomName } from '../utils';
+import { domainToBytes, randomName } from '../utils';
 import { tokenInfo } from './token';
 
 const { PROVIDER_URL, PRIVATE_KEY } = process.env;
@@ -37,12 +30,12 @@ describe('Test token', () => {
       symbol,
       contractId,
       name: tokenName,
-    } = await tokenInfo(name, { provider });
+    } = await tokenInfo(name);
 
     expect(tokenName).toBe('Bako ID');
     expect(image).toBe(`https://assets.bako.id/${name}`);
     expect(symbol).toBe('BNFT');
-    expect(subId).toBe(sha256(bufferFromString(name)));
+    expect(subId).toBe(sha256(domainToBytes(name)));
     expect(contractId).toBe(config.REGISTRY_CONTRACT_ID);
   });
 

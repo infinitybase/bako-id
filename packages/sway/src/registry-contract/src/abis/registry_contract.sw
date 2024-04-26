@@ -11,7 +11,9 @@ use std::{
 use libraries::{
     abis::{StorageContract},
     structures::{FuelDomain},
-    validations::{assert_name_validity},
+    validations::{
+        assert_name_validity,
+    },
 };
 
 pub enum RegistryContractError {
