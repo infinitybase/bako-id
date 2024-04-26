@@ -8,7 +8,7 @@ import { InvalidDomainError } from './errors';
  * @returns {boolean} - True if the domain is valid, false otherwise.
  */
 export const isValidDomain = (domain: string): boolean =>
-  /^@?[a-zA-Z0-9_]+$/.test(domain);
+  /^@?[a-z0-9_]+$/.test(domain);
 
 /**
  * Checks if a given domain is valid and throw error.

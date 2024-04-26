@@ -16,31 +16,18 @@ describe('Test Registry', () => {
     fakeWallet = await createFakeWallet(provider, wallet);
   });
 
-  it('should error when register domain with invalid character', async () => {
-    const invalidSuffix = register({
-      account: wallet,
-      resolver: wallet.address.toB256(),
-      domain: 'namenotfuel@',
-    });
+  it.each(['bako@', '#bako', 'bako name', 'bakONamE'])(
+    'should error when register domain with invalid character %s',
+    async (domain) => {
+      const invalidSuffix = register({
+        account: wallet,
+        resolver: wallet.address.toB256(),
+        domain: domain,
+      });
 
-    await expect(invalidSuffix).rejects.toBeInstanceOf(InvalidDomainError);
-
-    const invalidPreffix = register({
-      account: wallet,
-      resolver: wallet.address.toB256(),
-      domain: '#namenotfuel',
-    });
-
-    await expect(invalidPreffix).rejects.toBeInstanceOf(InvalidDomainError);
-
-    const invalidChars = register({
-      account: wallet,
-      resolver: wallet.address.toB256(),
-      domain: 'namen otfuel',
-    });
-
-    await expect(invalidChars).rejects.toBeInstanceOf(InvalidDomainError);
-  });
+      await expect(invalidSuffix).rejects.toBeInstanceOf(InvalidDomainError);
+    }
+  );
 
   it('should register domain with special characters', async () => {
     const result = await register({

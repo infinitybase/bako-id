@@ -143,36 +143,29 @@ describe('[METHODS] Registry Contract', () => {
     expect(value).toBe(primaryDomain);
   });
 
-  it('should throw a error when try register a handle with invalid chars', async () => {
-    const { registry, storage } = await setupContractsAndDeploy(wallet);
+  it.each(['@invalid-!@#%$!', 'my@asd.other', '@MYHanDLE'])(
+    'should throw a error when try register %s',
+    async (handle) => {
+      const { registry, storage } = await setupContractsAndDeploy(wallet);
 
-    await tryExecute(storage.initializeStorage());
-    await tryExecute(registry.initializeRegistry());
+      await tryExecute(registry.initializeRegistry());
+      await tryExecute(storage.initializeStorage());
 
-    const register = (name: string) =>
-      registry.register(name, wallet.address.toB256());
+      const register = (name: string) =>
+        registry.register(name, wallet.address.toB256());
 
-    const expectErrors = (error: unknown) => {
-      expectRequireRevertError(error);
-      expectContainLogError(error, 'InvalidChars');
-    };
+      const expectErrors = (error: unknown) => {
+        expectRequireRevertError(error);
+        expectContainLogError(error, 'InvalidChars');
+      };
 
-    try {
-      await register('@invalid-!@#%$!');
-    } catch (error) {
-      expectErrors(error);
+      expect.assertions(2);
+
+      try {
+        await register(handle);
+      } catch (error) {
+        expectErrors(error);
+      }
     }
-
-    try {
-      await register('my@asd.other');
-    } catch (error) {
-      expectErrors(error);
-    }
-
-    try {
-      await register('@my123');
-    } catch (error) {
-      expectErrors(error);
-    }
-  });
+  );
 });
