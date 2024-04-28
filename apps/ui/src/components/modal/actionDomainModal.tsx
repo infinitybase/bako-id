@@ -32,14 +32,24 @@ export const ActionDomainModal = ({
       onClose={onClose}
     >
       <Dialog.Body>
-        <VStack spacing={4}>
-          <TextInput leftAddon leftAddonName="action" value={action} />
-          <TextInput leftAddon leftAddonName="handle" value={domain} />
+        <VStack spacing={2}>
+          <TextInput
+            leftAddon
+            leftAddonName="action"
+            textAlign="right"
+            value={action}
+          />
+          <TextInput
+            leftAddon
+            leftAddonName="handle"
+            textAlign="right"
+            value={domain}
+          />
         </VStack>
       </Dialog.Body>
 
       {hasActions && (
-        <Dialog.Actions gap={2}>
+        <Dialog.Actions hideDivider mt={8} gap={2}>
           <Dialog.SecondaryAction onClick={onClose}>
             Cancel
           </Dialog.SecondaryAction>
