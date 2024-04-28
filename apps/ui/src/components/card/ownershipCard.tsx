@@ -1,28 +1,28 @@
 import type { Domain } from '@bako-id/sdk';
-import { CopyIcon } from '@chakra-ui/icons';
-import { Button, Flex, Heading, Icon } from '@chakra-ui/react';
+import { Flex, Heading, Icon } from '@chakra-ui/react';
 import { Card, TextInput } from '..';
-import { DoubleArrowRightIcon } from '../icons/doubleArrowRightIcon';
+import { formatAddress } from '../../utils/formatter';
+import { CopyIcon } from '../icons/copyIcon';
 import { ExploreIcon } from '../icons/explore';
-import { useSidebar } from '../sidebar/hooks/useSidebar';
 
 interface IOwnershipCard {
   domain: Domain | null;
 }
 export const OwnershipCard = ({ domain }: IOwnershipCard) => {
-  const { isMyDomain } = useSidebar();
+  // const { isMyDomain } = useSidebar();
   return (
     <Card
       w="full"
       h={['fit-content', 'fit-content', 'fit-content', 'full']}
       p={6}
       display="flex"
+      backdropFilter="blur(7px)"
       flexDirection="column"
       gap={6}
     >
       <Flex alignItems="center" justify="space-between">
         <Heading fontSize="lg">Ownership</Heading>
-        {isMyDomain && (
+        {/* {isMyDomain && (
           <Button
             variant="ghosted"
             isDisabled={!isMyDomain}
@@ -30,7 +30,7 @@ export const OwnershipCard = ({ domain }: IOwnershipCard) => {
           >
             Extend
           </Button>
-        )}
+        )} */}
       </Flex>
       <Flex
         direction="column"
@@ -39,6 +39,7 @@ export const OwnershipCard = ({ domain }: IOwnershipCard) => {
         gap={3}
       >
         <TextInput
+          textAlign="right"
           leftAddon
           leftAddonName="owner"
           rightAddon
@@ -48,11 +49,12 @@ export const OwnershipCard = ({ domain }: IOwnershipCard) => {
               `https://app.fuel.network/account/${domain?.owner}/assets`,
             )
           }
-          value={domain?.owner}
+          value={formatAddress(domain?.owner ?? '')}
         />
         <TextInput
           leftAddon
           leftAddonName="expiry"
+          textAlign="right"
           rightAddon
           rightAddonName={<Icon as={CopyIcon} />}
           value="march 31, 2024"
