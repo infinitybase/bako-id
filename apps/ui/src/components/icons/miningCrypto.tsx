@@ -1,7 +1,7 @@
 import { createIcon } from '@chakra-ui/react';
 
 export const MiningCrypto = createIcon({
-  viewBox: '0 0 130 129',
+  viewBox: '0 0 120 120',
   displayName: 'MiningCrypto',
   path: (
     <>

@@ -15,16 +15,14 @@ import {
 import { useFuel } from '@fuels/react';
 import type { AbstractAddress } from 'fuels';
 import { useMemo } from 'react';
-import { MdClose } from 'react-icons/md';
 import { formatAddress } from '../../utils/formatter.ts';
-import { RoundedUserIcon } from '../helpers/roundedUserIcon.tsx';
 import { BeginnersGuide } from '../icons/beginnersGuide.tsx';
 import { FileIcon } from '../icons/fileIcon.tsx';
 import { HowToSendCrypto } from '../icons/howToSendCrypto.tsx';
 import { LogoutIcon } from '../icons/logoutIcon.tsx';
 import { MiningCrypto } from '../icons/miningCrypto.tsx';
 import { MoreBako } from '../icons/moreBako.tsx';
-import { NotificationsIcon } from '../icons/notificationsIcon.tsx';
+import { SmallCloseIcon } from '../icons/smallCloseIcon.tsx';
 import { useCustomToast } from '../toast/index.tsx';
 
 export const Info = ({
@@ -86,7 +84,7 @@ export const Info = ({
           <MenuList
             background="background.900"
             maxW={['20rem', '400px']}
-            w="auto"
+            w="full"
             display="flex"
             p={2}
             flexDirection="column"
@@ -94,6 +92,7 @@ export const Info = ({
           >
             {/* User */}
             <MenuItem
+              p={2}
               bgColor="transparent"
               _hover={{
                 cursor: 'default',
@@ -108,7 +107,7 @@ export const Info = ({
                 justifyContent="space-between"
               >
                 <Flex gap={3}>
-                  <RoundedUserIcon width="3em" heigth="3em" />
+                  {icon}
                   <Flex display="flex" flexDirection="column" gap={1}>
                     <Text
                       display="flex"
@@ -133,11 +132,11 @@ export const Info = ({
                 <Icon
                   w={5}
                   h={5}
-                  as={MdClose}
+                  as={SmallCloseIcon}
                   onClick={() => onClose()}
                   _hover={{
                     cursor: 'pointer',
-                    opacity: 0.8,
+                    color: 'button.500',
                   }}
                 />
               </Flex>
@@ -146,6 +145,7 @@ export const Info = ({
 
             {/* My Handles */}
             <MenuItem
+              p={2}
               bgColor="transparent"
               color="grey.200"
               my={2}
@@ -163,7 +163,8 @@ export const Info = ({
             <Divider w="95%" color="grey.300" mx="auto" />
 
             {/* Notifications */}
-            <MenuItem
+            {/* <MenuItem
+              p={2}
               bgColor="transparent"
               color="grey.200"
               my={2}
@@ -178,10 +179,11 @@ export const Info = ({
               <Icon as={NotificationsIcon} />
               Notifications
             </MenuItem>
-            <Divider w="95%" color="grey.300" mx="auto" />
+            <Divider w="95%" color="grey.300" mx="auto" /> */}
 
             {/* Logout */}
             <MenuItem
+              p={2}
               bgColor="transparent"
               color="grey.200"
               my={2}
@@ -200,18 +202,19 @@ export const Info = ({
 
             <Flex
               direction="column"
-              mx={3}
+              mx={1}
               mt={3}
               alignItems="flex-start"
               gap={4}
               maxW="full"
             >
-              <Text color="grey.200" fontSize="xs">
+              <Text ml={1.5} color="grey.200" fontSize="xs">
                 More from Bako
               </Text>
               <Flex
                 w="full"
                 maxW="full"
+                gap={1}
                 overflowX="scroll"
                 onWheel={(e) => {
                   e.currentTarget.scrollLeft += e.deltaY * 0.5;
@@ -224,8 +227,8 @@ export const Info = ({
                 }}
               >
                 <Box
-                  w="130px"
-                  h="130px"
+                  w="125px"
+                  h="125px"
                   rounded="xl"
                   _hover={{
                     cursor: 'pointer',
@@ -237,8 +240,8 @@ export const Info = ({
                   as={MoreBako}
                 />
                 <Box
-                  w="130px"
-                  h="130px"
+                  w="125px"
+                  h="125px"
                   rounded="xl"
                   _hover={{
                     cursor: 'pointer',
@@ -247,8 +250,8 @@ export const Info = ({
                   as={BeginnersGuide}
                 />
                 <Box
-                  w="130px"
-                  h="130px"
+                  w="125px"
+                  h="125px"
                   rounded="xl"
                   _hover={{
                     cursor: 'pointer',
@@ -257,8 +260,8 @@ export const Info = ({
                   as={MiningCrypto}
                 />
                 <Box
-                  w="130px"
-                  h="130px"
+                  w="125px"
+                  h="125px"
                   rounded="xl"
                   _hover={{
                     cursor: 'pointer',
