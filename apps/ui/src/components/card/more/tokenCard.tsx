@@ -90,7 +90,7 @@ export const TokenCard = () => {
           <Divider color="stroke.500" border="1px solid" w="full" my={[3, 8]} />
           <Flex w="full" justify="center" direction={['column', 'row']} gap={4}>
             <TextInput
-              w={['full', '72%']}
+              w={['full', '75%']}
               leftAddon
               leftAddonName="wrapper"
               value="wrapped, emancipated"
