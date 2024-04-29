@@ -15,9 +15,6 @@ import {
 import { useFuel } from '@fuels/react';
 import type { AbstractAddress } from 'fuels';
 import { useMemo } from 'react';
-import { formatAddress } from '../../utils/formatter.ts';
-import { MdClose } from 'react-icons/md';
-import { RoundedUserIcon } from '../helpers/roundedUserIcon.tsx';
 import { BeginnersGuide } from '../icons/beginnersGuide.tsx';
 import { FileIcon } from '../icons/fileIcon.tsx';
 import { HowToSendCrypto } from '../icons/howToSendCrypto.tsx';

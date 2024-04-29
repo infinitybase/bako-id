@@ -1,13 +1,10 @@
 import type { Domain } from '@bako-id/sdk';
+import { Flex, Heading, Icon } from '@chakra-ui/react';
+import { Address } from 'fuels';
 import { Card, TextInput } from '..';
 import { formatAddress } from '../../utils/formatter';
 import { CopyIcon } from '../icons/copyIcon';
 import { FuelIcon } from '../icons/fuelIcon';
-import { PlusSquareIcon } from '@chakra-ui/icons';
-import { Button, Flex, Heading, Icon } from '@chakra-ui/react';
-import { Address } from 'fuels';
-import { ExploreIcon } from '../icons/explore';
-import { useSidebar } from '../sidebar/hooks/useSidebar';
 
 interface IAddressesCard {
   domain: Domain | null;
