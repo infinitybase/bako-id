@@ -16,7 +16,6 @@ import { useFuel } from '@fuels/react';
 import type { AbstractAddress } from 'fuels';
 import { useMemo } from 'react';
 import { MdClose } from 'react-icons/md';
-import { formatAddress } from '../../utils/formatter.ts';
 import { RoundedUserIcon } from '../helpers/roundedUserIcon.tsx';
 import { BeginnersGuide } from '../icons/beginnersGuide.tsx';
 import { FileIcon } from '../icons/fileIcon.tsx';
@@ -71,13 +70,13 @@ export const Info = ({
               pl={2}
               alignItems="center"
               justifyContent="flex-end"
-              w={['13.5rem', '15.5rem']}
+              w={['12.5rem', '13.5rem']}
               border="1px solid"
               borderColor="stroke.500"
               borderRadius="xl"
               color="white"
             >
-              <Text maxW="min-content" isTruncated>
+              <Text maxW="full" isTruncated>
                 {name}
               </Text>
               {icon}
@@ -116,7 +115,7 @@ export const Info = ({
                       gap={4}
                       fontWeight="bold"
                     >
-                      {formatAddress(account.toString())}
+                      {name}
                       <CopyIcon
                         onClick={copy}
                         _hover={{
