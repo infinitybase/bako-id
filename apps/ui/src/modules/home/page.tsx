@@ -9,10 +9,12 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useNavigate } from '@tanstack/react-router';
 import { FarcasterIcon } from '../../components/icons/farcaster';
 import { Autocomplete } from '../../components/inputs/autocomplete';
 
 export const Home = () => {
+  const navigate = useNavigate();
   return (
     <Center w="full" h="full" alignItems="center" zIndex={10}>
       <Card
@@ -96,9 +98,7 @@ export const Home = () => {
                 color="grey.100"
                 cursor="pointer"
                 _hover={{ color: 'button.500' }}
-                onClick={() =>
-                  window.open('https://twitter.com/bakoidentity', '_blank')
-                }
+                onClick={() => navigate({ to: '/learn-more' })}
               >
                 Learn more
               </Text>

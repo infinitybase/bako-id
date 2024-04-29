@@ -2,6 +2,7 @@ import { createRoute } from '@tanstack/react-router';
 import { NotConnected } from '../components/auth/notConnected.tsx';
 import { rootRoute } from '../hooks/__root.ts';
 import { Buy } from '../modules/buy/page.tsx';
+import { LearnMore } from '../modules/home/components/learn-more/page.tsx';
 import { Home } from '../modules/home/page.tsx';
 import { More } from '../modules/profile/components/more/page.tsx';
 import { Profile } from '../modules/profile/page.tsx';
@@ -18,6 +19,12 @@ export const homeRoute = createRoute({
   //     })
   //   }
   // }
+});
+
+export const learnMoreRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  component: LearnMore,
+  path: '/learn-more',
 });
 
 export const connectRoute = createRoute({
