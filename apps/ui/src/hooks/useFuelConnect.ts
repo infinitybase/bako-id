@@ -1,6 +1,7 @@
 import { useDisclosure } from '@chakra-ui/react';
 import { useAccount, useFuel, useWallet } from '@fuels/react';
 import { useEffect, useMemo, useState } from 'react';
+import { useCustomToast } from '../components';
 import { IconUtils } from '../utils/users';
 import { EConnectors, useDefaultConnectors } from './fuel/useListConnectors';
 
@@ -13,6 +14,8 @@ export const useFuelConnect = () => {
   const { connectors } = useDefaultConnectors();
   const [isConnecting, setIsConnecting] = useState(false);
   const [isConnectError, setIsConnectError] = useState(false);
+
+  const { errorToast } = useCustomToast();
 
   const selectConnector = async (connector: string) => {
     await fuel.selectConnector(connector);
@@ -34,7 +37,11 @@ export const useFuelConnect = () => {
       setIsConnecting(false);
     } catch (e) {
       setIsConnectError(true);
-      return console.error('[Connect Error]', e);
+      errorToast({
+        title: 'Error while connecting wallet',
+        description: (e as Error).message,
+      });
+      return;
     }
   };
 

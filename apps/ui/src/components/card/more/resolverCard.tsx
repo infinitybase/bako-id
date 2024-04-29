@@ -7,6 +7,7 @@ import {
   Heading,
   useDisclosure,
 } from '@chakra-ui/react';
+import { Address } from 'fuels';
 import { Card } from '..';
 import { TextInput } from '../..';
 import { EditIcon } from '../../icons/editIcon';
@@ -52,7 +53,11 @@ export const ResolverCard = () => {
           <TextInput
             leftAddon
             leftAddonName="address"
-            value={domain?.resolver}
+            value={
+              domain?.resolver
+                ? Address.fromB256(domain.resolver).toString()
+                : ''
+            }
             rightAddon
             rightAddonName={<ExploreIcon />}
             rightAddonClick={copy}
