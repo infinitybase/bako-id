@@ -95,6 +95,7 @@ export const Header = () => {
                 cursor: 'pointer',
                 opacity: 0.8,
               }}
+              onClick={() => window.open('https://docs.bako.id/', '_blank')}
               ml={4}
               as={QuestionIcon}
               w={6}

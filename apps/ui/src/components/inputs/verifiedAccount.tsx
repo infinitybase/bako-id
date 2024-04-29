@@ -10,42 +10,47 @@ import {
 } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
 import { FarcasterIcon, TwitterIcon } from '..';
+import { AddIcon } from '../icons/addIcon';
+import { useSidebar } from '../sidebar/hooks/useSidebar';
 
 interface CustomInputProps extends InputProps {
-  value: string;
-  isVerified: boolean;
+  value?: string;
+  isVerified?: boolean;
   rightAddon: boolean;
   rightAddonName: string | ReactNode;
-  rightAddonClick: () => void;
   variant: string;
 }
 
 const VerifiedAccountInput = (props: CustomInputProps) => {
-  const {
-    value,
-    isVerified,
-    rightAddon,
-    rightAddonName,
-    rightAddonClick,
-    ...rest
-  } = props;
+  const { isMyDomain } = useSidebar();
+  const { value, isVerified, rightAddon, rightAddonName, ...rest } = props;
 
   const variants = {
     twitter: {
+      name: 'X',
       icon: TwitterIcon,
       color: 'white',
-      bgColor: 'black',
+      bgColor: 'background.900',
       verify: () => {},
+      add: () => {},
     },
     farcaster: {
+      name: 'Farcaster',
       icon: FarcasterIcon,
       color: 'white',
       bgColor: '#7F5FC7',
       verify: () => {},
+      add: () => {},
     },
   };
 
+  const copyValueToClipboard = () => {
+    navigator.clipboard.writeText(value!);
+  };
+
   const currentVariant = variants[props.variant as keyof typeof variants];
+
+  if (!isMyDomain && !isVerified) return;
 
   return (
     <Box w="full" display="flex" alignItems="flex-end" flexDirection="column">
@@ -53,7 +58,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
         <InputLeftAddon
           bgColor={currentVariant.bgColor}
           borderColor="stroke.500"
-          borderRight="none"
+          border="none"
           alignItems="center"
           justifyContent="center"
           fontSize="xs"
@@ -69,19 +74,21 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
             w={6}
             h={6}
           />
-          <Text
-            zIndex={1}
-            left="100%"
-            position="absolute"
-            ml={2}
-            color={isVerified ? 'green' : 'red'}
-          >
-            {isVerified ? 'Verified' : 'Unverified'}
-          </Text>
+          {value && (
+            <Text
+              zIndex={1}
+              left="100%"
+              position="absolute"
+              ml={2}
+              color={isVerified ? '#00943B' : '#F05D48'}
+            >
+              {isVerified ? 'Verified' : 'Not verified'}
+            </Text>
+          )}
         </InputLeftAddon>
 
         <ChakraInput
-          defaultValue={value ?? ''}
+          defaultValue={value ?? `Add ${currentVariant.name} account`}
           type="text"
           readOnly={true}
           h={10}
@@ -103,7 +110,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
           }}
           {...rest}
         />
-        {rightAddon && (
+        {rightAddon && isVerified ? (
           <InputRightAddon
             bgColor="input.600"
             borderColor="stroke.500"
@@ -119,13 +126,33 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
               cursor: 'pointer',
               color: 'button.500',
             }}
-            onClick={rightAddonClick}
+            onClick={copyValueToClipboard}
           >
             {rightAddonName}
           </InputRightAddon>
+        ) : (
+          <InputRightAddon
+            bgColor="input.600"
+            borderColor="stroke.500"
+            borderLeftColor="transparent"
+            alignItems="center"
+            justifyContent="center"
+            fontSize="sm"
+            w="10%"
+            color="section.500"
+            borderRightRadius="xl"
+            pr={4}
+            _hover={{
+              cursor: 'pointer',
+              color: 'button.500',
+            }}
+            onClick={currentVariant.add}
+          >
+            <AddIcon />
+          </InputRightAddon>
         )}
       </InputGroup>
-      {!isVerified && (
+      {!isVerified && isMyDomain && (
         <Text
           mt={1}
           mr={2}
@@ -134,7 +161,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
             cursor: 'pointer',
             color: 'button.500',
           }}
-          onClick={() => currentVariant.verify()}
+          onClick={currentVariant.verify}
         >
           Verify now
         </Text>

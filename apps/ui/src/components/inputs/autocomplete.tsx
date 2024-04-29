@@ -1,17 +1,21 @@
 import { isValidDomain } from '@bako-id/sdk';
-import { SearchIcon, SmallCloseIcon } from '@chakra-ui/icons';
+import { SmallCloseIcon } from '@chakra-ui/icons';
 import {
   Box,
   Input as ChakraInput,
   InputGroup,
   InputRightElement,
+  type InputProps,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { AvailableBadge, UnavailableBadge } from '..';
 import { useHome } from '../../modules/home/hooks';
 import { RightArrow } from '../icons/rightArrow';
+import { SearchIcon } from '../icons/searchIcon';
 
-export const Autocomplete = () => {
+interface IAutocomplete extends InputProps {}
+
+export const Autocomplete = (props: IAutocomplete) => {
   const { handleChangeDomain, domainIsAvailable, handleConfirmDomain } =
     useHome();
 
@@ -50,7 +54,7 @@ export const Autocomplete = () => {
           <ChakraInput
             value={inputValue}
             color="white"
-            fontWeight="semibold"
+            fontWeight="normal"
             h={12}
             fontSize={['xs', 'md']}
             placeholder="Search for an available Handles"
@@ -60,12 +64,13 @@ export const Autocomplete = () => {
             errorBorderColor="error.500"
             onChange={handleChange}
             border="1px solid"
-            borderColor="grey.500"
+            borderColor="grey.600"
             borderRadius={10}
             sx={{ _placeholder: { color: 'grey.200' } }}
             _focus={{}}
             _hover={{}}
             _focusVisible={{}}
+            {...props}
           />
 
           {!inputValue && (

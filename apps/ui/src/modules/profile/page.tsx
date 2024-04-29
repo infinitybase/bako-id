@@ -20,7 +20,7 @@ const Profile = () => {
       <Box
         w="full"
         h="full"
-        maxH={['100vh', '50vh']}
+        maxH={['100vh', '100vh']}
         position="relative"
         display="flex"
         flexDirection={['column', 'column', 'column', 'row']}
@@ -39,6 +39,7 @@ const Profile = () => {
         )}
         <Stack
           display="flex"
+          h="fit-content"
           spacing={6}
           direction={['column', 'column', 'column', 'row']}
         >
@@ -54,8 +55,8 @@ const Profile = () => {
               <AddressesCard domain={domain} />
             </Stack>
           </Flex>
+          <AccountsCard />
         </Stack>
-        <AccountsCard />
       </Box>
     </>
   );
