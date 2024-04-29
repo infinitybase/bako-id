@@ -27,7 +27,7 @@ const More = () => {
         }}
       >
         <Box
-          w={['full', '90%', '90%', '65%']}
+          w={['full', 'auto']}
           h="full"
           maxH={['80vh', '80vh', '75vh', '80vh']}
           display="flex"

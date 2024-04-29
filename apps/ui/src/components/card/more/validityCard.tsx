@@ -2,7 +2,6 @@ import {
   Button,
   CardBody,
   CardHeader,
-  Divider,
   Flex,
   FormControl,
   FormHelperText,
@@ -20,10 +19,12 @@ export const ValidityCard = () => {
   const { isMyDomain } = useSidebar();
 
   return (
-    <Card h="fit-content" minW="full">
+    <Card backdropFilter="blur(7px)" h="fit-content" minW="full">
       <CardHeader w="full">
         <Flex w="full" justify="space-between" align="center">
-          <Heading fontSize="lg">Validity</Heading>
+          <Heading fontSize="lg" color="grey.100">
+            Validity
+          </Heading>
           <Button
             variant="ghosted"
             color="grey.100"
@@ -39,8 +40,7 @@ export const ValidityCard = () => {
           </Button>
         </Flex>
       </CardHeader>
-      <Divider color="stroke.500" border="1px solid" w="full" mt={8} mb={2} />
-      <CardBody>
+      <CardBody mt={4}>
         <FormControl>
           <FormHelperText my={4} color="section.500">
             Name expires
@@ -64,7 +64,15 @@ export const ValidityCard = () => {
             my={4}
           >
             <Text>Grace period ends</Text>
-            <Icon w={4} h={4} mr={1} color="grey.100" />
+            <Icon
+              w={4}
+              h={4}
+              mr={2}
+              _hover={{
+                cursor: 'pointer',
+              }}
+              color="grey.100"
+            />
           </FormHelperText>
           <TextInput
             leftAddonColor="grey.100"
@@ -89,7 +97,7 @@ export const ValidityCard = () => {
             rightAddonWidth="5%"
             rightAddonColor="grey.100"
             rightAddonName={<Icon as={ExploreIcon} />}
-            value="18:48:23 GMT"
+            value="18:48:23"
           />
         </FormControl>
       </CardBody>
