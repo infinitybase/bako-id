@@ -1,6 +1,7 @@
 import {
   Box,
-  Input as ChakraInput,
+  Container,
+  Input,
   InputGroup,
   InputLeftAddon,
   InputRightAddon,
@@ -21,6 +22,7 @@ interface CustomInputProps extends InputProps {
   rightAddonClick?: () => void;
   rightAddonWidth?: string | string[];
   rightAddonColor?: string;
+  wrapText?: boolean;
 }
 
 const TextInput = (props: CustomInputProps) => {
@@ -37,11 +39,12 @@ const TextInput = (props: CustomInputProps) => {
     rightAddonColor,
     rightAddonWidth,
     rightAddonClick,
+    wrapText,
     ...rest
   } = props;
   return (
-    <Box w="full" display="flex" alignItems="center">
-      <InputGroup>
+    <Box w="full" alignItems="center">
+      <InputGroup w="full">
         {leftAddon && (
           <InputLeftAddon
             h={inputHeight ?? 10}
@@ -51,35 +54,65 @@ const TextInput = (props: CustomInputProps) => {
             alignItems="center"
             justifyContent="flex-start"
             fontSize="sm"
-            w={leftAddonWidth ?? 'min-content'}
+            w={leftAddonWidth ?? 'fit-content'}
             color={leftAddonColor ?? 'section.500'}
             borderLeftRadius="xl"
           >
             {leftAddonName}
           </InputLeftAddon>
         )}
-        <ChakraInput
-          defaultValue={value ?? ''}
-          type="text"
-          readOnly={true}
-          h={inputHeight ?? 10}
-          border="1px solid"
-          borderColor="stroke.500"
-          borderLeftColor={leftAddon ? 'transparent' : 'stroke.500'}
-          borderRightColor={rightAddon ? 'transparent' : 'stroke.500'}
-          borderRadius="xl"
-          backgroundColor="input.600"
-          color={inputColor ?? 'grey.100'}
-          fontSize="sm"
-          fontWeight={600}
-          _focus={{
-            borderColor: 'section.500',
-          }}
-          _hover={{
-            borderColor: 'section.500',
-          }}
-          {...rest}
-        />
+        {wrapText ? (
+          <Container
+            w="full"
+            alignItems="center"
+            display="flex"
+            h={inputHeight ?? 10}
+            border="1px solid"
+            borderColor="stroke.500"
+            borderLeftColor={leftAddon ? 'transparent' : 'stroke.500'}
+            borderRightColor={rightAddon ? 'transparent' : 'stroke.500'}
+            backgroundColor="input.600"
+            color={inputColor ?? 'grey.100'}
+            fontSize={['xs', 'sm']}
+            fontWeight={600}
+            _focus={{
+              borderColor: 'stroke.500',
+              borderInlineColor: 'transparent',
+            }}
+            _hover={{}}
+            whiteSpace="pre-wrap"
+            wordBreak="break-word"
+            {...rest}
+          >
+            {value ?? ''}
+          </Container>
+        ) : (
+          <Input
+            w="full"
+            defaultValue={value ?? ''}
+            readOnly={true}
+            alignItems="center"
+            display="flex"
+            h={inputHeight ?? 10}
+            border="1px solid"
+            borderColor="stroke.500"
+            borderLeftColor={leftAddon ? 'transparent' : 'stroke.500'}
+            borderRightColor={rightAddon ? 'transparent' : 'stroke.500'}
+            backgroundColor="input.600"
+            color={inputColor ?? 'grey.100'}
+            fontSize="sm"
+            fontWeight={600}
+            _focus={{
+              borderColor: 'stroke.500',
+              borderInlineColor: 'transparent',
+            }}
+            _hover={{}}
+            whiteSpace="pre-wrap"
+            wordBreak="break-word"
+            {...rest}
+          />
+        )}
+
         {rightAddon && (
           <InputRightAddon
             h={inputHeight ?? 10}
@@ -89,7 +122,7 @@ const TextInput = (props: CustomInputProps) => {
             alignItems="center"
             justifyContent="center"
             fontSize="sm"
-            w={rightAddonWidth ?? '10%'}
+            w={rightAddonWidth ?? '15%'}
             color={rightAddonColor ?? 'section.500'}
             borderRightRadius="xl"
             pr={4}

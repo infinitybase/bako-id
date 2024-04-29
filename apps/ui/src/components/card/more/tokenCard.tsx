@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { Card } from '..';
 import { CheckoutCard, TextInput } from '../..';
+import { useScreenSize } from '../../../hooks/useScreenSize';
 import { CopyIcon } from '../../icons/copyIcon';
 import { ExploreIcon } from '../../icons/explore';
 import { ActionDomainModal } from '../../modal/actionDomainModal';
@@ -16,6 +17,8 @@ import { useSidebar } from '../../sidebar/hooks/useSidebar';
 
 export const TokenCard = () => {
   const { isMyDomain, domain } = useSidebar();
+  const { isMobile } = useScreenSize();
+
   const action = useDisclosure();
 
   return (
@@ -48,9 +51,10 @@ export const TokenCard = () => {
             alignItems="center"
             h="fit-content"
             justifyContent="flex-end"
-            gap={6}
+            gap={4}
+            w="full"
           >
-            <Flex w="full" h="full" direction="column" gap={5}>
+            <Flex w={['full', '80%']} direction="column" gap={6}>
               <TextInput
                 inputHeight={16}
                 leftAddon
@@ -60,6 +64,8 @@ export const TokenCard = () => {
                 rightAddonWidth="5%"
                 rightAddonName={<CopyIcon />}
                 rightAddonClick={() => {}}
+                leftAddonWidth="20"
+                wrapText={!isMobile ? true : false}
               />
 
               <TextInput
@@ -71,11 +77,13 @@ export const TokenCard = () => {
                 rightAddonWidth="5%"
                 rightAddonName={<CopyIcon />}
                 rightAddonClick={() => {}}
+                leftAddonWidth="20"
+                wrapText={!isMobile ? true : false}
               />
             </Flex>
 
             <CheckoutCard
-              w={['fit-content', '25%', '25%', '25%']}
+              w={['fit-content', '40', '40', '40']}
               domain={domain?.name ?? ''}
             />
           </Flex>
