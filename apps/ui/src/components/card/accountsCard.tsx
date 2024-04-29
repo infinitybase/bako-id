@@ -8,8 +8,8 @@ export const AccountsCard = () => {
 
   return (
     <Card
-      w={['full', 'full', 'full', '55%']}
-      h={['fit-content', 'fit-content', 'fit-content', 'full']}
+      w={['full', 'full', 'full', '50%']}
+      h={['fit-content', 'fit-content', 'fit-content', 'auto']}
       display="flex"
       backdropFilter="blur(6px)"
       flexDirection="column"
