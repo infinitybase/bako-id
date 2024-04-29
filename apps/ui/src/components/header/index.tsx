@@ -30,7 +30,7 @@ export const Header = () => {
     if (wallet) {
       return (
         <Info
-          name={formatAddress(wallet.address.toB256().toString())!}
+          name={formatAddress(wallet.address.toString())!}
           account={wallet.address}
         />
       );

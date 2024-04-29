@@ -1,9 +1,13 @@
 import type { Domain } from '@bako-id/sdk';
-import { Flex, Heading, Icon } from '@chakra-ui/react';
 import { Card, TextInput } from '..';
 import { formatAddress } from '../../utils/formatter';
 import { CopyIcon } from '../icons/copyIcon';
 import { FuelIcon } from '../icons/fuelIcon';
+import { PlusSquareIcon } from '@chakra-ui/icons';
+import { Button, Flex, Heading, Icon } from '@chakra-ui/react';
+import { Address } from 'fuels';
+import { ExploreIcon } from '../icons/explore';
+import { useSidebar } from '../sidebar/hooks/useSidebar';
 
 interface IAddressesCard {
   domain: Domain | null;
@@ -42,7 +46,11 @@ export const AddressesCard = ({ domain }: IAddressesCard) => {
           textAlign="right"
           rightAddonName={<Icon as={CopyIcon} />}
           rightAddonClick={copy}
-          value={formatAddress(domain?.owner ?? '')}
+          value={
+            domain?.owner
+              ? formatAddress(Address.fromB256(domain.owner).toString())
+              : ''
+          }
         />
       </Flex>
     </Card>
