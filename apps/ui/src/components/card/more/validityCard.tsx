@@ -19,7 +19,7 @@ export const ValidityCard = () => {
   const { isMyDomain } = useSidebar();
 
   return (
-    <Card backdropFilter="blur(7px)" h="fit-content" minW="full">
+    <Card backdropFilter="blur(7px)" h="fit-content" maxW={['full', '90%']}>
       <CardHeader w="full">
         <Flex w="full" justify="space-between" align="center">
           <Heading fontSize="lg" color="grey.100">

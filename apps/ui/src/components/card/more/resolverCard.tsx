@@ -20,7 +20,7 @@ export const ResolverCard = () => {
 
   return (
     <>
-      <Card backdropFilter="blur(7px)" h="fit-content" minW="45%">
+      <Card backdropFilter="blur(7px)" h="fit-content" maxW={['full', '90%']}>
         <CardHeader w="full">
           <Flex w="full" justify="space-between" align="center">
             <Heading fontSize="lg" color="grey.100">
