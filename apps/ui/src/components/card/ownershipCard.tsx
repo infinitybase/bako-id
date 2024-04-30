@@ -1,10 +1,13 @@
 import type { Domain } from '@bako-id/sdk';
-import { CopyIcon } from '@chakra-ui/icons';
-import { Flex, Heading, Icon } from '@chakra-ui/react';
+import { Flex, Heading } from '@chakra-ui/react';
 import { Address } from 'fuels';
-import { Card, TextInput } from '..';
+import { Card, TextValue } from '..';
+import { ExplorerTypes } from '../../types';
 import { formatAddress } from '../../utils/formatter';
-import { ExploreIcon } from '../icons/explore';
+import { CopyText } from '../helpers/copy';
+import { Explorer } from '../helpers/explorer';
+import { LeftAddon } from '../inputs/leftAddon';
+import { RightAddon } from '../inputs/rightAddon';
 
 interface IOwnershipCard {
   domain: Domain | null;
@@ -39,30 +42,31 @@ export const OwnershipCard = ({ domain }: IOwnershipCard) => {
         justifyContent="space-between"
         gap={3}
       >
-        <TextInput
-          textAlign="right"
-          leftAddon
-          leftAddonName="owner"
-          rightAddon
-          rightAddonName={<Icon as={ExploreIcon} />}
-          rightAddonClick={() =>
-            window.open(
-              `https://app.fuel.network/account/${domain?.owner}/assets`
-            )
+        <TextValue
+          leftAction={<LeftAddon value="owner" />}
+          rightAction={
+            <RightAddon
+              value={
+                <Explorer
+                  id={domain?.owner ?? ''}
+                  type={ExplorerTypes.ASSETS}
+                />
+              }
+            />
           }
-          value={
+          content={
             domain?.owner
               ? formatAddress(Address.fromB256(domain.owner).toString())
               : ''
           }
         />
-        <TextInput
-          leftAddon
-          leftAddonName="expiry"
+        <TextValue
+          leftAction={<LeftAddon value="expiry" />}
           textAlign="right"
-          rightAddon
-          rightAddonName={<Icon as={CopyIcon} />}
-          value="march 31, 2024"
+          rightAction={
+            <RightAddon value={<CopyText value={'march 31, 2024'} />} />
+          }
+          content="march 31, 2024"
         />
       </Flex>
     </Card>

@@ -1,6 +1,7 @@
 import { VStack } from '@chakra-ui/react';
-import { TextInput } from '..';
+import { TextValue } from '..';
 import { Dialog } from '../dialog';
+import { LeftAddon } from '../inputs/leftAddon';
 
 interface ITransactionDetailsModal {
   isOpen: boolean;
@@ -27,29 +28,29 @@ export const TransactionDomainDetailsModal = ({
     >
       <Dialog.Body>
         <VStack spacing={2}>
-          <TextInput
+          <TextValue
+            justifyContent="start"
             textColor="grey.100"
-            leftAddon
-            leftAddonName="handles"
-            value={domain}
+            leftAction={<LeftAddon value="handles" />}
+            content={domain}
           />
-          <TextInput
+          <TextValue
+            justifyContent="start"
             textColor="grey.100"
-            leftAddon
-            leftAddonName="action"
-            value="Registration"
+            leftAction={<LeftAddon value="action" />}
+            content="Registration"
           />
-          <TextInput
+          <TextValue
+            justifyContent="start"
             textColor="grey.100"
-            leftAddon
-            leftAddonName="duration"
-            value={'1 year'}
+            leftAction={<LeftAddon value="duration" />}
+            content={'1 year'}
           />
-          <TextInput
+          <TextValue
+            justifyContent="start"
             textColor="grey.100"
-            leftAddon
-            leftAddonName="cost"
-            value={`${cost.toString()} ETH`}
+            leftAction={<LeftAddon value="cost" />}
+            content={`${cost.toString()} ETH`}
           />
         </VStack>
       </Dialog.Body>

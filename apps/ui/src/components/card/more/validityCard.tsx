@@ -10,9 +10,11 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Card } from '..';
-import { TextInput } from '../..';
+import { TextValue } from '../..';
 import { DoubleArrowRightIcon } from '../../icons/doubleArrowRightIcon';
 import { ExploreIcon } from '../../icons/explore';
+import { LeftAddon } from '../../inputs/leftAddon';
+import { RightAddon } from '../../inputs/rightAddon';
 import { useSidebar } from '../../sidebar/hooks/useSidebar';
 
 export const ValidityCard = () => {
@@ -45,13 +47,17 @@ export const ValidityCard = () => {
           <FormHelperText my={4} color="section.500">
             Name expires
           </FormHelperText>
-          <TextInput
-            leftAddonColor="grey.100"
-            inputColor="section.500"
-            leftAddonWidth={['45%', '20%']}
-            leftAddon
-            leftAddonName="march 31, 2024"
-            value="18:48:23 GMT"
+          <TextValue
+            leftAction={
+              <LeftAddon
+                color="grey.100"
+                w={['45%', '20%']}
+                value="march 31, 2024"
+              />
+            }
+            color="section.500"
+            justifyContent="start"
+            content="18:48:23 GMT"
           />
         </FormControl>
         <FormControl my={4}>
@@ -74,30 +80,35 @@ export const ValidityCard = () => {
               color="grey.100"
             />
           </FormHelperText>
-          <TextInput
-            leftAddonColor="grey.100"
-            inputColor="section.500"
-            leftAddonWidth={['45%', '20%']}
-            leftAddon
-            leftAddonName="april 30, 2024"
-            value="23:59:59 GMT +1"
+          <TextValue
+            leftAction={
+              <LeftAddon
+                color="grey.100"
+                w={['45%', '20%']}
+                value="april 30, 2024"
+              />
+            }
+            color="section.500"
+            justifyContent="start"
+            content="23:59:59 GMT +1"
           />
         </FormControl>
         <FormControl>
           <FormHelperText my={4} color="section.500">
             Registered
           </FormHelperText>
-          <TextInput
-            leftAddonColor="grey.100"
-            inputColor="section.500"
-            leftAddonWidth={['45%', '20%']}
-            leftAddon
-            leftAddonName="march 31, 2024"
-            rightAddon
-            rightAddonWidth="5%"
-            rightAddonColor="grey.100"
-            rightAddonName={<Icon as={ExploreIcon} />}
-            value="18:48:23"
+          <TextValue
+            leftAction={
+              <LeftAddon
+                color="grey.100"
+                w={['45%', '20%']}
+                value="march 31, 2024"
+              />
+            }
+            color="section.500"
+            justifyContent="start"
+            content="8:48:23"
+            rightAction={<RightAddon value={<Icon as={ExploreIcon} />} />}
           />
         </FormControl>
       </CardBody>
