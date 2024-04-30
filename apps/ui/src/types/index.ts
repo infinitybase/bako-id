@@ -6,6 +6,11 @@ export enum Coin {
   ETH = 'ETH',
 }
 
+export enum ExplorerTypes {
+  ASSETS = '/assets',
+  TRANSACTIONS = '/transactions',
+}
+
 export interface Domains {
   name: string;
   period: number;
