@@ -56,8 +56,8 @@ pub fn _register(name: String, resolver: b256, bako_id: ContractId) -> String {
     let domain = BakoHandle::new(name, owner, resolver);
     storage.set(domain_hash, domain.into());
     
-    if (storage.reverse_get(resolver).is_empty()) {
-        storage.reverse_set(resolver, name);
+    if (storage.get_primary(resolver).is_none()) {
+        storage.set_primary(resolver, name);
     }
 
     return name;
