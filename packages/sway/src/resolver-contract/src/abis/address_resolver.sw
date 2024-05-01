@@ -6,7 +6,7 @@ use std::{
 };
 use libraries::{
     abis::{StorageContract},
-    structures::{FuelDomain},
+    structures::{BakoHandle},
 };
 
 abi AddressResolver {
@@ -17,14 +17,14 @@ abi AddressResolver {
     fn owner(name: String) -> Option<b256>;
 }
 
-fn get_handle_instance(name: String, bako_id: ContractId) -> Option<FuelDomain> {
+fn get_handle_instance(name: String, bako_id: ContractId) -> Option<BakoHandle> {
     let domain_hash = sha256(name);
     let storage = abi(StorageContract, bako_id.into());
     let bytes_domain = storage.get(domain_hash);
 
     match bytes_domain {
         Some(bytes_domain) => {
-            return Some(FuelDomain::from_bytes(bytes_domain));
+            return Some(BakoHandle::from(bytes_domain));
         },
         _ => None,
     }

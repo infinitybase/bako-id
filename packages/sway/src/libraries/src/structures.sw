@@ -1,37 +1,92 @@
 library;
 
-use std::bytes::Bytes;
 use std::{
-    intrinsics::{size_of, size_of_val}
+    bytes::Bytes,
+    convert::From,
+    string::String,
+    bytes_conversions::u16::*,
+    primitive_conversions::{ u64::*, b256::* },
+    intrinsics::{size_of, size_of_val},
 };
 
 // !!!!!! NEW FIELDS SHOULD BE ADDED TO THE END OF THE STRUCT !!!!!!
 // changing the order of this fields will break the parsing from bytes
 // to struct and vice versa from older versions.
-pub struct FuelDomain {
+pub struct BakoHandle {
+    name: String,
     owner: b256,
     resolver: b256,
 }
 
-impl FuelDomain {
-    pub fn new(owner: b256, resolver: b256) -> Self {
+impl From<Bytes> for BakoHandle {
+    fn from(bytes: Bytes) -> Self {
+        // Get the name length and name bytes
+        let (left, right) = bytes.split_at(2);
+        let name_len = left.get(1).unwrap();
+        let (name_bytes, right) = right.split_at(name_len.as_u64());
+        let name = String::from(name_bytes);
+        
+        // Get the owner address length and address bytes
+        let (left, right) = right.split_at(2);
+        let address_len = left.get(1).unwrap();
+        let (owner_bytes, right) = right.split_at(address_len.as_u64());
+        let owner = b256::try_from(owner_bytes).unwrap();
+
+        // Get the resolver address length and address bytes
+        let (left, right) = right.split_at(2);
+        let address_len = left.get(1).unwrap();
+        let (resolver_bytes, _) = right.split_at(address_len.as_u64());
+        let resolver = b256::try_from(resolver_bytes).unwrap();
+
+        return Self {
+            name,
+            owner,
+            resolver,
+        };
+    }
+
+    fn into(self) -> Bytes {
+        let mut bytes = Bytes::new();
+
+        // Append the name length and name bytes
+        bytes.append(self.name.as_bytes().len().try_as_u16().unwrap().to_be_bytes());
+        bytes.append(self.name.as_bytes());
+
+        // Append the owner address length and address bytes
+        bytes.append(Bytes::from(self.owner).len().try_as_u16().unwrap().to_be_bytes());
+        bytes.append(Bytes::from(self.owner));
+
+        // Append the resolver address length and address bytes
+        bytes.append(Bytes::from(self.resolver).len().try_as_u16().unwrap().to_be_bytes());
+        bytes.append(Bytes::from(self.resolver));
+
+        return bytes;
+    }
+} 
+
+impl BakoHandle {
+    pub fn new(name: String, owner: b256, resolver: b256) -> Self {
         Self {
+            name,
             owner,
             resolver,
         }
     }
+}
 
-    pub fn from_bytes(bytes: Bytes) -> Self {
-        let mut bytes_domain_alloc = Bytes::with_capacity(size_of::<FuelDomain>());
-        bytes.buf.ptr.copy_bytes_to(bytes_domain_alloc.buf.ptr, bytes.len);
-        return bytes_domain_alloc.buf.ptr.read::<FuelDomain>();
-    }
 
-    pub fn to_bytes(self) -> Bytes {
-        let foo_len = size_of_val(self);
-        let foo_ptr = __addr_of(self);
-        let buf_len = foo_len / size_of::<u8>();
-        let foo_buf = raw_slice::from_parts::<u8>(foo_ptr, buf_len);
-        return Bytes::from(foo_buf);
-    }
+#[test]
+fn test_domain_convertion() {
+    use std::hash::*;
+
+    let my_handle = BakoHandle::new(
+        String::from_ascii_str("myhandle"),
+        sha256("OWNER"),
+        sha256("RESOLVER"),
+    );
+
+    let handle_bytes: Bytes = my_handle.into(); 
+    let handle_from_bytes = BakoHandle::from(handle_bytes);
+
+    assert(my_handle.name == handle_from_bytes.name);
 }

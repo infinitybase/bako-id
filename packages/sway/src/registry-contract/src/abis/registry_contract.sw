@@ -10,7 +10,7 @@ use std::{
 };
 use libraries::{
     abis::{StorageContract},
-    structures::{FuelDomain},
+    structures::{BakoHandle},
     validations::{
         assert_name_validity,
     },
@@ -53,8 +53,8 @@ pub fn _register(name: String, resolver: b256, bako_id: ContractId) -> String {
     require(msg_amount() == domain_price, RegistryContractError::InvalidAmount);
 
     let owner = msg_sender().unwrap().as_address().unwrap().value;
-    let domain = FuelDomain::new(owner, resolver);
-    storage.set(domain_hash, domain.to_bytes());
+    let domain = BakoHandle::new(name, owner, resolver);
+    storage.set(domain_hash, domain.into());
     
     if (storage.reverse_get(resolver).is_empty()) {
         storage.reverse_set(resolver, name);

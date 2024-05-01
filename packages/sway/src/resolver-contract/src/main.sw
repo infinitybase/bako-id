@@ -6,10 +6,7 @@ use std::{
     string::String,
     hash::*,
 };
-use libraries::{
-    abis::{StorageContract},
-    structures::{FuelDomain},
-};
+use libraries::abis::StorageContract;
 use abis::{
     address_resolver::*,
     name_resolver::*,
