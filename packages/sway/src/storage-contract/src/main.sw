@@ -90,9 +90,11 @@ impl StorageContract for Contract {
     }
 
     #[storage(write)]
-    fn set(key: b256, bytes_domain: Bytes) {
+    fn set(key: b256, owner: b256, bytes_domain: Bytes) {
         with_permission(IMPLEMENTATION);
         write_slice(key, bytes_domain.as_raw_slice());
+        storage.owners_handles.insert(owner, StorageVec {});
+        storage.owners_handles.get(owner).push(key);
     }
 
     #[storage(read)]

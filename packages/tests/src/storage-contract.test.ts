@@ -26,7 +26,7 @@ describe('Test Storage Contract', () => {
     expect.assertions(2);
     try {
       await contracts.storage.functions
-        .set(hash(Buffer.from('20')), [10, 10])
+        .set(hash(Buffer.from('20')), wallet.address.toB256(), [10, 10])
         .txParams(txParams)
         .call();
     } catch (e) {

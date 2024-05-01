@@ -58,8 +58,14 @@ pub fn _register(name: String, resolver: b256, bako_id: ContractId) -> String {
     require(msg_amount() == domain_price, RegistryContractError::InvalidAmount);
 
     let owner = msg_sender().unwrap().as_address().unwrap().value;
-    let domain = BakoHandle::new(name, owner, resolver);
-    storage.set(domain_hash, domain.into());
+    let is_primary = storage.get_primary(resolver).is_none();
+    let domain = BakoHandle::new(
+        name, 
+        owner, 
+        resolver,
+        is_primary,
+    );
+    storage.set(domain_hash, owner, domain.into());
     
     if (storage.get_primary(resolver).is_none()) {
         storage.set_primary(resolver, name);
@@ -81,6 +87,9 @@ pub fn _get_all(owner: b256, bako_id: ContractId) -> Bytes {
         let handle = BakoHandle::from(handle_bytes);
         vec_bytes.append(handle.name.as_bytes().len().try_as_u16().unwrap().to_be_bytes());
         vec_bytes.append(handle.name.as_bytes());
+        vec_bytes.push(0u8);
+        vec_bytes.push(1u8);
+        vec_bytes.push(match handle.primary { true => 1u8, false => 0u8, });
         i += 1;
     }
 

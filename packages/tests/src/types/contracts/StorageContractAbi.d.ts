@@ -58,7 +58,7 @@ interface StorageContractAbiInterface extends Interface {
   encodeFunctionData(functionFragment: 'get_implementation', values: []): Uint8Array;
   encodeFunctionData(functionFragment: 'get_owner', values: []): Uint8Array;
   encodeFunctionData(functionFragment: 'get_primary', values: [string]): Uint8Array;
-  encodeFunctionData(functionFragment: 'set', values: [string, Bytes]): Uint8Array;
+  encodeFunctionData(functionFragment: 'set', values: [string, string, Bytes]): Uint8Array;
   encodeFunctionData(functionFragment: 'set_implementation', values: [ContractIdInput]): Uint8Array;
   encodeFunctionData(functionFragment: 'set_owner', values: [AddressInput]): Uint8Array;
   encodeFunctionData(functionFragment: 'set_primary', values: [string, StdString]): Uint8Array;
@@ -84,7 +84,7 @@ export class StorageContractAbi extends Contract {
     get_implementation: InvokeFunction<[], Option<ContractIdOutput>>;
     get_owner: InvokeFunction<[], Option<AddressOutput>>;
     get_primary: InvokeFunction<[resolver: string], Option<Bytes>>;
-    set: InvokeFunction<[key: string, bytes_domain: Bytes], void>;
+    set: InvokeFunction<[key: string, owner: string, bytes_domain: Bytes], void>;
     set_implementation: InvokeFunction<[registry_id: ContractIdInput], void>;
     set_owner: InvokeFunction<[owner: AddressInput], void>;
     set_primary: InvokeFunction<[key: string, value: StdString], void>;

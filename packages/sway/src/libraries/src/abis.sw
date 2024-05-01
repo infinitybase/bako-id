@@ -23,7 +23,7 @@ abi StorageContract {
     fn get_owner() -> Option<Address>;
 
     #[storage(write)]
-    fn set(hash: b256, value: Bytes);
+    fn set(hash: b256, owner: b256, value: Bytes);
 
     #[storage(read)]
     fn get(hash: b256) -> Option<Bytes>;

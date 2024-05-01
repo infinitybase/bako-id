@@ -401,6 +401,11 @@ const _abi = {
           "typeArguments": null
         },
         {
+          "name": "owner",
+          "type": 1,
+          "typeArguments": null
+        },
+        {
           "name": "bytes_domain",
           "type": 9,
           "typeArguments": null
