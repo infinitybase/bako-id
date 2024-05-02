@@ -155,6 +155,7 @@ describe('[METHODS] Registry Contract', () => {
 
     const address = Address.fromRandom().toB256();
     const handles = [randomName(), randomName(), randomName()];
+
     await registry.register(handles[0], address);
     await registry.register(handles[1], address);
     await registry.register(handles[2], address);
