@@ -6,8 +6,6 @@ import { ExplorerTypes } from '../../types';
 import { formatAddress } from '../../utils/formatter';
 import { CopyText } from '../helpers/copy';
 import { Explorer } from '../helpers/explorer';
-import { LeftAddon } from '../inputs/leftAddon';
-import { RightAddon } from '../inputs/rightAddon';
 
 interface IOwnershipCard {
   domain: Domain | null;
@@ -43,16 +41,9 @@ export const OwnershipCard = ({ domain }: IOwnershipCard) => {
         gap={3}
       >
         <TextValue
-          leftAction={<LeftAddon value="owner" />}
+          leftAction={'owner'}
           rightAction={
-            <RightAddon
-              value={
-                <Explorer
-                  id={domain?.owner ?? ''}
-                  type={ExplorerTypes.ASSETS}
-                />
-              }
-            />
+            <Explorer id={domain?.owner ?? ''} type={ExplorerTypes.ASSETS} />
           }
           content={
             domain?.owner
@@ -61,11 +52,9 @@ export const OwnershipCard = ({ domain }: IOwnershipCard) => {
           }
         />
         <TextValue
-          leftAction={<LeftAddon value="expiry" />}
+          leftAction={'expiry'}
           textAlign="right"
-          rightAction={
-            <RightAddon value={<CopyText value={'march 31, 2024'} />} />
-          }
+          rightAction={<CopyText value={'march 31, 2024'} />}
           content="march 31, 2024"
         />
       </Flex>

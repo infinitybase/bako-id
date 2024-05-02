@@ -5,8 +5,6 @@ import { Card, TextValue } from '..';
 import { formatAddress } from '../../utils/formatter';
 import { CopyText } from '../helpers/copy';
 import { FuelIcon } from '../icons/fuelIcon';
-import { LeftAddon } from '../inputs/leftAddon';
-import { RightAddon } from '../inputs/rightAddon';
 
 interface IAddressesCard {
   domain: Domain | null;
@@ -36,13 +34,9 @@ export const AddressesCard = ({ domain }: IAddressesCard) => {
       </Flex>
       <Flex direction="column" alignItems="center" justifyContent="center">
         <TextValue
-          leftAction={<LeftAddon value={<Icon as={FuelIcon} />} />}
+          leftAction={<Icon as={FuelIcon} />}
           rightAction={
-            <RightAddon
-              value={
-                <CopyText value={Address.fromB256(domain.owner).toString()} />
-              }
-            />
+            <CopyText value={Address.fromB256(domain.owner).toString()} />
           }
           content={formatAddress(Address.fromB256(domain.owner).toString())}
         />

@@ -12,8 +12,6 @@ import { TextValue } from '../..';
 import { ExplorerTypes } from '../../../types';
 import { Explorer } from '../../helpers/explorer';
 import { EditIcon } from '../../icons/editIcon';
-import { LeftAddon } from '../../inputs/leftAddon';
-import { RightAddon } from '../../inputs/rightAddon';
 import { ActionDomainModal } from '../../modal/actionDomainModal';
 import { useSidebar } from '../../sidebar/hooks/useSidebar';
 
@@ -48,14 +46,10 @@ export const ResolverCard = () => {
         </CardHeader>
         <CardBody mt={4}>
           <TextValue
-            leftAction={<LeftAddon value="address" />}
+            leftAction="address"
             content={Address.fromB256(domain.resolver).toString()}
             rightAction={
-              <RightAddon
-                value={
-                  <Explorer id={domain.resolver} type={ExplorerTypes.ASSETS} />
-                }
-              />
+              <Explorer id={domain.resolver} type={ExplorerTypes.ASSETS} />
             }
           />
         </CardBody>

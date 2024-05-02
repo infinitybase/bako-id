@@ -9,18 +9,13 @@ import {
 } from '@chakra-ui/react';
 import { Card } from '..';
 import { CheckoutCard, TextValue } from '../..';
-import { useScreenSize } from '../../../hooks/useScreenSize';
 import { CopyText } from '../../helpers/copy';
 import { ExploreIcon } from '../../icons/explore';
-import { LeftAddon } from '../../inputs/leftAddon';
-import { RightAddon } from '../../inputs/rightAddon';
 import { ActionDomainModal } from '../../modal/actionDomainModal';
 import { useSidebar } from '../../sidebar/hooks/useSidebar';
 
 export const TokenCard = () => {
   const { isMyDomain, domain } = useSidebar();
-  const { isMobile } = useScreenSize();
-
   const action = useDisclosure();
 
   return (
@@ -58,35 +53,22 @@ export const TokenCard = () => {
           >
             <Flex w={['full', '80%']} direction="column" gap={6}>
               <TextValue
+                breakRow
                 justifyContent="start"
-                h={16}
-                whiteSpace={!isMobile ? 'pre-wrap' : 'nowrap'}
-                wordBreak={!isMobile ? 'break-word' : 'normal'}
-                isTruncated={isMobile ? true : false}
-                leftAction={<LeftAddon w={20} h={16} value="hex" />}
+                leftAction={'hex'}
                 content="0x769jepagpoa8egn3543v53545b354f354q5g54q533354"
                 rightAction={
-                  <RightAddon
-                    h={16}
-                    value={
-                      <CopyText value="0x769jepagpoa8egn3543v53545b354f354q5g54q533354" />
-                    }
-                  />
+                  <CopyText value="0x769jepagpoa8egn3543v53545b354f354q5g54q533354" />
                 }
               />
 
               <TextValue
+                breakRow
                 justifyContent="start"
-                h={16}
-                leftAction={<LeftAddon w={20} h={16} value="decimal" />}
+                leftAction={'decimal'}
                 content="0x769jepagpoa8egn3543v53545b354f354q5g54q533354"
                 rightAction={
-                  <RightAddon
-                    h={16}
-                    value={
-                      <CopyText value="0x769jepagpoa8egn3543v53545b354f354q5g54q533354" />
-                    }
-                  />
+                  <CopyText value="0x769jepagpoa8egn3543v53545b354f354q5g54q533354" />
                 }
               />
             </Flex>
@@ -100,12 +82,9 @@ export const TokenCard = () => {
           <Flex w="full" justify="center" direction={['column', 'row']} gap={4}>
             <TextValue
               justifyContent="start"
-              w={['full', '70%']}
-              leftAction={<LeftAddon value="wrapper" />}
+              leftAction={'wrapper'}
               content="wrapped, emancipated"
-              rightAction={
-                <RightAddon value={<CopyText value="wrapped, emancipated" />} />
-              }
+              rightAction={<CopyText value="wrapped, emancipated" />}
             />
             <Button
               isDisabled={!isMyDomain}

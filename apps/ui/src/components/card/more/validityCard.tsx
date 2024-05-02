@@ -13,8 +13,6 @@ import { Card } from '..';
 import { TextValue } from '../..';
 import { DoubleArrowRightIcon } from '../../icons/doubleArrowRightIcon';
 import { ExploreIcon } from '../../icons/explore';
-import { LeftAddon } from '../../inputs/leftAddon';
-import { RightAddon } from '../../inputs/rightAddon';
 import { useSidebar } from '../../sidebar/hooks/useSidebar';
 
 export const ValidityCard = () => {
@@ -48,13 +46,8 @@ export const ValidityCard = () => {
             Name expires
           </FormHelperText>
           <TextValue
-            leftAction={
-              <LeftAddon
-                color="grey.100"
-                w={['45%', '20%']}
-                value="march 31, 2024"
-              />
-            }
+            leftAction={'march 31, 2024'}
+            leftColor="grey.100"
             color="section.500"
             justifyContent="start"
             content="18:48:23 GMT"
@@ -81,13 +74,8 @@ export const ValidityCard = () => {
             />
           </FormHelperText>
           <TextValue
-            leftAction={
-              <LeftAddon
-                color="grey.100"
-                w={['45%', '20%']}
-                value="april 30, 2024"
-              />
-            }
+            leftColor="grey.100"
+            leftAction={'april 30, 2024'}
             color="section.500"
             justifyContent="start"
             content="23:59:59 GMT +1"
@@ -98,17 +86,12 @@ export const ValidityCard = () => {
             Registered
           </FormHelperText>
           <TextValue
-            leftAction={
-              <LeftAddon
-                color="grey.100"
-                w={['45%', '20%']}
-                value="march 31, 2024"
-              />
-            }
+            leftColor="grey.100"
+            leftAction={'march 31, 2024'}
             color="section.500"
             justifyContent="start"
             content="8:48:23"
-            rightAction={<RightAddon value={<Icon as={ExploreIcon} />} />}
+            rightAction={<Icon as={ExploreIcon} />}
           />
         </FormControl>
       </CardBody>
