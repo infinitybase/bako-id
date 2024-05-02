@@ -306,6 +306,29 @@ const _abi = {
     {
       "inputs": [
         {
+          "name": "owner",
+          "type": 1,
+          "typeArguments": null
+        }
+      ],
+      "name": "get_all",
+      "output": {
+        "name": "",
+        "type": 12,
+        "typeArguments": null
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
           "name": "name",
           "type": 15,
           "typeArguments": null
@@ -552,7 +575,7 @@ const _abi = {
       "logId": 4,
       "loggedType": {
         "name": "",
-        "type": 4,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -576,7 +599,7 @@ const _abi = {
       "logId": 7,
       "loggedType": {
         "name": "",
-        "type": 7,
+        "type": 4,
         "typeArguments": []
       }
     },
@@ -592,7 +615,7 @@ const _abi = {
       "logId": 9,
       "loggedType": {
         "name": "",
-        "type": 4,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -606,6 +629,14 @@ const _abi = {
     },
     {
       "logId": 11,
+      "loggedType": {
+        "name": "",
+        "type": 4,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": 12,
       "loggedType": {
         "name": "",
         "type": 4,

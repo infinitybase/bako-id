@@ -1,5 +1,5 @@
 import { Provider, Wallet, type WalletUnlocked } from 'fuels';
-import { register, resolver } from '../index';
+import { getAll, register, resolver } from '../index';
 import { createFakeWallet } from '../test';
 import { InvalidDomainError, NotFoundBalanceError, randomName } from '../utils';
 
@@ -69,5 +69,18 @@ describe('Test Registry', () => {
     });
 
     await expect(registerResult).rejects.toBeInstanceOf(NotFoundBalanceError);
+  });
+
+  it('should get all domains by owner address', async () => {
+    await register({
+      domain: randomName(),
+      account: wallet,
+      resolver: wallet.address.toB256(),
+    });
+
+    const [handle] = await getAll(wallet.address.toB256());
+
+    expect(handle.name).toBeDefined();
+    expect(handle.isPrimary).toBeDefined();
   });
 });
