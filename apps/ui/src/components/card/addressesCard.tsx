@@ -1,9 +1,9 @@
 import type { Domain } from '@bako-id/sdk';
 import { Flex, Heading, Icon } from '@chakra-ui/react';
 import { Address } from 'fuels';
-import { Card, TextInput } from '..';
+import { Card, TextValue } from '..';
 import { formatAddress } from '../../utils/formatter';
-import { CopyIcon } from '../icons/copyIcon';
+import { CopyText } from '../helpers/copy';
 import { FuelIcon } from '../icons/fuelIcon';
 
 interface IAddressesCard {
@@ -13,10 +13,7 @@ interface IAddressesCard {
 export const AddressesCard = ({ domain }: IAddressesCard) => {
   // const { isMyDomain } = useSidebar();
 
-  const copy = () => {
-    navigator.clipboard.writeText(domain!.owner.toString());
-  };
-
+  if (!domain) return null;
   return (
     <Card
       w="full"
@@ -36,18 +33,12 @@ export const AddressesCard = ({ domain }: IAddressesCard) => {
         )} */}
       </Flex>
       <Flex direction="column" alignItems="center" justifyContent="center">
-        <TextInput
-          leftAddon
-          leftAddonName={<Icon as={FuelIcon} />}
-          rightAddon
-          textAlign="right"
-          rightAddonName={<Icon as={CopyIcon} />}
-          rightAddonClick={copy}
-          value={
-            domain?.owner
-              ? formatAddress(Address.fromB256(domain.owner).toString())
-              : ''
+        <TextValue
+          leftAction={<Icon as={FuelIcon} />}
+          rightAction={
+            <CopyText value={Address.fromB256(domain.owner).toString()} />
           }
+          content={formatAddress(Address.fromB256(domain.owner).toString())}
         />
       </Flex>
     </Card>

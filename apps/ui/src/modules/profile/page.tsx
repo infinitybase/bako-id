@@ -42,6 +42,7 @@ const Profile = () => {
           h="fit-content"
           spacing={6}
           direction={['column', 'column', 'column', 'row']}
+          w="full"
         >
           <Flex w="full" h="full" flexDirection="column" gap={[4, 4, 4, 6]}>
             <ProfileCard domain={domain} />
