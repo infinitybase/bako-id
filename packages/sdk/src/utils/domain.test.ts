@@ -13,14 +13,16 @@ describe('Domain utils', () => {
     expect(validDomain).toBeTruthy();
 
     const invalidDomains = [
-      isValidDomain('@invalid-domain'),
+      isValidDomain('@invalid!domain'),
       isValidDomain('invalid domain'),
       isValidDomain('invalid@domain'),
       isValidDomain('invalid domain-'),
+      // Domain with more than 31 characters
+      isValidDomain('invaliddinvaliddinvaliddinvali12'),
     ];
 
-    const expectValue = invalidDomains.every(Boolean);
-    expect(expectValue).toBeFalsy();
+    const expectValue = invalidDomains.every((value) => value === false);
+    expect(expectValue).toBeTruthy();
   });
 
   test('Domain name value', () => {

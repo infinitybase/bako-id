@@ -132,7 +132,7 @@ const _abi = {
         },
         {
           "name": "len",
-          "type": 13,
+          "type": 15,
           "typeArguments": null
         }
       ],
@@ -161,7 +161,7 @@ const _abi = {
         },
         {
           "name": "cap",
-          "type": 13,
+          "type": 15,
           "typeArguments": null
         }
       ],
@@ -169,6 +169,25 @@ const _abi = {
     },
     {
       "typeId": 12,
+      "type": "struct RawVec",
+      "components": [
+        {
+          "name": "ptr",
+          "type": 7,
+          "typeArguments": null
+        },
+        {
+          "name": "cap",
+          "type": 15,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": [
+        6
+      ]
+    },
+    {
+      "typeId": 13,
       "type": "struct String",
       "components": [
         {
@@ -180,7 +199,32 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 13,
+      "typeId": 14,
+      "type": "struct Vec",
+      "components": [
+        {
+          "name": "buf",
+          "type": 12,
+          "typeArguments": [
+            {
+              "name": "",
+              "type": 6,
+              "typeArguments": null
+            }
+          ]
+        },
+        {
+          "name": "len",
+          "type": 15,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": [
+        6
+      ]
+    },
+    {
+      "typeId": 15,
       "type": "u64",
       "components": null,
       "typeParameters": null
@@ -228,6 +272,35 @@ const _abi = {
       "output": {
         "name": "",
         "type": 3,
+        "typeArguments": [
+          {
+            "name": "",
+            "type": 9,
+            "typeArguments": null
+          }
+        ]
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "owner",
+          "type": 1,
+          "typeArguments": null
+        }
+      ],
+      "name": "get_all",
+      "output": {
+        "name": "",
+        "type": 14,
         "typeArguments": [
           {
             "name": "",
@@ -299,11 +372,17 @@ const _abi = {
           "typeArguments": null
         }
       ],
-      "name": "reverse_get",
+      "name": "get_primary",
       "output": {
         "name": "",
-        "type": 12,
-        "typeArguments": null
+        "type": 3,
+        "typeArguments": [
+          {
+            "name": "",
+            "type": 9,
+            "typeArguments": null
+          }
+        ]
       },
       "attributes": [
         {
@@ -322,30 +401,7 @@ const _abi = {
           "typeArguments": null
         },
         {
-          "name": "value",
-          "type": 12,
-          "typeArguments": null
-        }
-      ],
-      "name": "reverse_set",
-      "output": {
-        "name": "",
-        "type": 0,
-        "typeArguments": null
-      },
-      "attributes": [
-        {
-          "name": "storage",
-          "arguments": [
-            "write"
-          ]
-        }
-      ]
-    },
-    {
-      "inputs": [
-        {
-          "name": "key",
+          "name": "owner",
           "type": 1,
           "typeArguments": null
         },
@@ -413,6 +469,34 @@ const _abi = {
           "name": "storage",
           "arguments": [
             "read",
+            "write"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "key",
+          "type": 1,
+          "typeArguments": null
+        },
+        {
+          "name": "value",
+          "type": 13,
+          "typeArguments": null
+        }
+      ],
+      "name": "set_primary",
+      "output": {
+        "name": "",
+        "type": 0,
+        "typeArguments": null
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
             "write"
           ]
         }

@@ -3,6 +3,7 @@ library;
 use std::{ string::String };
 use libraries::{
     abis::{StorageContract},
+    structures::{BakoHandle},
 };
 
 abi NameResolver {
@@ -12,5 +13,8 @@ abi NameResolver {
 
 pub fn _name(resolver: b256, bako_id: ContractId) -> String {
     let storage = abi(StorageContract, bako_id.into());
-    return storage.reverse_get(resolver);
+    match storage.get_primary(resolver) {
+        Some(bytes) => BakoHandle::from(bytes).name,
+        _ => String::from_ascii_str(""),
+    }
 }

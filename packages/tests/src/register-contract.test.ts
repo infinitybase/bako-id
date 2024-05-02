@@ -109,6 +109,7 @@ describe('[METHODS] Registry Contract', () => {
 
     await tryExecute(storage.initializeStorage());
     await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
 
     const domain = randomName();
     await registry.register(domain, wallet.address.toB256());
@@ -127,6 +128,7 @@ describe('[METHODS] Registry Contract', () => {
 
     await tryExecute(storage.initializeStorage());
     await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
 
     const address = Address.fromRandom().toB256();
 
@@ -141,6 +143,43 @@ describe('[METHODS] Registry Contract', () => {
       .call();
 
     expect(value).toBe(primaryDomain);
+  });
+
+  it('should get all handles by owner address', async () => {
+    const { registry, storage, resolver } =
+      await setupContractsAndDeploy(wallet);
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
+
+    const address = Address.fromRandom().toB256();
+    const handles = [randomName(), randomName(), randomName()];
+
+    await registry.register(handles[0], address);
+    await registry.register(handles[1], address);
+    await registry.register(handles[2], address);
+
+    const { value: vecBytes } = await registry.functions
+      .get_all(wallet.address.toB256())
+      .addContracts([storage])
+      .txParams(txParams)
+      .call();
+
+    const expected = handles.flatMap((name, index) => {
+      const size = name.length;
+      // The first two bytes are the size of the string
+      return [
+        0,
+        size,
+        ...name.split('').map((char) => char.charCodeAt(0)),
+        0,
+        1,
+        index === 0 ? 1 : 0,
+      ];
+    });
+
+    expect(expected).toEqual(expect.arrayContaining(Array.from(vecBytes)));
   });
 
   it.each(['@invalid-!@#%$!', 'my@asd.other', '@MYHanDLE'])(

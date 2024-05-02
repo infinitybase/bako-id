@@ -1,5 +1,6 @@
 export {
   owner,
+  getAll,
   resolver,
   register,
   tokenInfo,

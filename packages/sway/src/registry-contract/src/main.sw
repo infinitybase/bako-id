@@ -24,6 +24,7 @@ use asset::{
 };
 use std::{
     hash::*,
+    bytes::Bytes,
     string::String,
     contract_id::ContractId,
     storage::storage_map::*,
@@ -75,6 +76,11 @@ impl RegistryContract for Contract {
             storage.metadata,
             name,
         );
+    }
+
+    #[storage(read)]
+    fn get_all(owner: b256) -> Bytes {
+        _get_all(owner, get_storage_id())
     }
 }
 

@@ -47,6 +47,7 @@ export type RawBytesOutput = { ptr: BN, cap: BN };
 export interface RegistryContractAbiInterface extends Interface {
   functions: {
     constructor: FunctionFragment;
+    get_all: FunctionFragment;
     register: FunctionFragment;
     decimals: FunctionFragment;
     name: FunctionFragment;
@@ -58,6 +59,7 @@ export interface RegistryContractAbiInterface extends Interface {
   };
 
   encodeFunctionData(functionFragment: 'constructor', values: [AddressInput, ContractIdInput]): Uint8Array;
+  encodeFunctionData(functionFragment: 'get_all', values: [string]): Uint8Array;
   encodeFunctionData(functionFragment: 'register', values: [StdString, string]): Uint8Array;
   encodeFunctionData(functionFragment: 'decimals', values: [AssetIdInput]): Uint8Array;
   encodeFunctionData(functionFragment: 'name', values: [AssetIdInput]): Uint8Array;
@@ -68,6 +70,7 @@ export interface RegistryContractAbiInterface extends Interface {
   encodeFunctionData(functionFragment: 'metadata', values: [AssetIdInput, StdString]): Uint8Array;
 
   decodeFunctionData(functionFragment: 'constructor', data: BytesLike): DecodedValue;
+  decodeFunctionData(functionFragment: 'get_all', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'register', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'decimals', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'name', data: BytesLike): DecodedValue;
@@ -82,6 +85,7 @@ export class RegistryContractAbi extends Contract {
   interface: RegistryContractAbiInterface;
   functions: {
     constructor: InvokeFunction<[owner: AddressInput, storage_id: ContractIdInput], void>;
+    get_all: InvokeFunction<[owner: string], Bytes>;
     register: InvokeFunction<[name: StdString, resolver: string], AssetIdOutput>;
     decimals: InvokeFunction<[asset: AssetIdInput], Option<number>>;
     name: InvokeFunction<[asset: AssetIdInput], StdString>;

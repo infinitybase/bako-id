@@ -14,6 +14,7 @@ enum NameValidationError {
 //// @ in bytes
 const NAME_PREFIX: u8 = 64;
 const NAME_MIN_LEN: u64 = 2;
+const NAME_MAX_LEN: u64 = 31;
 
 pub const ASCII_HANDLE_VALID_CHARS: [u8; 37] = [
     // 0-9 in bytes
@@ -73,7 +74,10 @@ pub fn assert_name_validity(name: String) -> String {
     let mut name_length = bytes.len();
 
     require(name_length > 0, NameValidationError::IsEmpty);
-    require(name_length > NAME_MIN_LEN, NameValidationError::InvalidLenght);
+    require(
+        name_length > NAME_MIN_LEN && name_length < NAME_MAX_LEN, 
+        NameValidationError::InvalidLenght
+    );
 
     while name_length != 0 {
         let letter_bytes = bytes.get(name_length - 1).unwrap();
@@ -141,5 +145,16 @@ fn test_invalid_name_ascii() {
     use std::assert::assert;
 
     let invalid_name = String::from_ascii_str("@asd___#$%#$%");
+    let _ = assert_name_validity(invalid_name);
+}
+
+#[test(should_revert)]
+fn test_invalid_length() {
+    use std::assert::assert;
+
+    let valid_name = String::from_ascii_str("@asdfb1234567890mnopqrstuvxwyz1");
+    let _ = assert_name_validity(valid_name);
+
+    let invalid_name = String::from_ascii_str("@asdfb1234567890mnopqrstuvxwyz12");
     let _ = assert_name_validity(invalid_name);
 }
