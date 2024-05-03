@@ -10,15 +10,14 @@ export interface Domains {
   name: string;
   period: number;
 }
-
-type FuelDomainInput = { owner: string; resolver: string };
-type FuelDomainOutput = FuelDomainInput;
-
-type Nullable<T> = T | null;
-type Domain = FuelDomainOutput & {
+export type Handle = {
   name: string;
+  isPrimary: boolean;
 };
-export type ResolverReturn = Nullable<Domain>;
+
+export type Option<T> = T | undefined;
+
+export type ResolverReturn = Option<string>;
 
 export interface IChildren {
   children?: ReactElement | ReactElement[];

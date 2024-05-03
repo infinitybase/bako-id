@@ -39,6 +39,7 @@ export const useHome = () => {
           providerURL: 'https://beta-5.fuel.network/graphql',
         })
         .then((info) => {
+          console.log(info);
           if (!info) {
             setAvailable(true);
             return;
@@ -51,6 +52,7 @@ export const useHome = () => {
 
   const handleChangeDomain = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e?.target ?? {};
+    console.log(value);
     if (value.length < 3) {
       setAvailable(null);
       setDomain(value);
@@ -76,15 +78,15 @@ export const useHome = () => {
         to: '/buy/$domain',
         params: { domain: domain },
         startTransition: true,
-      }).then();
+      });
       return;
     }
 
     navigate({
       to: '/profile/$domain',
-      params: { domain: info.name },
+      params: { domain },
       startTransition: true,
-    }).then();
+    });
   };
 
   const domainIsAvailable = useMemo(() => {
