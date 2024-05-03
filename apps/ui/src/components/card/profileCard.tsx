@@ -1,6 +1,7 @@
 import { Button, Flex, Icon, Text, useMediaQuery } from '@chakra-ui/react';
 import { Card } from '.';
 import { DisabledXBadgeIcon } from '..';
+import { ExplorerTypes } from '../../types';
 import { AvatarIcon } from '../icons/avatarIcon';
 import { ExploreIcon } from '../icons/explore';
 import { FarcasterBadgeIcon } from '../icons/farcasterBadgeIcon';
@@ -52,7 +53,7 @@ export const ProfileCard = ({ domain, domainName }: IProfileCard) => {
           rightIcon={<ExploreIcon />}
           onClick={() =>
             window.open(
-              `https://app.fuel.network/account/${domain}/assets`,
+              `${import.meta.env.VITE_EXPLORER_URL}${domain}${ExplorerTypes.ASSETS}`,
               '_blank',
             )
           }

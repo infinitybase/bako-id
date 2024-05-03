@@ -1,9 +1,10 @@
-import { CopyIcon } from '@chakra-ui/icons';
-import { Flex, Heading, Icon } from '@chakra-ui/react';
+import { Flex, Heading } from '@chakra-ui/react';
 import { Address } from 'fuels';
-import { Card, TextInput } from '..';
+import { Card, TextValue } from '..';
+import { ExplorerTypes } from '../../types';
 import { formatAddress } from '../../utils/formatter';
-import { ExploreIcon } from '../icons/explore';
+import { CopyText } from '../helpers/copy';
+import { Explorer } from '../helpers/explorer';
 
 interface IOwnershipCard {
   owner: string | null;
@@ -38,24 +39,24 @@ export const OwnershipCard = ({ owner }: IOwnershipCard) => {
         justifyContent="space-between"
         gap={3}
       >
-        <TextInput
-          textAlign="right"
-          leftAddon
-          leftAddonName="owner"
-          rightAddon
-          rightAddonName={<Icon as={ExploreIcon} />}
-          rightAddonClick={() =>
-            window.open(`https://app.fuel.network/account/${owner}/assets`)
+        <TextValue
+          leftAction={'owner'}
+          rightAction={
+            <Explorer id={owner ?? ''} type={ExplorerTypes.ASSETS} />
+          }
+          content={
+            owner
+              ? formatAddress(Address.fromB256(owner).toString())
+              : ''
+
           }
           value={owner ? formatAddress(Address.fromB256(owner).toString()) : ''}
         />
-        <TextInput
-          leftAddon
-          leftAddonName="expiry"
+        <TextValue
+          leftAction={'expiry'}
           textAlign="right"
-          rightAddon
-          rightAddonName={<Icon as={CopyIcon} />}
-          value="march 31, 2024"
+          rightAction={<CopyText value={'march 31, 2024'} />}
+          content="march 31, 2024"
         />
       </Flex>
     </Card>
