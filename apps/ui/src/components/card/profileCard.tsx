@@ -1,4 +1,3 @@
-import type { Domain } from '@bako-id/sdk';
 import { Button, Flex, Icon, Text, useMediaQuery } from '@chakra-ui/react';
 import { Card } from '.';
 import { DisabledXBadgeIcon } from '..';
@@ -9,10 +8,11 @@ import { FarcasterBadgeIcon } from '../icons/farcasterBadgeIcon';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
 
 interface IProfileCard {
-  domain: Domain | null;
+  domainName: string | null;
+  domain: string;
 }
 
-export const ProfileCard = ({ domain }: IProfileCard) => {
+export const ProfileCard = ({ domain, domainName }: IProfileCard) => {
   const [isLowerThanMobile] = useMediaQuery('(max-width: 25em)');
   const { isMyDomain } = useSidebar();
   return (
@@ -34,7 +34,7 @@ export const ProfileCard = ({ domain }: IProfileCard) => {
       >
         <Flex gap={2} direction="column">
           <Text fontWeight="semibold" fontSize={['md', 'lg']} color="white">
-            @{domain?.name}
+            @{domainName}
           </Text>
 
           <Flex gap={1}>
@@ -53,7 +53,7 @@ export const ProfileCard = ({ domain }: IProfileCard) => {
           rightIcon={<ExploreIcon />}
           onClick={() =>
             window.open(
-              `${import.meta.env.VITE_EXPLORER_URL}${domain?.owner}${ExplorerTypes.ASSETS}`,
+              `${import.meta.env.VITE_EXPLORER_URL}${domain}${ExplorerTypes.ASSETS}`,
               '_blank',
             )
           }

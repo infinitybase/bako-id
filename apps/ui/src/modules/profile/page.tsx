@@ -9,7 +9,7 @@ import { useScreenSize } from '../../hooks/useScreenSize';
 import { useProfile } from './hooks/useProfile';
 
 const Profile = () => {
-  const { domain } = useProfile();
+  const { domain, domainParam, owner } = useProfile();
   const { isMobile } = useScreenSize();
   const drawer = useDisclosure();
 
@@ -45,15 +45,15 @@ const Profile = () => {
           w="full"
         >
           <Flex w="full" h="full" flexDirection="column" gap={[4, 4, 4, 6]}>
-            <ProfileCard domain={domain} />
+            <ProfileCard domainName={domainParam} domain={domain ?? ''} />
             <Stack
               w="full"
               h="full"
               direction={['column', 'column', 'column', 'row']}
               gap={[4, 4, 4, 6]}
             >
-              <OwnershipCard domain={domain} />
-              <AddressesCard domain={domain} />
+              <OwnershipCard owner={owner ?? ''} />
+              <AddressesCard domain={domain ?? ''} />
             </Stack>
           </Flex>
           <AccountsCard />

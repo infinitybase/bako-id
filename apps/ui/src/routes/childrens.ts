@@ -4,6 +4,7 @@ import { rootRoute } from '../hooks/__root.ts';
 import { Buy } from '../modules/buy/page.tsx';
 import { LearnMore } from '../modules/home/components/learn-more/page.tsx';
 import { Home } from '../modules/home/page.tsx';
+import { MyHandles } from '../modules/myHandles/page.tsx';
 import { More } from '../modules/profile/components/more/page.tsx';
 import { Profile } from '../modules/profile/page.tsx';
 
@@ -11,14 +12,6 @@ export const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: Home,
   path: '/',
-  // shouldReload: true,
-  // beforeLoad: ({ context }) => {
-  //   if (!context.isConnected) {
-  //     throw redirect({
-  //       to: '/auth',
-  //     })
-  //   }
-  // }
 });
 
 export const learnMoreRoute = createRoute({
@@ -31,21 +24,6 @@ export const connectRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: NotConnected,
   path: '/auth',
-  // shouldReload: true,
-  // loader: ({ context }) => {
-  //   if (context.isConnected) {
-  //     throw redirect({
-  //       to: '/',
-  //     })
-  //   }
-  // },
-  // beforeLoad: ({ context }) => {
-  //   if (context.isConnected) {
-  //     throw redirect({
-  //       to: '/',
-  //     })
-  //   }
-  // }
 });
 
 export const buyRoute = createRoute({
@@ -64,4 +42,10 @@ export const moreRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: More,
   path: '/profile/$domain/more',
+});
+
+export const myHandlesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  component: MyHandles,
+  path: '/my-handles',
 });

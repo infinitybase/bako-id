@@ -1,10 +1,11 @@
-import { createConfig, hash } from 'fuels';
+import { createConfig } from 'fuels';
 
 export default createConfig({
   contracts: [
     '../sway/src/registry-contract',
     '../sway/src/metadata-contract',
     '../sway/src/storage-contract',
+    '../sway/src/resolver-contract',
     './src/sway/test-contract',
   ],
   forcBuildFlags: ['--release'],

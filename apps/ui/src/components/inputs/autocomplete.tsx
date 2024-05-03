@@ -26,12 +26,12 @@ export const Autocomplete = (props: IAutocomplete) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value.toLowerCase();
 
+    setInputValue(inputValue); // Movido para fora do bloco de validação
+
     if (inputValue.length > 0) {
       const valid = isValidDomain(inputValue);
-
       if (!valid) return;
-
-      setInputValue(inputValue);
+      
       handleChangeDomain(e);
     } else {
       setInputValue('');

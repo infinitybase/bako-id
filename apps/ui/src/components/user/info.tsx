@@ -13,6 +13,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
+import { useNavigate } from '@tanstack/react-router';
 import type { AbstractAddress } from 'fuels';
 import { useMemo } from 'react';
 import { BeginnersGuide } from '../icons/beginnersGuide.tsx';
@@ -34,6 +35,7 @@ export const Info = ({
   const {
     fuel: { disconnect },
   } = useFuel();
+  const navigate = useNavigate();
   const { successToast } = useCustomToast();
 
   const copy = () => {
@@ -149,7 +151,7 @@ export const Info = ({
               color="grey.200"
               my={2}
               gap={2}
-              onClick={() => {}}
+              onClick={() => navigate({ to: '/my-handles' })}
               _hover={{
                 cursor: 'pointer',
                 color: 'button.500',

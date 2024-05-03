@@ -8,6 +8,8 @@ import {
 } from '@chakra-ui/react';
 import { Address } from 'fuels';
 import { Card } from '..';
+
+import { useProfile } from '../../../modules/profile/hooks/useProfile';
 import { TextValue } from '../..';
 import { ExplorerTypes } from '../../../types';
 import { Explorer } from '../../helpers/explorer';
@@ -17,7 +19,8 @@ import { useSidebar } from '../../sidebar/hooks/useSidebar';
 
 export const ResolverCard = () => {
   const action = useDisclosure();
-  const { isMyDomain, domain } = useSidebar();
+  const { isMyDomain } = useSidebar();
+  const { domain, domainParam } = useProfile();
 
   if (!domain) return null;
   return (
@@ -47,9 +50,9 @@ export const ResolverCard = () => {
         <CardBody mt={4}>
           <TextValue
             leftAction="address"
-            content={Address.fromB256(domain.resolver).toString()}
+            content={Address.fromB256(domain).toString()}
             rightAction={
-              <Explorer id={domain.resolver} type={ExplorerTypes.ASSETS} />
+              <Explorer id={domain} type={ExplorerTypes.ASSETS} />
             }
           />
         </CardBody>
@@ -58,7 +61,7 @@ export const ResolverCard = () => {
         isOpen={action.isOpen}
         onClose={() => action.onClose()}
         action="Edit handle"
-        domain={`@${domain?.name}`}
+        domain={`@${domainParam}`}
         modalTitle="Edit Resolver"
         hasActions
         onConfirm={() => {}}

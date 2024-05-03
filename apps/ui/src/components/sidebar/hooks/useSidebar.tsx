@@ -7,11 +7,10 @@ export const useSidebar = () => {
   const { domain } = useProfile();
 
   const isMyDomain = useMemo(() => {
-    return wallet?.address.toB256() === domain?.owner;
+    return wallet?.address.toB256() === domain;
   }, [domain, wallet]);
 
   return {
     isMyDomain,
-    domain,
   };
 };

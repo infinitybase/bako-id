@@ -1,5 +1,5 @@
 import { Provider, Wallet, type WalletUnlocked } from 'fuels';
-import { register, resolver } from '../index';
+import { getAll, register, resolver } from '../index';
 import { createFakeWallet } from '../test';
 import { InvalidDomainError, NotFoundBalanceError, randomName } from '../utils';
 
@@ -16,31 +16,18 @@ describe('Test Registry', () => {
     fakeWallet = await createFakeWallet(provider, wallet);
   });
 
-  it('should error when register domain with invalid character', async () => {
-    const invalidSuffix = register({
-      account: wallet,
-      resolver: wallet.address.toB256(),
-      domain: 'namenotfuel@',
-    });
+  it.each(['bako@', '#bako', 'bako name', 'bakONamE'])(
+    'should error when register domain with invalid character %s',
+    async (domain) => {
+      const invalidSuffix = register({
+        account: wallet,
+        resolver: wallet.address.toB256(),
+        domain: domain,
+      });
 
-    await expect(invalidSuffix).rejects.toBeInstanceOf(InvalidDomainError);
-
-    const invalidPreffix = register({
-      account: wallet,
-      resolver: wallet.address.toB256(),
-      domain: '#namenotfuel',
-    });
-
-    await expect(invalidPreffix).rejects.toBeInstanceOf(InvalidDomainError);
-
-    const invalidChars = register({
-      account: wallet,
-      resolver: wallet.address.toB256(),
-      domain: 'namen otfuel',
-    });
-
-    await expect(invalidChars).rejects.toBeInstanceOf(InvalidDomainError);
-  });
+      await expect(invalidSuffix).rejects.toBeInstanceOf(InvalidDomainError);
+    }
+  );
 
   it('should register domain with special characters', async () => {
     const result = await register({
@@ -63,12 +50,15 @@ describe('Test Registry', () => {
 
     expect(result.transactionResult.status).toBe('success');
 
-    const resolvedDomain = await resolver(domain, {
+    const resolverAddress = await resolver(domain, {
       provider,
     });
+    expect(resolverAddress).toBe(wallet.address.toB256());
 
-    expect(resolvedDomain?.owner).toBe(wallet.address.toB256());
-    expect(resolvedDomain?.resolver).toBe(wallet.address.toB256());
+    const ownerAddress = await resolver(domain, {
+      provider,
+    });
+    expect(ownerAddress).toBe(wallet.address.toB256());
   });
 
   it('should error when register domain without balance', async () => {
@@ -79,5 +69,18 @@ describe('Test Registry', () => {
     });
 
     await expect(registerResult).rejects.toBeInstanceOf(NotFoundBalanceError);
+  });
+
+  it('should get all domains by owner address', async () => {
+    await register({
+      domain: randomName(),
+      account: wallet,
+      resolver: wallet.address.toB256(),
+    });
+
+    const [handle] = await getAll(wallet.address.toB256());
+
+    expect(handle.name).toBeDefined();
+    expect(handle.isPrimary).toBeDefined();
   });
 });

@@ -1,4 +1,3 @@
-import type { Domain } from '@bako-id/sdk';
 import { Flex, Heading, Icon } from '@chakra-ui/react';
 import { Address } from 'fuels';
 import { Card, TextValue } from '..';
@@ -7,7 +6,7 @@ import { CopyText } from '../helpers/copy';
 import { FuelIcon } from '../icons/fuelIcon';
 
 interface IAddressesCard {
-  domain: Domain | null;
+  domain: string | null;
 }
 
 export const AddressesCard = ({ domain }: IAddressesCard) => {
@@ -33,12 +32,13 @@ export const AddressesCard = ({ domain }: IAddressesCard) => {
         )} */}
       </Flex>
       <Flex direction="column" alignItems="center" justifyContent="center">
+
         <TextValue
           leftAction={<Icon as={FuelIcon} />}
           rightAction={
-            <CopyText value={Address.fromB256(domain.owner).toString()} />
+            <CopyText value={Address.fromB256(domain).toString()} />
           }
-          content={formatAddress(Address.fromB256(domain.owner).toString())}
+          content={formatAddress(Address.fromB256(domain).toString())}
         />
       </Flex>
     </Card>

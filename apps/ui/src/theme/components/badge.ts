@@ -25,9 +25,9 @@ const darkWarning = defineStyle({
 });
 
 const info = defineStyle({
-  bgColor: 'rgba(18, 18, 18, 0.8)',
-  color: 'grey.500',
-  borderColor: 'rgba(73, 248, 174, 0.1)',
+  bgColor: 'rgba(0, 244, 139, 0.1)',
+  color: 'success.600',
+  borderColor: 'rgba(0, 244, 139, 0.25)',
 });
 
 const blue = defineStyle({
@@ -59,8 +59,9 @@ const baseStyle = defineStyle({
   fontWeight: 'normal',
   textTransform: 'initial',
   borderWidth: 1,
-  padding: 0.5,
-  paddingInline: 3,
+  paddingBlock: 0,
+  height: 6,
+  paddingInline: 1.5,
   display: 'flex',
   alignItems: 'center',
   gap: 2,

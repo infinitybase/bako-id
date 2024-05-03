@@ -1,4 +1,3 @@
-import type { Domain } from '@bako-id/sdk';
 import { Flex, Heading } from '@chakra-ui/react';
 import { Address } from 'fuels';
 import { Card, TextValue } from '..';
@@ -8,9 +7,9 @@ import { CopyText } from '../helpers/copy';
 import { Explorer } from '../helpers/explorer';
 
 interface IOwnershipCard {
-  domain: Domain | null;
+  owner: string | null;
 }
-export const OwnershipCard = ({ domain }: IOwnershipCard) => {
+export const OwnershipCard = ({ owner }: IOwnershipCard) => {
   // const { isMyDomain } = useSidebar();
   return (
     <Card
@@ -43,13 +42,15 @@ export const OwnershipCard = ({ domain }: IOwnershipCard) => {
         <TextValue
           leftAction={'owner'}
           rightAction={
-            <Explorer id={domain?.owner ?? ''} type={ExplorerTypes.ASSETS} />
+            <Explorer id={owner ?? ''} type={ExplorerTypes.ASSETS} />
           }
           content={
-            domain?.owner
-              ? formatAddress(Address.fromB256(domain.owner).toString())
+            owner
+              ? formatAddress(Address.fromB256(owner).toString())
               : ''
+
           }
+          value={owner ? formatAddress(Address.fromB256(owner).toString()) : ''}
         />
         <TextValue
           leftAction={'expiry'}

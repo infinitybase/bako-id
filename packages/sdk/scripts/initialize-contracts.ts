@@ -15,6 +15,7 @@ const initializeContracts = async () => {
     storageId: config.STORAGE_CONTRACT_ID!,
     registryId: config.REGISTRY_CONTRACT_ID,
     metadataId: config.METADATA_CONTRACT_ID,
+    resolverId: config.RESOLVER_CONTRACT_ID!,
   });
 };
 

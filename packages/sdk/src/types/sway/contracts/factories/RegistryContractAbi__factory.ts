@@ -4,8 +4,8 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.78.0
-  Forc version: 0.51.1
+  Fuels version: 0.81.0
+  Forc version: 0.49.3
   Fuel-Core version: 0.22.1
 */
 
@@ -33,12 +33,12 @@ const _abi = {
       "components": [
         {
           "name": "Address",
-          "type": 9,
+          "type": 10,
           "typeArguments": null
         },
         {
           "name": "ContractId",
-          "type": 11,
+          "type": 13,
           "typeArguments": null
         }
       ],
@@ -46,6 +46,33 @@ const _abi = {
     },
     {
       "typeId": 3,
+      "type": "enum Metadata",
+      "components": [
+        {
+          "name": "B256",
+          "type": 1,
+          "typeArguments": null
+        },
+        {
+          "name": "Bytes",
+          "type": 12,
+          "typeArguments": null
+        },
+        {
+          "name": "Int",
+          "type": 16,
+          "typeArguments": null
+        },
+        {
+          "name": "String",
+          "type": 15,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": null
+    },
+    {
+      "typeId": 4,
       "type": "enum NameValidationError",
       "components": [
         {
@@ -67,7 +94,7 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 4,
+      "typeId": 5,
       "type": "enum Option",
       "components": [
         {
@@ -77,16 +104,16 @@ const _abi = {
         },
         {
           "name": "Some",
-          "type": 7,
+          "type": 8,
           "typeArguments": null
         }
       ],
       "typeParameters": [
-        7
+        8
       ]
     },
     {
-      "typeId": 5,
+      "typeId": 6,
       "type": "enum Permission",
       "components": [
         {
@@ -108,7 +135,7 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 6,
+      "typeId": 7,
       "type": "enum RegistryContractError",
       "components": [
         {
@@ -140,19 +167,19 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 7,
+      "typeId": 8,
       "type": "generic T",
       "components": null,
       "typeParameters": null
     },
     {
-      "typeId": 8,
+      "typeId": 9,
       "type": "raw untyped ptr",
       "components": null,
       "typeParameters": null
     },
     {
-      "typeId": 9,
+      "typeId": 10,
       "type": "struct Address",
       "components": [
         {
@@ -164,25 +191,8 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 10,
-      "type": "struct Bytes",
-      "components": [
-        {
-          "name": "buf",
-          "type": 13,
-          "typeArguments": null
-        },
-        {
-          "name": "len",
-          "type": 15,
-          "typeArguments": null
-        }
-      ],
-      "typeParameters": null
-    },
-    {
       "typeId": 11,
-      "type": "struct ContractId",
+      "type": "struct AssetId",
       "components": [
         {
           "name": "value",
@@ -194,16 +204,16 @@ const _abi = {
     },
     {
       "typeId": 12,
-      "type": "struct FuelDomain",
+      "type": "struct Bytes",
       "components": [
         {
-          "name": "owner",
-          "type": 1,
+          "name": "buf",
+          "type": 14,
           "typeArguments": null
         },
         {
-          "name": "resolver",
-          "type": 1,
+          "name": "len",
+          "type": 16,
           "typeArguments": null
         }
       ],
@@ -211,16 +221,11 @@ const _abi = {
     },
     {
       "typeId": 13,
-      "type": "struct RawBytes",
+      "type": "struct ContractId",
       "components": [
         {
-          "name": "ptr",
-          "type": 8,
-          "typeArguments": null
-        },
-        {
-          "name": "cap",
-          "type": 15,
+          "name": "value",
+          "type": 1,
           "typeArguments": null
         }
       ],
@@ -228,11 +233,16 @@ const _abi = {
     },
     {
       "typeId": 14,
-      "type": "struct String",
+      "type": "struct RawBytes",
       "components": [
         {
-          "name": "bytes",
-          "type": 10,
+          "name": "ptr",
+          "type": 9,
+          "typeArguments": null
+        },
+        {
+          "name": "cap",
+          "type": 16,
           "typeArguments": null
         }
       ],
@@ -240,7 +250,25 @@ const _abi = {
     },
     {
       "typeId": 15,
+      "type": "struct String",
+      "components": [
+        {
+          "name": "bytes",
+          "type": 12,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": null
+    },
+    {
+      "typeId": 16,
       "type": "u64",
+      "components": null,
+      "typeParameters": null
+    },
+    {
+      "typeId": 17,
+      "type": "u8",
       "components": null,
       "typeParameters": null
     }
@@ -250,12 +278,12 @@ const _abi = {
       "inputs": [
         {
           "name": "owner",
-          "type": 9,
+          "type": 10,
           "typeArguments": null
         },
         {
           "name": "storage_id",
-          "type": 11,
+          "type": 13,
           "typeArguments": null
         }
       ],
@@ -278,27 +306,18 @@ const _abi = {
     {
       "inputs": [
         {
-          "name": "name",
-          "type": 14,
-          "typeArguments": null
-        },
-        {
-          "name": "resolver",
+          "name": "owner",
           "type": 1,
           "typeArguments": null
         }
       ],
-      "name": "register",
+      "name": "get_all",
       "output": {
         "name": "",
-        "type": 0,
+        "type": 12,
         "typeArguments": null
       },
       "attributes": [
-        {
-          "name": "payable",
-          "arguments": []
-        },
         {
           "name": "storage",
           "arguments": [
@@ -311,18 +330,51 @@ const _abi = {
       "inputs": [
         {
           "name": "name",
-          "type": 14,
+          "type": 15,
+          "typeArguments": null
+        },
+        {
+          "name": "resolver",
+          "type": 1,
           "typeArguments": null
         }
       ],
-      "name": "resolver",
+      "name": "register",
       "output": {
         "name": "",
-        "type": 4,
+        "type": 11,
+        "typeArguments": null
+      },
+      "attributes": [
+        {
+          "name": "payable",
+          "arguments": []
+        },
+        {
+          "name": "storage",
+          "arguments": [
+            "read",
+            "write"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "asset",
+          "type": 11,
+          "typeArguments": null
+        }
+      ],
+      "name": "decimals",
+      "output": {
+        "name": "",
+        "type": 5,
         "typeArguments": [
           {
             "name": "",
-            "type": 12,
+            "type": 17,
             "typeArguments": null
           }
         ]
@@ -339,16 +391,142 @@ const _abi = {
     {
       "inputs": [
         {
-          "name": "resolver",
-          "type": 1,
+          "name": "asset",
+          "type": 11,
           "typeArguments": null
         }
       ],
-      "name": "reverse_name",
+      "name": "name",
       "output": {
         "name": "",
-        "type": 14,
+        "type": 15,
         "typeArguments": null
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "asset",
+          "type": 11,
+          "typeArguments": null
+        }
+      ],
+      "name": "symbol",
+      "output": {
+        "name": "",
+        "type": 15,
+        "typeArguments": null
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [],
+      "name": "total_assets",
+      "output": {
+        "name": "",
+        "type": 16,
+        "typeArguments": null
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "asset",
+          "type": 11,
+          "typeArguments": null
+        }
+      ],
+      "name": "total_supply",
+      "output": {
+        "name": "",
+        "type": 5,
+        "typeArguments": [
+          {
+            "name": "",
+            "type": 16,
+            "typeArguments": null
+          }
+        ]
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "name",
+          "type": 15,
+          "typeArguments": null
+        }
+      ],
+      "name": "image_url",
+      "output": {
+        "name": "",
+        "type": 15,
+        "typeArguments": null
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "asset",
+          "type": 11,
+          "typeArguments": null
+        },
+        {
+          "name": "key",
+          "type": 15,
+          "typeArguments": null
+        }
+      ],
+      "name": "metadata",
+      "output": {
+        "name": "",
+        "type": 5,
+        "typeArguments": [
+          {
+            "name": "",
+            "type": 3,
+            "typeArguments": null
+          }
+        ]
       },
       "attributes": [
         {
@@ -365,7 +543,7 @@ const _abi = {
       "logId": 0,
       "loggedType": {
         "name": "",
-        "type": 6,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -373,7 +551,7 @@ const _abi = {
       "logId": 1,
       "loggedType": {
         "name": "",
-        "type": 5,
+        "type": 6,
         "typeArguments": []
       }
     },
@@ -381,7 +559,7 @@ const _abi = {
       "logId": 2,
       "loggedType": {
         "name": "",
-        "type": 6,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -389,7 +567,7 @@ const _abi = {
       "logId": 3,
       "loggedType": {
         "name": "",
-        "type": 3,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -397,7 +575,7 @@ const _abi = {
       "logId": 4,
       "loggedType": {
         "name": "",
-        "type": 3,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -405,7 +583,7 @@ const _abi = {
       "logId": 5,
       "loggedType": {
         "name": "",
-        "type": 3,
+        "type": 4,
         "typeArguments": []
       }
     },
@@ -413,7 +591,7 @@ const _abi = {
       "logId": 6,
       "loggedType": {
         "name": "",
-        "type": 6,
+        "type": 4,
         "typeArguments": []
       }
     },
@@ -421,7 +599,7 @@ const _abi = {
       "logId": 7,
       "loggedType": {
         "name": "",
-        "type": 6,
+        "type": 4,
         "typeArguments": []
       }
     },
@@ -429,7 +607,7 @@ const _abi = {
       "logId": 8,
       "loggedType": {
         "name": "",
-        "type": 6,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -437,7 +615,7 @@ const _abi = {
       "logId": 9,
       "loggedType": {
         "name": "",
-        "type": 6,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -445,7 +623,23 @@ const _abi = {
       "logId": 10,
       "loggedType": {
         "name": "",
-        "type": 6,
+        "type": 4,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": 11,
+      "loggedType": {
+        "name": "",
+        "type": 4,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": 12,
+      "loggedType": {
+        "name": "",
+        "type": 4,
         "typeArguments": []
       }
     }
@@ -455,6 +649,10 @@ const _abi = {
 };
 
 const _storageSlots: StorageSlot[] = [
+  {
+    "key": "b48b753af346966d0d169c0b2e3234611f65d5cfdb57c7b6e7cd6ca93707bee0",
+    "value": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
   {
     "key": "de9090cb50e71c2588c773487d1da7066d0c719849a7e58dc8b6397a25c567c0",
     "value": "0000000000000000000000000000000000000000000000000000000000000000"
