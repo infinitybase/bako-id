@@ -14,15 +14,16 @@ enum NameValidationError {
 //// @ in bytes
 const NAME_PREFIX: u8 = 64;
 const NAME_MIN_LEN: u64 = 2;
+const NAME_MAX_LEN: u64 = 31;
 
-pub const ASCII_HANDLE_VALID_CHARS: [u8; 63] = [
+pub const ASCII_HANDLE_VALID_CHARS: [u8; 37] = [
     // 0-9 in bytes
     48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
 
     // A-Z in bytes
-    65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 
-    75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 
-    85, 86, 87, 88, 89, 90,
+    // 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 
+    // 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 
+    // 85, 86, 87, 88, 89, 90,
 
     // "_" in chars
     95,
@@ -34,7 +35,7 @@ pub const ASCII_HANDLE_VALID_CHARS: [u8; 63] = [
 ];
 
 fn is_valid_ascii_letter(value: u8) -> bool {
-    let ascii_arr_size = 63;
+    let ascii_arr_size = 37;
     let mut count: u64 = 0;
 
     while count < ascii_arr_size + 1 {
@@ -73,7 +74,10 @@ pub fn assert_name_validity(name: String) -> String {
     let mut name_length = bytes.len();
 
     require(name_length > 0, NameValidationError::IsEmpty);
-    require(name_length > NAME_MIN_LEN, NameValidationError::InvalidLenght);
+    require(
+        name_length > NAME_MIN_LEN && name_length < NAME_MAX_LEN, 
+        NameValidationError::InvalidLenght
+    );
 
     while name_length != 0 {
         let letter_bytes = bytes.get(name_length - 1).unwrap();
@@ -120,8 +124,8 @@ fn test_valid_ascii() {
 fn test_valid_name_ascii() {
     use std::assert::assert;
 
-    let name = String::from_ascii_str("testE123");
-    let name_with_at = String::from_ascii_str("@testE123");
+    let name = String::from_ascii_str("teste123");
+    let name_with_at = String::from_ascii_str("@teste123");
 
     let validated_name = assert_name_validity(name_with_at);
 
@@ -129,9 +133,28 @@ fn test_valid_name_ascii() {
 }
 
 #[test(should_revert)]
+fn test_invalid_name_lowercase() {
+    use std::assert::assert;
+
+    let invalid_name = String::from_ascii_str("@TESTE");
+    let _ = assert_name_validity(invalid_name);
+}
+
+#[test(should_revert)]
 fn test_invalid_name_ascii() {
     use std::assert::assert;
 
     let invalid_name = String::from_ascii_str("@asd___#$%#$%");
+    let _ = assert_name_validity(invalid_name);
+}
+
+#[test(should_revert)]
+fn test_invalid_length() {
+    use std::assert::assert;
+
+    let valid_name = String::from_ascii_str("@asdfb1234567890mnopqrstuvxwyz1");
+    let _ = assert_name_validity(valid_name);
+
+    let invalid_name = String::from_ascii_str("@asdfb1234567890mnopqrstuvxwyz12");
     let _ = assert_name_validity(invalid_name);
 }

@@ -1,10 +1,12 @@
-import { BaseAssetId, type Account } from 'fuels';
+import { type Account, BaseAssetId } from 'fuels';
 import { config } from '../config';
 import { getRegistryContract } from '../setup';
 import {
   NotFoundBalanceError,
+  type ProviderParams,
   assertValidDomain,
   domainPrices,
+  getProviderFromParams,
   getTxParams,
 } from '../utils';
 
@@ -65,20 +67,26 @@ export async function register(params: RegisterDomainParams) {
   const txParams = getTxParams(account.provider);
   const amount = await checkAccountBalance(account, domainName);
 
-  const { transactionResult, transactionResponse, gasUsed, transactionId } =
-    await registry.functions
-      .register(domainName, resolver)
-      .callParams({
-        forward: { amount, assetId: BaseAssetId },
-      })
-      .txParams(txParams)
-      .call();
+  const {
+    transactionResult,
+    transactionResponse,
+    gasUsed,
+    transactionId,
+    value,
+  } = await registry.functions
+    .register(domainName, resolver)
+    .callParams({
+      forward: { amount, assetId: BaseAssetId },
+    })
+    .txParams(txParams)
+    .call();
 
   return {
     gasUsed,
     transactionId,
     transactionResult,
     transactionResponse,
+    assetId: value.value,
   };
 }
 
@@ -118,11 +126,51 @@ export async function simulateHandleCost(params: RegisterDomainParams) {
     .txParams(txParams)
     .getTransactionRequest();
 
-  const { usedFee, minFee } =
+  const { gasUsed, minFee } =
     await account.provider.getTransactionCost(transactionRequest);
 
   return {
-    fee: usedFee.add(minFee),
+    fee: gasUsed.add(minFee),
     transactionRequest,
   };
+}
+
+type Handle = {
+  name: string;
+  isPrimary: boolean;
+};
+
+/**
+ * Retrieves all handles by owner address. Returns the handle name and a boolean indicating if it is the primary domain.
+ * @param {string} owner - The owner of the records.
+ * @param {ProviderParams} [params] - Additional provider parameters.
+ * @returns {Promise<Handle[]>} - A promise that resolves to an array of domain records.
+ */
+export async function getAll(owner: string, params?: ProviderParams) {
+  const provider = await getProviderFromParams(params);
+  const { registry } = await getRegistryContract({
+    provider,
+    storageId: config.STORAGE_CONTRACT_ID!,
+  });
+
+  const { value } = await registry.functions.get_all(owner).get();
+
+  return convertBytesToDomain(Array.from(value));
+}
+
+function convertBytesToDomain(bytes: number[]) {
+  const result: Handle[] = [];
+
+  const [, nameSize] = bytes.splice(0, 2);
+  const name = String.fromCharCode(...bytes.splice(0, nameSize));
+
+  const [, boolSize] = bytes.splice(0, 2);
+  const [isPrimary] = bytes.splice(0, boolSize);
+  result.push({ name, isPrimary: !!isPrimary });
+
+  if (bytes.length) {
+    result.push(...convertBytesToDomain(bytes));
+  }
+
+  return result;
 }

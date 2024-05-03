@@ -8,7 +8,7 @@ import { InvalidDomainError } from './errors';
  * @returns {boolean} - True if the domain is valid, false otherwise.
  */
 export const isValidDomain = (domain: string): boolean =>
-  /^@?[a-zA-Z0-9_]+$/.test(domain);
+  /^@?[a-z0-9_-]{2,31}$/.test(domain);
 
 /**
  * Checks if a given domain is valid and throw error.
@@ -47,3 +47,12 @@ export const domainPrices = (domain: string, period = 1) => {
 
   return price.mul(period);
 };
+
+/**
+ * Converts a domain string into a Uint8Array of bytes.
+ *
+ * @param {string} domain - The domain string to convert.
+ * @returns {Uint8Array} - The converted bytes.
+ */
+export const domainToBytes = (domain: string): Uint8Array =>
+  Uint8Array.from(domain.split('').map((char) => char.charCodeAt(0)));

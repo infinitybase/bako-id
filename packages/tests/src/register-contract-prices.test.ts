@@ -7,7 +7,7 @@ import {
   setupContractsAndDeploy,
 } from './utils';
 
-describe('[PRICES] Test Registry Contract', () => {
+describe('[PRICES] Registry Contract', () => {
   let wallet: WalletUnlocked;
   let provider: Provider;
 
@@ -36,7 +36,7 @@ describe('[PRICES] Test Registry Contract', () => {
       expect(transactionResult.status).toBe(TransactionStatus.failure);
     } catch (e) {
       expectRequireRevertError(e);
-      expectContainLogError(e.cause.logs, 'InvalidAmount');
+      expectContainLogError(e, 'InvalidAmount');
     }
   });
 
