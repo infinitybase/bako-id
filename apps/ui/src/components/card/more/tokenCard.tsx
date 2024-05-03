@@ -9,13 +9,15 @@ import {
 } from '@chakra-ui/react';
 import { Card } from '..';
 import { CheckoutCard, TextInput } from '../..';
+import { useProfile } from '../../../modules/profile/hooks/useProfile';
 import { CopyIcon } from '../../icons/copyIcon';
 import { ExploreIcon } from '../../icons/explore';
 import { ActionDomainModal } from '../../modal/actionDomainModal';
 import { useSidebar } from '../../sidebar/hooks/useSidebar';
 
 export const TokenCard = () => {
-  const { isMyDomain, domain } = useSidebar();
+  const { isMyDomain } = useSidebar();
+  const { domain, domainParam } = useProfile();
   const action = useDisclosure();
 
   return (
@@ -32,9 +34,7 @@ export const TokenCard = () => {
               rightIcon={<ExploreIcon w={5} h={5} />}
               isDisabled={!isMyDomain}
               onClick={() =>
-                window.open(
-                  `https://app.fuel.network/account/${domain?.owner}/assets`,
-                )
+                window.open(`https://app.fuel.network/account/${domain}/assets`)
               }
             >
               Explorer
@@ -76,7 +76,7 @@ export const TokenCard = () => {
 
             <CheckoutCard
               w={['fit-content', '25%', '25%', '25%']}
-              domain={domain?.name ?? ''}
+              domain={domainParam ?? ''}
             />
           </Flex>
           <Divider color="stroke.500" border="1px solid" w="full" my={[3, 8]} />
@@ -107,7 +107,7 @@ export const TokenCard = () => {
         isOpen={action.isOpen}
         onClose={() => action.onClose()}
         action="Unwrap Handle"
-        domain={`@${domain?.name}`}
+        domain={`@${domainParam}`}
         modalTitle="Confirm details"
         modalSubtitle="Double check these details before confirming in your wallet."
         hasActions

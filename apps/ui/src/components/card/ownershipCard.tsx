@@ -1,4 +1,3 @@
-import type { Domain } from '@bako-id/sdk';
 import { CopyIcon } from '@chakra-ui/icons';
 import { Flex, Heading, Icon } from '@chakra-ui/react';
 import { Address } from 'fuels';
@@ -7,9 +6,9 @@ import { formatAddress } from '../../utils/formatter';
 import { ExploreIcon } from '../icons/explore';
 
 interface IOwnershipCard {
-  domain: Domain | null;
+  owner: string | null;
 }
-export const OwnershipCard = ({ domain }: IOwnershipCard) => {
+export const OwnershipCard = ({ owner }: IOwnershipCard) => {
   // const { isMyDomain } = useSidebar();
   return (
     <Card
@@ -46,15 +45,9 @@ export const OwnershipCard = ({ domain }: IOwnershipCard) => {
           rightAddon
           rightAddonName={<Icon as={ExploreIcon} />}
           rightAddonClick={() =>
-            window.open(
-              `https://app.fuel.network/account/${domain?.owner}/assets`
-            )
+            window.open(`https://app.fuel.network/account/${owner}/assets`)
           }
-          value={
-            domain?.owner
-              ? formatAddress(Address.fromB256(domain.owner).toString())
-              : ''
-          }
+          value={owner ? formatAddress(Address.fromB256(owner).toString()) : ''}
         />
         <TextInput
           leftAddon

@@ -9,6 +9,7 @@ import {
 import { Address } from 'fuels';
 import { Card } from '..';
 import { TextInput } from '../..';
+import { useProfile } from '../../../modules/profile/hooks/useProfile';
 import { EditIcon } from '../../icons/editIcon';
 import { ExploreIcon } from '../../icons/explore';
 import { ActionDomainModal } from '../../modal/actionDomainModal';
@@ -16,7 +17,8 @@ import { useSidebar } from '../../sidebar/hooks/useSidebar';
 
 export const ResolverCard = () => {
   const action = useDisclosure();
-  const { isMyDomain, domain } = useSidebar();
+  const { isMyDomain } = useSidebar();
+  const { domain, domainParam } = useProfile();
 
   return (
     <>
@@ -46,16 +48,12 @@ export const ResolverCard = () => {
           <TextInput
             leftAddon
             leftAddonName="address"
-            value={
-              domain?.resolver
-                ? Address.fromB256(domain.resolver).toString()
-                : ''
-            }
+            value={domain ? Address.fromB256(domain).toString() : ''}
             rightAddon
             rightAddonName={<ExploreIcon />}
             rightAddonClick={() => {
               window.open(
-                `https://app.fuel.network/account/${domain?.resolver}/assets`,
+                `https://app.fuel.network/account/${domain}/assets`,
                 '_blank',
               );
             }}
@@ -66,7 +64,7 @@ export const ResolverCard = () => {
         isOpen={action.isOpen}
         onClose={() => action.onClose()}
         action="Edit handle"
-        domain={`@${domain?.name}`}
+        domain={`@${domainParam}`}
         modalTitle="Edit Resolver"
         hasActions
         onConfirm={() => {}}
