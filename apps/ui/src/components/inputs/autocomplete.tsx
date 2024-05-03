@@ -30,9 +30,8 @@ export const Autocomplete = (props: IAutocomplete) => {
 
     if (inputValue.length > 0) {
       const valid = isValidDomain(inputValue);
-
-      console.log('isValid', valid);
       if (!valid) return;
+      
       handleChangeDomain(e);
     } else {
       setInputValue('');

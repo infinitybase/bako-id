@@ -12,10 +12,6 @@ interface IAddressesCard {
 export const AddressesCard = ({ domain }: IAddressesCard) => {
   // const { isMyDomain } = useSidebar();
 
-  const copy = () => {
-    navigator.clipboard.writeText(domain ?? '');
-  };
-
   return (
     <Card
       w="full"
@@ -41,7 +37,7 @@ export const AddressesCard = ({ domain }: IAddressesCard) => {
           rightAddon
           textAlign="right"
           rightAddonName={<Icon as={CopyIcon} />}
-          rightAddonClick={copy}
+         
           value={
             domain ? formatAddress(Address.fromB256(domain).toString()) : ''
           }
