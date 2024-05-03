@@ -102,12 +102,8 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
           fontSize="xs"
           textAlign="end"
           fontWeight={600}
-          _focus={{
-            borderColor: 'section.500',
-          }}
-          _hover={{
-            borderColor: 'section.500',
-          }}
+          _focus={{}}
+          _hover={{}}
           {...rest}
         />
         {rightAddon && isVerified ? (

@@ -8,9 +8,9 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { Card } from '..';
-import { CheckoutCard, TextInput } from '../..';
 import { useProfile } from '../../../modules/profile/hooks/useProfile';
-import { CopyIcon } from '../../icons/copyIcon';
+import { CheckoutCard, TextValue } from '../..';
+import { CopyText } from '../../helpers/copy';
 import { ExploreIcon } from '../../icons/explore';
 import { ActionDomainModal } from '../../modal/actionDomainModal';
 import { useSidebar } from '../../sidebar/hooks/useSidebar';
@@ -22,7 +22,7 @@ export const TokenCard = () => {
 
   return (
     <>
-      <Card backdropFilter="blur(7px)" h="fit-content" minW="45%">
+      <Card backdropFilter="blur(7px)" h="fit-content" maxW={['full', '90%']}>
         <CardHeader w="full">
           <Flex w="full" justify="space-between" align="center">
             <Heading fontSize="lg" color="grey.100">
@@ -48,48 +48,43 @@ export const TokenCard = () => {
             alignItems="center"
             h="fit-content"
             justifyContent="flex-end"
-            gap={6}
+            gap={4}
+            w="full"
           >
-            <Flex w="full" h="full" direction="column" gap={5}>
-              <TextInput
-                inputHeight={16}
-                leftAddon
-                leftAddonName="hex"
-                value="0x769jepagpoa8egn3543v53545b354f354q5g54q533354"
-                rightAddon
-                rightAddonWidth="5%"
-                rightAddonName={<CopyIcon />}
-                rightAddonClick={() => {}}
+            <Flex w={['full', '80%']} direction="column" gap={6}>
+              <TextValue
+                breakRow
+                justifyContent="start"
+                leftAction={'hex'}
+                content="0x769jepagpoa8egn3543v53545b354f354q5g54q533354"
+                rightAction={
+                  <CopyText value="0x769jepagpoa8egn3543v53545b354f354q5g54q533354" />
+                }
               />
 
-              <TextInput
-                inputHeight={16}
-                leftAddon
-                leftAddonName="decimal"
-                value="0x769jepagpoa8egn3543v53545b354f354q5g54q533354"
-                rightAddon
-                rightAddonWidth="5%"
-                rightAddonName={<CopyIcon />}
-                rightAddonClick={() => {}}
+              <TextValue
+                breakRow
+                justifyContent="start"
+                leftAction={'decimal'}
+                content="0x769jepagpoa8egn3543v53545b354f354q5g54q533354"
+                rightAction={
+                  <CopyText value="0x769jepagpoa8egn3543v53545b354f354q5g54q533354" />
+                }
               />
             </Flex>
 
             <CheckoutCard
-              w={['fit-content', '25%', '25%', '25%']}
+              w={['fit-content', '40', '40', '40']}
               domain={domainParam ?? ''}
             />
           </Flex>
           <Divider color="stroke.500" border="1px solid" w="full" my={[3, 8]} />
           <Flex w="full" justify="center" direction={['column', 'row']} gap={4}>
-            <TextInput
-              w={['full', '72%']}
-              leftAddon
-              leftAddonName="wrapper"
-              value="wrapped, emancipated"
-              rightAddon
-              rightAddonWidth="5%"
-              rightAddonName={<CopyIcon />}
-              rightAddonClick={() => {}}
+            <TextValue
+              justifyContent="start"
+              leftAction={'wrapper'}
+              content="wrapped, emancipated"
+              rightAction={<CopyText value="wrapped, emancipated" />}
             />
             <Button
               isDisabled={!isMyDomain}

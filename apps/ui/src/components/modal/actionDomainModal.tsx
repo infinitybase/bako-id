@@ -1,6 +1,6 @@
 import { VStack } from '@chakra-ui/react';
+import { TextValue } from '..';
 import { Dialog } from '../dialog';
-import { TextInput } from '../inputs';
 
 interface ITransactionDetailsModal {
   isOpen: boolean;
@@ -33,18 +33,8 @@ export const ActionDomainModal = ({
     >
       <Dialog.Body>
         <VStack spacing={2}>
-          <TextInput
-            leftAddon
-            leftAddonName="action"
-            textAlign="right"
-            value={action}
-          />
-          <TextInput
-            leftAddon
-            leftAddonName="handle"
-            textAlign="right"
-            value={domain}
-          />
+          <TextValue leftAction={'action'} content={action} />
+          <TextValue leftAction={'handle'} content={domain} />
         </VStack>
       </Dialog.Body>
 

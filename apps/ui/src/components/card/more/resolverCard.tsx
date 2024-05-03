@@ -8,10 +8,12 @@ import {
 } from '@chakra-ui/react';
 import { Address } from 'fuels';
 import { Card } from '..';
-import { TextInput } from '../..';
+
 import { useProfile } from '../../../modules/profile/hooks/useProfile';
+import { TextValue } from '../..';
+import { ExplorerTypes } from '../../../types';
+import { Explorer } from '../../helpers/explorer';
 import { EditIcon } from '../../icons/editIcon';
-import { ExploreIcon } from '../../icons/explore';
 import { ActionDomainModal } from '../../modal/actionDomainModal';
 import { useSidebar } from '../../sidebar/hooks/useSidebar';
 
@@ -20,9 +22,10 @@ export const ResolverCard = () => {
   const { isMyDomain } = useSidebar();
   const { domain, domainParam } = useProfile();
 
+  if (!domain) return null;
   return (
     <>
-      <Card backdropFilter="blur(7px)" h="fit-content" minW="45%">
+      <Card backdropFilter="blur(7px)" h="fit-content" maxW={['full', '90%']}>
         <CardHeader w="full">
           <Flex w="full" justify="space-between" align="center">
             <Heading fontSize="lg" color="grey.100">
@@ -45,18 +48,12 @@ export const ResolverCard = () => {
           </Flex>
         </CardHeader>
         <CardBody mt={4}>
-          <TextInput
-            leftAddon
-            leftAddonName="address"
-            value={domain ? Address.fromB256(domain).toString() : ''}
-            rightAddon
-            rightAddonName={<ExploreIcon />}
-            rightAddonClick={() => {
-              window.open(
-                `https://app.fuel.network/account/${domain}/assets`,
-                '_blank',
-              );
-            }}
+          <TextValue
+            leftAction="address"
+            content={Address.fromB256(domain).toString()}
+            rightAction={
+              <Explorer id={domain} type={ExplorerTypes.ASSETS} />
+            }
           />
         </CardBody>
       </Card>
