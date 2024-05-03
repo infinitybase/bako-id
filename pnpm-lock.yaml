@@ -28,8 +28,8 @@ importers:
   apps/ui:
     dependencies:
       '@bako-id/sdk':
-        specifier: /Users/luisburigo/Documents/dev/infinity/bako/bako-id/packages/sdk/bako-id-sdk-0.0.6-6-dev.tgz
-        version: file:packages/sdk/bako-id-sdk-0.0.6-6-dev.tgz(fuels@0.81.0)
+        specifier: 0.0.6-8-dev
+        version: link:../../packages/sdk
       '@chakra-ui/icons':
         specifier: ^2.1.1
         version: 2.1.1(@chakra-ui/system@2.6.2)(react@18.2.0)
@@ -14585,15 +14585,4 @@ packages:
       '@types/react': 18.2.53
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
-    dev: false
-
-  file:packages/sdk/bako-id-sdk-0.0.6-6-dev.tgz(fuels@0.81.0):
-    resolution: {integrity: sha512-82IfKzwKvBijdL0xrNnoHWFcfSClZYG5S7lX8IzcvWhV2nFJgO1j5JaArMvBTFe3odyjzp6UTxN8QgIbXvTS4w==, tarball: file:packages/sdk/bako-id-sdk-0.0.6-6-dev.tgz}
-    id: file:packages/sdk/bako-id-sdk-0.0.6-6-dev.tgz
-    name: '@bako-id/sdk'
-    version: 0.0.6-6-dev
-    peerDependencies:
-      fuels: ^0.81.0
-    dependencies:
-      fuels: 0.81.0
     dev: false

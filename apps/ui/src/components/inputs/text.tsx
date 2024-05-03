@@ -1,7 +1,7 @@
-import { Box, Flex, type BoxProps } from '@chakra-ui/react';
+import { Box, type BoxProps, Flex } from '@chakra-ui/react';
 import { useScreenSize } from '../../hooks/useScreenSize';
 
-interface TextValueProps extends BoxProps {
+interface TextValueProps extends Omit<BoxProps, 'value'> {
   content?: string;
   leftAction?: string | React.ReactNode;
   leftColor?: string;

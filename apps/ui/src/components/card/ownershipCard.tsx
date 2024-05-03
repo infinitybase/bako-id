@@ -45,12 +45,8 @@ export const OwnershipCard = ({ owner }: IOwnershipCard) => {
             <Explorer id={owner ?? ''} type={ExplorerTypes.ASSETS} />
           }
           content={
-            owner
-              ? formatAddress(Address.fromB256(owner).toString())
-              : ''
-
+            owner ? formatAddress(Address.fromB256(owner).toString()) : ''
           }
-          value={owner ? formatAddress(Address.fromB256(owner).toString()) : ''}
         />
         <TextValue
           leftAction={'expiry'}
