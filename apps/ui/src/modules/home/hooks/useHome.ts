@@ -3,11 +3,11 @@ import { useFuel } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
 import { debounce } from 'lodash';
 import {
+  type ChangeEvent,
   useCallback,
   useEffect,
   useMemo,
   useState,
-  type ChangeEvent,
 } from 'react';
 import { useDomain } from '../../../hooks';
 
@@ -36,7 +36,6 @@ export const useHome = () => {
       resolveDomain
         .mutateAsync({
           domain: value,
-          providerURL: 'https://beta-5.fuel.network/graphql',
         })
         .then((info) => {
           console.log(info);
@@ -47,7 +46,7 @@ export const useHome = () => {
           setAvailable(false);
         });
     }, 500),
-    [],
+    []
   );
 
   const handleChangeDomain = (e: ChangeEvent<HTMLInputElement>) => {

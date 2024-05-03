@@ -10,13 +10,6 @@ interface IAddressesCard {
 }
 
 export const AddressesCard = ({ domain }: IAddressesCard) => {
-  // const { isMyDomain } = useSidebar();
-
-
-  const copy = () => {
-    navigator.clipboard.writeText(domain ?? '');
-  };
-
   if (!domain) return null;
 
   return (
@@ -38,12 +31,9 @@ export const AddressesCard = ({ domain }: IAddressesCard) => {
         )} */}
       </Flex>
       <Flex direction="column" alignItems="center" justifyContent="center">
-
         <TextValue
           leftAction={<Icon as={FuelIcon} />}
-          rightAction={
-            <CopyText value={Address.fromB256(domain).toString()} />
-          }
+          rightAction={<CopyText value={Address.fromB256(domain).toString()} />}
           content={formatAddress(Address.fromB256(domain).toString())}
         />
       </Flex>
