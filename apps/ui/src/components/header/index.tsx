@@ -82,6 +82,7 @@ export const Header = () => {
               fontWeight="normal"
               fontSize="sm"
               rightIcon={<FileIcon w={4} h={4} />}
+              onClick={() => navigate({ to: '/my-handles' })}
             >
               My Handles
             </Button>
