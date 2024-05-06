@@ -3,11 +3,11 @@ import { useFuel } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
 import { debounce } from 'lodash';
 import {
+  type ChangeEvent,
   useCallback,
   useEffect,
   useMemo,
   useState,
-  type ChangeEvent,
 } from 'react';
 import { useDomain } from '../../../hooks';
 
@@ -45,7 +45,7 @@ export const useHome = () => {
           setAvailable(false);
         });
     }, 500),
-    [],
+    []
   );
 
   const handleChangeDomain = (e: ChangeEvent<HTMLInputElement>) => {
