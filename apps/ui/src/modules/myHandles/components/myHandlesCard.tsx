@@ -15,7 +15,7 @@ interface MyHandlesCard {
 
 export const MyHandlesCard = ({ handles }: MyHandlesCard) => {
   return (
-    <Center w="full" h={['auto', '70%', 'xl', '80%']} alignItems="center">
+    <Center w="full" h={['auto', '70%', 'xl', 'xl']} alignItems="center">
       <Card
         border="1px solid"
         borderColor="stroke.500"

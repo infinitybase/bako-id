@@ -8,7 +8,7 @@ export const MyHandles = () => {
   const { data: handles } = useMyHandles();
 
   return (
-    <Box>
+    <Box w='full' h='full'>
       {isMobile ? (
         <MyHandlesCardMobile handles={handles} />
       ) : (
