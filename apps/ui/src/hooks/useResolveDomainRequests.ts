@@ -9,6 +9,7 @@ const useResolveDomainRequests = (
   return useMutation({
     mutationKey: ['resolveDomain'],
     mutationFn: () => resolver(domain),
+    retryDelay: 1000,
     ...options,
   });
 };

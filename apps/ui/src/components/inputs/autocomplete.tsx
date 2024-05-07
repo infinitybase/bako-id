@@ -1,17 +1,22 @@
 import { isValidDomain } from '@bako-id/sdk';
-import { SmallCloseIcon } from '@chakra-ui/icons';
+import { SearchIcon, SmallCloseIcon } from '@chakra-ui/icons';
 import {
-  Box,
-  Input as ChakraInput,
+  Flex,
+  FormControl,
+  FormLabel,
+  Input,
   InputGroup,
   InputRightElement,
   type InputProps,
 } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
-import { AvailableBadge, UnavailableBadge } from '..';
+import { useState } from 'react';
+import {
+  AvailableBadge,
+  NotSupportedBadge,
+  SearchingBadge,
+  UnavailableBadge,
+} from '..';
 import { useHome } from '../../modules/home/hooks';
-import { RightArrow } from '../icons/rightArrow';
-import { SearchIcon } from '../icons/searchIcon';
 
 interface IAutocomplete extends InputProps {}
 
@@ -20,124 +25,144 @@ export const Autocomplete = (props: IAutocomplete) => {
     useHome();
 
   const [inputValue, setInputValue] = useState<string>('');
-  const [option, setOption] = useState<string>('');
-  const [isHovered, setIsHovered] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value.toLowerCase();
+    let inputValue = e.target.value;
 
-    setInputValue(inputValue); // Movido para fora do bloco de validação
+    if (inputValue && !inputValue.startsWith('@')) {
+      inputValue = `@${inputValue}`;
+    }
+
+    inputValue = inputValue.toLowerCase();
+
+    setInputValue(inputValue);
 
     if (inputValue.length > 0) {
       const valid = isValidDomain(inputValue);
       if (!valid) return;
-      
-      handleChangeDomain(e);
+
+      if (inputValue.length > 4) {
+        handleChangeDomain(e);
+      }
     } else {
       setInputValue('');
     }
   };
 
-  const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setOption(e.target.value);
-    handleConfirmDomain(e);
-  };
-
-  useEffect(() => {
-    setOption(inputValue);
-  }, [inputValue]);
-
   return (
     <>
-      <InputGroup display="flex" flexDirection="column" zIndex={99}>
-        <Box w="full">
-          <ChakraInput
+      <FormControl>
+        <InputGroup
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          position="relative"
+        >
+          <Input
+            variant="custom"
             value={inputValue}
             color="white"
             fontWeight="normal"
             h={12}
+            w="full"
             fontSize={['xs', 'md']}
-            placeholder="Search for an available Handles"
+            placeholder=" "
+            autoComplete="off"
             textColor="text.700"
             background="input.900"
             type="text"
+            maxLength={31}
             errorBorderColor="error.500"
             onChange={handleChange}
             border="1px solid"
             borderColor="grey.600"
-            borderRadius={10}
+            borderRight="none"
+            borderRightRadius="0"
+            borderLeftRadius={10}
+            flex={1}
             sx={{ _placeholder: { color: 'grey.200' } }}
             _focus={{}}
             _hover={{}}
             _focusVisible={{}}
             {...props}
           />
+          <FormLabel isTruncated>Search for an available Handles</FormLabel>
 
-          {!inputValue && (
-            <InputRightElement h={12}>
-              <SearchIcon h={5} w={5} mr={[1, 4]} color="grey.100" />
-            </InputRightElement>
-          )}
-          {inputValue && (
-            <InputRightElement
-              _hover={{
-                cursor: 'pointer',
-                opacity: 0.8,
-              }}
-              onClick={() => setInputValue('')}
-              h={12}
-            >
-              <SmallCloseIcon h={5} w={5} mr={[1, 4]} color="grey.100" />
-            </InputRightElement>
-          )}
-        </Box>
-
-        {inputValue && (
-          <InputGroup zIndex={1} position="relative">
-            <ChakraInput
-              value={`@${option}`}
-              position="absolute"
-              w="100%"
-              maxH="200px"
-              mt={2}
-              borderRadius={10}
-              textColor="text.700"
-              background="input.900"
-              border="1px solid"
-              borderColor="grey.500"
-              key={option}
-              h={12}
-              cursor="pointer"
-              _hover={{ bgColor: 'background.400' }}
-              onSelect={handleSelect}
-              onMouseEnter={() => setIsHovered(true)} // Handle mouse enter
-              onMouseLeave={() => setIsHovered(false)}
-            />
-
-            {domainIsAvailable !== null && (
-              <InputRightElement
-                position="absolute"
-                zIndex={2}
-                top={3}
-                right={8}
-                pointerEvents="none"
-              >
-                {domainIsAvailable ? (
-                  <>
-                    <AvailableBadge position="relative" />
-                    {isHovered && <RightArrow w={3} h={3} ml={2} mr={2} />}
-                  </>
-                ) : (
-                  <>
-                    <UnavailableBadge position="relative" right={2} />
-                    {isHovered && <RightArrow w={3} h={3} mr={3} />}
-                  </>
-                )}
+          <Flex
+            h="10"
+            display="flex"
+            w="7rem"
+            bottom={2}
+            right={1}
+            position="absolute"
+            backgroundColor="input.900"
+            alignItems="center"
+            justifyContent="center"
+          >
+            {!inputValue && (
+              <InputRightElement h={10} mt={1}>
+                <SearchIcon h={5} w={5} mr={[1, 4]} color="grey.100" />
               </InputRightElement>
             )}
-          </InputGroup>
-        )}
-      </InputGroup>
+
+            {inputValue.length > 0 && (
+              <Flex w="full">
+                {inputValue.length <= 4 ? (
+                  <InputRightElement
+                    zIndex={99}
+                    right={7}
+                    h={10}
+                    mt={1}
+                    pr={3}
+                    w="full"
+                    alignItems="center"
+                    bgColor="input.900"
+                    pointerEvents="none"
+                  >
+                    <NotSupportedBadge />
+                  </InputRightElement>
+                ) : (
+                  <InputRightElement
+                    zIndex={99}
+                    right={7}
+                    h={10}
+                    mt={1}
+                    pr={3}
+                    w="full"
+                    alignItems="center"
+                    bgColor="input.900"
+                    pointerEvents="none"
+                  >
+                    {domainIsAvailable === null ? (
+                      <SearchingBadge />
+                    ) : domainIsAvailable ? (
+                      <AvailableBadge />
+                    ) : (
+                      <UnavailableBadge right={2} />
+                    )}
+                  </InputRightElement>
+                )}
+                <InputRightElement
+                  zIndex={99}
+                  h={10}
+                  mt={1}
+                  mr={1}
+                  w="8"
+                  alignItems="center"
+                  bgColor="input.900"
+                  _hover={{
+                    cursor: 'pointer',
+                    opacity: 0.8,
+                  }}
+                  onClick={() => setInputValue('')}
+                >
+                  <SmallCloseIcon h={5} w={5} mr={[1, 4]} color="grey.100" />
+                </InputRightElement>
+              </Flex>
+            )}
+          </Flex>
+        </InputGroup>
+      </FormControl>
     </>
   );
 };

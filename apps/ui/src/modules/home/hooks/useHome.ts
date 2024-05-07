@@ -2,13 +2,7 @@ import { isValidDomain } from '@bako-id/sdk';
 import { useFuel } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
 import { debounce } from 'lodash';
-import {
-  type ChangeEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { useCallback, useEffect, useState, type ChangeEvent } from 'react';
 import { useDomain } from '../../../hooks';
 
 export const useHome = () => {
@@ -20,6 +14,9 @@ export const useHome = () => {
   const { resolveDomain } = useDomain(domain);
   const [available, setAvailable] = useState<boolean | null>(null);
   const [isConnected, setIsConnected] = useState<boolean | null>(null);
+  const [domainIsAvailable, setDomainIsAvailable] = useState<boolean | null>(
+    null,
+  );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -45,12 +42,12 @@ export const useHome = () => {
           setAvailable(false);
         });
     }, 500),
-    []
+    [],
   );
 
   const handleChangeDomain = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e?.target ?? {};
-  
+
     if (value.length < 3) {
       setAvailable(null);
       setDomain(value);
@@ -64,8 +61,7 @@ export const useHome = () => {
     }
   };
 
-  const handleConfirmDomain = async (e: React.FormEvent<HTMLDivElement>) => {
-    e.preventDefault();
+  const handleConfirmDomain = async () => {
     const isValid = isValidDomain(domain);
     if (!isValid) return;
 
@@ -87,11 +83,12 @@ export const useHome = () => {
     });
   };
 
-  const domainIsAvailable = useMemo(() => {
-    if (resolveDomain.isPending || available === null) return null;
-    if (!available) return false;
+  useEffect(() => {
+    if (resolveDomain.isPending || available === null)
+      return setDomainIsAvailable(null);
+    if (!available) return setDomainIsAvailable(false);
     if (available) {
-      return true;
+      return setDomainIsAvailable(true);
     }
   }, [resolveDomain, available]);
 
