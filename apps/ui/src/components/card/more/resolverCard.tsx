@@ -34,6 +34,7 @@ export const ResolverCard = () => {
             <Button
               variant="ghost"
               mr={1}
+              hidden
               color="grey.100"
               _hover={{
                 bgColor: 'transparent',
@@ -55,6 +56,7 @@ export const ResolverCard = () => {
             whiteSpace="nowrap"
             wordBreak="normal"
             isTruncated
+
           />
         </CardBody>
       </Card>

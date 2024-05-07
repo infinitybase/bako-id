@@ -8,8 +8,8 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { Card } from '..';
-import { CheckoutCard, TextValue } from '../..';
 import { useToken } from '../../../hooks/useToken';
+import { BakoTooltip, CheckoutCard, TextValue } from '../..';
 import { useProfile } from '../../../modules/profile/hooks/useProfile';
 import { CopyText } from '../../helpers/copy';
 import { ExploreIcon } from '../../icons/explore';
@@ -86,15 +86,18 @@ export const TokenCard = () => {
               content="wrapped, emancipated"
               rightAction={<CopyText value="wrapped, emancipated" />}
             />
-            <Button
-              isDisabled={!isMyDomain}
-              onClick={action.onOpen}
-              fontSize="md"
-              w={['full', '31%']}
-              variant="primary"
-            >
-              Unwrap
-            </Button>
+            <BakoTooltip>
+              <Button
+                isDisabled
+                onClick={action.onOpen}
+                fontSize="md"
+                w={['full', '31%']}
+                variant="primary"
+                _hover={{}}
+              >
+                Unwrap
+              </Button>
+            </BakoTooltip>
           </Flex>
         </CardBody>
       </Card>
