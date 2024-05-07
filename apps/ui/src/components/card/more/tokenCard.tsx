@@ -8,21 +8,28 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { Card } from '..';
-import { useProfile } from '../../../modules/profile/hooks/useProfile';
 import { CheckoutCard, TextValue } from '../..';
+import { useToken } from '../../../hooks/useToken';
+import { useProfile } from '../../../modules/profile/hooks/useProfile';
 import { CopyText } from '../../helpers/copy';
 import { ExploreIcon } from '../../icons/explore';
 import { ActionDomainModal } from '../../modal/actionDomainModal';
 import { useSidebar } from '../../sidebar/hooks/useSidebar';
 
 export const TokenCard = () => {
+  const { token } = useToken();
   const { isMyDomain } = useSidebar();
   const { domain, domainParam } = useProfile();
   const action = useDisclosure();
 
   return (
     <>
-      <Card backdropFilter="blur(7px)" h="fit-content" maxW={['full', '90%']}>
+      <Card
+        backdropFilter="blur(7px)"
+        h="fit-content"
+        maxW={['full', '45rem']}
+        w={['full', 'auto', 'auto', '45rem']}
+      >
         <CardHeader w="full">
           <Flex w="full" justify="space-between" align="center">
             <Heading fontSize="lg" color="grey.100">
@@ -56,27 +63,20 @@ export const TokenCard = () => {
                 breakRow
                 justifyContent="start"
                 leftAction={'hex'}
-                content="0x769jepagpoa8egn3543v53545b354f354q5g54q533354"
-                rightAction={
-                  <CopyText value="0x769jepagpoa8egn3543v53545b354f354q5g54q533354" />
-                }
+                content={token?.contractId}
+                rightAction={<CopyText value={token?.contractId ?? ''} />}
               />
 
               <TextValue
                 breakRow
                 justifyContent="start"
                 leftAction={'decimal'}
-                content="0x769jepagpoa8egn3543v53545b354f354q5g54q533354"
-                rightAction={
-                  <CopyText value="0x769jepagpoa8egn3543v53545b354f354q5g54q533354" />
-                }
+                content={token?.subId}
+                rightAction={<CopyText value={token?.subId ?? ''} />}
               />
             </Flex>
 
-            <CheckoutCard
-              w={['fit-content', '40', '40', '40']}
-              domain={domainParam ?? ''}
-            />
+            <CheckoutCard w={['fit-content', '40', '40', '40']} />
           </Flex>
           <Divider color="stroke.500" border="1px solid" w="full" my={[3, 8]} />
           <Flex w="full" justify="center" direction={['column', 'row']} gap={4}>

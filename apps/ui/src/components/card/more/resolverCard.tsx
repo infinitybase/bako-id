@@ -9,8 +9,8 @@ import {
 import { Address } from 'fuels';
 import { Card } from '..';
 
-import { useProfile } from '../../../modules/profile/hooks/useProfile';
 import { TextValue } from '../..';
+import { useProfile } from '../../../modules/profile/hooks/useProfile';
 import { ExplorerTypes } from '../../../types';
 import { Explorer } from '../../helpers/explorer';
 import { EditIcon } from '../../icons/editIcon';
@@ -25,7 +25,7 @@ export const ResolverCard = () => {
   if (!domain) return null;
   return (
     <>
-      <Card backdropFilter="blur(7px)" h="fit-content" maxW={['full', '90%']}>
+      <Card backdropFilter="blur(7px)" h="fit-content" maxW={['full', '45rem']}>
         <CardHeader w="full">
           <Flex w="full" justify="space-between" align="center">
             <Heading fontSize="lg" color="grey.100">
@@ -51,9 +51,10 @@ export const ResolverCard = () => {
           <TextValue
             leftAction="address"
             content={Address.fromB256(domain).toString()}
-            rightAction={
-              <Explorer id={domain} type={ExplorerTypes.ASSETS} />
-            }
+            rightAction={<Explorer id={domain} type={ExplorerTypes.ASSETS} />}
+            whiteSpace="nowrap"
+            wordBreak="normal"
+            isTruncated
           />
         </CardBody>
       </Card>
