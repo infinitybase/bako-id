@@ -9,8 +9,8 @@ import {
 import { Address } from 'fuels';
 import { Card } from '..';
 
-import { useProfile } from '../../../modules/profile/hooks/useProfile';
 import { TextValue } from '../..';
+import { useProfile } from '../../../modules/profile/hooks/useProfile';
 import { ExplorerTypes } from '../../../types';
 import { Explorer } from '../../helpers/explorer';
 import { EditIcon } from '../../icons/editIcon';
@@ -34,6 +34,7 @@ export const ResolverCard = () => {
             <Button
               variant="ghost"
               mr={1}
+              hidden
               color="grey.100"
               _hover={{
                 bgColor: 'transparent',
@@ -51,9 +52,7 @@ export const ResolverCard = () => {
           <TextValue
             leftAction="address"
             content={Address.fromB256(domain).toString()}
-            rightAction={
-              <Explorer id={domain} type={ExplorerTypes.ASSETS} />
-            }
+            rightAction={<Explorer id={domain} type={ExplorerTypes.ASSETS} />}
           />
         </CardBody>
       </Card>

@@ -10,8 +10,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Card } from '..';
-import { TextValue } from '../..';
-import { DoubleArrowRightIcon } from '../../icons/doubleArrowRightIcon';
+import { DoubleArrowRightIcon, TextValue } from '../..';
 import { ExploreIcon } from '../../icons/explore';
 import { useSidebar } from '../../sidebar/hooks/useSidebar';
 
@@ -28,6 +27,7 @@ export const ValidityCard = () => {
           <Button
             variant="ghosted"
             color="grey.100"
+            hidden
             _hover={{
               bgColor: 'transparent',
               color: 'button.500',
@@ -50,7 +50,7 @@ export const ValidityCard = () => {
             leftColor="grey.100"
             color="section.500"
             justifyContent="start"
-            content="18:48:23 GMT"
+            content="18:48:23 GMT +1"
           />
         </FormControl>
         <FormControl my={4}>
@@ -90,7 +90,7 @@ export const ValidityCard = () => {
             leftAction={'march 31, 2024'}
             color="section.500"
             justifyContent="start"
-            content="8:48:23"
+            content="8:48:23 GMT +1"
             rightAction={<Icon as={ExploreIcon} />}
           />
         </FormControl>

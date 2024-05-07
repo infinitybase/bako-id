@@ -8,7 +8,7 @@ interface IMyHandlesCardMobile {
 
 export const MyHandlesCardMobile = ({ handles }: IMyHandlesCardMobile) => {
   return (
-    <Center w="full" h="full" p={4}>
+    <Center w="full" h="max-content" p={4}>
       <VStack w="full" align="flex-start">
         <Flex w="full" justifyContent="flex-start" flexDir="column" gap={2}>
           <Text fontSize="md" fontWeight="semibold">
