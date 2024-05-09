@@ -6,7 +6,6 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
-  FormHelperText,
   FormLabel,
   Input,
   InputGroup,
@@ -14,7 +13,7 @@ import {
   type InputProps,
 } from '@chakra-ui/react';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import {
   AvailableBadge,
   NotSupportedBadge,
@@ -32,22 +31,27 @@ type AutocompleteValue = {
 };
 
 export const Autocomplete = (props: IAutocomplete) => {
-  const {
-    handleChangeDomain,
-    domainIsAvailable,
-
-    handleConfirmDomain,
-  } = useHome();
+  const { handleChangeDomain, domainIsAvailable, handleConfirmDomain } =
+    useHome();
   const [inputValue, setInputValue] = useState<string>('');
   const {
-    register,
+    control,
+    trigger,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<AutocompleteValue>();
-  const onSubmit = () => handleConfirmDomain();
+  } = useForm<AutocompleteValue>({
+    mode: 'all',
+    reValidateMode: 'onChange',
+    defaultValues: {
+      handle: '',
+    },
+  });
+  const onSubmit = () => {
+    handleConfirmDomain();
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let inputValue = e.target.value;
+    let inputValue = e.target.value.split(' ').join('');
 
     if (inputValue && !inputValue.startsWith('@')) {
       inputValue = `@${inputValue}`;
@@ -56,8 +60,8 @@ export const Autocomplete = (props: IAutocomplete) => {
     inputValue = inputValue.toLowerCase();
 
     setInputValue(inputValue);
-
     if (inputValue.length > 0) {
+      trigger('handle');
       const valid = isValidDomain(inputValue);
       if (!valid) return;
 
@@ -73,7 +77,7 @@ export const Autocomplete = (props: IAutocomplete) => {
     <Box w="full" h="full" display="flex" flexDirection="column">
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControl
-          isInvalid={!!errors?.handle && inputValue.length > 0}
+          isInvalid={!!errors?.handle && inputValue.length >= 0}
           display="flex"
           flexDirection="column"
         >
@@ -83,31 +87,42 @@ export const Autocomplete = (props: IAutocomplete) => {
             justifyContent="center"
             position="relative"
           >
-            <Input
-              {...register('handle', {
-                required: 'You must type something',
+            <Controller
+              name="handle"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: { value: true, message: 'You must type something' },
                 minLength: {
                   value: 4,
-                  message: 'Handle must be at least 3 characters long',
+                  message: 'Handle must be at least 3 characters long.',
                 },
-              })}
-              variant="autocomplete"
-              value={inputValue}
-              color="white"
-              fontWeight="normal"
-              w="full"
-              fontSize={['xs', 'md']}
-              placeholder=" "
-              autoComplete="off"
-              textColor="text.700"
-              background="input.900"
-              type="text"
-              maxLength={31}
-              errorBorderColor="error.500"
-              onChange={handleChange}
-              flex={1}
-              sx={{ _placeholder: { color: 'grey.200' } }}
-              {...props}
+              }}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  variant="autocomplete"
+                  value={inputValue}
+                  color="white"
+                  fontWeight="normal"
+                  w="full"
+                  fontSize={['xs', 'md']}
+                  placeholder=" "
+                  autoComplete="off"
+                  textColor="text.700"
+                  background="input.900"
+                  type="text"
+                  maxLength={31}
+                  errorBorderColor="error.500"
+                  onChange={(e) => {
+                    field.onChange(e);
+                    handleChange(e);
+                  }}
+                  flex={1}
+                  sx={{ _placeholder: { color: 'grey.200' } }}
+                  {...props}
+                />
+              )}
             />
             <FormLabel isTruncated fontWeight="normal" maxW="80%" fontSize="sm">
               Search for an available Handles
@@ -187,29 +202,39 @@ export const Autocomplete = (props: IAutocomplete) => {
               )}
             </Flex>
           </InputGroup>
-          {errors.handle?.message ? (
-            <FormErrorMessage color="error.500">
-              {errors.handle?.message}
-            </FormErrorMessage>
-          ) : (
-            <FormHelperText color="grey.100">
-              <InfoIcon color="button.500" h={3} w={3} mr={2} />
-              Handle must be at least 3 characters long and/or be separated by
-              and hyphen or a underline.
-            </FormHelperText>
-          )}
+          <Box h={8} w="full">
+            {errors.handle?.message && inputValue.length <= 3 && (
+              <FormErrorMessage
+                w="full"
+                color="error.500"
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+                textAlign="left"
+                pr={4}
+                pl={6}
+              >
+                {errors.handle?.message}
+                {errors.handle.type === 'minLength' ? (
+                  <InfoIcon w={3} h={3} color="section.200" mr={1} />
+                ) : (
+                  <Box />
+                )}
+              </FormErrorMessage>
+            )}
+          </Box>
         </FormControl>
         <Button
           type="submit"
-          mt={6}
+          mt={4}
           variant="primary"
           isLoading={isSubmitting}
-          isDisabled={
-            inputValue.length === 0 ? false : domainIsAvailable === null
-          }
+          isDisabled={!!errors.handle?.message || domainIsAvailable === null}
           _disabled={{
+            cursor: 'not-allowed',
+            bgColor: 'button.500',
+            opacity: 0.5,
             _hover: {
-              cursor: 'not-allowed',
               bgColor: 'button.500',
               opacity: 0.5,
             },
