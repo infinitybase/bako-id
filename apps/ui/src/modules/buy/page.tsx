@@ -60,8 +60,8 @@ export const Buy = () => {
       h="full"
       display="flex"
       alignItems="center"
-      mt={[12, 12, 12, 0]}
-      gap={[12, 12, 0, 12]}
+      mt={[12, 12, 0, 0]}
+      gap={[12, 12, 12, 12]}
       mb={[0, 0, 'auto', 0]}
       flexDirection="column"
     >
