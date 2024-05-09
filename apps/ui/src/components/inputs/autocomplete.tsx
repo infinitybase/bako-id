@@ -10,12 +10,15 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  ListItem,
+  UnorderedList,
   type InputProps,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
   AvailableBadge,
+  BakoTooltip,
   NotSupportedBadge,
   SearchingBadge,
   UnavailableBadge,
@@ -216,7 +219,23 @@ export const Autocomplete = (props: IAutocomplete) => {
               >
                 {errors.handle?.message}
                 {errors.handle.type === 'minLength' ? (
-                  <InfoIcon w={3} h={3} color="section.200" mr={1} />
+                  <BakoTooltip
+                    w="full"
+                    label={
+                      <UnorderedList>
+                        <ListItem>
+                          Handle must be at least 3 characters long and no
+                          longer than 31.
+                        </ListItem>
+                        <ListItem>
+                          Can be composed of letters, hyphens and underlines.
+                        </ListItem>
+                        <ListItem>No spaces or special characters.</ListItem>
+                      </UnorderedList>
+                    }
+                  >
+                    <InfoIcon w={3} h={3} color="section.200" mr={1} />
+                  </BakoTooltip>
                 ) : (
                   <Box />
                 )}
