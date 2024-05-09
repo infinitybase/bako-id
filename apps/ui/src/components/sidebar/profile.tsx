@@ -16,7 +16,7 @@ import { SidebarButton } from '../buttons/sidebarButton';
 import { BakoSafeLogo } from '../icons/bakoSafeLogo';
 import { TwitterBannerIcon } from '../icons/twitterBannerIcon';
 import { UserIcon } from '../icons/userIcon';
-import { Autocomplete } from '../inputs/autocomplete';
+import { DropdownAutocomplete } from '../inputs/dropdownAutocomplete';
 import { useSidebar } from './hooks/useSidebar';
 
 interface ProfileSidebarProps extends BoxProps {}
@@ -51,8 +51,7 @@ const ProfileSidebar = (props: ProfileSidebarProps) => {
               <Text color="section.200" fontSize="md" fontWeight="semibold">
                 More Handles?
               </Text>
-              <Autocomplete
-                placeholder="Search for an available Handle"
+              <DropdownAutocomplete
                 bgColor="#201F1D"
                 key="profile-sidebar-autocomplete"
               />

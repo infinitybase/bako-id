@@ -53,6 +53,7 @@ export const useHome = () => {
       setDomain(value);
       return;
     }
+
     const isValid = isValidDomain(value);
 
     if (isValid || !value) {
@@ -62,6 +63,7 @@ export const useHome = () => {
   };
 
   const handleConfirmDomain = async () => {
+    console.log(domain);
     const isValid = isValidDomain(domain);
     if (!isValid) return;
 

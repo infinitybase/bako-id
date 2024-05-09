@@ -24,15 +24,11 @@ const inputInvalidStyle = {
 const baseStyle = defineStyle({
   field: {
     bg: 'dark.250',
-    color: 'grey.200',
+    color: 'section.200',
     fontSize: 'md',
     borderColor: 'grey.600',
     boxShadow: 'none',
     borderWidth: 1,
-    pt: 5,
-    pb: 1,
-    px: 5,
-    height: 'auto',
     borderRadius: 10,
     _hover: {
       borderColor: 'dark.100',
@@ -40,9 +36,7 @@ const baseStyle = defineStyle({
     _blur: {
       background: 'dark.250',
     },
-    _invalid: inputInvalidStyle,
-    _focus: inputActiveStyle,
-    _focusVisible: inputActiveStyle,
+
     _placeholder: {
       color: 'grey.200',
       fontWeight: 'medium',
@@ -52,6 +46,19 @@ const baseStyle = defineStyle({
   element: {},
 });
 
+const autocomplete = defineStyle({
+  field: {
+    ...baseStyle.field,
+    height: 'auto',
+    pt: 5,
+    pb: 1,
+    px: 5,
+    _focus: inputActiveStyle,
+    _focusVisible: inputActiveStyle,
+    _invalid: inputInvalidStyle,
+  },
+});
+
 const Input = defineStyleConfig({
   baseStyle,
   defaultProps: {
@@ -59,6 +66,7 @@ const Input = defineStyleConfig({
   },
   variants: {
     custom: baseStyle,
+    autocomplete,
   },
 });
 

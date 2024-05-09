@@ -1,49 +1,58 @@
-import {
-  Button,
-  Card,
-  Center,
-  Divider,
-  HStack,
-  Icon,
-  Stack,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Card, Center, Stack, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
-import { FarcasterIcon } from '../../components/icons/farcaster';
 import { Autocomplete } from '../../components/inputs/autocomplete';
 
 export const Home = () => {
   const navigate = useNavigate();
+
   return (
-    <Center w="full" h="full" alignItems="center" zIndex={10}>
+    <Center
+      w="full"
+      h="full"
+      alignItems="center"
+      justifyContent="center"
+      zIndex={10}
+    >
       <Card
         h={['auto', 'auto', 'auto', 'auto']}
-        maxW={['md', 'lg', '50rem', '50rem']}
+        maxW={['md', 'lg', '33rem', '33rem']}
         border="1px solid rgba(243, 242, 241, 0.05)"
-        padding={[6, 8, 10, 12]}
+        p={[6, 8, 16, 16]}
         mt={[12, 12, 6, 0]}
         mx={[2, 0]}
-        mb={['auto', 'auto', 'auto', 20]}
+        mb={['auto', 'auto', 'auto', 32]}
       >
         <Stack
           w="full"
           direction="column"
-          px={[0, 8]}
+          alignItems="center"
+          px={[0, 4]}
           textAlign="center"
-          spacing={8}
+          spacing={12}
         >
-          <Text
-            className="bg-pan-tl"
-            bgClip="text"
-            fontWeight={700}
-            fontSize={{ base: 24, md: 38, lg: 40, xl: 48 }}
+          <Box
+            alignItems="center"
+            display="flex"
+            flexDirection="column"
             gap={2}
           >
-            Bring your Farcaster username to Handles
-          </Text>
+            <Text
+              className="bg-pan-tl"
+              bgClip="text"
+              fontWeight={700}
+              fontSize={{ base: 24, md: 32, lg: 32, xl: 32 }}
+              gap={2}
+            >
+              Search new Handles
+            </Text>
 
-          <Stack
+            <Text fontSize="sm" color="section.200">
+              The native naming system across the Fuel ecosystem Rollups and
+              beyond. Powered by BakoID
+            </Text>
+          </Box>
+
+          {/* <Stack
             direction={['column', 'row']}
             w="full"
             gap={[4, 0]}
@@ -53,17 +62,6 @@ export const Home = () => {
               <Icon as={FarcasterIcon} w={4} h={4} />
               <Text ml={2}>Farcaster</Text>
             </Button>
-            {/* {!isConnected && (
-              <Button
-                w={['full', '45%']}
-                p={6}
-                bgColor="button.500"
-                rounded="lg"
-              >
-                <Icon as={TwitterIcon} />
-                <Text ml={2}>Twitter</Text>
-              </Button>
-            )} */}
           </Stack>
 
           <HStack
@@ -78,31 +76,20 @@ export const Home = () => {
               OR
             </Text>
             <Divider w="40%" border="1px solid" borderColor="grey.400" />
-          </HStack>
+          </HStack> */}
 
-          <VStack w="full" h="100%" display="flex" flexDir="column" spacing={8}>
+          <VStack w="full" h="full" spacing={10}>
+            <Autocomplete key="home" />
+
             <Text
-              className="bg-pan-tl"
-              bgClip="text"
-              fontWeight={700}
-              fontSize={{ base: 24, md: 42 }}
+              fontSize="sm"
+              color="grey.100"
+              cursor="pointer"
+              _hover={{ color: 'button.500' }}
+              onClick={() => navigate({ to: '/learn-more' })}
             >
-              Search new Handles
+              Learn more
             </Text>
-
-            <VStack w="full" h="full" spacing={5}>
-              <Autocomplete key="home" />
-
-              <Text
-                fontSize="sm"
-                color="grey.100"
-                cursor="pointer"
-                _hover={{ color: 'button.500' }}
-                onClick={() => navigate({ to: '/learn-more' })}
-              >
-                Learn more
-              </Text>
-            </VStack>
           </VStack>
 
           {/* <Box

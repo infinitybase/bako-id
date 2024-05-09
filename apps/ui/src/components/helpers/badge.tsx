@@ -9,13 +9,13 @@ export const UnavailableBadge = (props: IBadge) => (
 );
 
 export const NotSupportedBadge = (props: IBadge) => (
-  <Badge variant="error" {...props}>
+  <Badge variant="error" border="none" {...props}>
     Not supported
   </Badge>
 );
 
 export const AvailableBadge = (props: IBadge) => (
-  <Badge variant="success" {...props}>
+  <Badge variant="info" px={2} border="none" {...props}>
     Available
   </Badge>
 );
