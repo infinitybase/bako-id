@@ -1,15 +1,12 @@
-import { Box, Flex, Stack, Text, useDisclosure } from '@chakra-ui/react';
+import { Box, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { AccountsCard } from '../../components/card/accountsCard';
-import { AddressesCard } from '../../components/card/addressesCard';
-import { OwnershipCard } from '../../components/card/ownershipCard';
-import { ProfileCard } from '../../components/card/profileCard';
 import { ProfileDrawer } from '../../components/drawer/profile';
 import { useScreenSize } from '../../hooks/useScreenSize';
+import { ProfileCards } from './components/profileLoader';
 import { useProfile } from './hooks/useProfile';
 
 const Profile = () => {
-  const { domain, domainParam, owner } = useProfile();
+  const { domain, domainParam, isLoadingDomain, owner } = useProfile();
   const { isMobile } = useScreenSize();
   const drawer = useDisclosure();
 
@@ -37,27 +34,13 @@ const Profile = () => {
             <Text>Menu</Text>
           </Flex>
         )}
-        <Stack
-          display="flex"
-          h="fit-content"
-          spacing={6}
-          direction={['column', 'column', 'column', 'row']}
-          w="full"
-        >
-          <Flex w="full" h="full" flexDirection="column" gap={[4, 4, 4, 6]}>
-            <ProfileCard domainName={domainParam} domain={domain ?? ''} />
-            <Stack
-              w="full"
-              h="full"
-              direction={['column', 'column', 'column', 'row']}
-              gap={[4, 4, 4, 6]}
-            >
-              <OwnershipCard owner={owner ?? ''} />
-              <AddressesCard domain={domain ?? ''} />
-            </Stack>
-          </Flex>
-          <AccountsCard />
-        </Stack>
+
+        <ProfileCards
+          domain={domain ?? ''}
+          domainParam={domainParam}
+          isLoading={isLoadingDomain}
+          owner={owner ?? ''}
+        />
       </Box>
     </>
   );

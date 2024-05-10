@@ -2,6 +2,7 @@ import { Badge } from './badge';
 import { Button } from './button';
 import { Card } from './card';
 import { Drawer, Modal } from './drawer';
+import { Skeleton } from './skeleton';
 
 const components = {
   Card,
@@ -9,6 +10,7 @@ const components = {
   Modal,
   Badge,
   Button,
+  Skeleton,
 };
 
 export { components };
