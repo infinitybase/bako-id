@@ -79,6 +79,14 @@ export interface ResolverDomainPayload {
   providerURL?: string;
 }
 
+export type TokenInfo = {
+  name: string;
+  image: string;
+  symbol: string;
+  subId: string;
+  contractId: string;
+};
+
 export interface ResolverDomainResponse {
   name: string;
 }

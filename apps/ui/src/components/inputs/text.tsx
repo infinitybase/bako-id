@@ -1,5 +1,4 @@
-import { Box, type BoxProps, Flex } from '@chakra-ui/react';
-import { useScreenSize } from '../../hooks/useScreenSize';
+import { Box, Flex, useMediaQuery, type BoxProps } from '@chakra-ui/react';
 
 interface TextValueProps extends Omit<BoxProps, 'value'> {
   content?: string;
@@ -19,7 +18,7 @@ const TextValue = ({
   darkBg,
   ...rest
 }: TextValueProps) => {
-  const { isMobile } = useScreenSize();
+  const [isMobile] = useMediaQuery('(max-width: 42em)');
 
   return (
     <Flex

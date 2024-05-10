@@ -92,7 +92,7 @@ export const Purchased = ({
           alignItems="center"
           justifyContent="center"
         >
-          <CheckoutCard domain={domain} />
+          <CheckoutCard />
         </CardBody>
 
         <HStack justify="space-between">
