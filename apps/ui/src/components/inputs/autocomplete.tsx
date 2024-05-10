@@ -205,19 +205,16 @@ export const Autocomplete = (props: IAutocomplete) => {
               )}
             </Flex>
           </InputGroup>
-          <Box h={8} w="full">
+          <Box h={9} w="full">
             {errors.handle?.message && inputValue.length <= 3 && (
               <FormErrorMessage
                 w="full"
                 color="error.500"
                 display="flex"
                 alignItems="center"
-                justifyContent="space-between"
-                textAlign="left"
-                pr={4}
-                pl={6}
+                pl={2}
+                gap={2}
               >
-                {errors.handle?.message}
                 {errors.handle.type === 'minLength' ? (
                   <BakoTooltip
                     w="full"
@@ -237,18 +234,18 @@ export const Autocomplete = (props: IAutocomplete) => {
                       </UnorderedList>
                     }
                   >
-                    <InfoIcon w={3} h={3} color="section.200" mr={1} />
+                    <InfoIcon w={3} h={3} color="section.200" mb={0.5} />
                   </BakoTooltip>
                 ) : (
                   <Box />
                 )}
+                {errors.handle?.message}
               </FormErrorMessage>
             )}
           </Box>
         </FormControl>
         <Button
           type="submit"
-          mt={4}
           variant="primary"
           isLoading={isSubmitting}
           isDisabled={!!errors.handle?.message || domainIsAvailable === null}
