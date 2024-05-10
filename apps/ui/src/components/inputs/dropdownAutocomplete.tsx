@@ -115,6 +115,9 @@ export const DropdownAutocomplete = (props: IAutocomplete) => {
                 maxH="200px"
                 h={12}
                 mt={2}
+                isDisabled={
+                  inputValue.length <= 3 || domainIsAvailable === null
+                }
                 textAlign="start"
                 borderRadius={10}
                 textColor="text.700"
