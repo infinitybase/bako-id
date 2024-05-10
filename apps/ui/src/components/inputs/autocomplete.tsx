@@ -55,6 +55,7 @@ export const Autocomplete = (props: IAutocomplete) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let inputValue = e.target.value.split(' ').join('');
+    inputValue = inputValue.replace(/[^a-zA-Z0-9-_]/g, '');
 
     if (inputValue && !inputValue.startsWith('@')) {
       inputValue = `@${inputValue}`;
@@ -64,8 +65,8 @@ export const Autocomplete = (props: IAutocomplete) => {
 
     setInputValue(inputValue);
     if (inputValue.length > 0) {
-      trigger('handle');
       const valid = isValidDomain(inputValue);
+      trigger('handle');
       if (!valid) return;
 
       if (inputValue.length > 3) {
@@ -224,13 +225,16 @@ export const Autocomplete = (props: IAutocomplete) => {
                     label={
                       <UnorderedList>
                         <ListItem>
-                          Handle must be at least 3 characters long and no
-                          longer than 31.
+                          Handle must be at least 3 characters and no longer
+                          than 31.
                         </ListItem>
                         <ListItem>
-                          Can be composed of letters, hyphens and underlines.
+                          Can be composed of letters, numbers, hyphens and
+                          underlines.
                         </ListItem>
-                        <ListItem>No spaces or special characters.</ListItem>
+                        <ListItem>
+                          No spaces or others special characters.
+                        </ListItem>
                       </UnorderedList>
                     }
                   >
