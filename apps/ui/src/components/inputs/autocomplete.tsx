@@ -54,24 +54,23 @@ export const Autocomplete = (props: IAutocomplete) => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let inputValue = e.target.value.split(' ').join('');
-    inputValue = inputValue.replace(/[^a-zA-Z0-9-_]/g, '');
+    let inputValue = e.target.value.replace(/\s+/g, ''); // Remove white spaces
+    inputValue = inputValue.replace(/[^a-zA-Z0-9-_]/g, ''); // Remove special characters except letters, numbers, hyphens, and underscores
 
     if (inputValue && !inputValue.startsWith('@')) {
-      inputValue = `@${inputValue}`;
+      inputValue = `@${inputValue}`; // Add "@" if not present
     }
 
     inputValue = inputValue.toLowerCase();
 
     setInputValue(inputValue);
-    if (inputValue.length > 0) {
-      const valid = isValidDomain(inputValue);
-      trigger('handle');
-      if (!valid) return;
 
-      if (inputValue.length > 3) {
-        handleChangeDomain(e);
-      }
+    if (inputValue.length > 0) {
+      const valid = isValidDomain(inputValue); // Check if the domain is valid
+      trigger('handle'); // Trigger the handle again to revalidate after onChange
+
+      if (!valid) return;
+      if (inputValue.length > 3) handleChangeDomain(e);
     } else {
       setInputValue('');
     }
