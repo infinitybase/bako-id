@@ -7,7 +7,7 @@ import {
   type StackProps,
 } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
-import { SmallAvatarIcon } from '../../../components/icons/smallAvatarIcon';
+import { AvatarIcon } from '../../../components';
 import type { Handle } from '../../../types';
 
 interface IHandleCard extends StackProps {
@@ -51,7 +51,7 @@ export const HandleCard = ({ handle, ...rest }: IHandleCard) => {
       {...rest}
     >
       <Flex align="center" gap={3}>
-        <Icon w={12} h={12} as={SmallAvatarIcon} />
+        <Icon w={12} h={12} as={AvatarIcon} />
         <Flex direction="column">
           <Text fontSize="sm" fontWeight="medium">
             {handle.name}

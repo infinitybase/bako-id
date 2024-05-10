@@ -92,6 +92,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
           type="text"
           readOnly={true}
           h={10}
+          pr={2}
           border="1px solid"
           borderColor="stroke.500"
           borderLeftColor="transparent"
@@ -99,9 +100,9 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
           borderRadius="xl"
           backgroundColor="input.600"
           color="grey.100"
-          fontSize="xs"
+          fontSize={['xs', 'sm']}
           textAlign="end"
-          fontWeight={600}
+          fontWeight={500}
           _focus={{}}
           _hover={{}}
           {...rest}
@@ -114,7 +115,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
             alignItems="center"
             justifyContent="center"
             fontSize="sm"
-            w="10%"
+            w="2rem"
             color="section.500"
             borderRightRadius="xl"
             pr={4}
@@ -134,7 +135,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
             alignItems="center"
             justifyContent="center"
             fontSize="sm"
-            w="10%"
+            w="2rem"
             color="section.500"
             borderRightRadius="xl"
             pr={4}

@@ -119,6 +119,7 @@ export const Info = ({
                       {name}
                       <CopyIcon
                         onClick={copy}
+                        transform={'scaleX(-1)'}
                         _hover={{
                           cursor: 'pointer',
                           color: 'button.500',

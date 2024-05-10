@@ -56,15 +56,15 @@ export const Header = () => {
       alignItems="center"
       bgColor="background.900"
       py={2}
-      px={[0, 8, 8]}
+      px={[0, isMobile ? 0 : 6, 6, 6]}
       className="transition-all-05"
     >
       <Image
         src={isMobile ? '/logo.svg' : '/bakoID-logo.svg'}
         cursor="pointer"
         onClick={goHome}
-        width={['5rem', 190]}
-        height={['4rem', 75]}
+        width={['5rem', '6rem', '7rem', '8rem']}
+        height={['4rem', '4rem', '5rem', '5rem']}
         alt="Bako logo"
       />
 
