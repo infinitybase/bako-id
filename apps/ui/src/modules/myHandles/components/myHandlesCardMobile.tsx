@@ -1,4 +1,12 @@
-import { Box, Center, Divider, Flex, Text, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Center,
+  Divider,
+  Flex,
+  Skeleton,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import type { Handle } from '../../../types';
 import { HandleCard } from './handleCard';
 
@@ -33,18 +41,27 @@ export const MyHandlesCardMobile = ({ handles }: IMyHandlesCardMobile) => {
             },
           }}
         >
-          {handles?.map((handle) => (
-            <HandleCard
-              handle={handle}
-              mx={0}
-              _hover={{}}
-              css={{
-                '&:last-child': {
-                  marginBottom: '4rem',
-                },
-              }}
-            />
-          ))}
+          {handles ? (
+            handles.map((handle) => (
+              <HandleCard
+                handle={handle}
+                mx={0}
+                _hover={{}}
+                css={{
+                  '&:last-child': {
+                    marginBottom: '4rem',
+                  },
+                }}
+              />
+            ))
+          ) : (
+            <VStack spacing={3} my={2}>
+              {[...Array(12)].map((_, index) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                <Skeleton key={index} h="3rem" w="full" rounded="lg" />
+              ))}
+            </VStack>
+          )}
         </Box>
       </VStack>
     </Center>
