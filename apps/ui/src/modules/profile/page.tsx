@@ -2,7 +2,7 @@ import { Box, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { ProfileDrawer } from '../../components/drawer/profile';
 import { useScreenSize } from '../../hooks/useScreenSize';
-import { ProfileCards } from './components/profileLoader';
+import { ProfileCards } from './components/profileCards';
 import { useProfile } from './hooks/useProfile';
 
 const Profile = () => {

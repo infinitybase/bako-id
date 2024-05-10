@@ -4,6 +4,7 @@ import {
   CardHeader,
   Flex,
   Heading,
+  Skeleton,
   useDisclosure,
 } from '@chakra-ui/react';
 import { Address } from 'fuels';
@@ -22,7 +23,6 @@ export const ResolverCard = () => {
   const { isMyDomain } = useSidebar();
   const { domain, domainParam } = useProfile();
 
-  if (!domain) return null;
   return (
     <>
       <Card backdropFilter="blur(7px)" h="fit-content" maxW={['full', '45rem']}>
@@ -49,15 +49,18 @@ export const ResolverCard = () => {
           </Flex>
         </CardHeader>
         <CardBody mt={4}>
-          <TextValue
-            leftAction="address"
-            content={Address.fromB256(domain).toString()}
-            rightAction={<Explorer id={domain} type={ExplorerTypes.ASSETS} />}
-            whiteSpace="nowrap"
-            wordBreak="normal"
-            isTruncated
-
-          />
+          {domain ? (
+            <TextValue
+              leftAction="address"
+              content={Address.fromB256(domain).toString()}
+              rightAction={<Explorer id={domain} type={ExplorerTypes.ASSETS} />}
+              whiteSpace="nowrap"
+              wordBreak="normal"
+              isTruncated
+            />
+          ) : (
+            <Skeleton w="full" h={9} rounded="lg" />
+          )}
         </CardBody>
       </Card>
       <ActionDomainModal
