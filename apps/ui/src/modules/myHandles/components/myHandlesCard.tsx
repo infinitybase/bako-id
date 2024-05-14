@@ -5,6 +5,8 @@ import {
   CardHeader,
   Center,
   Divider,
+  Skeleton,
+  VStack,
 } from '@chakra-ui/react';
 import type { Handle } from '../../../types';
 import { HandleCard } from './handleCard';
@@ -55,7 +57,16 @@ export const MyHandlesCard = ({ handles }: MyHandlesCard) => {
             },
           }}
         >
-          {handles?.map((handle) => <HandleCard handle={handle} />)}
+          {handles ? (
+            handles.map((handle) => <HandleCard handle={handle} />)
+          ) : (
+            <VStack spacing={3} my={3}>
+              {[...Array(6)].map((_, index) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                <Skeleton w="97%" height="14" rounded="lg" key={index} />
+              ))}
+            </VStack>
+          )}
         </CardBody>
         <Box mx={3} mt={-2}>
           {/* Add verification if the handles quantity it's large then 5 to show the divider. */}

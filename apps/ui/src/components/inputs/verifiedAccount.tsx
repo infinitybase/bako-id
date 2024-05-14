@@ -50,7 +50,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
 
   const currentVariant = variants[props.variant as keyof typeof variants];
 
-  if (!isMyDomain && !isVerified) return;
+  if (isMyDomain && !isVerified) return;
 
   return (
     <Box w="full" display="flex" alignItems="flex-end" flexDirection="column">
@@ -149,7 +149,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
           </InputRightAddon>
         )}
       </InputGroup>
-      {!isVerified && isMyDomain && (
+      {!isVerified && !isMyDomain && (
         <Text
           mt={1}
           mr={2}
