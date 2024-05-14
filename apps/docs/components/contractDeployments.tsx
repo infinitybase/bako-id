@@ -59,7 +59,7 @@ export const ContractDeployments: React.FC<ContractDeploymentsProps> = ({
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
-        border: '1px solid #ffc010',
+        border: '1px solid #ffc01026',
         borderRadius: '8px',
       }}
     >

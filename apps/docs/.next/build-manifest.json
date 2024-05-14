@@ -31,11 +31,6 @@
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/sdk/metadata.js"
-    ],
-    "/sdk/resolver": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/sdk/resolver.js"
     ]
   },
   "ampFirstPages": []
