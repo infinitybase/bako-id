@@ -2,17 +2,20 @@ import {
   Button,
   Flex,
   HStack,
+  Skeleton,
   Spacer,
   Text,
   VStack,
   useMediaQuery,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
+import { useFuelConnect } from '../../hooks';
 import { useBuy } from '../../modules/buy/hooks';
 import { Coin } from '../../types';
 const { ETH, USD } = Coin;
 
 export const Checkout = () => {
+  const { wallet } = useFuelConnect();
   const {
     totalPrice,
     handleChangeCoin,
@@ -73,7 +76,15 @@ export const Checkout = () => {
             Handles
           </Text>
           <Text color="text.500" fontSize={['xs', 'sm']}>
-            {domainPrice ? formatCoin(domainPrice, selectedCoin) : '--.--'}
+            {wallet ? (
+              domainPrice ? (
+                formatCoin(domainPrice, selectedCoin)
+              ) : (
+                '--.--'
+              )
+            ) : (
+              <Skeleton w={24} h={5} rounded="lg" />
+            )}
           </Text>
         </Flex>
         <Flex w="full" justifyContent="space-between">
@@ -86,7 +97,15 @@ export const Checkout = () => {
             overflowWrap="break-word"
             fontSize={['xs', 'sm']}
           >
-            {fee ? formatCoin(fee ?? bn(0), selectedCoin) : '--.--'}
+            {wallet ? (
+              fee ? (
+                formatCoin(fee ?? bn(0), selectedCoin)
+              ) : (
+                '--.--'
+              )
+            ) : (
+              <Skeleton w={24} h={5} rounded="lg" />
+            )}
           </Text>
         </Flex>
         <HStack w="full">
@@ -95,9 +114,15 @@ export const Checkout = () => {
           </Text>
           <Spacer />
           <Text color="text.500" fontSize={['xs', 'sm']}>
-            {totalPrice
-              ? formatCoin(totalPrice?.add(fee), selectedCoin)
-              : '--.--'}
+            {wallet ? (
+              totalPrice ? (
+                formatCoin(totalPrice?.add(fee), selectedCoin)
+              ) : (
+                '--.--'
+              )
+            ) : (
+              <Skeleton w={24} h={5} rounded="lg" />
+            )}
           </Text>
         </HStack>
       </VStack>

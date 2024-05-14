@@ -8,19 +8,53 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { Card } from '..';
-import { useToken } from '../../../hooks/useToken';
 import { BakoTooltip, CheckoutCard, TextValue } from '../..';
+import { useToken } from '../../../hooks/useToken';
 import { useProfile } from '../../../modules/profile/hooks/useProfile';
 import { CopyText } from '../../helpers/copy';
 import { ExploreIcon } from '../../icons/explore';
 import { ActionDomainModal } from '../../modal/actionDomainModal';
 import { useSidebar } from '../../sidebar/hooks/useSidebar';
+import { TokenCardSkeleton } from '../../skeletons/tokenCardSkeleton';
 
 export const TokenCard = () => {
   const { token } = useToken();
   const { isMyDomain } = useSidebar();
   const { domain, domainParam } = useProfile();
   const action = useDisclosure();
+
+  const TokenBody = () => {
+    return (
+      <Flex
+        direction={['column', 'row', 'row', 'row']}
+        alignItems="center"
+        h="fit-content"
+        justifyContent="flex-end"
+        gap={4}
+        w="full"
+      >
+        <Flex w={['full', '80%']} direction="column" gap={6}>
+          <TextValue
+            breakRow
+            justifyContent="start"
+            leftAction={'hex'}
+            content={token?.contractId}
+            rightAction={<CopyText value={token?.contractId ?? ''} />}
+          />
+
+          <TextValue
+            breakRow
+            justifyContent="start"
+            leftAction={'decimal'}
+            content={token?.subId}
+            rightAction={<CopyText value={token?.subId ?? ''} />}
+          />
+        </Flex>
+
+        <CheckoutCard w={['fit-content', '40', '40', '40']} />
+      </Flex>
+    );
+  };
 
   return (
     <>
@@ -50,34 +84,7 @@ export const TokenCard = () => {
         </CardHeader>
         <Divider color="stroke.500" border="1px solid" w="full" my={8} />
         <CardBody>
-          <Flex
-            direction={['column', 'row', 'row', 'row']}
-            alignItems="center"
-            h="fit-content"
-            justifyContent="flex-end"
-            gap={4}
-            w="full"
-          >
-            <Flex w={['full', '80%']} direction="column" gap={6}>
-              <TextValue
-                breakRow
-                justifyContent="start"
-                leftAction={'hex'}
-                content={token?.contractId}
-                rightAction={<CopyText value={token?.contractId ?? ''} />}
-              />
-
-              <TextValue
-                breakRow
-                justifyContent="start"
-                leftAction={'decimal'}
-                content={token?.subId}
-                rightAction={<CopyText value={token?.subId ?? ''} />}
-              />
-            </Flex>
-
-            <CheckoutCard w={['fit-content', '40', '40', '40']} />
-          </Flex>
+          {token?.image ? <TokenBody /> : <TokenCardSkeleton />}
           <Divider color="stroke.500" border="1px solid" w="full" my={[3, 8]} />
           <Flex w="full" justify="center" direction={['column', 'row']} gap={4}>
             <TextValue

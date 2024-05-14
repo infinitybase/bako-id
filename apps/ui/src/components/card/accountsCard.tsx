@@ -32,7 +32,6 @@ export const AccountsCard = () => {
           rightAddon
           rightAddonName={<Icon as={CopyIcon} />}
         />
-
         <VerifiedAccountInput
           variant="twitter"
           isVerified={false}

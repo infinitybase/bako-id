@@ -49,7 +49,7 @@ export const ProfileCard = ({ domain, domainName }: IProfileCard) => {
           bgColor={isLowerThanMobile ? 'transparent' : undefined}
           fontWeight="normal"
           fontSize={['sm', 'md']}
-          isDisabled={!isMyDomain}
+          isDisabled={isMyDomain}
           rightIcon={<ExploreIcon />}
           onClick={() =>
             window.open(
