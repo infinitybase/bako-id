@@ -1,0 +1,73 @@
+import { ThemeMetadataImage } from '/components/useMetadataTheme';
+
+# Metadata
+
+This method allows you to obtain and manipulate metadata from an handle on the Bako ID, essential for storing and
+retrieving custom information.
+
+<ThemeMetadataImage />
+
+## Saving Metadata
+
+The `saveMetadata` method is used to save metadata to a handle. This method requires a wallet instance, a handle, and
+a metadata configuration object. The metadata configuration object should contain a `key` and a `value` property. The `key` is
+a string that represents the name of the metadata, and the `value` is the data to be stored.
+
+```ts
+import { UserMetadataContract } from '@bako-id/sdk';
+import { Wallet } from 'fuels';
+
+const account = Wallet.fromPrivateKey('<PRIVATE KEY>');
+const domain = '@bako_user';
+
+const userMetadataContract = UserMetadataContract.initialize(account, domain);
+
+const metadataConfig = {
+  key: 'github',
+  value: 'mygithub',
+};
+
+const { transactionResult } =
+  await userMetadataContract.saveMetadata(metadataConfig);
+```
+
+::: warning ⚠️ IMPORTANT
+Please note, this action is restricted due to security considerations. It ensures that only the owner of handle - in this
+case, the user who owns the handle, have the right to modify its associated data. This prevents unwanted modifications and maintains the integrity of the data.
+:::
+
+## Obtaining Metadata by Key
+
+The `getMetadata` method is used to retrieve metadata from an identity using a specific key. This method requires a wallet
+instance, a domain, and a metadata key. The metadata key is a string that represents the name of the metadata to be retrieved.
+
+```ts
+import { UserMetadataContract } from '@bako-id/sdk';
+import { Wallet } from 'fuels';
+
+const account = Wallet.fromPrivateKey('<PRIVATE KEY>');
+const domain = '@bako_user';
+
+const userMetadataContract = UserMetadataContract.initialize(account, domain);
+
+const metadataKey = 'github';
+
+const metadata = await userMetadataContract.getMetadata(metadataKey);
+```
+
+## Obtaining All Metadata
+
+The `getAll` method is used to retrieve all metadata associated with an identity. This method requires a wallet instance
+and a domain. It returns an array of metadata objects, each containing a `key` and a `value` property.
+
+```ts
+import { UserMetadataContract } from '@bako-id/sdk';
+import { Wallet } from 'fuels';
+
+const account = Wallet.fromPrivateKey('<PRIVATE KEY>');
+const domain = '@bako_user';
+
+const userMetadataContract = UserMetadataContract.initialize(account, domain);
+
+const allMetadata = await userMetadataContract.getAll();
+```
