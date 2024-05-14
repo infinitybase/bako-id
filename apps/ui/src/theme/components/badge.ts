@@ -42,16 +42,15 @@ const yellow = defineStyle({
   borderColor: 'rgba(227, 175, 19, 0.25)',
 });
 
-const gray = defineStyle({
-  bgColor: 'rgba(245,246,250,0.1)',
-  color: '#F5F6FA',
-  borderColor: 'rgba(245,246,250,0.1)',
+const notsupported = defineStyle({
+  bgColor: 'rgba(245,245,245,0.05)',
+  color: 'grey.200',
 });
 
 const grey = defineStyle({
-  bgColor: 'rgba(44,44,44,0.8)',
+  bgColor: 'rgba(245,245,245,0.05)',
   color: 'grey.200',
-  borderColor: 'rgba(73,248,174,0.1)',
+  borderColor: 'grey.100',
 });
 
 const baseStyle = defineStyle({
@@ -76,11 +75,11 @@ const Badge = defineStyleConfig({
     success,
     warning,
     info,
-    gray,
     blue,
     yellow,
     grey,
     darkWarning,
+    notsupported,
   },
 });
 

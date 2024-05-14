@@ -34,7 +34,7 @@ export const ProfileCard = ({ domain, domainName }: IProfileCard) => {
       >
         <Flex gap={2} direction="column">
           <Text fontWeight="semibold" fontSize={['md', 'lg']} color="white">
-            @{domainName}
+            {domainName?.startsWith('@') ? domainName : `@${domainName}`}
           </Text>
 
           <Flex gap={1}>

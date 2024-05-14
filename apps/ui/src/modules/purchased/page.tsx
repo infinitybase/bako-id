@@ -51,8 +51,8 @@ export const Purchased = ({
       h="full"
       display="flex"
       alignItems="center"
-      mt={[12, 6, 6, 0]}
-      gap={[12, 5, 5, 12]}
+      mt={[12, 6, 0, 0]}
+      gap={[12, 5, 5, 5]}
       mb={[0, 0, 'auto', 0]}
       flexDirection="column"
     >

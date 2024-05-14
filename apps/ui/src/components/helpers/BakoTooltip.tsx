@@ -1,4 +1,4 @@
-import { Tooltip, TooltipProps } from '@chakra-ui/react';
+import { Tooltip, type TooltipProps } from '@chakra-ui/react';
 
 interface BakoTooltipProps extends TooltipProps {
   children: React.ReactNode;

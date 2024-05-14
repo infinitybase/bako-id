@@ -16,7 +16,7 @@ export const GoBack = () => {
       alignSelf="start"
       _hover={{ color: 'button.500' }}
       color="white"
-      ml={12}
+      ml={2}
     >
       <Box
         display="flex"
