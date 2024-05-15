@@ -32,7 +32,7 @@ const config: DocsThemeConfig = {
   },
   useNextSeoProps() {
     return {
-      titleTemplate: 'Bako ID SDK - %s',
+      titleTemplate: ' %s | Bako ID',
     };
   },
   feedback: {

@@ -21,7 +21,7 @@ The Identity is owned by its owner, however, when using it, it is possible to ad
 | Owner    | Address of the identity owner       |
 | Resolver | Address for the identity resolution |
 
-## Handler prices
+<!-- ## Handler prices
 
 The identity price is calculated by the number of characters, for example, registering the identity `@now` will cost `0.005 ETH`.
 
@@ -33,4 +33,4 @@ Your `@` identity is not considered in the price calculation, only the subsequen
 | --------------- | :--------: |
 | 3 chars         | 0.005 ETH  |
 | 4 chars         | 0.001 ETH  |
-| 5 or more chars | 0.0002 ETH |
+| 5 or more chars | 0.0002 ETH | -->
