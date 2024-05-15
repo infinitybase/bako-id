@@ -1,8 +1,10 @@
 import { domainPrices } from '@bako-id/sdk';
+import { useParams } from '@tanstack/react-router';
 import { bn, type BN } from 'fuels';
 import { useMemo } from 'react';
-import { useDomain, useUsdPrice } from '.';
+import { useFuelConnect, useUsdPrice } from '.';
 import { Coin, type Domains } from '../types';
+import { useSimulateHandleCostRequest } from './useSimulateHandleCostRequest';
 
 const coinSymbol = {
   USD: 'USD',
@@ -10,9 +12,15 @@ const coinSymbol = {
 };
 
 export const useCheckoutPrice = (domains: Domains[], selectedCoin: Coin) => {
-  const { usdPrice } = useUsdPrice();
-  const { simulateHandle } = useDomain();
+  const { domain } = useParams({ strict: false });
+  const { wallet } = useFuelConnect();
 
+  const { usdPrice } = useUsdPrice();
+  const simulateHandle = useSimulateHandleCostRequest(
+    wallet!,
+    wallet?.address.toB256() ?? '',
+    domain,
+  );
   const totalPrice = useMemo(() => {
     if (!domains.length || !simulateHandle.data) return bn(0);
 

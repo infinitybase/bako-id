@@ -1,5 +1,5 @@
 import { owner } from '@bako-id/sdk';
-import { useMutation, type UseMutationOptions } from '@tanstack/react-query';
+import { useQuery, type UseMutationOptions } from '@tanstack/react-query';
 import type { ResolverDomainPayload, ResolverReturn } from '../types';
 
 const useResolveOwnerRequests = (
@@ -10,9 +10,10 @@ const useResolveOwnerRequests = (
     ResolverDomainPayload
   >,
 ) => {
-  return useMutation({
-    mutationKey: ['resolveOwner'],
-    mutationFn: () => owner(domain),
+  return useQuery({
+    queryKey: ['resolveOwner'],
+    queryFn: () => owner(domain),
+    enabled: !!domain,
     ...options,
   });
 };

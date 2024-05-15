@@ -39,7 +39,6 @@ export const ProfileCards = ({
           gap={[4, 4, 4, 6]}
         >
           <OwnershipCardSkeleton />
-
           <AddressCardSkeleton />
         </Stack>
       </Flex>
