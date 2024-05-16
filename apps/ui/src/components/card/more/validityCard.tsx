@@ -17,30 +17,9 @@ import { useSidebar } from '../../sidebar/hooks/useSidebar';
 export const ValidityCard = () => {
   const { isMyDomain } = useSidebar();
 
-  return (
-    <Card backdropFilter="blur(7px)" h="fit-content" maxW={['full', '45rem']}>
-      <CardHeader w="full">
-        <Flex w="full" justify="space-between" align="center">
-          <Heading fontSize="lg" color="grey.100">
-            Validity
-          </Heading>
-          <Button
-            variant="ghosted"
-            color="grey.100"
-            hidden
-            _hover={{
-              bgColor: 'transparent',
-              color: 'button.500',
-            }}
-            rightIcon={<DoubleArrowRightIcon width={5} height={5} />}
-            isDisabled={!isMyDomain}
-            onClick={() => {}}
-          >
-            Extend
-          </Button>
-        </Flex>
-      </CardHeader>
-      <CardBody mt={4}>
+  const ValidityBody = () => {
+    return (
+      <>
         <FormControl>
           <FormHelperText my={4} color="section.500">
             Name expires
@@ -94,6 +73,35 @@ export const ValidityCard = () => {
             rightAction={<Icon as={ExploreIcon} />}
           />
         </FormControl>
+      </>
+    );
+  };
+
+  return (
+    <Card backdropFilter="blur(7px)" h="fit-content" maxW={['full', '45rem']}>
+      <CardHeader w="full">
+        <Flex w="full" justify="space-between" align="center">
+          <Heading fontSize="lg" color="grey.100">
+            Validity
+          </Heading>
+          <Button
+            variant="ghosted"
+            color="grey.100"
+            hidden
+            _hover={{
+              bgColor: 'transparent',
+              color: 'button.500',
+            }}
+            rightIcon={<DoubleArrowRightIcon width={5} height={5} />}
+            isDisabled={!isMyDomain}
+            onClick={() => {}}
+          >
+            Extend
+          </Button>
+        </Flex>
+      </CardHeader>
+      <CardBody mt={4}>
+        <ValidityBody />
       </CardBody>
     </Card>
   );

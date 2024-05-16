@@ -4,9 +4,14 @@ import { ResolverCard } from '../../../../components/card/more/resolverCard';
 import { TokenCard } from '../../../../components/card/more/tokenCard';
 import { ValidityCard } from '../../../../components/card/more/validityCard';
 import { ProfileDrawer } from '../../../../components/drawer/profile';
+import { ResolverCardSkeleton } from '../../../../components/skeletons/resolverCardSkeleton';
+import { TokenCardSkeleton } from '../../../../components/skeletons/tokenCardSkeleton';
+import { ValidityCardSkeleton } from '../../../../components/skeletons/validityCardSkeleton';
 import { useScreenSize } from '../../../../hooks/useScreenSize';
+import { useToken } from '../../../../hooks/useToken';
 
 const More = () => {
+  const { token } = useToken();
   const drawer = useDisclosure();
   const { isMobile } = useScreenSize();
 
@@ -57,9 +62,19 @@ const More = () => {
             flexDirection="column"
             gap={12}
           >
-            <TokenCard />
-            <ValidityCard />
-            <ResolverCard />
+            {token?.image ? (
+              <>
+                <TokenCard />
+                <ValidityCard />
+                <ResolverCard />
+              </>
+            ) : (
+              <>
+                <TokenCardSkeleton />
+                <ValidityCardSkeleton />
+                <ResolverCardSkeleton />
+              </>
+            )}
           </Box>
         </Center>
       </Box>
