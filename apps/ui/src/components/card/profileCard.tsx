@@ -5,7 +5,6 @@ import { ExplorerTypes } from '../../types';
 import { AvatarIcon } from '../icons/avatarIcon';
 import { ExploreIcon } from '../icons/explore';
 import { FarcasterBadgeIcon } from '../icons/farcasterBadgeIcon';
-import { useSidebar } from '../sidebar/hooks/useSidebar';
 
 interface IProfileCard {
   domainName: string | null;
@@ -14,7 +13,7 @@ interface IProfileCard {
 
 export const ProfileCard = ({ domain, domainName }: IProfileCard) => {
   const [isLowerThanMobile] = useMediaQuery('(max-width: 25em)');
-  const { isMyDomain } = useSidebar();
+
   return (
     <Card
       w="full"
@@ -49,7 +48,6 @@ export const ProfileCard = ({ domain, domainName }: IProfileCard) => {
           bgColor={isLowerThanMobile ? 'transparent' : undefined}
           fontWeight="normal"
           fontSize={['sm', 'md']}
-          isDisabled={isMyDomain}
           rightIcon={<ExploreIcon />}
           onClick={() =>
             window.open(
