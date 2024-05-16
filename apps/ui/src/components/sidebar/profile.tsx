@@ -14,7 +14,6 @@ import { BakoSafeBanner } from '../buttons/bakoSafeBanner';
 import { SidebarBanner } from '../buttons/sidebarBanner';
 import { SidebarButton } from '../buttons/sidebarButton';
 import { BakoSafeLogo } from '../icons/bakoSafeLogo';
-import { TwitterBannerIcon } from '../icons/twitterBannerIcon';
 import { UserIcon } from '../icons/userIcon';
 import { DropdownAutocomplete } from '../inputs/dropdownAutocomplete';
 import { useSidebar } from './hooks/useSidebar';
@@ -82,10 +81,10 @@ const ProfileSidebar = (props: ProfileSidebarProps) => {
       <VStack spacing={4}>
         {isMyDomain && (
           <Flex w="full" flexDirection="column" gap={2}>
-            <SidebarBanner
+            {/* <SidebarBanner
               text="Click here to verify your X account and get benefits"
               icon={TwitterBannerIcon}
-            />
+            /> */}
 
             <SidebarBanner
               text="Click here to verify your Farcaster account and get benefits"

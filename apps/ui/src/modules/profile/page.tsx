@@ -1,4 +1,4 @@
-import { Box, Flex, Text, useDisclosure } from '@chakra-ui/react';
+import { Box, Center, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { ProfileDrawer } from '../../components/drawer/profile';
 import { useScreenSize } from '../../hooks/useScreenSize';
@@ -34,13 +34,37 @@ const Profile = () => {
             <Text>Menu</Text>
           </Flex>
         )}
-
-        <ProfileCards
-          domain={domain ?? ''}
-          domainParam={domainParam}
-          isLoading={isLoadingDomain}
-          owner={owner ?? ''}
-        />
+        <Center
+          w="full"
+          h="full"
+          overflowY="scroll"
+          sx={{
+            '&::-webkit-scrollbar': {
+              width: '0px',
+              maxHeight: '330px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: '#2C2C2C',
+              borderRadius: '30px',
+            },
+          }}
+        >
+          <Box
+            w={['full', 'auto', 'full', 'auto']}
+            h="full"
+            maxH={['80vh', '80vh', '75vh', '80vh']}
+            display="flex"
+            flexDirection="column"
+            gap={12}
+          >
+            <ProfileCards
+              domain={domain ?? ''}
+              domainParam={domainParam}
+              isLoading={isLoadingDomain}
+              owner={owner ?? ''}
+            />
+          </Box>
+        </Center>
       </Box>
     </>
   );

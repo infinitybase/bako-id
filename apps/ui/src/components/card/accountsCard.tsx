@@ -32,12 +32,12 @@ export const AccountsCard = () => {
           rightAddon
           rightAddonName={<Icon as={CopyIcon} />}
         />
-        <VerifiedAccountInput
+        {/* <VerifiedAccountInput
           variant="twitter"
           isVerified={false}
           rightAddon
           rightAddonName={<Icon as={CopyIcon} />}
-        />
+        /> */}
       </VStack>
     </Card>
   );
