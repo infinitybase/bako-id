@@ -50,7 +50,7 @@ const Profile = () => {
           }}
         >
           <Box
-            w={['full', 'auto', 'full', 'auto']}
+            w={['full', 'full', 'full', 'auto']}
             h="full"
             maxH={['80vh', '80vh', '75vh', '80vh']}
             display="flex"

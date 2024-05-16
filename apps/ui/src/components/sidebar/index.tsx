@@ -1,16 +1,16 @@
 import {
-  type BadgeProps,
   Box,
   Badge as ChakraBadge,
   Icon as ChakraIcon,
   Flex,
+  Text,
+  VStack,
+  chakra,
+  type BadgeProps,
   type FlexProps,
   type IconProps,
   type MergeWithAs,
-  Text,
   type TextProps,
-  VStack,
-  chakra,
 } from '@chakra-ui/react';
 
 const MenuItem = chakra(Flex, {
