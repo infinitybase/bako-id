@@ -1,15 +1,12 @@
-import { Box, Flex, Stack, Text, useDisclosure } from '@chakra-ui/react';
+import { Box, Center, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { AccountsCard } from '../../components/card/accountsCard';
-import { AddressesCard } from '../../components/card/addressesCard';
-import { OwnershipCard } from '../../components/card/ownershipCard';
-import { ProfileCard } from '../../components/card/profileCard';
 import { ProfileDrawer } from '../../components/drawer/profile';
 import { useScreenSize } from '../../hooks/useScreenSize';
+import { ProfileCards } from './components/profileCards';
 import { useProfile } from './hooks/useProfile';
 
 const Profile = () => {
-  const { domain } = useProfile();
+  const { domain, domainParam, isLoadingDomain, owner } = useProfile();
   const { isMobile } = useScreenSize();
   const drawer = useDisclosure();
 
@@ -20,7 +17,7 @@ const Profile = () => {
       <Box
         w="full"
         h="full"
-        maxH={['100vh', '50vh']}
+        maxH={['100vh', '100vh']}
         position="relative"
         display="flex"
         flexDirection={['column', 'column', 'column', 'row']}
@@ -37,25 +34,37 @@ const Profile = () => {
             <Text>Menu</Text>
           </Flex>
         )}
-        <Stack
-          display="flex"
-          spacing={6}
-          direction={['column', 'column', 'column', 'row']}
+        <Center
+          w="full"
+          h="full"
+          overflowY="scroll"
+          sx={{
+            '&::-webkit-scrollbar': {
+              width: '0px',
+              maxHeight: '330px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: '#2C2C2C',
+              borderRadius: '30px',
+            },
+          }}
         >
-          <Flex w="full" h="full" flexDirection="column" gap={[4, 4, 4, 6]}>
-            <ProfileCard domain={domain} />
-            <Stack
-              w="full"
-              h="full"
-              direction={['column', 'column', 'column', 'row']}
-              gap={[4, 4, 4, 6]}
-            >
-              <OwnershipCard domain={domain} />
-              <AddressesCard domain={domain} />
-            </Stack>
-          </Flex>
-        </Stack>
-        <AccountsCard />
+          <Box
+            w={['full', 'full', 'full', 'full']}
+            h="full"
+            maxH={['80vh', '80vh', '75vh', '80vh']}
+            display="flex"
+            flexDirection="column"
+            gap={12}
+          >
+            <ProfileCards
+              domain={domain ?? ''}
+              domainParam={domainParam}
+              isLoading={isLoadingDomain}
+              owner={owner ?? ''}
+            />
+          </Box>
+        </Center>
       </Box>
     </>
   );

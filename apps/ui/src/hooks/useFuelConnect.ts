@@ -1,7 +1,7 @@
 import { useDisclosure } from '@chakra-ui/react';
 import { useAccount, useFuel, useWallet } from '@fuels/react';
-import { useMemo, useState } from 'react';
-import { useCustomToast } from '../components/toast';
+import { useEffect, useMemo, useState } from 'react';
+import { useCustomToast } from '../components';
 import { IconUtils } from '../utils/users';
 import { EConnectors, useDefaultConnectors } from './fuel/useListConnectors';
 
@@ -13,6 +13,7 @@ export const useFuelConnect = () => {
   const connectorDrawer = useDisclosure();
   const { connectors } = useDefaultConnectors();
   const [isConnecting, setIsConnecting] = useState(false);
+  const [isConnectError, setIsConnectError] = useState(false);
 
   const { errorToast } = useCustomToast();
 
@@ -35,10 +36,12 @@ export const useFuelConnect = () => {
 
       setIsConnecting(false);
     } catch (e) {
+      setIsConnectError(true);
       errorToast({
-        title: 'Error connecting to wallet',
-        description: e as string,
+        title: 'Error while connecting wallet',
+        description: (e as Error).message,
       });
+      return;
     }
   };
 
@@ -51,17 +54,29 @@ export const useFuelConnect = () => {
     localStorage.setItem(`${AVATAR_STORAGE_KEY}/${account}`, IconUtils.user());
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useMemo(() => {
     if (account) {
       generateIcon(account);
     }
   }, [account]);
 
+  useEffect(() => {
+    if (isConnectError) {
+      setTimeout(() => {
+        setIsConnectError(false);
+        setIsConnecting(false);
+      }, 500);
+    }
+  }, [isConnectError]);
+
   return {
     wallet,
+    isConnectError,
     currentAccount: account,
     connectors: {
       isConnecting,
+      isConnectError,
       item: connectors,
       drawer: connectorDrawer,
       select: selectConnector,

@@ -6,11 +6,11 @@ import {
   Icon,
   Image,
   Skeleton,
+  useMediaQuery,
 } from '@chakra-ui/react';
 import { useIsConnected } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useFuelConnect } from '../../hooks';
-import { useScreenSize } from '../../hooks/useScreenSize';
 import { formatAddress } from '../../utils/formatter';
 import { Connect } from '../helpers';
 import { FileIcon } from '../icons/fileIcon';
@@ -20,7 +20,7 @@ import { Info } from '../user';
 export const Header = () => {
   const { wallet } = useFuelConnect();
   const { isFetching } = useIsConnected();
-  const { isMobile } = useScreenSize();
+  const [isMobile] = useMediaQuery('(max-width: 48em)');
   const navigate = useNavigate();
 
   const account = () => {
@@ -30,7 +30,7 @@ export const Header = () => {
     if (wallet) {
       return (
         <Info
-          name={formatAddress(wallet.address.toB256().toString())!}
+          name={formatAddress(wallet.address.toString())!}
           account={wallet.address}
         />
       );
@@ -56,21 +56,21 @@ export const Header = () => {
       alignItems="center"
       bgColor="background.900"
       py={2}
-      px={[0, 8, 8]}
+      px={[0, isMobile ? 0 : 6, 6, 6]}
       className="transition-all-05"
     >
       <Image
-        src="/bakoID-logo.svg"
+        src={isMobile ? '/logo.svg' : '/bakoID-logo.svg'}
         cursor="pointer"
         onClick={goHome}
-        width={190}
-        height={75}
+        width={['5rem', '6rem', '7rem', '8rem']}
+        height={['4rem', '4rem', '5rem', '5rem']}
         alt="Bako logo"
       />
 
       <Flex w="fit-content" align="center" justify="flex-end" gap={2}>
         <Flex w="full" gap={2}>
-          {!isMobile && (
+          {!isMobile && wallet !== null && (
             <Button
               w="fit-content"
               bgColor="transparent"
@@ -82,6 +82,7 @@ export const Header = () => {
               fontWeight="normal"
               fontSize="sm"
               rightIcon={<FileIcon w={4} h={4} />}
+              onClick={() => navigate({ to: '/my-handles' })}
             >
               My Handles
             </Button>
@@ -95,6 +96,7 @@ export const Header = () => {
                 cursor: 'pointer',
                 opacity: 0.8,
               }}
+              onClick={() => window.open('https://docs.bako.id/', '_blank')}
               ml={4}
               as={QuestionIcon}
               w={6}

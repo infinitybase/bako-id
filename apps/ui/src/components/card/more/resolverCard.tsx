@@ -2,38 +2,38 @@ import {
   Button,
   CardBody,
   CardHeader,
-  Divider,
   Flex,
   Heading,
   useDisclosure,
 } from '@chakra-ui/react';
+import { Address } from 'fuels';
 import { Card } from '..';
-import { TextInput } from '../..';
+
+import { TextValue } from '../..';
+import { useProfile } from '../../../modules/profile/hooks/useProfile';
+import { ExplorerTypes } from '../../../types';
+import { Explorer } from '../../helpers/explorer';
 import { EditIcon } from '../../icons/editIcon';
-import { ExploreIcon } from '../../icons/explore';
 import { ActionDomainModal } from '../../modal/actionDomainModal';
 import { useSidebar } from '../../sidebar/hooks/useSidebar';
-import { useCustomToast } from '../../toast';
 
 export const ResolverCard = () => {
   const action = useDisclosure();
-  const { isMyDomain, domain } = useSidebar();
-  const { successToast } = useCustomToast();
-
-  const copy = () => {
-    navigator.clipboard.writeText(domain?.resolver ?? '').then(() => {
-      successToast({ title: 'Address copied to clipboard' });
-    });
-  };
+  const { isMyDomain } = useSidebar();
+  const { domain, domainParam } = useProfile();
 
   return (
     <>
-      <Card h="fit-content" minW="full">
+      <Card backdropFilter="blur(7px)" h="fit-content" maxW={['full', '45rem']}>
         <CardHeader w="full">
           <Flex w="full" justify="space-between" align="center">
-            <Heading fontSize="lg">Resolver</Heading>
+            <Heading fontSize="lg" color="grey.100">
+              Resolver
+            </Heading>
             <Button
               variant="ghost"
+              mr={1}
+              hidden
               color="grey.100"
               _hover={{
                 bgColor: 'transparent',
@@ -47,15 +47,16 @@ export const ResolverCard = () => {
             </Button>
           </Flex>
         </CardHeader>
-        <Divider color="stroke.500" border="1px solid" w="full" my={8} />
-        <CardBody>
-          <TextInput
-            leftAddon
-            leftAddonName="address"
-            value={domain?.resolver}
-            rightAddon
-            rightAddonName={<ExploreIcon />}
-            rightAddonClick={copy}
+        <CardBody mt={4}>
+          <TextValue
+            leftAction="address"
+            content={Address.fromB256(domain ?? '').toString()}
+            rightAction={
+              <Explorer id={domain ?? ''} type={ExplorerTypes.ASSETS} />
+            }
+            whiteSpace="nowrap"
+            wordBreak="normal"
+            isTruncated
           />
         </CardBody>
       </Card>
@@ -63,7 +64,7 @@ export const ResolverCard = () => {
         isOpen={action.isOpen}
         onClose={() => action.onClose()}
         action="Edit handle"
-        domain={`@${domain?.name}`}
+        domain={`@${domainParam}`}
         modalTitle="Edit Resolver"
         hasActions
         onConfirm={() => {}}

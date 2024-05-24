@@ -1,15 +1,16 @@
-import { CloseIcon } from '@chakra-ui/icons';
 import {
+  Box,
   Flex,
   Modal,
   ModalBody,
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  type ModalProps,
   Text,
   VStack,
+  type ModalProps,
 } from '@chakra-ui/react';
+import { SmallCloseIcon } from '../icons/smallCloseIcon';
 
 export interface DialogModalProps extends ModalProps {
   onClose: () => void;
@@ -36,16 +37,19 @@ const DialogModal = (props: DialogModalProps) => {
       <ModalContent rounded="xl" p={6}>
         <VStack spacing={2} w="full" align="flex-start" mb={8}>
           <Flex w="full" align="center" justifyContent="space-between">
-            <ModalHeader minW="50%" fontSize="lg">
+            <ModalHeader minW="70%" fontSize="lg">
               {modalTitle}
             </ModalHeader>
 
             {!hideCloseButton && (
-              <CloseIcon
+              <Box
+                w={6}
+                h={6}
                 _hover={{
                   cursor: 'pointer',
                   color: 'button.500',
                 }}
+                as={SmallCloseIcon}
                 onClick={onClose}
               />
             )}

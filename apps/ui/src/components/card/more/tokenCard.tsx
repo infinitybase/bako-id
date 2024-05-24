@@ -1,4 +1,3 @@
-import { CopyIcon } from '@chakra-ui/icons';
 import {
   Button,
   CardBody,
@@ -9,29 +8,96 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { Card } from '..';
-import { CheckoutCard, TextInput } from '../..';
+import { BakoTooltip, CheckoutCard, TextValue } from '../..';
+import { useToken } from '../../../hooks/useToken';
+import { useProfile } from '../../../modules/profile/hooks/useProfile';
+import { CopyText } from '../../helpers/copy';
 import { ExploreIcon } from '../../icons/explore';
 import { ActionDomainModal } from '../../modal/actionDomainModal';
 import { useSidebar } from '../../sidebar/hooks/useSidebar';
 
 export const TokenCard = () => {
-  const { isMyDomain, domain } = useSidebar();
+  const { token } = useToken();
+  const { isMyDomain } = useSidebar();
+  const { domain, domainParam } = useProfile();
   const action = useDisclosure();
+
+  const TokenBody = () => {
+    return (
+      <>
+        <Flex
+          direction={['column', 'row', 'row', 'row']}
+          alignItems="center"
+          h="fit-content"
+          justifyContent="flex-end"
+          gap={4}
+          w="full"
+        >
+          <Flex w={['full', '80%']} direction="column" gap={6}>
+            <TextValue
+              breakRow
+              justifyContent="start"
+              leftAction={'hex'}
+              content={token?.contractId}
+              rightAction={<CopyText value={token?.contractId ?? ''} />}
+            />
+
+            <TextValue
+              breakRow
+              justifyContent="start"
+              leftAction={'decimal'}
+              content={token?.subId}
+              rightAction={<CopyText value={token?.subId ?? ''} />}
+            />
+          </Flex>
+
+          <CheckoutCard w={['fit-content', '40', '40', '40']} />
+        </Flex>
+        <Divider color="stroke.500" border="1px solid" w="full" my={[3, 8]} />
+        <Flex w="full" justify="center" direction={['column', 'row']} gap={4}>
+          <TextValue
+            justifyContent="start"
+            leftAction={'wrapper'}
+            content="wrapped, emancipated"
+            rightAction={<CopyText value="wrapped, emancipated" />}
+          />
+          <BakoTooltip>
+            <Button
+              isDisabled
+              onClick={action.onOpen}
+              fontSize="md"
+              w={['full', '31%']}
+              variant="primary"
+              _hover={{}}
+            >
+              Unwrap
+            </Button>
+          </BakoTooltip>
+        </Flex>
+      </>
+    );
+  };
 
   return (
     <>
-      <Card h="fit-content" minW="45%">
+      <Card
+        backdropFilter="blur(7px)"
+        h="fit-content"
+        maxW={['full', '45rem']}
+        w={['full', 'auto', 'auto', '45rem']}
+      >
         <CardHeader w="full">
           <Flex w="full" justify="space-between" align="center">
-            <Heading fontSize="lg">Token</Heading>
+            <Heading fontSize="lg" color="grey.100">
+              Token
+            </Heading>
             <Button
               variant="ghosted"
-              rightIcon={<ExploreIcon />}
+              color="grey.100"
+              rightIcon={<ExploreIcon w={5} h={5} />}
               isDisabled={!isMyDomain}
               onClick={() =>
-                window.open(
-                  `https://app.fuel.network/account/${domain?.owner}/assets`,
-                )
+                window.open(`https://app.fuel.network/account/${domain}/assets`)
               }
             >
               Explorer
@@ -40,66 +106,14 @@ export const TokenCard = () => {
         </CardHeader>
         <Divider color="stroke.500" border="1px solid" w="full" my={8} />
         <CardBody>
-          <Flex
-            direction={['column', 'row', 'row', 'row']}
-            alignItems="center"
-            justifyContent="flex-end"
-            gap={4}
-          >
-            <Flex w={['full', '80%']} direction="column" gap={6}>
-              <TextInput
-                inputHeight={16}
-                leftAddon
-                leftAddonName="hex"
-                value="0x769jepagpoa8egn3543v53545b354f354q5g54q533354"
-                rightAddon
-                rightAddonName={<CopyIcon />}
-                rightAddonClick={() => {}}
-              />
-
-              <TextInput
-                inputHeight={16}
-                leftAddon
-                leftAddonName="decimal"
-                value="0x769jepagpoa8egn3543v53545b354f354q5g54q533354"
-                rightAddon
-                rightAddonName={<CopyIcon />}
-                rightAddonClick={() => {}}
-              />
-            </Flex>
-
-            <CheckoutCard
-              w={['full', '25%', '30%', '25%']}
-              domain={domain?.name ?? ''}
-            />
-          </Flex>
-          <Divider color="stroke.500" border="1px solid" w="full" my={[3, 8]} />
-          <Flex justify="center" direction={['column', 'row']} gap={4}>
-            <TextInput
-              w={['full', '80%']}
-              leftAddon
-              leftAddonName="wrapper"
-              value="wrapped, emancipated"
-              rightAddon
-              rightAddonName={<CopyIcon />}
-              rightAddonClick={() => {}}
-            />
-            <Button
-              isDisabled={!isMyDomain}
-              onClick={action.onOpen}
-              w={['full', '30%']}
-              variant="primary"
-            >
-              Unwrap
-            </Button>
-          </Flex>
+          <TokenBody />
         </CardBody>
       </Card>
       <ActionDomainModal
         isOpen={action.isOpen}
         onClose={() => action.onClose()}
         action="Unwrap Handle"
-        domain={`@${domain?.name}`}
+        domain={`@${domainParam}`}
         modalTitle="Confirm details"
         modalSubtitle="Double check these details before confirming in your wallet."
         hasActions

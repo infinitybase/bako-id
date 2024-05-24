@@ -1,21 +1,17 @@
-import type { Domain } from '@bako-id/sdk';
 import { useParams } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
-import { useDomain } from '../../../hooks';
+import { useQueryResolveDomainRequests } from '../../../hooks/useQueryResolveDomainRequests';
+import { useResolveOwnerRequests } from '../../../hooks/useResolveOwnerRequests';
 
 export const useProfile = () => {
   const { domain: domainParam } = useParams({ strict: false });
-  const { resolveDomain } = useDomain();
 
-  const [domain, setDomain] = useState<Domain | null>(null);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    resolveDomain.mutateAsync(domainParam).then((data) => setDomain(data));
-  }, [domainParam]);
+  const resolveDomain = useQueryResolveDomainRequests(domainParam);
+  const resolveOwner = useResolveOwnerRequests(domainParam);
 
   return {
-    domain,
-    resolveDomain,
+    owner: resolveOwner.data,
+    domain: resolveDomain.data,
+    isLoadingDomain: resolveDomain.isPending,
+    domainParam,
   };
 };

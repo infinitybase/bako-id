@@ -1,38 +1,19 @@
-import { Box, type BoxProps, Image, Text, VStack } from '@chakra-ui/react';
-import symbol from '../../assets/logo.svg';
-import texture from '../../assets/texture.svg';
+import { Skeleton, type ImageProps } from '@chakra-ui/react';
+import { useToken } from '../../hooks/useToken';
+import { TokenImage } from './tokenImage';
 
-interface CardProps extends BoxProps {
-  domain: string;
-}
+interface CheckoutCardProps extends ImageProps {}
 
-export function CheckoutCard({ domain, ...props }: CardProps) {
+export function CheckoutCard(props: CheckoutCardProps) {
+  const { token } = useToken();
+
   return (
-    <Box
-      border="3px solid #FFC010"
-      borderRadius="lg"
-      aspectRatio={1}
-      w={['70%', '50%', '40%', '40%']}
-      p={7}
-      justifyContent="center"
-      alignItems="center"
-      display="flex"
-      backgroundImage={`url(${texture})`}
-      backgroundRepeat="repeat"
-      {...props}
-    >
-      <VStack
-        alignItems="center"
-        color="white"
-        height="full"
-        width="full"
-        justifyContent="center"
-      >
-        <Image src={symbol} w="10rem" height="10rem" />
-        <Text fontSize="md" fontWeight="semibold">
-          @{domain}
-        </Text>
-      </VStack>
-    </Box>
+    <>
+      {token?.image ? (
+        <TokenImage src={token.image} {...props} />
+      ) : (
+        <Skeleton w="40" h="40" {...props} />
+      )}
+    </>
   );
 }

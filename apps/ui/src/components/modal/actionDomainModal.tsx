@@ -1,6 +1,6 @@
 import { VStack } from '@chakra-ui/react';
+import { TextValue } from '..';
 import { Dialog } from '../dialog';
-import { TextInput } from '../inputs';
 
 interface ITransactionDetailsModal {
   isOpen: boolean;
@@ -32,14 +32,14 @@ export const ActionDomainModal = ({
       onClose={onClose}
     >
       <Dialog.Body>
-        <VStack spacing={4}>
-          <TextInput leftAddon leftAddonName="action" value={action} />
-          <TextInput leftAddon leftAddonName="handle" value={domain} />
+        <VStack spacing={2}>
+          <TextValue leftAction={'action'} content={action} />
+          <TextValue leftAction={'handle'} content={domain} />
         </VStack>
       </Dialog.Body>
 
       {hasActions && (
-        <Dialog.Actions gap={2}>
+        <Dialog.Actions hideDivider mt={8} gap={2}>
           <Dialog.SecondaryAction onClick={onClose}>
             Cancel
           </Dialog.SecondaryAction>

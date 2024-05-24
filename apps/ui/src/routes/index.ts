@@ -4,7 +4,9 @@ import {
   buyRoute,
   connectRoute,
   homeRoute,
+  learnMoreRoute,
   moreRoute,
+  myHandlesRoute,
   profileRoute,
 } from './childrens.ts';
 
@@ -14,6 +16,8 @@ const routeTree = rootRoute.addChildren([
   buyRoute,
   profileRoute,
   moreRoute,
+  learnMoreRoute,
+  myHandlesRoute,
 ]);
 
 export const router = createRouter({

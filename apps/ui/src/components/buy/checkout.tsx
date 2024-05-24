@@ -1,10 +1,21 @@
-import { Button, Flex, HStack, Spacer, Text, VStack } from '@chakra-ui/react';
+import {
+  Button,
+  Flex,
+  HStack,
+  Skeleton,
+  Spacer,
+  Text,
+  VStack,
+  useMediaQuery,
+} from '@chakra-ui/react';
 import { bn } from 'fuels';
+import { useFuelConnect } from '../../hooks';
 import { useBuy } from '../../modules/buy/hooks';
 import { Coin } from '../../types';
 const { ETH, USD } = Coin;
 
 export const Checkout = () => {
+  const { wallet } = useFuelConnect();
   const {
     totalPrice,
     handleChangeCoin,
@@ -14,6 +25,7 @@ export const Checkout = () => {
     domainPrice,
   } = useBuy();
   // const multipleBuys = length > 1 ? 'Domains' : 'Domain';
+  const [isMobile] = useMediaQuery('(max-width: 22em)');
 
   return (
     <VStack
@@ -60,31 +72,57 @@ export const Checkout = () => {
         borderRadius="lg"
       >
         <Flex w="full" justifyContent="space-between">
-          <Text color="text.500" fontSize="sm">
+          <Text color="text.500" fontSize={['xs', 'sm']}>
             Handles
           </Text>
-          <Text color="text.500" fontSize="sm">
-            {domainPrice ? formatCoin(domainPrice, selectedCoin) : '--.--'}
+          <Text color="text.500" fontSize={['xs', 'sm']}>
+            {wallet ? (
+              domainPrice ? (
+                formatCoin(domainPrice, selectedCoin)
+              ) : (
+                '--.--'
+              )
+            ) : (
+              <Skeleton w={24} h={5} rounded="lg" />
+            )}
           </Text>
         </Flex>
         <Flex w="full" justifyContent="space-between">
-          <Text color="text.500" fontSize="sm">
-            Estimated network fee
+          <Text color="text.500" fontSize={['xs', 'sm']}>
+            {isMobile ? 'Est.' : 'Estimated'} network fee
           </Text>
           <Spacer />
-          <Text color="text.500" fontSize="sm">
-            {fee ? formatCoin(fee ?? bn(0), selectedCoin) : '--.--'}
+          <Text
+            color="text.500"
+            overflowWrap="break-word"
+            fontSize={['xs', 'sm']}
+          >
+            {wallet ? (
+              fee ? (
+                formatCoin(fee ?? bn(0), selectedCoin)
+              ) : (
+                '--.--'
+              )
+            ) : (
+              <Skeleton w={24} h={5} rounded="lg" />
+            )}
           </Text>
         </Flex>
         <HStack w="full">
-          <Text color="text.500" fontSize="sm">
+          <Text color="text.500" fontSize={['xs', 'sm']}>
             Estimated total
           </Text>
           <Spacer />
-          <Text color="text.500" fontSize="sm">
-            {totalPrice
-              ? formatCoin(totalPrice?.add(fee), selectedCoin)
-              : '--.--'}
+          <Text color="text.500" fontSize={['xs', 'sm']}>
+            {wallet ? (
+              totalPrice ? (
+                formatCoin(totalPrice?.add(fee), selectedCoin)
+              ) : (
+                '--.--'
+              )
+            ) : (
+              <Skeleton w={24} h={5} rounded="lg" />
+            )}
           </Text>
         </HStack>
       </VStack>

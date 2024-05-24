@@ -1,4 +1,4 @@
-import { ChevronDownIcon, CopyIcon } from '@chakra-ui/icons';
+import { CopyIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Box,
@@ -13,19 +13,16 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
+import { useNavigate } from '@tanstack/react-router';
 import type { AbstractAddress } from 'fuels';
-import { useMemo, useState } from 'react';
-import { MdClose } from 'react-icons/md';
-import { useScreenSize } from '../../hooks/useScreenSize.ts';
-import { formatAddress } from '../../utils/formatter.ts';
-import { RoundedUserIcon } from '../helpers/roundedUserIcon.tsx';
+import { useMemo } from 'react';
 import { BeginnersGuide } from '../icons/beginnersGuide.tsx';
 import { FileIcon } from '../icons/fileIcon.tsx';
 import { HowToSendCrypto } from '../icons/howToSendCrypto.tsx';
 import { LogoutIcon } from '../icons/logoutIcon.tsx';
 import { MiningCrypto } from '../icons/miningCrypto.tsx';
 import { MoreBako } from '../icons/moreBako.tsx';
-import { NotificationsIcon } from '../icons/notificationsIcon.tsx';
+import { SmallCloseIcon } from '../icons/smallCloseIcon.tsx';
 import { useCustomToast } from '../toast/index.tsx';
 
 export const Info = ({
@@ -38,9 +35,8 @@ export const Info = ({
   const {
     fuel: { disconnect },
   } = useFuel();
+  const navigate = useNavigate();
   const { successToast } = useCustomToast();
-  const { isMobile } = useScreenSize();
-  const [hover, setHover] = useState(false);
 
   const copy = () => {
     navigator.clipboard.writeText(account.toString());
@@ -56,8 +52,8 @@ export const Info = ({
   }, []);
 
   return (
-    <Menu>
-      {({ isOpen, onClose }) => (
+    <Menu strategy="fixed">
+      {({ onClose }) => (
         <>
           <MenuButton
             as={Button}
@@ -67,35 +63,29 @@ export const Info = ({
             _hover={{}}
             _focusVisible={{}}
             _active={{}}
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
           >
             <Box
               display="flex"
               gap={3}
+              pl={2}
               alignItems="center"
               justifyContent="flex-end"
-              w={['14rem', '15.5rem']}
+              w={['12.5rem', '13.5rem']}
               border="1px solid"
               borderColor="stroke.500"
               borderRadius="xl"
               color="white"
             >
-              {(hover || isOpen) && !isMobile ? (
-                <ChevronDownIcon
-                  position="relative"
-                  className={`rotate-base ${isOpen ? undefined : 'rotate-div'}`}
-                />
-              ) : null}
-
-              {name}
+              <Text maxW="full" isTruncated>
+                {name}
+              </Text>
               {icon}
             </Box>
           </MenuButton>
           <MenuList
             background="background.900"
-            maxW={['350px', '400px']}
-            w="auto"
+            maxW={['20rem', '400px']}
+            w="full"
             display="flex"
             p={2}
             flexDirection="column"
@@ -103,6 +93,7 @@ export const Info = ({
           >
             {/* User */}
             <MenuItem
+              p={2}
               bgColor="transparent"
               _hover={{
                 cursor: 'default',
@@ -117,7 +108,7 @@ export const Info = ({
                 justifyContent="space-between"
               >
                 <Flex gap={3}>
-                  <RoundedUserIcon width="3em" heigth="3em" />
+                  {icon}
                   <Flex display="flex" flexDirection="column" gap={1}>
                     <Text
                       display="flex"
@@ -125,9 +116,10 @@ export const Info = ({
                       gap={4}
                       fontWeight="bold"
                     >
-                      {formatAddress(account.toString())}
+                      {name}
                       <CopyIcon
                         onClick={copy}
+                        transform={'scaleX(-1)'}
                         _hover={{
                           cursor: 'pointer',
                           color: 'button.500',
@@ -142,11 +134,11 @@ export const Info = ({
                 <Icon
                   w={5}
                   h={5}
-                  as={MdClose}
+                  as={SmallCloseIcon}
                   onClick={() => onClose()}
                   _hover={{
                     cursor: 'pointer',
-                    opacity: 0.8,
+                    color: 'button.500',
                   }}
                 />
               </Flex>
@@ -155,11 +147,12 @@ export const Info = ({
 
             {/* My Handles */}
             <MenuItem
+              p={2}
               bgColor="transparent"
               color="grey.200"
               my={2}
               gap={2}
-              onClick={() => {}}
+              onClick={() => navigate({ to: '/my-handles' })}
               _hover={{
                 cursor: 'pointer',
                 color: 'button.500',
@@ -172,7 +165,8 @@ export const Info = ({
             <Divider w="95%" color="grey.300" mx="auto" />
 
             {/* Notifications */}
-            <MenuItem
+            {/* <MenuItem
+              p={2}
               bgColor="transparent"
               color="grey.200"
               my={2}
@@ -187,10 +181,11 @@ export const Info = ({
               <Icon as={NotificationsIcon} />
               Notifications
             </MenuItem>
-            <Divider w="95%" color="grey.300" mx="auto" />
+            <Divider w="95%" color="grey.300" mx="auto" /> */}
 
             {/* Logout */}
             <MenuItem
+              p={2}
               bgColor="transparent"
               color="grey.200"
               my={2}
@@ -209,18 +204,19 @@ export const Info = ({
 
             <Flex
               direction="column"
-              mx={3}
+              mx={1}
               mt={3}
               alignItems="flex-start"
               gap={4}
               maxW="full"
             >
-              <Text color="grey.200" fontSize="xs">
+              <Text ml={1.5} color="grey.200" fontSize="xs">
                 More from Bako
               </Text>
               <Flex
                 w="full"
                 maxW="full"
+                gap={1}
                 overflowX="scroll"
                 onWheel={(e) => {
                   e.currentTarget.scrollLeft += e.deltaY * 0.5;
@@ -233,8 +229,8 @@ export const Info = ({
                 }}
               >
                 <Box
-                  w="130px"
-                  h="130px"
+                  w="125px"
+                  h="125px"
                   rounded="xl"
                   _hover={{
                     cursor: 'pointer',
@@ -246,8 +242,8 @@ export const Info = ({
                   as={MoreBako}
                 />
                 <Box
-                  w="130px"
-                  h="130px"
+                  w="125px"
+                  h="125px"
                   rounded="xl"
                   _hover={{
                     cursor: 'pointer',
@@ -256,8 +252,8 @@ export const Info = ({
                   as={BeginnersGuide}
                 />
                 <Box
-                  w="130px"
-                  h="130px"
+                  w="125px"
+                  h="125px"
                   rounded="xl"
                   _hover={{
                     cursor: 'pointer',
@@ -266,8 +262,8 @@ export const Info = ({
                   as={MiningCrypto}
                 />
                 <Box
-                  w="130px"
-                  h="130px"
+                  w="125px"
+                  h="125px"
                   rounded="xl"
                   _hover={{
                     cursor: 'pointer',
