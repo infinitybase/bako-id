@@ -67,14 +67,9 @@ impl RegistryContract for Contract {
     #[storage(read, write), payable]
     fn register(name: String, resolver: b256, period: u16) -> AssetId {
         // TODO: Add reantry guard
-        let input = RegisterInput {
-            name,
-            resolver,
-            period,
-        };
-        
+    
         let name = _register(
-            input,
+            RegisterInput { name, resolver, period },
             get_storage_id()
         );
         
