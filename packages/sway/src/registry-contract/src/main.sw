@@ -65,13 +65,19 @@ impl RegistryContract for Contract {
     }
 
     #[storage(read, write), payable]
-    fn register(name: String, resolver: b256) -> AssetId {
+    fn register(name: String, resolver: b256, period: u16) -> AssetId {
         // TODO: Add reantry guard
+        let input = RegisterInput {
+            name,
+            resolver,
+            period,
+        };
+        
         let name = _register(
-            name, 
-            resolver, 
+            input,
             get_storage_id()
         );
+        
         return _mint_bako_nft(
             storage.total_assets,
             storage.total_supply,
