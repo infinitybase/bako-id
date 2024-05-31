@@ -6,6 +6,7 @@ use abis::{
     nft_contract::*,
     registry_contract::*,
 };
+
 use libraries::{
     permissions::{
         Permission,
@@ -28,6 +29,7 @@ use std::{
     string::String,
     contract_id::ContractId,
     storage::storage_map::*,
+    storage::storage_bytes::*,
 };
 use src7::{ Metadata };
 

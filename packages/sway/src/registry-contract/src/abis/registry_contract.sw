@@ -5,6 +5,7 @@ use std::{
     bytes::Bytes,
     string::String,
     context::msg_amount,
+    block::timestamp,
     contract_id::ContractId,
     constants::BASE_ASSET_ID,
     bytes_conversions::u16::*,
@@ -46,9 +47,17 @@ pub fn _register(name: String, resolver: b256, bako_id: ContractId) -> String {
 
     let name = assert_name_validity(name);
     let domain_hash = sha256(name);
+    let current_timestamp = timestamp();
 
     // Check domain is available
     let storage = abi(StorageContract, bako_id.into());
+
+    let domain = storage.get(domain_hash);
+
+    if (domain.is_some()) {
+        let handle = BakoHandle::from(domain.unwrap());
+        require(!handle.is_expired(), RegistryContractError::DomainNotAvailable); 
+    }
 
     let domain_available = storage.get(domain_hash).is_none();
     require(domain_available, RegistryContractError::DomainNotAvailable);
@@ -64,6 +73,9 @@ pub fn _register(name: String, resolver: b256, bako_id: ContractId) -> String {
         owner, 
         resolver,
         is_primary,
+        current_timestamp,
+        1,
+
     );
     storage.set(domain_hash, owner, domain.into());
     
