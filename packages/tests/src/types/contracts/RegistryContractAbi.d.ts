@@ -60,7 +60,7 @@ interface RegistryContractAbiInterface extends Interface {
 
   encodeFunctionData(functionFragment: 'constructor', values: [AddressInput, ContractIdInput]): Uint8Array;
   encodeFunctionData(functionFragment: 'get_all', values: [string]): Uint8Array;
-  encodeFunctionData(functionFragment: 'register', values: [StdString, string]): Uint8Array;
+  encodeFunctionData(functionFragment: 'register', values: [StdString, string, BigNumberish]): Uint8Array;
   encodeFunctionData(functionFragment: 'decimals', values: [AssetIdInput]): Uint8Array;
   encodeFunctionData(functionFragment: 'name', values: [AssetIdInput]): Uint8Array;
   encodeFunctionData(functionFragment: 'symbol', values: [AssetIdInput]): Uint8Array;
@@ -86,7 +86,7 @@ export class RegistryContractAbi extends Contract {
   functions: {
     constructor: InvokeFunction<[owner: AddressInput, storage_id: ContractIdInput], void>;
     get_all: InvokeFunction<[owner: string], Bytes>;
-    register: InvokeFunction<[name: StdString, resolver: string], AssetIdOutput>;
+    register: InvokeFunction<[name: StdString, resolver: string, period: BigNumberish], AssetIdOutput>;
     decimals: InvokeFunction<[asset: AssetIdInput], Option<number>>;
     name: InvokeFunction<[asset: AssetIdInput], StdString>;
     symbol: InvokeFunction<[asset: AssetIdInput], StdString>;

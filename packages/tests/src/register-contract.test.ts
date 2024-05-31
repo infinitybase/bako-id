@@ -34,7 +34,7 @@ describe('[METHODS] Registry Contract', () => {
 
     try {
       await registry.functions
-        .register(domain, wallet.address.toB256())
+        .register(domain, wallet.address.toB256(), 1)
         .addContracts([storage])
         .txParams(txParams)
         .call();
@@ -67,11 +67,12 @@ describe('[METHODS] Registry Contract', () => {
     await tryExecute(storage.initializeStorage());
 
     try {
-      await registry.register(domain, wallet.address.toB256());
+      await registry.register(domain, wallet.address.toB256(), 1);
 
       const { transactionResult: txRegister } = await registry.register(
         domain,
-        wallet.address.toB256()
+        wallet.address.toB256(),
+        1,
       );
 
       expect(txRegister.status).toBe(TransactionStatus.failure);
@@ -91,7 +92,8 @@ describe('[METHODS] Registry Contract', () => {
     const domain = randomName();
     const { transactionResult: txRegister } = await registry.register(
       domain,
-      wallet.address.toB256()
+      wallet.address.toB256(),
+      1,
     );
 
     const { value } = await resolver.functions
@@ -112,7 +114,7 @@ describe('[METHODS] Registry Contract', () => {
     await tryExecute(resolver.initializeResolver());
 
     const domain = randomName();
-    await registry.register(domain, wallet.address.toB256());
+    await registry.register(domain, wallet.address.toB256(), 1);
 
     const wrongDomain = randomName();
     const { value } = await resolver.functions
@@ -133,8 +135,8 @@ describe('[METHODS] Registry Contract', () => {
     const address = Address.fromRandom().toB256();
 
     const [primaryDomain, secondaryDomain] = [randomName(), randomName()];
-    await registry.register(primaryDomain, address);
-    await registry.register(secondaryDomain, address);
+    await registry.register(primaryDomain, address, 1);
+    await registry.register(secondaryDomain, address, 1);
 
     const { value } = await resolver.functions
       .name(address)
@@ -156,9 +158,9 @@ describe('[METHODS] Registry Contract', () => {
     const address = Address.fromRandom().toB256();
     const handles = [randomName(), randomName(), randomName()];
 
-    await registry.register(handles[0], address);
-    await registry.register(handles[1], address);
-    await registry.register(handles[2], address);
+    await registry.register(handles[0], address, 1);
+    await registry.register(handles[1], address, 1);
+    await registry.register(handles[2], address, 1);
 
     const { value: vecBytes } = await registry.functions
       .get_all(wallet.address.toB256())
@@ -191,7 +193,7 @@ describe('[METHODS] Registry Contract', () => {
       await tryExecute(storage.initializeStorage());
 
       const register = (name: string) =>
-        registry.register(name, wallet.address.toB256());
+        registry.register(name, wallet.address.toB256(), 1);
 
       const expectErrors = (error: unknown) => {
         expectRequireRevertError(error);
@@ -205,6 +207,6 @@ describe('[METHODS] Registry Contract', () => {
       } catch (error) {
         expectErrors(error);
       }
-    }
+    },
   );
 });

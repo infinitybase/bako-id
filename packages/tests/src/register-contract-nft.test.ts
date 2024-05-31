@@ -21,7 +21,8 @@ describe('[NFT] Registry Contract', () => {
 
     const { value: assetId } = await registry.register(
       '@my_handle',
-      wallet.address.toB256()
+      wallet.address.toB256(),
+      1,
     );
 
     const { value: assetName } = await registry.functions.name(assetId).get();
@@ -52,7 +53,7 @@ describe('[NFT] Registry Contract', () => {
     await tryExecute(registry.initializeRegistry());
 
     const domain = '@myhandle';
-    await registry.register(domain, wallet.address.toB256());
+    await registry.register(domain, wallet.address.toB256(), 1);
 
     const { value: assetImage } = await registry.functions
       .image_url(domain)

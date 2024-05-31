@@ -30,7 +30,8 @@ describe('[PRICES] Registry Contract', () => {
       const { transactionResult } = await registry.register(
         domain,
         wallet.address.toB256(),
-        false
+        1,
+        false,
       );
 
       expect(transactionResult.status).toBe(TransactionStatus.failure);
@@ -49,10 +50,11 @@ describe('[PRICES] Registry Contract', () => {
 
       const { transactionResult } = await registry.register(
         domain,
-        wallet.address.toB256()
+        wallet.address.toB256(),
+        1,
       );
 
       expect(transactionResult.status).toBe(TransactionStatus.success);
-    }
+    },
   );
 });
