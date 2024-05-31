@@ -2,6 +2,7 @@ import { BaseAssetId, type WalletUnlocked } from 'fuels';
 import {
   MetadataContractAbi__factory,
   RegistryContractAbi__factory,
+  RegistryTestContractAbi__factory,
   ResolverContractAbi__factory,
   StorageContractAbi__factory,
   TestContractAbi__factory,
@@ -13,6 +14,7 @@ import {
 import {
   metadataContract,
   registryContract,
+  registryTestContract,
   resolverContract,
   storageContract,
   testContract,
@@ -151,6 +153,10 @@ export async function setupContracts(wallet: WalletUnlocked) {
     wallet,
   );
   const testCaller = TestContractAbi__factory.connect(testContract, wallet);
+  const registryTestCaller = RegistryTestContractAbi__factory.connect(
+    registryTestContract,
+    wallet,
+  );
 
   return {
     storage: Object.assign(storage, {
@@ -174,6 +180,7 @@ export async function setupContracts(wallet: WalletUnlocked) {
     }),
     metadata,
     testCaller,
+    registryTestCaller,
   };
 }
 
