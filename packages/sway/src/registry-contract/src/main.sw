@@ -5,6 +5,7 @@ mod abis;
 use abis::{
     nft_contract::*,
     registry_contract::*,
+    info_contract::*,
 };
 
 use libraries::{
@@ -80,11 +81,6 @@ impl RegistryContract for Contract {
             name,
         );
     }
-
-    #[storage(read)]
-    fn get_all(owner: b256) -> Bytes {
-        _get_all(owner, get_storage_id())
-    }
 }
 
 impl SRC20 for Contract {
@@ -123,5 +119,17 @@ impl SRC7 for Contract {
     #[storage(read)]
     fn image_url(name: String) -> String {
         _image_url(storage.metadata, name)
+    }
+}
+
+impl InfoContract for Contract {
+    #[storage(read)]
+    fn get_all(owner: b256) -> Bytes {
+        _get_all(owner, get_storage_id())
+    }
+
+    #[storage(read)]
+    fn get_grace_period(owner: b256) -> (u64, u64, u64) {
+        _get_grace_period(owner, get_storage_id())
     }
 }
