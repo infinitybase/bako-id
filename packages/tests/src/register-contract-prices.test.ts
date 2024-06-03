@@ -62,81 +62,26 @@ describe('[PRICES] Registry Contract', () => {
     },
   );
 
-  it('should return right price for domain with 3 chars and 2 years', async () => {
-    const { registryTestCaller } = testContracts;
+  it.each([
+    [3, 2],
+    [4, 2],
+    [10, 2],
+    [3, 7],
+    [4, 7],
+    [10, 7],
+  ])(
+    'should return right price for domain with %d chars and %d year',
+    async (domainLength, years) => {
+      const { registryTestCaller } = testContracts;
 
-    const domain = randomName(3);
-    const { value } = await registryTestCaller.functions
-      .calculate_domain_price(domain, 2)
-      .call();
+      const domain = randomName(domainLength);
+      const { value } = await registryTestCaller.functions
+        .calculate_domain_price(domain, years)
+        .call();
 
-    const testPrice = domainPrices(domain, 2);
+      const testPrice = domainPrices(domain, years);
 
-    expect(value.toString()).toBe(testPrice.toString());
-  });
-
-  it('should return right price for domain with 4 chars and 2 years', async () => {
-    const { registryTestCaller } = testContracts;
-
-    const domain = randomName(4);
-    const { value } = await registryTestCaller.functions
-      .calculate_domain_price(domain, 2)
-      .call();
-
-    const testPrice = domainPrices(domain, 2);
-
-    expect(value.toString()).toBe(testPrice.toString());
-  });
-
-  it('should return right price for domain with 10 chars and 2 years', async () => {
-    const { registryTestCaller } = testContracts;
-
-    const domain = randomName(10);
-    const { value } = await registryTestCaller.functions
-      .calculate_domain_price(domain, 2)
-      .call();
-
-    const testPrice = domainPrices(domain, 2);
-
-    expect(value.toString()).toBe(testPrice.toString());
-  });
-
-  it('should return right price for domain with 3 chars and 7 year', async () => {
-    const { registryTestCaller } = testContracts;
-
-    const domain = randomName(3);
-    const { value } = await registryTestCaller.functions
-      .calculate_domain_price(domain, 7)
-      .call();
-
-    const testPrice = domainPrices(domain, 7);
-
-    expect(value.toString()).toBe(testPrice.toString());
-  });
-
-  it('should return right price for domain with 4 chars and 7 year', async () => {
-    const { registryTestCaller } = testContracts;
-
-    const domain = randomName(4);
-    const { value } = await registryTestCaller.functions
-      .calculate_domain_price(domain, 7)
-      .call();
-
-    const testPrice = domainPrices(domain, 7);
-
-    expect(value.toString()).toBe(testPrice.toString());
-  });
-
-  it('should return right price for domain with 10 chars and 7 year', async () => {
-    const { registryTestCaller } = testContracts;
-
-    const domain = randomName(10);
-    const { value } = await registryTestCaller.functions
-      .calculate_domain_price(domain, 7)
-      .call();
-
-    const testPrice = domainPrices(domain, 7);
-
-    expect(value.toString()).toBe(testPrice.toString());
-  });
+      expect(value.toString()).toBe(testPrice.toString());
+    },
+  );
 });
