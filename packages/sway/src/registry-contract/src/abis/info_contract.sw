@@ -60,8 +60,9 @@ pub fn _get_all(owner: b256, bako_id: ContractId) -> Bytes {
 }
 
 #[storage(read)]
-pub fn _get_grace_period(owner: b256, bako_id: ContractId) -> GracePeriod {
+pub fn _get_grace_period(owner: String, bako_id: ContractId) -> GracePeriod {
     let grace_period: u64 = 90 * 24 * 3600; // 90 days of grace period
+    let owner = sha256(owner);
     let storage = abi(StorageContract, bako_id.into());
 
     let handle = storage.get(owner);
