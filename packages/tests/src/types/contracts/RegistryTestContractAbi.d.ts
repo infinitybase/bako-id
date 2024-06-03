@@ -27,19 +27,27 @@ import type { Enum } from "./common";
 export enum RegistryTestContractErrorInput { DomainUnavailable = 'DomainUnavailable', DomainExpired = 'DomainExpired' };
 export enum RegistryTestContractErrorOutput { DomainUnavailable = 'DomainUnavailable', DomainExpired = 'DomainExpired' };
 
+export type ContractIdInput = { value: string };
+export type ContractIdOutput = ContractIdInput;
 export type RawBytesInput = { ptr: BigNumberish, cap: BigNumberish };
 export type RawBytesOutput = { ptr: BN, cap: BN };
 
 interface RegistryTestContractAbiInterface extends Interface {
   functions: {
     calculate_domain_price: FunctionFragment;
+    get_all: FunctionFragment;
+    get_grace_period: FunctionFragment;
     register: FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: 'calculate_domain_price', values: [StdString, BigNumberish]): Uint8Array;
+  encodeFunctionData(functionFragment: 'get_all', values: [string, ContractIdInput]): Uint8Array;
+  encodeFunctionData(functionFragment: 'get_grace_period', values: [string]): Uint8Array;
   encodeFunctionData(functionFragment: 'register', values: [StdString, string, BigNumberish, BigNumberish]): Uint8Array;
 
   decodeFunctionData(functionFragment: 'calculate_domain_price', data: BytesLike): DecodedValue;
+  decodeFunctionData(functionFragment: 'get_all', data: BytesLike): DecodedValue;
+  decodeFunctionData(functionFragment: 'get_grace_period', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'register', data: BytesLike): DecodedValue;
 }
 
@@ -47,6 +55,8 @@ export class RegistryTestContractAbi extends Contract {
   interface: RegistryTestContractAbiInterface;
   functions: {
     calculate_domain_price: InvokeFunction<[domain: StdString, period: BigNumberish], BN>;
+    get_all: InvokeFunction<[owner: string, bako_id: ContractIdInput], Bytes>;
+    get_grace_period: InvokeFunction<[owner: string], [BN, BN, BN]>;
     register: InvokeFunction<[name: StdString, resolver: string, period: BigNumberish, timestamp: BigNumberish], void>;
   };
 }

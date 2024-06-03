@@ -47,7 +47,6 @@ export type RawBytesOutput = { ptr: BN, cap: BN };
 interface RegistryContractAbiInterface extends Interface {
   functions: {
     constructor: FunctionFragment;
-    get_all: FunctionFragment;
     register: FunctionFragment;
     decimals: FunctionFragment;
     name: FunctionFragment;
@@ -56,10 +55,11 @@ interface RegistryContractAbiInterface extends Interface {
     total_supply: FunctionFragment;
     image_url: FunctionFragment;
     metadata: FunctionFragment;
+    get_all: FunctionFragment;
+    get_grace_period: FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: 'constructor', values: [AddressInput, ContractIdInput]): Uint8Array;
-  encodeFunctionData(functionFragment: 'get_all', values: [string]): Uint8Array;
   encodeFunctionData(functionFragment: 'register', values: [StdString, string, BigNumberish]): Uint8Array;
   encodeFunctionData(functionFragment: 'decimals', values: [AssetIdInput]): Uint8Array;
   encodeFunctionData(functionFragment: 'name', values: [AssetIdInput]): Uint8Array;
@@ -68,9 +68,10 @@ interface RegistryContractAbiInterface extends Interface {
   encodeFunctionData(functionFragment: 'total_supply', values: [AssetIdInput]): Uint8Array;
   encodeFunctionData(functionFragment: 'image_url', values: [StdString]): Uint8Array;
   encodeFunctionData(functionFragment: 'metadata', values: [AssetIdInput, StdString]): Uint8Array;
+  encodeFunctionData(functionFragment: 'get_all', values: [string]): Uint8Array;
+  encodeFunctionData(functionFragment: 'get_grace_period', values: [string]): Uint8Array;
 
   decodeFunctionData(functionFragment: 'constructor', data: BytesLike): DecodedValue;
-  decodeFunctionData(functionFragment: 'get_all', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'register', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'decimals', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'name', data: BytesLike): DecodedValue;
@@ -79,13 +80,14 @@ interface RegistryContractAbiInterface extends Interface {
   decodeFunctionData(functionFragment: 'total_supply', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'image_url', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'metadata', data: BytesLike): DecodedValue;
+  decodeFunctionData(functionFragment: 'get_all', data: BytesLike): DecodedValue;
+  decodeFunctionData(functionFragment: 'get_grace_period', data: BytesLike): DecodedValue;
 }
 
 export class RegistryContractAbi extends Contract {
   interface: RegistryContractAbiInterface;
   functions: {
     constructor: InvokeFunction<[owner: AddressInput, storage_id: ContractIdInput], void>;
-    get_all: InvokeFunction<[owner: string], Bytes>;
     register: InvokeFunction<[name: StdString, resolver: string, period: BigNumberish], AssetIdOutput>;
     decimals: InvokeFunction<[asset: AssetIdInput], Option<number>>;
     name: InvokeFunction<[asset: AssetIdInput], StdString>;
@@ -94,5 +96,7 @@ export class RegistryContractAbi extends Contract {
     total_supply: InvokeFunction<[asset: AssetIdInput], Option<BN>>;
     image_url: InvokeFunction<[name: StdString], StdString>;
     metadata: InvokeFunction<[asset: AssetIdInput, key: StdString], Option<MetadataOutput>>;
+    get_all: InvokeFunction<[owner: string], Bytes>;
+    get_grace_period: InvokeFunction<[owner: string], [BN, BN, BN]>;
   };
 }
