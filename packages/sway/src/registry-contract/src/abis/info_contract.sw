@@ -19,14 +19,22 @@ use libraries::{
     },
 };
 
+pub struct GracePeriod {
+    timestamp: u64,
+    period: u64,
+    grace_period: u64,
+}
+
 
 abi InfoContract {
     #[storage(read)]
     fn get_all(owner: b256) -> Bytes;
 
     #[storage(read)]
-    fn get_grace_period(owner: b256) -> ( u64,  u64,  u64);
+    fn get_grace_period(owner: b256) -> GracePeriod;
 }
+
+
 
 
 #[storage(read)]
@@ -52,7 +60,7 @@ pub fn _get_all(owner: b256, bako_id: ContractId) -> Bytes {
 }
 
 #[storage(read)]
-pub fn _get_grace_period(owner: b256, bako_id: ContractId) -> ( u64,  u64,  u64) {
+pub fn _get_grace_period(owner: b256, bako_id: ContractId) -> GracePeriod {
     let grace_period: u64 = 90 * 24 * 3600; // 90 days of grace period
     let storage = abi(StorageContract, bako_id.into());
 
@@ -63,14 +71,18 @@ pub fn _get_grace_period(owner: b256, bako_id: ContractId) -> ( u64,  u64,  u64)
             let handle = BakoHandle::from(handle_bytes);
             
             let timestamp = handle.timestamp;
-            let period = handle.period.as_u64()  * handle.timestamp;
+            let period = handle.period.as_u64() * handle.timestamp;
             let grace_period = handle.period.as_u64()  * handle.timestamp + grace_period;
 
 
-            return (timestamp, period, grace_period);
+            return {
+                GracePeriod { timestamp, period, grace_period }
+            }
         },
         None => {
-            return (0, 0, 0);
+            return {
+                GracePeriod { timestamp: 0, period: 0, grace_period: 0 }
+            };
         }
     }
 }

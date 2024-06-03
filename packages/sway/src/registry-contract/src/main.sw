@@ -129,7 +129,7 @@ impl InfoContract for Contract {
     }
 
     #[storage(read)]
-    fn get_grace_period(owner: b256) -> (u64, u64, u64) {
+    fn get_grace_period(owner: b256) -> GracePeriod {
         _get_grace_period(owner, get_storage_id())
     }
 }

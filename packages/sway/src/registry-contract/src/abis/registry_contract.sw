@@ -36,6 +36,8 @@ abi RegistryContract {
 }
 
 
+
+
 pub struct RegisterInput {
     name: String,
     resolver: b256,
