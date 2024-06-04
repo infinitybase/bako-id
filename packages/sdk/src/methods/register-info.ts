@@ -1,3 +1,4 @@
+import { TAI64 } from 'tai64';
 import { config } from '../config';
 import { getRegistryContract } from '../setup';
 import { getProviderFromParams, type ProviderParams } from '../utils';
@@ -58,5 +59,15 @@ export async function getGracePeriod(owner: string, params?: ProviderParams) {
 
   const { value } = await registry.functions.get_grace_period(owner).get();
 
-  return value;
+  return {
+    timestamp: new Date(
+      TAI64.fromString(value.timestamp.toString(), 10).toUnix() * 1000,
+    ),
+    period: new Date(
+      TAI64.fromString(value.period.toString(), 10).toUnix() * 1000,
+    ),
+    gracePeriod: new Date(
+      TAI64.fromString(value.grace_period.toString(), 10).toUnix() * 1000,
+    ),
+  };
 }

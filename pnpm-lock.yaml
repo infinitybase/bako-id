@@ -164,6 +164,9 @@ importers:
       jest:
         specifier: ^29.6.4
         version: 29.7.0(@types/node@20.11.17)(ts-node@10.9.2)
+      tai64:
+        specifier: ^1.0.0
+        version: 1.0.0
     devDependencies:
       '@fuels/ts-config':
         specifier: ^0.15.1
