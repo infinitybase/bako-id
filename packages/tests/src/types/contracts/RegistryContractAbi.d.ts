@@ -41,6 +41,8 @@ export type AssetIdInput = { value: string };
 export type AssetIdOutput = AssetIdInput;
 export type ContractIdInput = { value: string };
 export type ContractIdOutput = ContractIdInput;
+export type GracePeriodInput = { timestamp: BigNumberish, period: BigNumberish, grace_period: BigNumberish };
+export type GracePeriodOutput = { timestamp: BN, period: BN, grace_period: BN };
 export type RawBytesInput = { ptr: BigNumberish, cap: BigNumberish };
 export type RawBytesOutput = { ptr: BN, cap: BN };
 
@@ -69,7 +71,7 @@ interface RegistryContractAbiInterface extends Interface {
   encodeFunctionData(functionFragment: 'image_url', values: [StdString]): Uint8Array;
   encodeFunctionData(functionFragment: 'metadata', values: [AssetIdInput, StdString]): Uint8Array;
   encodeFunctionData(functionFragment: 'get_all', values: [string]): Uint8Array;
-  encodeFunctionData(functionFragment: 'get_grace_period', values: [string]): Uint8Array;
+  encodeFunctionData(functionFragment: 'get_grace_period', values: [StdString]): Uint8Array;
 
   decodeFunctionData(functionFragment: 'constructor', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'register', data: BytesLike): DecodedValue;
@@ -97,6 +99,6 @@ export class RegistryContractAbi extends Contract {
     image_url: InvokeFunction<[name: StdString], StdString>;
     metadata: InvokeFunction<[asset: AssetIdInput, key: StdString], Option<MetadataOutput>>;
     get_all: InvokeFunction<[owner: string], Bytes>;
-    get_grace_period: InvokeFunction<[owner: string], [BN, BN, BN]>;
+    get_grace_period: InvokeFunction<[owner: StdString], GracePeriodOutput>;
   };
 }

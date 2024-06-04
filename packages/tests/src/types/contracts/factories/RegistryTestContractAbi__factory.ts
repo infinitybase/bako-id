@@ -23,34 +23,12 @@ const _abi = {
     },
     {
       "typeId": 1,
-      "type": "(_, _, _)",
-      "components": [
-        {
-          "name": "__tuple_element",
-          "type": 10,
-          "typeArguments": null
-        },
-        {
-          "name": "__tuple_element",
-          "type": 10,
-          "typeArguments": null
-        },
-        {
-          "name": "__tuple_element",
-          "type": 10,
-          "typeArguments": null
-        }
-      ],
-      "typeParameters": null
-    },
-    {
-      "typeId": 2,
       "type": "b256",
       "components": null,
       "typeParameters": null
     },
     {
-      "typeId": 3,
+      "typeId": 2,
       "type": "enum RegistryTestContractError",
       "components": [
         {
@@ -67,13 +45,13 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 4,
+      "typeId": 3,
       "type": "raw untyped ptr",
       "components": null,
       "typeParameters": null
     },
     {
-      "typeId": 5,
+      "typeId": 4,
       "type": "struct Bytes",
       "components": [
         {
@@ -90,12 +68,34 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 6,
+      "typeId": 5,
       "type": "struct ContractId",
       "components": [
         {
           "name": "value",
-          "type": 2,
+          "type": 1,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": null
+    },
+    {
+      "typeId": 6,
+      "type": "struct GracePeriod",
+      "components": [
+        {
+          "name": "timestamp",
+          "type": 10,
+          "typeArguments": null
+        },
+        {
+          "name": "period",
+          "type": 10,
+          "typeArguments": null
+        },
+        {
+          "name": "grace_period",
+          "type": 10,
           "typeArguments": null
         }
       ],
@@ -107,7 +107,7 @@ const _abi = {
       "components": [
         {
           "name": "ptr",
-          "type": 4,
+          "type": 3,
           "typeArguments": null
         },
         {
@@ -124,7 +124,7 @@ const _abi = {
       "components": [
         {
           "name": "bytes",
-          "type": 5,
+          "type": 4,
           "typeArguments": null
         }
       ],
@@ -169,19 +169,19 @@ const _abi = {
       "inputs": [
         {
           "name": "owner",
-          "type": 2,
+          "type": 1,
           "typeArguments": null
         },
         {
           "name": "bako_id",
-          "type": 6,
+          "type": 5,
           "typeArguments": null
         }
       ],
       "name": "get_all",
       "output": {
         "name": "",
-        "type": 5,
+        "type": 4,
         "typeArguments": null
       },
       "attributes": [
@@ -197,14 +197,14 @@ const _abi = {
       "inputs": [
         {
           "name": "owner",
-          "type": 2,
+          "type": 8,
           "typeArguments": null
         }
       ],
       "name": "get_grace_period",
       "output": {
         "name": "",
-        "type": 1,
+        "type": 6,
         "typeArguments": null
       },
       "attributes": [
@@ -225,7 +225,7 @@ const _abi = {
         },
         {
           "name": "resolver",
-          "type": 2,
+          "type": 1,
           "typeArguments": null
         },
         {
@@ -261,7 +261,7 @@ const _abi = {
       "logId": 0,
       "loggedType": {
         "name": "",
-        "type": 3,
+        "type": 2,
         "typeArguments": []
       }
     }

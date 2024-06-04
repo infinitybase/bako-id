@@ -29,6 +29,8 @@ export enum RegistryTestContractErrorOutput { DomainUnavailable = 'DomainUnavail
 
 export type ContractIdInput = { value: string };
 export type ContractIdOutput = ContractIdInput;
+export type GracePeriodInput = { timestamp: BigNumberish, period: BigNumberish, grace_period: BigNumberish };
+export type GracePeriodOutput = { timestamp: BN, period: BN, grace_period: BN };
 export type RawBytesInput = { ptr: BigNumberish, cap: BigNumberish };
 export type RawBytesOutput = { ptr: BN, cap: BN };
 
@@ -42,7 +44,7 @@ interface RegistryTestContractAbiInterface extends Interface {
 
   encodeFunctionData(functionFragment: 'calculate_domain_price', values: [StdString, BigNumberish]): Uint8Array;
   encodeFunctionData(functionFragment: 'get_all', values: [string, ContractIdInput]): Uint8Array;
-  encodeFunctionData(functionFragment: 'get_grace_period', values: [string]): Uint8Array;
+  encodeFunctionData(functionFragment: 'get_grace_period', values: [StdString]): Uint8Array;
   encodeFunctionData(functionFragment: 'register', values: [StdString, string, BigNumberish, BigNumberish]): Uint8Array;
 
   decodeFunctionData(functionFragment: 'calculate_domain_price', data: BytesLike): DecodedValue;
@@ -56,7 +58,7 @@ export class RegistryTestContractAbi extends Contract {
   functions: {
     calculate_domain_price: InvokeFunction<[domain: StdString, period: BigNumberish], BN>;
     get_all: InvokeFunction<[owner: string, bako_id: ContractIdInput], Bytes>;
-    get_grace_period: InvokeFunction<[owner: string], [BN, BN, BN]>;
+    get_grace_period: InvokeFunction<[owner: StdString], GracePeriodOutput>;
     register: InvokeFunction<[name: StdString, resolver: string, period: BigNumberish, timestamp: BigNumberish], void>;
   };
 }

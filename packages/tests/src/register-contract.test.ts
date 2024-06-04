@@ -2,6 +2,7 @@ import {
   Address,
   Provider,
   TransactionStatus,
+  bn,
   type WalletUnlocked,
 } from 'fuels';
 import {
@@ -182,6 +183,32 @@ describe('[METHODS] Registry Contract', () => {
     });
 
     expect(expected).toEqual(expect.arrayContaining(Array.from(vecBytes)));
+  });
+
+  it('should get timestamp by owner address', async () => {
+    const { registry, storage, resolver } =
+      await setupContractsAndDeploy(wallet);
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
+
+    const address = Address.fromRandom().toB256();
+
+    await registry.register('jonglazkov', address, 1);
+
+    const { value } = await registry.functions
+      .get_grace_period('jonglazkov')
+      .addContracts([storage])
+      .txParams(txParams)
+      .call();
+
+    console.log(value);
+    expect(value).toEqual({
+      grace_period: bn(value.grace_period),
+      timestamp: bn(value.timestamp),
+      period: bn(value.period),
+    });
   });
 
   it.each(['@invalid-!@#%$!', 'my@asd.other', '@MYHanDLE'])(

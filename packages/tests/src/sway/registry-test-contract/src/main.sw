@@ -43,6 +43,12 @@ fn domain_price(domain: String, period: u16) -> u64 {
     return amount * period.as_u64();
 }
 
+struct GracePeriod {
+    timestamp: u64,
+    period: u64,
+    grace_period: u64,
+}
+
 abi RegistryTestContract {
     #[storage(read, write)]
     fn register(name: String, resolver: b256, period: u16, timestamp: u64);
@@ -53,7 +59,7 @@ abi RegistryTestContract {
     fn get_all(owner: b256, bako_id: ContractId) -> Bytes;
 
     #[storage(read)]
-    fn get_grace_period(owner: b256) -> (u64, u64, u64);
+    fn get_grace_period(owner: String) -> GracePeriod;
 }
 
 
@@ -110,9 +116,10 @@ impl RegistryTestContract for Contract {
     }
 
     #[storage(read)]
-    fn get_grace_period(owner: b256) -> (u64, u64, u64) {
+    fn get_grace_period(owner: String) -> GracePeriod {
         let grace_period: u64 = 90 * 24 * 3600; // 90 days of grace period
 
+        let owner = sha256(owner);
         let handle = storage.domains.get(owner).read_slice();
 
         match handle {
@@ -123,10 +130,18 @@ impl RegistryTestContract for Contract {
                 let period = handle.period.as_u64() * handle.timestamp;
                 let grace_period = handle.period.as_u64() * handle.timestamp + grace_period;
 
-                return (timestamp, period, grace_period);
+                return {
+                    GracePeriod { timestamp, period, grace_period }
+                }
             },
             None => {
-                return (0, 0, 0);
+                return {
+                    GracePeriod {
+                        timestamp: 0,
+                        period: 0,
+                        grace_period: 0,
+                    }
+                };
             }
         }
     }
