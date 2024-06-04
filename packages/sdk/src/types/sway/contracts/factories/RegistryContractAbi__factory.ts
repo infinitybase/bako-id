@@ -60,12 +60,12 @@ const _abi = {
         },
         {
           "name": "Int",
-          "type": 16,
+          "type": 18,
           "typeArguments": null
         },
         {
           "name": "String",
-          "type": 15,
+          "type": 16,
           "typeArguments": null
         }
       ],
@@ -208,12 +208,12 @@ const _abi = {
       "components": [
         {
           "name": "buf",
-          "type": 14,
+          "type": 15,
           "typeArguments": null
         },
         {
           "name": "len",
-          "type": 16,
+          "type": 18,
           "typeArguments": null
         }
       ],
@@ -233,6 +233,28 @@ const _abi = {
     },
     {
       "typeId": 14,
+      "type": "struct GracePeriod",
+      "components": [
+        {
+          "name": "timestamp",
+          "type": 18,
+          "typeArguments": null
+        },
+        {
+          "name": "period",
+          "type": 18,
+          "typeArguments": null
+        },
+        {
+          "name": "grace_period",
+          "type": 18,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": null
+    },
+    {
+      "typeId": 15,
       "type": "struct RawBytes",
       "components": [
         {
@@ -242,14 +264,14 @@ const _abi = {
         },
         {
           "name": "cap",
-          "type": 16,
+          "type": 18,
           "typeArguments": null
         }
       ],
       "typeParameters": null
     },
     {
-      "typeId": 15,
+      "typeId": 16,
       "type": "struct String",
       "components": [
         {
@@ -261,13 +283,19 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 16,
+      "typeId": 17,
+      "type": "u16",
+      "components": null,
+      "typeParameters": null
+    },
+    {
+      "typeId": 18,
       "type": "u64",
       "components": null,
       "typeParameters": null
     },
     {
-      "typeId": 17,
+      "typeId": 19,
       "type": "u8",
       "components": null,
       "typeParameters": null
@@ -306,36 +334,18 @@ const _abi = {
     {
       "inputs": [
         {
-          "name": "owner",
-          "type": 1,
-          "typeArguments": null
-        }
-      ],
-      "name": "get_all",
-      "output": {
-        "name": "",
-        "type": 12,
-        "typeArguments": null
-      },
-      "attributes": [
-        {
-          "name": "storage",
-          "arguments": [
-            "read"
-          ]
-        }
-      ]
-    },
-    {
-      "inputs": [
-        {
           "name": "name",
-          "type": 15,
+          "type": 16,
           "typeArguments": null
         },
         {
           "name": "resolver",
           "type": 1,
+          "typeArguments": null
+        },
+        {
+          "name": "period",
+          "type": 17,
           "typeArguments": null
         }
       ],
@@ -347,15 +357,15 @@ const _abi = {
       },
       "attributes": [
         {
-          "name": "payable",
-          "arguments": []
-        },
-        {
           "name": "storage",
           "arguments": [
             "read",
             "write"
           ]
+        },
+        {
+          "name": "payable",
+          "arguments": []
         }
       ]
     },
@@ -374,7 +384,7 @@ const _abi = {
         "typeArguments": [
           {
             "name": "",
-            "type": 17,
+            "type": 19,
             "typeArguments": null
           }
         ]
@@ -399,7 +409,7 @@ const _abi = {
       "name": "name",
       "output": {
         "name": "",
-        "type": 15,
+        "type": 16,
         "typeArguments": null
       },
       "attributes": [
@@ -422,7 +432,7 @@ const _abi = {
       "name": "symbol",
       "output": {
         "name": "",
-        "type": 15,
+        "type": 16,
         "typeArguments": null
       },
       "attributes": [
@@ -439,7 +449,7 @@ const _abi = {
       "name": "total_assets",
       "output": {
         "name": "",
-        "type": 16,
+        "type": 18,
         "typeArguments": null
       },
       "attributes": [
@@ -466,7 +476,7 @@ const _abi = {
         "typeArguments": [
           {
             "name": "",
-            "type": 16,
+            "type": 18,
             "typeArguments": null
           }
         ]
@@ -484,14 +494,14 @@ const _abi = {
       "inputs": [
         {
           "name": "name",
-          "type": 15,
+          "type": 16,
           "typeArguments": null
         }
       ],
       "name": "image_url",
       "output": {
         "name": "",
-        "type": 15,
+        "type": 16,
         "typeArguments": null
       },
       "attributes": [
@@ -512,7 +522,7 @@ const _abi = {
         },
         {
           "name": "key",
-          "type": 15,
+          "type": 16,
           "typeArguments": null
         }
       ],
@@ -527,6 +537,52 @@ const _abi = {
             "typeArguments": null
           }
         ]
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "owner",
+          "type": 1,
+          "typeArguments": null
+        }
+      ],
+      "name": "get_all",
+      "output": {
+        "name": "",
+        "type": 12,
+        "typeArguments": null
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "owner",
+          "type": 16,
+          "typeArguments": null
+        }
+      ],
+      "name": "get_grace_period",
+      "output": {
+        "name": "",
+        "type": 14,
+        "typeArguments": null
       },
       "attributes": [
         {
@@ -575,7 +631,7 @@ const _abi = {
       "logId": 4,
       "loggedType": {
         "name": "",
-        "type": 7,
+        "type": 4,
         "typeArguments": []
       }
     },
@@ -599,7 +655,7 @@ const _abi = {
       "logId": 7,
       "loggedType": {
         "name": "",
-        "type": 4,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -640,6 +696,22 @@ const _abi = {
       "loggedType": {
         "name": "",
         "type": 4,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": 13,
+      "loggedType": {
+        "name": "",
+        "type": 7,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": 14,
+      "loggedType": {
+        "name": "",
+        "type": 7,
         "typeArguments": []
       }
     }

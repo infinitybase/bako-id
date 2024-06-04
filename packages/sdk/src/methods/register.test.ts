@@ -1,5 +1,5 @@
 import { Provider, Wallet, type WalletUnlocked } from 'fuels';
-import { getAll, register, resolver } from '../index';
+import { register, resolver } from '../index';
 import { createFakeWallet } from '../test';
 import { InvalidDomainError, NotFoundBalanceError, randomName } from '../utils';
 
@@ -23,10 +23,11 @@ describe('Test Registry', () => {
         account: wallet,
         resolver: wallet.address.toB256(),
         domain: domain,
+        period: 1,
       });
 
       await expect(invalidSuffix).rejects.toBeInstanceOf(InvalidDomainError);
-    }
+    },
   );
 
   it('should register domain with special characters', async () => {
@@ -34,6 +35,7 @@ describe('Test Registry', () => {
       account: wallet,
       resolver: wallet.address.toB256(),
       domain: `bako_${randomName(3)}`,
+      period: 1,
     });
 
     expect(result.transactionResult).toBeDefined();
@@ -46,6 +48,7 @@ describe('Test Registry', () => {
       account: wallet,
       resolver: wallet.address.toB256(),
       domain: domain,
+      period: 1,
     });
 
     expect(result.transactionResult.status).toBe('success');
@@ -66,21 +69,9 @@ describe('Test Registry', () => {
       account: fakeWallet,
       resolver: wallet.address.toB256(),
       domain: `do${randomName(1)}`,
+      period: 1,
     });
 
     await expect(registerResult).rejects.toBeInstanceOf(NotFoundBalanceError);
-  });
-
-  it('should get all domains by owner address', async () => {
-    await register({
-      domain: randomName(),
-      account: wallet,
-      resolver: wallet.address.toB256(),
-    });
-
-    const [handle] = await getAll(wallet.address.toB256());
-
-    expect(handle.name).toBeDefined();
-    expect(handle.isPrimary).toBeDefined();
   });
 });
