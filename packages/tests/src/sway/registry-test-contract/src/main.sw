@@ -118,6 +118,7 @@ impl RegistryTestContract for Contract {
     #[storage(read)]
     fn get_grace_period(owner: String) -> GracePeriod {
         let grace_period: u64 = 90 * 24 * 3600; // 90 days of grace period
+        let year = 365 * 24 * 3600; // 1 year
 
         let owner = sha256(owner);
         let handle = storage.domains.get(owner).read_slice();
@@ -127,7 +128,7 @@ impl RegistryTestContract for Contract {
                 let handle = BakoHandle::from(handle_bytes);
 
                 let timestamp = handle.timestamp;
-                let period = handle.period.as_u64() * handle.timestamp;
+                let period = (handle.period.as_u64() * year) + handle.timestamp;
                 let grace_period = handle.period.as_u64() * handle.timestamp + grace_period;
 
                 return {
