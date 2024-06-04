@@ -31,7 +31,7 @@ abi InfoContract {
     fn get_all(owner: b256) -> Bytes;
 
     #[storage(read)]
-    fn get_grace_period(owner: b256) -> GracePeriod;
+    fn get_grace_period(owner: String) -> GracePeriod;
 }
 
 
@@ -76,14 +76,12 @@ pub fn _get_grace_period(owner: String, bako_id: ContractId) -> GracePeriod {
             let grace_period = handle.period.as_u64()  * handle.timestamp + grace_period;
 
 
-            return {
-                GracePeriod { timestamp, period, grace_period }
-            }
+            return GracePeriod { timestamp, period, grace_period }
+            
         },
         None => {
-            return {
-                GracePeriod { timestamp: 0, period: 0, grace_period: 0 }
-            };
+            return GracePeriod { timestamp: 0, period: 0, grace_period: 0 }
+            
         }
     }
 }
