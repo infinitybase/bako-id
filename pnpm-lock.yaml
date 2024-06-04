@@ -160,6 +160,10 @@ importers:
         version: 2.1.5(serverless@3.38.0)(typescript@5.3.3)
 
   packages/sdk:
+    dependencies:
+      jest:
+        specifier: ^29.6.4
+        version: 29.7.0(@types/node@20.11.17)(ts-node@10.9.2)
     devDependencies:
       '@fuels/ts-config':
         specifier: ^0.15.1
