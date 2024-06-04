@@ -185,7 +185,7 @@ describe('[METHODS] Registry Contract', () => {
     expect(expected).toEqual(expect.arrayContaining(Array.from(vecBytes)));
   });
 
-  it('should get timestamp by owner address', async () => {
+  it('should get timestamp by owner name', async () => {
     const { registry, storage, resolver } =
       await setupContractsAndDeploy(wallet);
 
