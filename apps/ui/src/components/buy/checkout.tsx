@@ -8,14 +8,17 @@ import {
   VStack,
   useMediaQuery,
 } from '@chakra-ui/react';
-import { bn } from 'fuels';
-import { useFuelConnect } from '../../hooks';
-import { useBuy } from '../../modules/buy/hooks';
+import { bn, type Account } from 'fuels';
+import type { UseBuyReturn } from '../../modules/buy/hooks';
 import { Coin } from '../../types';
+
 const { ETH, USD } = Coin;
 
-export const Checkout = () => {
-  const { wallet } = useFuelConnect();
+interface CheckoutProps extends UseBuyReturn {
+  wallet?: Account | null;
+}
+
+export const Checkout = (props: CheckoutProps) => {
   const {
     totalPrice,
     handleChangeCoin,
@@ -23,7 +26,8 @@ export const Checkout = () => {
     formatCoin,
     fee,
     domainPrice,
-  } = useBuy();
+    wallet,
+  } = props;
   // const multipleBuys = length > 1 ? 'Domains' : 'Domain';
   const [isMobile] = useMediaQuery('(max-width: 22em)');
 

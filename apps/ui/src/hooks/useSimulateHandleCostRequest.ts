@@ -8,17 +8,19 @@ const useSimulateHandleCostRequest = (
   account: Account,
   resolver: string,
   domain: string,
+  period: number,
   options?: UseMutationOptions<unknown, unknown, RegisterDomainPayload>,
 ) => {
   return useQuery({
-    queryKey: ['simulateHandleCost'],
+    queryKey: ['simulateHandleCost', period],
     queryFn: () =>
       simulateHandleCost({
         account,
         resolver,
         domain,
+        period,
       }),
-    enabled: !!account && !!resolver && !!domain,
+    enabled: !!account && !!resolver && !!domain && !!period,
     ...options,
   });
 };

@@ -1,4 +1,8 @@
-import { Image as ChakraImage, ImageProps, Spinner } from '@chakra-ui/react';
+import {
+  Image as ChakraImage,
+  type ImageProps,
+  Spinner,
+} from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 
 interface TokenImageProps extends ImageProps {

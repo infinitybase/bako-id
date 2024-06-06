@@ -56,6 +56,7 @@ export interface RegisterDomainPayload {
   domain: string;
   resolver: string;
   account: fuels.Account;
+  period: number;
 }
 
 /**
