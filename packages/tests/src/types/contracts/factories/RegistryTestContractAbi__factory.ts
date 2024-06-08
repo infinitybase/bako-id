@@ -37,6 +37,11 @@ const _abi = {
           "typeArguments": null
         },
         {
+          "name": "InvalidAmount",
+          "type": 0,
+          "typeArguments": null
+        },
+        {
           "name": "DomainExpired",
           "type": 0,
           "typeArguments": null
@@ -259,6 +264,30 @@ const _abi = {
   "loggedTypes": [
     {
       "logId": 0,
+      "loggedType": {
+        "name": "",
+        "type": 2,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": 1,
+      "loggedType": {
+        "name": "",
+        "type": 10,
+        "typeArguments": null
+      }
+    },
+    {
+      "logId": 2,
+      "loggedType": {
+        "name": "",
+        "type": 10,
+        "typeArguments": null
+      }
+    },
+    {
+      "logId": 3,
       "loggedType": {
         "name": "",
         "type": 2,

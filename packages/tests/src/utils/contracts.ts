@@ -75,7 +75,7 @@ const register =
     period: number,
     calculateAmount = true,
   ) => {
-    const amount = domainPrices(domain);
+    const amount = domainPrices(domain, period);
     const callBuilder = contractAbi.functions.register(
       domain,
       account ?? contractAbi.account.address.toB256(),

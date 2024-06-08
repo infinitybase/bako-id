@@ -27,6 +27,51 @@ describe('[METHODS] Registry Contract', () => {
     contracts = await setupContractsAndDeploy(wallet);
   });
 
+  it('should register domain with 1 year', async () => {
+    const { registry, storage } = contracts;
+
+    const domain = randomName();
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(storage.initializeStorage());
+
+    const { transactionResult: txRegister } = await registry.register(
+      domain,
+      wallet.address.toB256(),
+      1,
+    );
+
+    expect(txRegister.status).toBe(TransactionStatus.success);
+  });
+  it('should register domain with 2 years', async () => {
+    const { registry, storage } = contracts;
+
+    const domain = randomName();
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(storage.initializeStorage());
+
+    const { transactionResult: txRegister } = await registry.register(
+      domain,
+      wallet.address.toB256(),
+      2,
+    );
+
+    expect(txRegister.status).toBe(TransactionStatus.success);
+  });
+  it('should register domain with 3 years', async () => {
+    const { registry, storage } = contracts;
+
+    const domain = randomName();
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(storage.initializeStorage());
+
+    const { transactionResult: txRegister } = await registry.register(
+      domain,
+      wallet.address.toB256(),
+      3,
+    );
+
+    expect(txRegister.status).toBe(TransactionStatus.success);
+  });
   it('should error on call method without a proxy contract started', async () => {
     const domain = randomName();
     const { registry, storage } = contracts;
@@ -68,7 +113,12 @@ describe('[METHODS] Registry Contract', () => {
     await tryExecute(storage.initializeStorage());
 
     try {
-      await registry.register(domain, wallet.address.toB256(), 1);
+      const { logs } = await registry.register(
+        domain,
+        wallet.address.toB256(),
+        1,
+      );
+      console.log(logs);
 
       const { transactionResult: txRegister } = await registry.register(
         domain,
@@ -91,11 +141,13 @@ describe('[METHODS] Registry Contract', () => {
     await tryExecute(resolver.initializeResolver());
 
     const domain = randomName();
-    const { transactionResult: txRegister } = await registry.register(
+    const { transactionResult: txRegister, logs } = await registry.register(
       domain,
       wallet.address.toB256(),
       1,
     );
+
+    console.log(logs);
 
     const { value } = await resolver.functions
       .resolver(domain)

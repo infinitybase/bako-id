@@ -4,6 +4,7 @@ use std::{
     hash::*,
     bytes::Bytes,
     string::String,
+    context::msg_amount,
     contract_id::ContractId,
     storage::storage_map::*,
     storage::storage_bytes::*,
@@ -16,6 +17,7 @@ use libraries::{
 
 enum RegistryTestContractError {
     DomainUnavailable: (),
+    InvalidAmount: (),
     DomainExpired: (),
 }
 
@@ -70,11 +72,16 @@ impl RegistryTestContract for Contract {
         let handle = sha256(name);
 
         let domain = storage.domains.get(handle).read_slice();
-
         if (domain.is_some()) {
            let handle = BakoHandle::from(domain.unwrap());
            require(!handle.is_expired(), RegistryTestContractError::DomainUnavailable);
         }
+
+        let domain_price = domain_price(name, period);
+
+        log(domain_price);
+        log(msg_amount());
+        require(msg_amount() == domain_price, RegistryTestContractError::InvalidAmount);
 
         let retrived_handle = BakoHandle::new(
             name, 
@@ -146,4 +153,33 @@ impl RegistryTestContract for Contract {
             }
         }
     }
+
 }
+    #[test]
+    #[storage(read, write)]
+    fn register_test(name: String, resolver: b256, period: u16, timestamp: u64){
+        let address = sha256(msgsender_address());
+        let handle = sha256(name);
+
+        let domain = storage.domains.get(handle).read_slice();
+        
+        if (domain.is_some()) {
+           let handle = BakoHandle::from(domain.unwrap());
+           require(!handle.is_expired(), RegistryTestContractError::DomainUnavailable);
+        }
+
+        let domain_price = domain_price(name, period);
+        require(msg_amount() == domain_price, RegistryTestContractError::InvalidAmount);
+
+        let retrived_handle = BakoHandle::new(
+            name, 
+            address, 
+            resolver,
+            true, 
+            timestamp, 
+            period
+        );
+
+        storage.domains.insert(handle, StorageBytes {});
+        storage.domains.get(handle).write_slice(retrived_handle.into());
+    }
