@@ -74,4 +74,17 @@ describe('Test Registry', () => {
 
     await expect(registerResult).rejects.toBeInstanceOf(NotFoundBalanceError);
   });
+
+  it('should be able to register domain with 2 years', async () => {
+    const domain = randomName(1);
+
+    const result = await register({
+      account: wallet,
+      resolver: wallet.address.toB256(),
+      domain: `do${domain}`,
+      period: 2,
+    });
+
+    expect(result.transactionResult.status).toBe('success');
+  });
 });

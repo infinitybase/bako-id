@@ -5,7 +5,7 @@ import {
   NotFoundBalanceError,
   assertValidDomain,
   domainPrices,
-  getTxParams
+  getTxParams,
 } from '../utils';
 
 type RegisterDomainParams = {
@@ -25,8 +25,12 @@ type RegisterDomainParams = {
  *
  * @return {Promise<BigNumber>} The domain price.
  */
-async function checkAccountBalance(account: Account, domain: string) {
-  const amount = domainPrices(domain);
+async function checkAccountBalance(
+  account: Account,
+  domain: string,
+  period?: number,
+) {
+  const amount = domainPrices(domain, period);
   const accountBalance = await account.getBalance();
   const hasBalance = accountBalance.gte(amount);
   if (!hasBalance) {
@@ -64,7 +68,8 @@ export async function register(params: RegisterDomainParams) {
   registry.account = account;
 
   const txParams = getTxParams(account.provider);
-  const amount = await checkAccountBalance(account, domainName);
+  const amount = await checkAccountBalance(account, domainName, period);
+  // const amount = await domainPrices(domain, period);
 
   const {
     transactionResult,
@@ -133,6 +138,3 @@ export async function simulateHandleCost(params: RegisterDomainParams) {
     transactionRequest,
   };
 }
-
-
-
