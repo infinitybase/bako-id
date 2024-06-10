@@ -34,7 +34,7 @@ describe('Test Registry', () => {
       domain,
       account: wallet,
       resolver: wallet.address.toB256(),
-      period: 2,
+      period: 10,
     });
 
     const gracePeriod = await getGracePeriod(domain, {
