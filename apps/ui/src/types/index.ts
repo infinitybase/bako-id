@@ -59,6 +59,18 @@ export interface RegisterDomainPayload {
   period: number;
 }
 
+export interface ProviderParams {
+  account?: fuels.Account;
+  provider?: fuels.Provider;
+  providerURL?: string;
+}
+
+export interface GracePeriodResponse {
+  timestamp: Date;
+  period: Date;
+  gracePeriod: Date;
+}
+
 /**
  * Resolves domain using the given parameters.
  *

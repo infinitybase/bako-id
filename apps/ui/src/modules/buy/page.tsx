@@ -36,6 +36,7 @@ export const Buy = () => {
   const { isMobile } = useScreenSize();
 
   if (registerDomain.isSuccess || registerDomain.data) {
+    console.log(registerDomain.data);
     return (
       <Purchased
         domain={domain}
