@@ -136,7 +136,7 @@ impl RegistryTestContract for Contract {
 
                 let timestamp = handle.timestamp;
                 let period = (handle.period.as_u64() * year) + handle.timestamp;
-                let grace_period = handle.period.as_u64() * handle.timestamp + grace_period;
+                let grace_period = period + grace_period;
 
                 return {
                     GracePeriod { timestamp, period, grace_period }

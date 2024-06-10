@@ -18,24 +18,18 @@ import type {
   FunctionFragment,
   Interface,
   InvokeFunction,
-  StdString,
+  StdString
 } from 'fuels';
 
-import type { Option } from './common';
+import type { Option } from "./common";
 
-export enum ResolverContractErrorInput {
-  AlreadyInitialized = 'AlreadyInitialized',
-  StorageNotInitialized = 'StorageNotInitialized',
-}
-export enum ResolverContractErrorOutput {
-  AlreadyInitialized = 'AlreadyInitialized',
-  StorageNotInitialized = 'StorageNotInitialized',
-}
+export enum ResolverContractErrorInput { AlreadyInitialized = 'AlreadyInitialized', StorageNotInitialized = 'StorageNotInitialized' };
+export enum ResolverContractErrorOutput { AlreadyInitialized = 'AlreadyInitialized', StorageNotInitialized = 'StorageNotInitialized' };
 
 export type ContractIdInput = { value: string };
 export type ContractIdOutput = ContractIdInput;
-export type RawBytesInput = { ptr: BigNumberish; cap: BigNumberish };
-export type RawBytesOutput = { ptr: BN; cap: BN };
+export type RawBytesInput = { ptr: BigNumberish, cap: BigNumberish };
+export type RawBytesOutput = { ptr: BN, cap: BN };
 
 export interface ResolverContractAbiInterface extends Interface {
   functions: {
@@ -45,29 +39,14 @@ export interface ResolverContractAbiInterface extends Interface {
     name: FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: 'constructor',
-    values: [ContractIdInput],
-  ): Uint8Array;
-  encodeFunctionData(
-    functionFragment: 'owner',
-    values: [StdString],
-  ): Uint8Array;
-  encodeFunctionData(
-    functionFragment: 'resolver',
-    values: [StdString],
-  ): Uint8Array;
+  encodeFunctionData(functionFragment: 'constructor', values: [ContractIdInput]): Uint8Array;
+  encodeFunctionData(functionFragment: 'owner', values: [StdString]): Uint8Array;
+  encodeFunctionData(functionFragment: 'resolver', values: [StdString]): Uint8Array;
   encodeFunctionData(functionFragment: 'name', values: [string]): Uint8Array;
 
-  decodeFunctionData(
-    functionFragment: 'constructor',
-    data: BytesLike,
-  ): DecodedValue;
+  decodeFunctionData(functionFragment: 'constructor', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'owner', data: BytesLike): DecodedValue;
-  decodeFunctionData(
-    functionFragment: 'resolver',
-    data: BytesLike,
-  ): DecodedValue;
+  decodeFunctionData(functionFragment: 'resolver', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'name', data: BytesLike): DecodedValue;
 }
 

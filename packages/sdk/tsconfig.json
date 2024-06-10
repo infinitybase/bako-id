@@ -13,6 +13,12 @@
       "module": "commonjs"
     }
   },
-  "include": ["**/*.ts"],
-  "exclude": ["**/*.test.ts", "dist", "node_modules/**/*"]
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    "**/*.test.ts",
+    "dist",
+    "node_modules/**/*"
+  ]
 }

@@ -59,19 +59,21 @@ pub fn _register(input: RegisterInput, bako_id: ContractId) -> String {
     // Check domain is available
     let storage = abi(StorageContract, bako_id.into());
 
-    let domain = storage.get(domain_hash);
 
+    let domain = storage.get(domain_hash);
     if (domain.is_some()) {
         let handle = BakoHandle::from(domain.unwrap());
         require(!handle.is_expired(), RegistryContractError::DomainNotAvailable); 
     }
 
+
     let domain_available = storage.get(domain_hash).is_none();
     require(domain_available, RegistryContractError::DomainNotAvailable);
 
     // TODO: change to receive the period, the default now is 1 year
-    let domain_price = domain_price(name, input.period);
+    let domain_price = domain_price(name, input.period);   
     require(msg_amount() == domain_price, RegistryContractError::InvalidAmount);
+
 
     let owner = msg_sender().unwrap().as_address().unwrap().value;
     let is_primary = storage.get_primary(resolver).is_none();
@@ -81,7 +83,7 @@ pub fn _register(input: RegisterInput, bako_id: ContractId) -> String {
         resolver,
         is_primary,
         current_timestamp,
-        1,
+        input.period,
 
     );
     storage.set(domain_hash, owner, domain.into());
@@ -92,6 +94,7 @@ pub fn _register(input: RegisterInput, bako_id: ContractId) -> String {
 
     return name;
 }
+
 
 pub fn domain_price(domain: String, period: u16) -> u64 {
     let domain_len = domain.as_bytes().len;
