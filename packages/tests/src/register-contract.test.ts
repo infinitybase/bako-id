@@ -6,6 +6,7 @@ import {
   type WalletUnlocked,
 } from 'fuels';
 import {
+  WALLET_PRIVATE_KEYS,
   createWallet,
   expectContainLogError,
   expectRequireRevertError,
@@ -288,4 +289,78 @@ describe('[METHODS] Registry Contract', () => {
       }
     },
   );
+
+  it('should be able to edit resolver of a domain', async () => {
+    const { registry, storage, resolver } = contracts;
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
+
+    const domain = randomName();
+
+    const newAddress = Address.fromRandom().toB256();
+    await registry.register(domain, wallet.address.toB256(), 1);
+
+    const { transactionResult: txResolver } = await registry.functions
+      .edit_resolver(domain, newAddress)
+      .addContracts([storage])
+      .txParams(txParams)
+      .call();
+
+    const { value } = await resolver.functions.resolver(domain).call();
+
+    expect(value).toBe(newAddress);
+    expect(txResolver.status).toBe(TransactionStatus.success);
+  });
+
+  it('should not be able to edit resolver of a domain if domain it is not registered', async () => {
+    const { registry, storage, resolver } = contracts;
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
+
+    const domain = randomName();
+    const newAddress = Address.fromRandom().toB256();
+
+    try {
+      await registry.functions
+        .edit_resolver(domain, newAddress)
+        .addContracts([storage])
+        .txParams(txParams)
+        .call();
+    } catch (error) {
+      expectRequireRevertError(error);
+      expectContainLogError(error, 'InvalidDomain');
+    }
+  });
+
+  it('should not be able to edit resolver of a domain if not owner', async () => {
+    const { registry, storage, resolver } = contracts;
+
+    const fakeWallet = createWallet(provider, WALLET_PRIVATE_KEYS.FAKE);
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
+
+    const domain = randomName();
+    await registry.register(domain, wallet.address.toB256(), 1);
+
+    const newAddress = Address.fromRandom().toB256();
+
+    try {
+      registry.account = fakeWallet;
+
+      await registry.functions
+        .edit_resolver(domain, newAddress)
+        .addContracts([storage])
+        .txParams(txParams)
+        .call();
+    } catch (error) {
+      expectRequireRevertError(error);
+      expectContainLogError(error, 'NotOwner');
+    }
+  });
 });

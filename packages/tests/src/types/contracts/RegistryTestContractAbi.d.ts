@@ -24,8 +24,8 @@ import type {
 
 import type { Enum } from "./common";
 
-export enum RegistryTestContractErrorInput { DomainUnavailable = 'DomainUnavailable', InvalidAmount = 'InvalidAmount', DomainExpired = 'DomainExpired' };
-export enum RegistryTestContractErrorOutput { DomainUnavailable = 'DomainUnavailable', InvalidAmount = 'InvalidAmount', DomainExpired = 'DomainExpired' };
+export enum RegistryTestContractErrorInput { DomainUnavailable = 'DomainUnavailable', InvalidAmount = 'InvalidAmount', DomainExpired = 'DomainExpired', NotOwner = 'NotOwner' };
+export enum RegistryTestContractErrorOutput { DomainUnavailable = 'DomainUnavailable', InvalidAmount = 'InvalidAmount', DomainExpired = 'DomainExpired', NotOwner = 'NotOwner' };
 
 export type ContractIdInput = { value: string };
 export type ContractIdOutput = ContractIdInput;
