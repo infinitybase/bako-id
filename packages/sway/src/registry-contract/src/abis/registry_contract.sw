@@ -11,6 +11,7 @@ use std::{
     bytes_conversions::u16::*,
     call_frames::{ msg_asset_id },
 };
+
 use libraries::{
     abis::{StorageContract},
     structures::{BakoHandle},
@@ -24,7 +25,10 @@ pub enum RegistryContractError {
     AlreadyInitialized: (),
     DomainNotAvailable: (),
     IncorrectAssetId: (),
+    InvalidDomain: (),
     InvalidAmount: (),
+    InvalidPermission: (),
+    NotOwner: (),
 }
 
 abi RegistryContract {
@@ -33,15 +37,20 @@ abi RegistryContract {
 
     #[storage(read, write), payable]
     fn register(name: String, resolver: b256, period: u16) -> AssetId;
+
+    #[storage(read, write)]
+    fn edit_resolver(name: String, resolver: b256);
 }
-
-
-
 
 pub struct RegisterInput {
     name: String,
     resolver: b256,
     period: u16,
+}
+
+pub struct EditResolverInput {
+    name: String,
+    resolver: b256,
 }
 
 #[storage(read)]
@@ -95,6 +104,24 @@ pub fn _register(input: RegisterInput, bako_id: ContractId) -> String {
     return name;
 }
 
+#[storage(read, write)]
+pub fn _edit_resolver(input: EditResolverInput, bako_id: ContractId) {
+    let domain_hash = sha256(input.name);
+   
+    let storage_contract = abi(StorageContract, bako_id.into());
+    let handle_bytes = storage_contract.get(domain_hash);
+
+    require(handle_bytes.is_some(), RegistryContractError::InvalidDomain);
+    let mut domain = BakoHandle::from(handle_bytes.unwrap());
+
+    require(
+        Identity::Address(Address::from(domain.owner)) == msg_sender().unwrap(),
+        RegistryContractError::NotOwner,
+    );
+    
+    domain.resolver = input.resolver;
+    storage_contract.set(domain_hash, domain.owner, domain.into());
+}
 
 pub fn domain_price(domain: String, period: u16) -> u64 {
     let domain_len = domain.as_bytes().len;
