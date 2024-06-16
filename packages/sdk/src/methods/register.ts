@@ -15,6 +15,12 @@ type RegisterDomainParams = {
   period: number;
 };
 
+type EditResolverParams = {
+  domain: string;
+  resolver: string;
+  account: Account;
+};
+
 /**
  * Checks if the account has sufficient balance to cover the given domain price.
  *
@@ -136,5 +142,32 @@ export async function simulateHandleCost(params: RegisterDomainParams) {
   return {
     fee: gasUsed.add(minFee),
     transactionRequest,
+  };
+}
+
+export async function editResolver(params: EditResolverParams) {
+  const { account, domain, resolver } = params;
+
+  const { registry } = await getRegistryContract({
+    account,
+    storageId: config.STORAGE_CONTRACT_ID!,
+  });
+
+  // Change account for the user account!
+  registry.account = account;
+
+  const txParams = getTxParams(account.provider);
+
+  const { transactionResult, transactionResponse, gasUsed, transactionId } =
+    await registry.functions
+      .edit_resolver(domain, resolver)
+      .txParams(txParams)
+      .call();
+
+  return {
+    gasUsed,
+    transactionId,
+    transactionResult,
+    transactionResponse,
   };
 }

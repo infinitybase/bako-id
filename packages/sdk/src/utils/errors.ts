@@ -36,3 +36,21 @@ export class NotOwnerError extends Error {
     this.name = 'NotOwnerError';
   }
 }
+
+export class InvalidHandleError extends Error {
+  constructor() {
+    super('Invalid Domain.');
+    this.name = 'InvalidDomain';
+  }
+}
+
+export const containLogError = (logs: unknown[], value: unknown) =>
+  !!logs.find((_value) => _value === value);
+
+export const expectRequireRevertError = (expectedError: unknown) =>
+  // @ts-ignore
+  expect(expectedError.code).toMatch(/revert/);
+
+export const expectContainLogError = (error: unknown, value: unknown) =>
+  // @ts-ignore
+  expect(containLogError(error.metadata.logs, value)).toBeTruthy();
