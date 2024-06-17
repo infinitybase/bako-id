@@ -21,6 +21,8 @@ type EditResolverParams = {
   account: Account;
 };
 
+type SimulateHandleCostParams = Omit<RegisterDomainParams, 'account'>;
+
 /**
  * Checks if the account has sufficient balance to cover the given domain price.
  *
@@ -103,8 +105,7 @@ export async function register(params: RegisterDomainParams) {
 /**
  * Simulates the cost of bako handle registration.
  *
- * @param {RegisterDomainParams} params - The parameters for domain registration.
- * @param {string} params.account - The user's account.
+ * @param {SimulateHandleCostParams} params - The parameters for domain registration.
  * @param {string} params.domain - The domain to be registered.
  * @param {string} params.resolver - The resolver for the domain.
  *
@@ -112,21 +113,17 @@ export async function register(params: RegisterDomainParams) {
  * @return {BigNumber} fee - The total fee for handling the transaction.
  * @return {TransactionRequest} transactionRequest - The transaction request object.
  */
-export async function simulateHandleCost(params: RegisterDomainParams) {
-  const { account, domain, resolver, period } = params;
+export async function simulateHandleCost(params: SimulateHandleCostParams) {
+  const { domain, resolver, period } = params;
 
   const domainName = assertValidDomain(domain);
 
   const { registry } = await getRegistryContract({
-    account,
     storageId: config.STORAGE_CONTRACT_ID!,
   });
 
-  // Change account for the user account!
-  registry.account = account;
-
-  const txParams = getTxParams(account.provider);
-  const amount = await checkAccountBalance(account, domainName);
+  const txParams = getTxParams(registry.provider);
+  const amount = await checkAccountBalance(registry.account!, domainName);
 
   const transactionRequest = await registry.functions
     .register(domainName, resolver, period)
@@ -137,7 +134,7 @@ export async function simulateHandleCost(params: RegisterDomainParams) {
     .getTransactionRequest();
 
   const { gasUsed, minFee } =
-    await account.provider.getTransactionCost(transactionRequest);
+    await registry.account!.provider.getTransactionCost(transactionRequest);
 
   return {
     fee: gasUsed.add(minFee),
@@ -145,6 +142,21 @@ export async function simulateHandleCost(params: RegisterDomainParams) {
   };
 }
 
+/**
+ * Edits the resolver for a domain.
+ *
+ * @param {EditResolverParams} params - The parameters for the resolver edit.
+ * @param {string} params.account - The user account.
+ * @param {string} params.domain - The domain to be edited.
+ * @param {string} params.resolver - The new resolver for the domain.
+ *
+ * @return {Promise<{
+ *   gasUsed: number,
+ *   transactionId: string,
+ *   transactionResult: any,
+ *   transactionResponse: any
+ * }>} - The result of the resolver edit.
+ */
 export async function editResolver(params: EditResolverParams) {
   const { account, domain, resolver } = params;
 
