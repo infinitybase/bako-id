@@ -2,6 +2,7 @@ export { config } from './config';
 export {
   Metadata,
   UserMetadataContract,
+  editResolver,
   getAll,
   getGracePeriod,
   owner,
