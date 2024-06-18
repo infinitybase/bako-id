@@ -42,7 +42,6 @@ const floating = defineStyle({
   },
   input: inputStyle.field,
   select: inputStyle.field,
-  textarea: inputStyle.field,
 });
 
 const baseStyle = {
