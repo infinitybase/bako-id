@@ -69,9 +69,11 @@ const More = () => {
             >
               {token?.image ? (
                 <>
-                  <TokenCard />
-                  <ValidityCard />
-                  <ResolverCard />
+                  <Suspense>
+                    <TokenCard />
+                    <ValidityCard />
+                    <ResolverCard />
+                  </Suspense>
                 </>
               ) : (
                 <>

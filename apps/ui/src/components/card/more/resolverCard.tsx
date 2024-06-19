@@ -27,7 +27,6 @@ export const ResolverCard = () => {
   const { domain, domainParam } = useProfile();
   const { handleChangeResolver } = useEditResolver({
     domain: `${domainParam}`,
-    resolver: Address.fromB256(domain ?? '').toString(),
     account: wallet!,
   });
 

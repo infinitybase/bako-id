@@ -30,7 +30,7 @@ const floating = defineStyle({
   },
   label: {
     top: '5px',
-    left: '-1px',
+    left: '-8px',
     zIndex: 2,
     position: 'absolute',
     pointerEvents: 'none',

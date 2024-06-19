@@ -1,13 +1,9 @@
 import { editResolver } from '@bako-id/sdk';
 
 import { useMutation, type UseMutationOptions } from '@tanstack/react-query';
-import type { Account } from 'fuels';
 import type { EditResolverParams, RegisterDomainResponse } from '../types';
 
 const useEditResolverRequests = (
-  domain: string,
-  resolver: string,
-  account: Account,
   options?: UseMutationOptions<
     RegisterDomainResponse,
     unknown,
@@ -15,8 +11,8 @@ const useEditResolverRequests = (
   >,
 ) => {
   return useMutation({
-    mutationKey: ['resolveDomain'],
-    mutationFn: () => editResolver({ domain, resolver, account }),
+    mutationKey: ['editResolver'],
+    mutationFn: editResolver,
     retryDelay: 1000,
     ...options,
   });
