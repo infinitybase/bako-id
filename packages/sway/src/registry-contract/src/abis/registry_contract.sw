@@ -29,6 +29,7 @@ pub enum RegistryContractError {
     InvalidAmount: (),
     InvalidPermission: (),
     NotOwner: (),
+    SameAddress: (),
 }
 
 abi RegistryContract {
@@ -118,9 +119,14 @@ pub fn _edit_resolver(input: EditResolverInput, bako_id: ContractId) {
         Identity::Address(Address::from(domain.owner)) == msg_sender().unwrap(),
         RegistryContractError::NotOwner,
     );
+
+    require(
+        domain.resolver != input.resolver,
+        RegistryContractError::SameAddress,
+    );
     
     domain.resolver = input.resolver;
-    storage_contract.set(domain_hash, domain.owner, domain.into());
+    storage_contract.change(domain_hash, domain.into());
 }
 
 pub fn domain_price(domain: String, period: u16) -> u64 {
