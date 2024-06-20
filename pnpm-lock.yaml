@@ -43,7 +43,7 @@ importers:
   apps/ui:
     dependencies:
       '@bako-id/sdk':
-        specifier: 0.0.6-9
+        specifier: 0.0.7-0
         version: link:../../packages/sdk
       '@chakra-ui/icons':
         specifier: ^2.1.1
