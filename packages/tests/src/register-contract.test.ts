@@ -336,6 +336,30 @@ describe('[METHODS] Registry Contract', () => {
     }
   });
 
+  it('should throw error if try to edit resolver with same address', async () => {
+    const { registry, storage, resolver } = contracts;
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
+
+    const domain = randomName();
+    const newAddress = wallet.address.toB256();
+
+    await registry.register(domain, wallet.address.toB256(), 1);
+
+    try {
+      await registry.functions
+        .edit_resolver(domain, newAddress)
+        .addContracts([storage])
+        .txParams(txParams)
+        .call();
+    } catch (error) {
+      expectRequireRevertError(error);
+      expectContainLogError(error, 'SameAddress');
+    }
+  });
+
   it('should not be able to edit resolver of a domain if not owner', async () => {
     const { registry, storage, resolver } = contracts;
 
