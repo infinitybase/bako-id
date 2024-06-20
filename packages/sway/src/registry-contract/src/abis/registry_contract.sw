@@ -29,7 +29,7 @@ pub enum RegistryContractError {
     InvalidAmount: (),
     InvalidPermission: (),
     NotOwner: (),
-    SameAddress: (),
+    SameResolver: (),
 }
 
 abi RegistryContract {
@@ -122,7 +122,7 @@ pub fn _edit_resolver(input: EditResolverInput, bako_id: ContractId) {
 
     require(
         domain.resolver != input.resolver,
-        RegistryContractError::SameAddress,
+        RegistryContractError::SameResolver,
     );
     
     domain.resolver = input.resolver;
