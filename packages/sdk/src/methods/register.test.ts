@@ -96,28 +96,33 @@ describe('Test Registry', () => {
   });
 
   it('should be able to edit a domain resolver', async () => {
-    const domain = randomName(1);
+    const domain = randomName();
 
     const newAddress = fakeWallet.address.toB256();
 
     await register({
       account: wallet,
       resolver: wallet.address.toB256(),
-      domain: `do${domain}`,
+      domain,
       period: 1,
     });
 
     const newResolver = await editResolver({
       account: wallet,
       resolver: newAddress,
-      domain: `do${domain}`,
+      domain,
     });
 
+    const resolverAddress = await resolver(domain, {
+      provider,
+    });
+
+    expect(resolverAddress).toBe(newAddress);
     expect(newResolver?.transactionResult.status).toBe('success');
   });
 
   it('should not be able to edit a domain resolver of a domain not registered', async () => {
-    const domain = randomName(1);
+    const domain = randomName();
 
     const newAddress = fakeWallet.address.toB256();
 
@@ -125,7 +130,7 @@ describe('Test Registry', () => {
       await editResolver({
         account: wallet,
         resolver: newAddress,
-        domain: `do${domain}`,
+        domain,
       });
     } catch (error) {
       expectRequireRevertError(error);
@@ -153,9 +158,31 @@ describe('Test Registry', () => {
         domain,
       });
     } catch (error) {
-      console.log(error);
       expectRequireRevertError(error);
       expectContainLogError(error, 'NotOwner');
+    }
+  });
+
+  it('should not be able to edit a domain resolver with same address', async () => {
+    const domain = randomName();
+
+    const newAddress = wallet.address.toB256();
+
+    await register({
+      account: wallet,
+      resolver: wallet.address.toB256(),
+      domain,
+      period: 1,
+    });
+    try {
+      await editResolver({
+        account: wallet,
+        resolver: newAddress,
+        domain,
+      });
+    } catch (error) {
+      expectRequireRevertError(error);
+      expectContainLogError(error, 'SameAddress');
     }
   });
 });

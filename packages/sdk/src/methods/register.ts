@@ -12,7 +12,7 @@ type RegisterDomainParams = {
   domain: string;
   resolver: string;
   account: Account;
-  period: number;
+  period?: number;
 };
 
 type EditResolverParams = {
@@ -86,7 +86,7 @@ export async function register(params: RegisterDomainParams) {
     transactionId,
     value,
   } = await registry.functions
-    .register(domainName, resolver, period)
+    .register(domainName, resolver, period ?? 1)
     .callParams({
       forward: { amount, assetId: BaseAssetId },
     })
@@ -126,7 +126,7 @@ export async function simulateHandleCost(params: SimulateHandleCostParams) {
   const amount = await checkAccountBalance(registry.account!, domainName);
 
   const transactionRequest = await registry.functions
-    .register(domainName, resolver, period)
+    .register(domainName, resolver, period ?? 1)
     .callParams({
       forward: { amount, assetId: BaseAssetId },
     })
