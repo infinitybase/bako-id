@@ -32,8 +32,8 @@ export enum NameValidationErrorInput { InvalidLenght = 'InvalidLenght', InvalidC
 export enum NameValidationErrorOutput { InvalidLenght = 'InvalidLenght', InvalidChars = 'InvalidChars', IsEmpty = 'IsEmpty' };
 export type PermissionInput = Enum<{ Authorized: IdentityInput, Unauthorized: [], NotFound: [] }>;
 export type PermissionOutput = Enum<{ Authorized: IdentityOutput, Unauthorized: [], NotFound: [] }>;
-export enum RegistryContractErrorInput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable', IncorrectAssetId = 'IncorrectAssetId', InvalidDomain = 'InvalidDomain', InvalidAmount = 'InvalidAmount', InvalidPermission = 'InvalidPermission', NotOwner = 'NotOwner' };
-export enum RegistryContractErrorOutput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable', IncorrectAssetId = 'IncorrectAssetId', InvalidDomain = 'InvalidDomain', InvalidAmount = 'InvalidAmount', InvalidPermission = 'InvalidPermission', NotOwner = 'NotOwner' };
+export enum RegistryContractErrorInput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable', IncorrectAssetId = 'IncorrectAssetId', InvalidDomain = 'InvalidDomain', InvalidAmount = 'InvalidAmount', InvalidPermission = 'InvalidPermission', NotOwner = 'NotOwner', SameAddress = 'SameAddress' };
+export enum RegistryContractErrorOutput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable', IncorrectAssetId = 'IncorrectAssetId', InvalidDomain = 'InvalidDomain', InvalidAmount = 'InvalidAmount', InvalidPermission = 'InvalidPermission', NotOwner = 'NotOwner', SameAddress = 'SameAddress' };
 
 export type AddressInput = { value: string };
 export type AddressOutput = AddressInput;

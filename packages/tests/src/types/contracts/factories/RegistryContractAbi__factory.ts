@@ -177,6 +177,11 @@ const _abi = {
           "name": "NotOwner",
           "type": 0,
           "typeArguments": null
+        },
+        {
+          "name": "SameAddress",
+          "type": 0,
+          "typeArguments": null
         }
       ],
       "typeParameters": null
@@ -700,7 +705,7 @@ const _abi = {
       "logId": 5,
       "loggedType": {
         "name": "",
-        "type": 15,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -708,7 +713,7 @@ const _abi = {
       "logId": 6,
       "loggedType": {
         "name": "",
-        "type": 7,
+        "type": 15,
         "typeArguments": []
       }
     },
@@ -724,7 +729,7 @@ const _abi = {
       "logId": 8,
       "loggedType": {
         "name": "",
-        "type": 4,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -748,7 +753,7 @@ const _abi = {
       "logId": 11,
       "loggedType": {
         "name": "",
-        "type": 7,
+        "type": 4,
         "typeArguments": []
       }
     },
@@ -772,7 +777,7 @@ const _abi = {
       "logId": 14,
       "loggedType": {
         "name": "",
-        "type": 4,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -796,12 +801,20 @@ const _abi = {
       "logId": 17,
       "loggedType": {
         "name": "",
-        "type": 7,
+        "type": 4,
         "typeArguments": []
       }
     },
     {
       "logId": 18,
+      "loggedType": {
+        "name": "",
+        "type": 7,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": 19,
       "loggedType": {
         "name": "",
         "type": 7,

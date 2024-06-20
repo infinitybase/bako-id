@@ -45,11 +45,6 @@ const _abi = {
           "name": "DomainExpired",
           "type": 0,
           "typeArguments": null
-        },
-        {
-          "name": "NotOwner",
-          "type": 0,
-          "typeArguments": null
         }
       ],
       "typeParameters": null
