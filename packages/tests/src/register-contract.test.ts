@@ -356,7 +356,7 @@ describe('[METHODS] Registry Contract', () => {
         .call();
     } catch (error) {
       expectRequireRevertError(error);
-      expectContainLogError(error, 'SameAddress');
+      expectContainLogError(error, 'SameResolver');
     }
   });
 

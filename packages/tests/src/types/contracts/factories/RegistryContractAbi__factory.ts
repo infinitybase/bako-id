@@ -179,7 +179,7 @@ const _abi = {
           "typeArguments": null
         },
         {
-          "name": "SameAddress",
+          "name": "SameResolver",
           "type": 0,
           "typeArguments": null
         }
