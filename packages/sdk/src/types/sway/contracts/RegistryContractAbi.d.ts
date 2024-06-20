@@ -73,6 +73,7 @@ export enum RegistryContractErrorInput {
   InvalidAmount = 'InvalidAmount',
   InvalidPermission = 'InvalidPermission',
   NotOwner = 'NotOwner',
+  SameResolver = 'SameResolver',
 }
 export enum RegistryContractErrorOutput {
   StorageNotInitialized = 'StorageNotInitialized',
@@ -83,6 +84,7 @@ export enum RegistryContractErrorOutput {
   InvalidAmount = 'InvalidAmount',
   InvalidPermission = 'InvalidPermission',
   NotOwner = 'NotOwner',
+  SameResolver = 'SameResolver',
 }
 
 export type AddressInput = { value: string };

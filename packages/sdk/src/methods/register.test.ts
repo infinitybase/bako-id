@@ -3,9 +3,10 @@ import { register, resolver } from '../index';
 import { createFakeWallet } from '../test';
 import {
   InvalidDomainError,
+  InvalidHandleError,
   NotFoundBalanceError,
-  expectContainLogError,
-  expectRequireRevertError,
+  NotOwnerError,
+  SameResolverError,
   randomName,
 } from '../utils';
 import { editResolver } from './register';
@@ -126,16 +127,13 @@ describe('Test Registry', () => {
 
     const newAddress = fakeWallet.address.toB256();
 
-    try {
-      await editResolver({
-        account: wallet,
-        resolver: newAddress,
-        domain,
-      });
-    } catch (error) {
-      expectRequireRevertError(error);
-      expectContainLogError(error, 'InvalidDomain');
-    }
+    const edit = editResolver({
+      account: wallet,
+      resolver: newAddress,
+      domain,
+    });
+
+    await expect(edit).rejects.toBeInstanceOf(InvalidHandleError);
   });
 
   it('should not be able to edit a domain that is not the owner', async () => {
@@ -149,18 +147,16 @@ describe('Test Registry', () => {
       domain,
       period: 1,
     });
-    try {
-      const fakeWallet = await createFakeWallet(provider, wallet, '100');
 
-      await editResolver({
-        account: fakeWallet,
-        resolver: newAddress,
-        domain,
-      });
-    } catch (error) {
-      expectRequireRevertError(error);
-      expectContainLogError(error, 'NotOwner');
-    }
+    const editFakeWallet = await createFakeWallet(provider, wallet, '100');
+
+    const edit = editResolver({
+      account: editFakeWallet,
+      resolver: newAddress,
+      domain,
+    });
+
+    await expect(edit).rejects.toBeInstanceOf(NotOwnerError);
   });
 
   it('should not be able to edit a domain resolver with same address', async () => {
@@ -170,19 +166,17 @@ describe('Test Registry', () => {
 
     await register({
       account: wallet,
-      resolver: wallet.address.toB256(),
+      resolver: newAddress,
       domain,
       period: 1,
     });
-    try {
-      await editResolver({
-        account: wallet,
-        resolver: newAddress,
-        domain,
-      });
-    } catch (error) {
-      expectRequireRevertError(error);
-      expectContainLogError(error, 'SameAddress');
-    }
+
+    const edit = editResolver({
+      account: wallet,
+      resolver: newAddress,
+      domain,
+    });
+
+    await expect(edit).rejects.toBeInstanceOf(SameResolverError);
   });
 });

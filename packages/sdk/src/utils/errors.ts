@@ -39,8 +39,15 @@ export class NotOwnerError extends Error {
 
 export class InvalidHandleError extends Error {
   constructor() {
-    super('Invalid Domain.');
+    super('Invalid domain or already registered.');
     this.name = 'InvalidDomain';
+  }
+}
+
+export class SameResolverError extends Error {
+  constructor() {
+    super('The resolver is the same as the current resolver.');
+    this.name = 'SameResolverError';
   }
 }
 

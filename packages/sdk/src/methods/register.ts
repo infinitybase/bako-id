@@ -2,7 +2,10 @@ import { BaseAssetId, type Account } from 'fuels';
 import { config } from '../config';
 import { getRegistryContract } from '../setup';
 import {
+  InvalidHandleError,
   NotFoundBalanceError,
+  NotOwnerError,
+  SameResolverError,
   assertValidDomain,
   domainPrices,
   getTxParams,
@@ -170,16 +173,31 @@ export async function editResolver(params: EditResolverParams) {
 
   const txParams = getTxParams(account.provider);
 
-  const { transactionResult, transactionResponse, gasUsed, transactionId } =
-    await registry.functions
-      .edit_resolver(domain, resolver)
-      .txParams(txParams)
-      .call();
+  try {
+    const { transactionResult, transactionResponse, gasUsed, transactionId } =
+      await registry.functions
+        .edit_resolver(domain, resolver)
+        .txParams(txParams)
+        .call();
 
-  return {
-    gasUsed,
-    transactionId,
-    transactionResult,
-    transactionResponse,
-  };
+    return {
+      gasUsed,
+      transactionId,
+      transactionResult,
+      transactionResponse,
+    };
+  } catch (error) {
+    //@ts-ignore
+    const errors = error.metadata.logs;
+
+    if (errors[0] === 'InvalidDomain') {
+      throw new InvalidHandleError();
+    }
+    if (errors[0] === 'NotOwner') {
+      throw new NotOwnerError();
+    }
+    if (errors[0] === 'SameResolver') {
+      throw new SameResolverError();
+    }
+  }
 }
