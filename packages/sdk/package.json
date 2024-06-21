@@ -44,6 +44,7 @@
     "tsup": "^8.0.1"
   },
   "dependencies": {
+    "@fuel-ts/errors": "^0.90.0",
     "jest": "^29.6.4",
     "tai64": "^1.0.0"
   }

@@ -2,12 +2,10 @@ import { BaseAssetId, type Account } from 'fuels';
 import { config } from '../config';
 import { getRegistryContract } from '../setup';
 import {
-  InvalidHandleError,
   NotFoundBalanceError,
-  NotOwnerError,
-  SameResolverError,
   assertValidDomain,
   domainPrices,
+  getContractError,
   getTxParams,
 } from '../utils';
 
@@ -188,16 +186,6 @@ export async function editResolver(params: EditResolverParams) {
     };
   } catch (error) {
     //@ts-ignore
-    const errors = error.metadata.logs;
-
-    if (errors[0] === 'InvalidDomain') {
-      throw new InvalidHandleError();
-    }
-    if (errors[0] === 'NotOwner') {
-      throw new NotOwnerError();
-    }
-    if (errors[0] === 'SameResolver') {
-      throw new SameResolverError();
-    }
+    return getContractError(error);
   }
 }

@@ -1,3 +1,4 @@
+import type { FuelError } from '@fuel-ts/errors';
 /**
  * Represents an error thrown when a domain contains invalid characters.
  * @extends Error
@@ -61,3 +62,26 @@ export const expectRequireRevertError = (expectedError: unknown) =>
 export const expectContainLogError = (error: unknown, value: unknown) =>
   // @ts-ignore
   expect(containLogError(error.metadata.logs, value)).toBeTruthy();
+
+const errors = {
+  NotOwner: NotOwnerError,
+  InvalidDomain: InvalidHandleError,
+  SameResolver: SameResolverError,
+  NotFoundBalanceError: NotFoundBalanceError,
+  Default: Error,
+};
+
+const getError = (error: string) => errors[error] ?? errors.Default;
+export const getContractError = (error: FuelError) => {
+  if (error.metadata.logs) {
+    const errorTypes = Object.keys(errors);
+    const errorValue = errorTypes.find((errorType) =>
+      (error.metadata.logs as unknown[]).includes(errorType),
+    );
+
+    if (errorValue) {
+      const ErrorClass = getError(errorValue);
+      throw new ErrorClass();
+    }
+  }
+};
