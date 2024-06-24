@@ -170,6 +170,9 @@ importers:
 
   packages/sdk:
     dependencies:
+      '@fuel-ts/errors':
+        specifier: ^0.90.0
+        version: 0.90.0
       jest:
         specifier: ^29.6.4
         version: 29.7.0(@types/node@20.14.1)(ts-node@10.9.2)
@@ -3934,6 +3937,13 @@ packages:
     dependencies:
       '@fuel-ts/versions': 0.81.0
 
+  /@fuel-ts/errors@0.90.0:
+    resolution: {integrity: sha512-iKYCS4cgWHV40Kr0c2+4kboUtebz9Vi8DHld6QWdeTh2khjhptZf7LrhgTh3gepAEaMF48x4F+3LZNd4Ia3wmg==}
+    engines: {node: ^18.18.2 || ^20.0.0}
+    dependencies:
+      '@fuel-ts/versions': 0.90.0
+    dev: false
+
   /@fuel-ts/forc@0.81.0:
     resolution: {integrity: sha512-WLJLgFnSnuFx+3/sDrK7On1cOiGnrhBo1qQJ2NWGWj1GGWVqcwrilZCSTeBz0VB/z89DMKVxg3v8mq+cSOnJcA==}
     hasBin: true
@@ -4072,6 +4082,15 @@ packages:
     dependencies:
       chalk: 4.1.2
       cli-table: 0.3.11
+
+  /@fuel-ts/versions@0.90.0:
+    resolution: {integrity: sha512-oXXDleRAK1MLHuhveyfAUNQkHG9bISHtuvAGbjHYtaUVjI/k0o9ii9HLjlvRnFvc7G57CzIsnm6wSnoPaYBfhg==}
+    engines: {node: ^18.18.2 || ^20.0.0}
+    hasBin: true
+    dependencies:
+      chalk: 4.1.2
+      cli-table: 0.3.11
+    dev: false
 
   /@fuel-ui/css@0.23.0:
     resolution: {integrity: sha512-4GvlqI6TVjra3AoCtR9W4Kw1H8VJ7sroMOHAjMIBztBUSYLiLOIGiYunvirBKG9soRBJmEBWPy3fHItjLu4+XQ==}

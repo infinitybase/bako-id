@@ -134,7 +134,7 @@ export async function simulateHandleCost(params: SimulateHandleCostParams) {
   });
 
   const txParams = getTxParams(registry.provider);
-  const amount = await checkAccountBalance(registry.account!, domainName);
+  const amount = domainPrices(domain, period);
 
   const transactionRequest = await registry.functions
     .register(domainName, resolver, period ?? 1)

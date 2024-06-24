@@ -1,5 +1,4 @@
-import { Wallet, type Account, type Provider } from 'fuels';
-import { createFakeWallet } from '../test';
+import type { Account, Provider } from 'fuels';
 import {
   MetadataContractAbi__factory,
   RegistryContractAbi__factory,
@@ -48,11 +47,8 @@ const getRegistryContract = async (config: ContractConfig) => {
   if (!provider) {
     throw new Error('Provider is required to connect getRegistryContract.');
   }
-  const { TEST_WALLET } = process.env;
 
-  const wallet = Wallet.fromPrivateKey(TEST_WALLET!, provider);
-
-  const fakeAccount = await createFakeWallet(provider, wallet, '10');
+  const fakeAccount = getFakeAccount(provider);
   const storage = StorageContractAbi__factory.connect(
     config.storageId,
     fakeAccount,

@@ -16,12 +16,13 @@ export const useCheckoutPrice = (domains: Domains, selectedCoin: Coin) => {
   const { wallet } = useFuelConnect();
 
   const { usdPrice } = useUsdPrice();
+
   const simulateHandle = useSimulateHandleCostRequest(
-    wallet!,
     wallet?.address.toB256() ?? '',
     domain,
     domains.period,
   );
+
   const totalPrice = useMemo(() => {
     if (!domains || !simulateHandle.data) return bn(0);
 
