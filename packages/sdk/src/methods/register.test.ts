@@ -9,7 +9,7 @@ import {
   SameResolverError,
   randomName,
 } from '../utils';
-import { editResolver } from './register';
+import { editResolver, simulateHandleCost } from './register';
 
 const { PROVIDER_URL, TEST_WALLET } = process.env;
 
@@ -178,5 +178,19 @@ describe('Test Registry', () => {
     });
 
     await expect(edit).rejects.toBeInstanceOf(SameResolverError);
+  });
+
+  it('should simulate handle cost', async () => {
+    const domain = randomName();
+
+    const cost = await simulateHandleCost({
+      domain,
+      resolver: wallet.address.toB256(),
+      period: 1,
+    });
+
+    console.log(cost);
+
+    expect(cost).toBeDefined();
   });
 });

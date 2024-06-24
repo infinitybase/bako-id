@@ -1,4 +1,4 @@
-import { BaseAssetId, type Account } from 'fuels';
+import { BaseAssetId, type Account, type Provider } from 'fuels';
 import { config } from '../config';
 import { getRegistryContract } from '../setup';
 import {
@@ -6,6 +6,7 @@ import {
   assertValidDomain,
   domainPrices,
   getContractError,
+  getProviderFromParams,
   getTxParams,
 } from '../utils';
 
@@ -22,7 +23,12 @@ type EditResolverParams = {
   account: Account;
 };
 
-type SimulateHandleCostParams = Omit<RegisterDomainParams, 'account'>;
+type SimulateHandleCostParams = {
+  domain: string;
+  resolver: string;
+  period?: number;
+  provider?: Provider;
+};
 
 /**
  * Checks if the account has sufficient balance to cover the given domain price.
@@ -41,6 +47,7 @@ async function checkAccountBalance(
 ) {
   const amount = domainPrices(domain, period);
   const accountBalance = await account.getBalance();
+
   const hasBalance = accountBalance.gte(amount);
   if (!hasBalance) {
     throw new NotFoundBalanceError();
@@ -117,9 +124,12 @@ export async function register(params: RegisterDomainParams) {
 export async function simulateHandleCost(params: SimulateHandleCostParams) {
   const { domain, resolver, period } = params;
 
+  const provider = params.provider || (await getProviderFromParams());
+
   const domainName = assertValidDomain(domain);
 
   const { registry } = await getRegistryContract({
+    provider,
     storageId: config.STORAGE_CONTRACT_ID!,
   });
 
