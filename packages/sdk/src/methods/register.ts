@@ -6,6 +6,7 @@ import {
   assertValidDomain,
   domainPrices,
   getContractError,
+  getFakeAccount,
   getProviderFromParams,
   getTxParams,
 } from '../utils';
@@ -25,7 +26,6 @@ type EditResolverParams = {
 
 type SimulateHandleCostParams = {
   domain: string;
-  resolver: string;
   period?: number;
   provider?: Provider;
 };
@@ -122,7 +122,7 @@ export async function register(params: RegisterDomainParams) {
  * @return {TransactionRequest} transactionRequest - The transaction request object.
  */
 export async function simulateHandleCost(params: SimulateHandleCostParams) {
-  const { domain, resolver, period } = params;
+  const { domain, period } = params;
 
   const provider = params.provider || (await getProviderFromParams());
 
@@ -136,8 +136,10 @@ export async function simulateHandleCost(params: SimulateHandleCostParams) {
   const txParams = getTxParams(registry.provider);
   const amount = domainPrices(domain, period);
 
+  const fakeAccount = getFakeAccount(provider);
+
   const transactionRequest = await registry.functions
-    .register(domainName, resolver, period ?? 1)
+    .register(domainName, fakeAccount.address.toB256(), period ?? 1)
     .callParams({
       forward: { amount, assetId: BaseAssetId },
     })

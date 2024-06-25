@@ -185,11 +185,19 @@ describe('Test Registry', () => {
 
     const cost = await simulateHandleCost({
       domain,
-      resolver: wallet.address.toB256(),
       period: 1,
     });
 
-    console.log(cost);
+    expect(cost).toBeDefined();
+  });
+
+  it('should simulate handle cost with 2 years', async () => {
+    const domain = randomName();
+
+    const cost = await simulateHandleCost({
+      domain,
+      period: 2,
+    });
 
     expect(cost).toBeDefined();
   });
