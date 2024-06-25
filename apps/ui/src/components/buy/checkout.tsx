@@ -8,15 +8,13 @@ import {
   VStack,
   useMediaQuery,
 } from '@chakra-ui/react';
-import { bn, type Account } from 'fuels';
+import { bn } from 'fuels';
 import type { UseBuyReturn } from '../../modules/buy/hooks';
 import { Coin } from '../../types';
 
 const { ETH, USD } = Coin;
 
-interface CheckoutProps extends UseBuyReturn {
-  wallet?: Account | null;
-}
+interface CheckoutProps extends UseBuyReturn {}
 
 export const Checkout = (props: CheckoutProps) => {
   const {
@@ -26,7 +24,7 @@ export const Checkout = (props: CheckoutProps) => {
     formatCoin,
     fee,
     domainPrice,
-    wallet,
+    loading,
   } = props;
   // const multipleBuys = length > 1 ? 'Domains' : 'Domain';
   const [isMobile] = useMediaQuery('(max-width: 22em)');
@@ -80,7 +78,7 @@ export const Checkout = (props: CheckoutProps) => {
             Handles
           </Text>
           <Text color="text.500" fontSize={['xs', 'sm']}>
-            {wallet ? (
+            {!loading ? (
               domainPrice ? (
                 formatCoin(domainPrice, selectedCoin)
               ) : (
@@ -101,7 +99,7 @@ export const Checkout = (props: CheckoutProps) => {
             overflowWrap="break-word"
             fontSize={['xs', 'sm']}
           >
-            {wallet ? (
+            {!loading ? (
               fee ? (
                 formatCoin(fee ?? bn(0), selectedCoin)
               ) : (
@@ -118,7 +116,7 @@ export const Checkout = (props: CheckoutProps) => {
           </Text>
           <Spacer />
           <Text color="text.500" fontSize={['xs', 'sm']}>
-            {wallet ? (
+            {!loading ? (
               totalPrice ? (
                 formatCoin(totalPrice?.add(fee), selectedCoin)
               ) : (

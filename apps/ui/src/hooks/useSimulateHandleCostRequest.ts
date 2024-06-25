@@ -4,7 +4,6 @@ import { useQuery, type UseMutationOptions } from '@tanstack/react-query';
 import type { RegisterDomainPayload } from '../types';
 
 const useSimulateHandleCostRequest = (
-  resolver: string,
   domain: string,
   period: number,
   options?: UseMutationOptions<unknown, unknown, RegisterDomainPayload>,
@@ -13,11 +12,10 @@ const useSimulateHandleCostRequest = (
     queryKey: ['simulateHandleCost', period],
     queryFn: async () =>
       await simulateHandleCost({
-        resolver,
         domain,
         period,
       }),
-    enabled: !!resolver && !!domain && !!period,
+    enabled: !!domain && !!period,
     ...options,
   });
 };
