@@ -20,6 +20,12 @@ export type Handle = {
   isPrimary: boolean;
 };
 
+export type EditResolverParams = {
+  domain: string;
+  resolver: string;
+  account: fuels.Account;
+};
+
 export type Option<T> = T | undefined;
 
 export type ResolverReturn = Option<string>;

@@ -57,7 +57,7 @@ const TextValue = ({
         _hover={{}}
         whiteSpace={!isMobile ? 'pre-wrap' : 'nowrap'}
         wordBreak={!isMobile ? 'break-word' : 'normal'}
-        isTruncated={isMobile ? true : false}
+        isTruncated={!!isMobile}
         {...rest}
       >
         {content}

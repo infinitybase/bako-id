@@ -11,6 +11,7 @@ export const useProfile = () => {
   return {
     owner: resolveOwner.data,
     domain: resolveDomain.data,
+    domainMethods: resolveDomain,
     isLoadingDomain: resolveDomain.isPending,
     domainParam,
   };

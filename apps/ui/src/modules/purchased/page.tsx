@@ -46,7 +46,7 @@ export const Purchased = ({
 
   const navigateToMyHandle = () => {
     navigate({
-      to: `/profile/${domain}`,
+      to: `/profile/${domain.replace('@', '')}`,
     });
   };
 

@@ -30,7 +30,7 @@ const floating = defineStyle({
   },
   label: {
     top: '5px',
-    left: '-1px',
+    left: '-8px',
     zIndex: 2,
     position: 'absolute',
     pointerEvents: 'none',
@@ -42,7 +42,6 @@ const floating = defineStyle({
   },
   input: inputStyle.field,
   select: inputStyle.field,
-  textarea: inputStyle.field,
 });
 
 const baseStyle = {

@@ -79,19 +79,19 @@ describe('Test resolver', () => {
     await expect(
       resolverName(resolver, {
         provider,
-      })
+      }),
     ).resolves.toBe(name);
 
     await expect(
       resolverName(resolver, {
         providerURL: provider.url,
-      })
+      }),
     ).resolves.toBe(name);
 
     await expect(
       resolverName(resolver, {
         account: wallet,
-      })
+      }),
     ).resolves.toBe(name);
 
     // await expect(resolverName(resolver)).resolves.toBe(name);

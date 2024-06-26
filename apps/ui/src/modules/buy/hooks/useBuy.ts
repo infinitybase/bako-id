@@ -31,10 +31,8 @@ export const useBuy = () => {
       period: 1,
     },
   ]);
-  const { totalPrice, domainPrice, fee, formatCoin } = useCheckoutPrice(
-    domains[0],
-    selectedCoin,
-  );
+  const { totalPrice, domainPrice, fee, formatCoin, loading } =
+    useCheckoutPrice(domains[0], selectedCoin);
 
   const handlePeriodChange = (index: number, newValue: number) => {
     const newItems = [...domains];
@@ -121,6 +119,7 @@ export const useBuy = () => {
     totalPrice,
     fee,
     domainPrice,
+    loading,
   };
 };
 

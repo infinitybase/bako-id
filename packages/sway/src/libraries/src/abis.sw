@@ -25,6 +25,9 @@ abi StorageContract {
     #[storage(write)]
     fn set(hash: b256, owner: b256, value: Bytes);
 
+    #[storage(write)]
+    fn change(key: b256, bytes_domain: Bytes);
+
     #[storage(read)]
     fn get(hash: b256) -> Option<Bytes>;
 

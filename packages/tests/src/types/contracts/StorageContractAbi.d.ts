@@ -40,6 +40,7 @@ export type RawBytesOutput = { ptr: BN, cap: BN };
 
 interface StorageContractAbiInterface extends Interface {
   functions: {
+    change: FunctionFragment;
     constructor: FunctionFragment;
     get: FunctionFragment;
     get_all: FunctionFragment;
@@ -52,6 +53,7 @@ interface StorageContractAbiInterface extends Interface {
     set_primary: FunctionFragment;
   };
 
+  encodeFunctionData(functionFragment: 'change', values: [string, Bytes]): Uint8Array;
   encodeFunctionData(functionFragment: 'constructor', values: [AddressInput, ContractIdInput]): Uint8Array;
   encodeFunctionData(functionFragment: 'get', values: [string]): Uint8Array;
   encodeFunctionData(functionFragment: 'get_all', values: [string]): Uint8Array;
@@ -63,6 +65,7 @@ interface StorageContractAbiInterface extends Interface {
   encodeFunctionData(functionFragment: 'set_owner', values: [AddressInput]): Uint8Array;
   encodeFunctionData(functionFragment: 'set_primary', values: [string, StdString]): Uint8Array;
 
+  decodeFunctionData(functionFragment: 'change', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'constructor', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'get', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'get_all', data: BytesLike): DecodedValue;
@@ -78,6 +81,7 @@ interface StorageContractAbiInterface extends Interface {
 export class StorageContractAbi extends Contract {
   interface: StorageContractAbiInterface;
   functions: {
+    change: InvokeFunction<[key: string, bytes_domain: Bytes], void>;
     constructor: InvokeFunction<[owner: AddressInput, registry_id: ContractIdInput], void>;
     get: InvokeFunction<[key: string], Option<Bytes>>;
     get_all: InvokeFunction<[owner: string], Vec<Bytes>>;
