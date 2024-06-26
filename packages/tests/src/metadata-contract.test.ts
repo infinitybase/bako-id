@@ -51,7 +51,7 @@ describe('Metadata contract', () => {
         .save(
           metadataConfig.user.handle(),
           metadataConfig.github.key,
-          metadataConfig.github.value
+          metadataConfig.github.value,
         )
         .txParams(txParams)
         .call();
@@ -68,7 +68,7 @@ describe('Metadata contract', () => {
 
     await tryExecute(metadata.initializeMetadata());
 
-    await registry.register(handleName, wallet.address.toB256());
+    await registry.register(handleName, wallet.address.toB256(), 1);
 
     const { transactionResult } = await metadata.functions
       .save(handleName, github.key, github.value)
@@ -86,7 +86,7 @@ describe('Metadata contract', () => {
     const fakeWallet = createWallet(provider, WALLET_PRIVATE_KEYS.FAKE);
 
     await tryExecute(metadata.initializeMetadata());
-    await tryExecute(registry.register(handleName, wallet.address.toB256()));
+    await tryExecute(registry.register(handleName, wallet.address.toB256(), 1));
 
     expect.assertions(2);
 
@@ -119,7 +119,7 @@ describe('Metadata contract', () => {
     metadata.account = wallet;
 
     await tryExecute(metadata.initializeMetadata());
-    await tryExecute(registry.register(handleName, wallet.address.toB256()));
+    await tryExecute(registry.register(handleName, wallet.address.toB256(), 1));
 
     const emptyMetadata = await getGithubMetadata();
     expect(emptyMetadata).toBe('');
@@ -149,7 +149,7 @@ describe('Metadata contract', () => {
     metadata.account = wallet;
 
     await tryExecute(metadata.initializeMetadata());
-    await tryExecute(registry.register(handleName, wallet.address.toB256()));
+    await tryExecute(registry.register(handleName, wallet.address.toB256(), 1));
 
     await metadata.functions
       .save(handleName, github.key, github.value)
@@ -174,7 +174,7 @@ describe('Metadata contract', () => {
     metadata.account = wallet;
 
     await tryExecute(metadata.initializeMetadata());
-    await tryExecute(registry.register(handleName, wallet.address.toB256()));
+    await tryExecute(registry.register(handleName, wallet.address.toB256(), 1));
 
     await metadata.functions
       .save(handleName, github.key, github.value)

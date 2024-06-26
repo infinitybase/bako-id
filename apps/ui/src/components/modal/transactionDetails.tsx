@@ -7,6 +7,7 @@ interface ITransactionDetailsModal {
   onClose: () => void;
   domain: string;
   cost: string;
+  period: number;
   modalTitle: string;
 }
 
@@ -15,8 +16,10 @@ export const TransactionDomainDetailsModal = ({
   onClose,
   domain,
   cost,
+  period,
   modalTitle,
 }: ITransactionDetailsModal) => {
+  console.log(period);
   return (
     <Dialog.Modal
       motionPreset="slideInBottom"
@@ -43,7 +46,7 @@ export const TransactionDomainDetailsModal = ({
             justifyContent="start"
             textColor="grey.100"
             leftAction={'duration'}
-            content={'1 year'}
+            content={`${period > 1 ? `${period} years` : `${period} year`}`}
           />
           <TextValue
             justifyContent="start"

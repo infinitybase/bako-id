@@ -24,16 +24,15 @@ export const useBuy = () => {
   const [selectedCoin, setSelectedCoin] = useState<Coin>(Coin.ETH);
   const [signInLoad, setSignInLoad] = useState<boolean>(false);
 
-  const [period, setPeriod] = useState<number>(1);
   const [buyError, setBuyError] = useState<string | undefined>(undefined);
   const [domains, setDomains] = useState<Domains[]>([
     {
       name: domain,
-      period,
+      period: 1,
     },
   ]);
   const { totalPrice, domainPrice, fee, formatCoin } = useCheckoutPrice(
-    domains,
+    domains[0],
     selectedCoin,
   );
 
@@ -42,7 +41,6 @@ export const useBuy = () => {
     // TODO: period not specified
     newItems[index] = { ...newItems[index], period: newValue };
     setDomains(newItems);
-    setPeriod(newValue);
   };
 
   const handleConfirmDomain = async () => {
@@ -67,6 +65,7 @@ export const useBuy = () => {
         account: wallet,
         resolver: wallet.address.toB256(),
         domain: domain,
+        period: domains[0].period,
       },
       {
         onSuccess: async () => {
@@ -78,6 +77,8 @@ export const useBuy = () => {
           setSignInLoad(false);
         },
         onError: (error: unknown) => {
+          // @ts-expect-error error
+          console.log({ ...error });
           setBuyError((error as Error).message);
           setSignInLoad(false);
         },
@@ -122,3 +123,5 @@ export const useBuy = () => {
     domainPrice,
   };
 };
+
+export type UseBuyReturn = ReturnType<typeof useBuy>;

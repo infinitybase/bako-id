@@ -21,7 +21,9 @@ export const useFuelConnect = () => {
     await fuel.selectConnector(connector);
     connectorDrawer.onClose();
     const isbyWallet =
-      connector === EConnectors.FUEL || connector === EConnectors.FULLET;
+      connector === EConnectors.FUEL ||
+      EConnectors.FUEL_DEV ||
+      connector === EConnectors.FULLET;
     if (isbyWallet) {
       return connectByWallet();
     }

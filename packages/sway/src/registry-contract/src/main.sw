@@ -5,7 +5,9 @@ mod abis;
 use abis::{
     nft_contract::*,
     registry_contract::*,
+    info_contract::*,
 };
+
 use libraries::{
     permissions::{
         Permission,
@@ -28,6 +30,7 @@ use std::{
     string::String,
     contract_id::ContractId,
     storage::storage_map::*,
+    storage::storage_bytes::*,
 };
 use src7::{ Metadata };
 
@@ -63,24 +66,20 @@ impl RegistryContract for Contract {
     }
 
     #[storage(read, write), payable]
-    fn register(name: String, resolver: b256) -> AssetId {
+    fn register(name: String, resolver: b256, period: u16) -> AssetId {
         // TODO: Add reantry guard
+    
         let name = _register(
-            name, 
-            resolver, 
+            RegisterInput { name, resolver, period },
             get_storage_id()
         );
+        
         return _mint_bako_nft(
             storage.total_assets,
             storage.total_supply,
             storage.metadata,
             name,
         );
-    }
-
-    #[storage(read)]
-    fn get_all(owner: b256) -> Bytes {
-        _get_all(owner, get_storage_id())
     }
 }
 
@@ -120,5 +119,17 @@ impl SRC7 for Contract {
     #[storage(read)]
     fn image_url(name: String) -> String {
         _image_url(storage.metadata, name)
+    }
+}
+
+impl InfoContract for Contract {
+    #[storage(read)]
+    fn get_all(owner: b256) -> Bytes {
+        _get_all(owner, get_storage_id())
+    }
+
+    #[storage(read)]
+    fn get_grace_period(owner: String) -> GracePeriod {
+        _get_grace_period(owner, get_storage_id())
     }
 }

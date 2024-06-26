@@ -3,8 +3,9 @@ import { FuelIcon, FueletIcon } from '../../components/icons';
 
 export enum EConnectors {
   FUEL = 'Fuel Wallet',
+  FUEL_DEV = 'Fuel Wallet Development',
   FULLET = 'Fuelet Wallet',
-  WEB_AUTHN = 'Login With Passkey',
+  // WEB_AUTHN = 'Login With Passkey',
 }
 
 const DEFAULT_CONNECTORS = [
@@ -15,6 +16,11 @@ const DEFAULT_CONNECTORS = [
   // },
   {
     name: EConnectors.FUEL,
+    icon: FuelIcon,
+    isBeta: false,
+  },
+  {
+    name: EConnectors.FUEL_DEV,
     icon: FuelIcon,
     isBeta: false,
   },

@@ -22,7 +22,7 @@ import type {
   StdString,
 } from 'fuels';
 
-import type { Option, Enum, Vec } from './common';
+import type { Enum, Option, Vec } from './common';
 
 export type IdentityInput = Enum<{
   Address: AddressInput;

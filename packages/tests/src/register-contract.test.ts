@@ -2,6 +2,7 @@ import {
   Address,
   Provider,
   TransactionStatus,
+  bn,
   type WalletUnlocked,
 } from 'fuels';
 import {
@@ -26,6 +27,51 @@ describe('[METHODS] Registry Contract', () => {
     contracts = await setupContractsAndDeploy(wallet);
   });
 
+  it('should register domain with 1 year', async () => {
+    const { registry, storage } = contracts;
+
+    const domain = randomName();
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(storage.initializeStorage());
+
+    const { transactionResult: txRegister } = await registry.register(
+      domain,
+      wallet.address.toB256(),
+      1,
+    );
+
+    expect(txRegister.status).toBe(TransactionStatus.success);
+  });
+  it('should register domain with 2 years', async () => {
+    const { registry, storage } = contracts;
+
+    const domain = randomName();
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(storage.initializeStorage());
+
+    const { transactionResult: txRegister } = await registry.register(
+      domain,
+      wallet.address.toB256(),
+      2,
+    );
+
+    expect(txRegister.status).toBe(TransactionStatus.success);
+  });
+  it('should register domain with 3 years', async () => {
+    const { registry, storage } = contracts;
+
+    const domain = randomName();
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(storage.initializeStorage());
+
+    const { transactionResult: txRegister } = await registry.register(
+      domain,
+      wallet.address.toB256(),
+      3,
+    );
+
+    expect(txRegister.status).toBe(TransactionStatus.success);
+  });
   it('should error on call method without a proxy contract started', async () => {
     const domain = randomName();
     const { registry, storage } = contracts;
@@ -34,7 +80,7 @@ describe('[METHODS] Registry Contract', () => {
 
     try {
       await registry.functions
-        .register(domain, wallet.address.toB256())
+        .register(domain, wallet.address.toB256(), 1)
         .addContracts([storage])
         .txParams(txParams)
         .call();
@@ -67,11 +113,17 @@ describe('[METHODS] Registry Contract', () => {
     await tryExecute(storage.initializeStorage());
 
     try {
-      await registry.register(domain, wallet.address.toB256());
+      const { logs } = await registry.register(
+        domain,
+        wallet.address.toB256(),
+        1,
+      );
+      console.log(logs);
 
       const { transactionResult: txRegister } = await registry.register(
         domain,
-        wallet.address.toB256()
+        wallet.address.toB256(),
+        1,
       );
 
       expect(txRegister.status).toBe(TransactionStatus.failure);
@@ -89,10 +141,13 @@ describe('[METHODS] Registry Contract', () => {
     await tryExecute(resolver.initializeResolver());
 
     const domain = randomName();
-    const { transactionResult: txRegister } = await registry.register(
+    const { transactionResult: txRegister, logs } = await registry.register(
       domain,
-      wallet.address.toB256()
+      wallet.address.toB256(),
+      1,
     );
+
+    console.log(logs);
 
     const { value } = await resolver.functions
       .resolver(domain)
@@ -112,7 +167,7 @@ describe('[METHODS] Registry Contract', () => {
     await tryExecute(resolver.initializeResolver());
 
     const domain = randomName();
-    await registry.register(domain, wallet.address.toB256());
+    await registry.register(domain, wallet.address.toB256(), 1);
 
     const wrongDomain = randomName();
     const { value } = await resolver.functions
@@ -133,8 +188,8 @@ describe('[METHODS] Registry Contract', () => {
     const address = Address.fromRandom().toB256();
 
     const [primaryDomain, secondaryDomain] = [randomName(), randomName()];
-    await registry.register(primaryDomain, address);
-    await registry.register(secondaryDomain, address);
+    await registry.register(primaryDomain, address, 1);
+    await registry.register(secondaryDomain, address, 1);
 
     const { value } = await resolver.functions
       .name(address)
@@ -156,9 +211,9 @@ describe('[METHODS] Registry Contract', () => {
     const address = Address.fromRandom().toB256();
     const handles = [randomName(), randomName(), randomName()];
 
-    await registry.register(handles[0], address);
-    await registry.register(handles[1], address);
-    await registry.register(handles[2], address);
+    await registry.register(handles[0], address, 1);
+    await registry.register(handles[1], address, 1);
+    await registry.register(handles[2], address, 1);
 
     const { value: vecBytes } = await registry.functions
       .get_all(wallet.address.toB256())
@@ -182,6 +237,32 @@ describe('[METHODS] Registry Contract', () => {
     expect(expected).toEqual(expect.arrayContaining(Array.from(vecBytes)));
   });
 
+  it('should get timestamp by owner name', async () => {
+    const { registry, storage, resolver } =
+      await setupContractsAndDeploy(wallet);
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
+
+    const address = Address.fromRandom().toB256();
+
+    await registry.register('jonglazkov', address, 1);
+
+    const { value } = await registry.functions
+      .get_grace_period('jonglazkov')
+      .addContracts([storage])
+      .txParams(txParams)
+      .call();
+
+    console.log(value);
+    expect(value).toEqual({
+      grace_period: bn(value.grace_period),
+      timestamp: bn(value.timestamp),
+      period: bn(value.period),
+    });
+  });
+
   it.each(['@invalid-!@#%$!', 'my@asd.other', '@MYHanDLE'])(
     'should throw a error when try register %s',
     async (handle) => {
@@ -191,7 +272,7 @@ describe('[METHODS] Registry Contract', () => {
       await tryExecute(storage.initializeStorage());
 
       const register = (name: string) =>
-        registry.register(name, wallet.address.toB256());
+        registry.register(name, wallet.address.toB256(), 1);
 
       const expectErrors = (error: unknown) => {
         expectRequireRevertError(error);
@@ -205,6 +286,6 @@ describe('[METHODS] Registry Contract', () => {
       } catch (error) {
         expectErrors(error);
       }
-    }
+    },
   );
 });
