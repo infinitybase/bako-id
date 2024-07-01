@@ -1,10 +1,18 @@
-import { Button, Flex, Icon, Text, useMediaQuery } from '@chakra-ui/react';
+import {
+  Button,
+  Flex,
+  Icon,
+  Text,
+  useDisclosure,
+  useMediaQuery,
+} from '@chakra-ui/react';
 import { Card } from '.';
-import { DisabledXBadgeIcon } from '..';
+import { DisabledXBadgeIcon, EditIcon } from '..';
 import { ExplorerTypes } from '../../types';
 import { AvatarIcon } from '../icons/avatarIcon';
 import { ExploreIcon } from '../icons/explore';
 import { FarcasterBadgeIcon } from '../icons/farcasterBadgeIcon';
+import { EditProfileModal } from '../modal/editProfileModal';
 
 interface IProfileCard {
   domainName: string | null;
@@ -12,6 +20,7 @@ interface IProfileCard {
 }
 
 export const ProfileCard = ({ domain, domainName }: IProfileCard) => {
+  const action = useDisclosure();
   const [isLowerThanMobile] = useMediaQuery('(max-width: 25em)');
 
   return (
@@ -41,24 +50,39 @@ export const ProfileCard = ({ domain, domainName }: IProfileCard) => {
             <DisabledXBadgeIcon w={8} h={8} />
           </Flex>
         </Flex>
-        <Button
-          alignSelf={['inherit', 'flex-start']}
-          variant="ghosted"
-          color="grey.100"
-          bgColor={isLowerThanMobile ? 'transparent' : undefined}
-          fontWeight="normal"
-          fontSize={['sm', 'md']}
-          rightIcon={<ExploreIcon />}
-          onClick={() =>
-            window.open(
-              `${import.meta.env.VITE_EXPLORER_URL}${domain}${ExplorerTypes.ASSETS}`,
-              '_blank',
-            )
-          }
-        >
-          Explorer
-        </Button>
+        <Flex flexDir="column" gap={3}>
+          <Button
+            alignSelf={['inherit', 'flex-start']}
+            variant="ghosted"
+            color="grey.100"
+            bgColor={isLowerThanMobile ? 'transparent' : undefined}
+            fontWeight="normal"
+            fontSize={['sm', 'md']}
+            rightIcon={<EditIcon w={5} h={5} />}
+            onClick={action.onOpen}
+          >
+            Edit Profile
+          </Button>
+          <Button
+            alignSelf={['inherit', 'flex-start']}
+            variant="ghosted"
+            color="grey.100"
+            bgColor={isLowerThanMobile ? 'transparent' : undefined}
+            fontWeight="normal"
+            fontSize={['sm', 'md']}
+            rightIcon={<ExploreIcon />}
+            onClick={() =>
+              window.open(
+                `${import.meta.env.VITE_EXPLORER_URL}${domain}${ExplorerTypes.ASSETS}`,
+                '_blank',
+              )
+            }
+          >
+            Explorer
+          </Button>
+        </Flex>
       </Flex>
+      <EditProfileModal isOpen={action.isOpen} onClose={action.onClose} />
     </Card>
   );
 };
