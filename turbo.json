@@ -6,7 +6,11 @@
       "outputs": ["dist/**"],
       "outputMode": "new-only"
     },
-    "docs:build": {},
+    "docs:build": {
+      "dependsOn": ["^docs:build"],
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
     "pretest": {
       "outputMode": "errors-only"
     },

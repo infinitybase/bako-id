@@ -5,14 +5,14 @@ import {
   DrawerCloseButton,
   DrawerContent,
   DrawerOverlay,
-  type DrawerProps,
   Flex,
   FormControl,
   FormHelperText,
   VStack,
+  type DrawerProps,
 } from '@chakra-ui/react';
 import { useState } from 'react';
-import { BsThreeDotsVertical, BsTwitterX } from 'react-icons/bs';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FarcasterIcon } from '..';
 import { BakoSafeBanner } from '../buttons/bakoSafeBanner';
 import { SidebarBanner } from '../buttons/sidebarBanner';
@@ -87,10 +87,10 @@ const ProfileDrawer = ({ ...props }: ProfileDrawerProps) => {
         <VStack spacing={4}>
           {isMyDomain && (
             <Flex w="full" flexDirection="column" gap={2}>
-              <SidebarBanner
+              {/* <SidebarBanner
                 text="Click here to verify your X account and get benefits"
                 icon={BsTwitterX}
-              />
+              /> */}
 
               <SidebarBanner
                 text="Click here to verify your Farcaster account and get benefits"

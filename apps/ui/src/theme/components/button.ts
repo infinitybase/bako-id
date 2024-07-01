@@ -43,6 +43,7 @@ const tertiary = defineStyle({
 
 const ghosted = defineStyle({
   bgColor: 'semi-transparent',
+  fontWeight: 'normal',
   color: 'section.200',
   _hover: {
     color: 'button.500',

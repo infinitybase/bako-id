@@ -1,28 +1,36 @@
-import type { Domain } from '@bako-id/sdk';
-import { CopyIcon } from '@chakra-ui/icons';
-import { Button, Flex, Heading, Icon } from '@chakra-ui/react';
-import { Card, TextInput } from '..';
-import { DoubleArrowRightIcon } from '../icons/doubleArrowRightIcon';
-import { ExploreIcon } from '../icons/explore';
-import { useSidebar } from '../sidebar/hooks/useSidebar';
+import { Flex, Heading } from '@chakra-ui/react';
+import { useParams } from '@tanstack/react-router';
+import { format } from 'date-fns';
+import { Address } from 'fuels';
+import { Card, TextValue } from '..';
+import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
+import { ExplorerTypes } from '../../types';
+import { formatAddress } from '../../utils/formatter';
+import { CopyText } from '../helpers/copy';
+import { Explorer } from '../helpers/explorer';
 
 interface IOwnershipCard {
-  domain: Domain | null;
+  owner: string | null;
 }
-export const OwnershipCard = ({ domain }: IOwnershipCard) => {
-  const { isMyDomain } = useSidebar();
+export const OwnershipCard = ({ owner }: IOwnershipCard) => {
+  const { domain } = useParams({ strict: false });
+  const { data } = useGetGracePeriod(domain.replace('@', ''));
+  // const { isMyDomain } = useSidebar();
+
+  if (!data) return null;
   return (
     <Card
       w="full"
       h={['fit-content', 'fit-content', 'fit-content', 'full']}
       p={6}
       display="flex"
+      backdropFilter="blur(7px)"
       flexDirection="column"
       gap={6}
     >
       <Flex alignItems="center" justify="space-between">
         <Heading fontSize="lg">Ownership</Heading>
-        {isMyDomain && (
+        {/* {isMyDomain && (
           <Button
             variant="ghosted"
             isDisabled={!isMyDomain}
@@ -30,7 +38,7 @@ export const OwnershipCard = ({ domain }: IOwnershipCard) => {
           >
             Extend
           </Button>
-        )}
+        )} */}
       </Flex>
       <Flex
         direction="column"
@@ -38,24 +46,22 @@ export const OwnershipCard = ({ domain }: IOwnershipCard) => {
         justifyContent="space-between"
         gap={3}
       >
-        <TextInput
-          leftAddon
-          leftAddonName="owner"
-          rightAddon
-          rightAddonName={<Icon as={ExploreIcon} />}
-          rightAddonClick={() =>
-            window.open(
-              `https://app.fuel.network/account/${domain?.owner}/assets`,
-            )
+        <TextValue
+          leftAction={'owner'}
+          rightAction={
+            <Explorer id={owner ?? ''} type={ExplorerTypes.ASSETS} />
           }
-          value={domain?.owner}
+          content={
+            owner ? formatAddress(Address.fromB256(owner).toString()) : ''
+          }
         />
-        <TextInput
-          leftAddon
-          leftAddonName="expiry"
-          rightAddon
-          rightAddonName={<Icon as={CopyIcon} />}
-          value="march 31, 2024"
+        <TextValue
+          leftAction={'expiry'}
+          textAlign="right"
+          rightAction={
+            <CopyText value={format(data.period, 'MMMM dd, yyyy')} />
+          }
+          content={format(data.period, 'MMMM dd, yyyy')}
         />
       </Flex>
     </Card>

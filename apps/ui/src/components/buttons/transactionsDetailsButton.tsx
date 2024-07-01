@@ -21,7 +21,7 @@ export const TransactionsDetailsButton = ({
         color: 'button.500',
       }}
     >
-      View transactions details
+      Transactions details
     </Button>
   );
 };

@@ -2,7 +2,7 @@ import { createIcon } from '@chakra-ui/react';
 
 const DisabledXBadgeIcon = createIcon({
   displayName: 'XBadgeIcon',
-  viewBox: '0 0 28 28',
+  viewBox: '0 0 30 30',
   path: (
     <>
       <g filter="url(#filter0_d_14083_13203)">

@@ -2,7 +2,6 @@ import {
   Button,
   CardBody,
   CardHeader,
-  Divider,
   Flex,
   FormControl,
   FormHelperText,
@@ -10,48 +9,35 @@ import {
   Icon,
   Text,
 } from '@chakra-ui/react';
+import { useParams } from '@tanstack/react-router';
+import { format } from 'date-fns';
 import { Card } from '..';
-import { TextInput } from '../..';
-import { DoubleArrowRightIcon } from '../../icons/doubleArrowRightIcon';
+import { DoubleArrowRightIcon, TextValue } from '../..';
+import { useGetGracePeriod } from '../../../hooks/useGetGracePeriod';
+import { formatTimeWithTimeZone } from '../../../utils/formatter';
 import { ExploreIcon } from '../../icons/explore';
 import { useSidebar } from '../../sidebar/hooks/useSidebar';
 
 export const ValidityCard = () => {
+  const { domain } = useParams({ strict: false });
   const { isMyDomain } = useSidebar();
+  const { data } = useGetGracePeriod(domain.replace('@', ''));
 
-  return (
-    <Card h="fit-content" minW="full">
-      <CardHeader w="full">
-        <Flex w="full" justify="space-between" align="center">
-          <Heading fontSize="lg">Validity</Heading>
-          <Button
-            variant="ghosted"
-            color="grey.100"
-            _hover={{
-              bgColor: 'transparent',
-              color: 'button.500',
-            }}
-            rightIcon={<DoubleArrowRightIcon width={5} height={5} />}
-            isDisabled={!isMyDomain}
-            onClick={() => {}}
-          >
-            Extend
-          </Button>
-        </Flex>
-      </CardHeader>
-      <Divider color="stroke.500" border="1px solid" w="full" mt={8} mb={2} />
-      <CardBody>
+  if (!data) return null;
+
+  const ValidityBody = () => {
+    return (
+      <>
         <FormControl>
           <FormHelperText my={4} color="section.500">
             Name expires
           </FormHelperText>
-          <TextInput
-            leftAddonColor="grey.100"
-            inputColor="section.500"
-            leftAddonWidth={['45%', '20%']}
-            leftAddon
-            leftAddonName="march 31, 2024"
-            value="18:48:23 GMT"
+          <TextValue
+            leftAction={format(data.period, 'MMMM dd, yyyy')}
+            leftColor="grey.100"
+            color="section.500"
+            justifyContent="start"
+            content={formatTimeWithTimeZone(data.period)}
           />
         </FormControl>
         <FormControl my={4}>
@@ -64,34 +50,66 @@ export const ValidityCard = () => {
             my={4}
           >
             <Text>Grace period ends</Text>
-            <Icon w={4} h={4} mr={1} color="grey.100" />
+            <Icon
+              w={4}
+              h={4}
+              mr={2}
+              _hover={{
+                cursor: 'pointer',
+              }}
+              color="grey.100"
+            />
           </FormHelperText>
-          <TextInput
-            leftAddonColor="grey.100"
-            inputColor="section.500"
-            leftAddonWidth={['45%', '20%']}
-            leftAddon
-            leftAddonName="april 30, 2024"
-            value="23:59:59 GMT +1"
+          <TextValue
+            leftColor="grey.100"
+            leftAction={format(data.gracePeriod, 'MMMM dd, yyyy')}
+            color="section.500"
+            justifyContent="start"
+            content={formatTimeWithTimeZone(data.gracePeriod)}
           />
         </FormControl>
         <FormControl>
           <FormHelperText my={4} color="section.500">
             Registered
           </FormHelperText>
-          <TextInput
-            leftAddonColor="grey.100"
-            inputColor="section.500"
-            leftAddonWidth={['45%', '20%']}
-            leftAddon
-            leftAddonName="march 31, 2024"
-            rightAddon
-            rightAddonWidth="5%"
-            rightAddonColor="grey.100"
-            rightAddonName={<Icon as={ExploreIcon} />}
-            value="18:48:23 GMT"
+          <TextValue
+            leftColor="grey.100"
+            leftAction={format(data.timestamp, 'MMMM dd, yyyy')}
+            color="section.500"
+            justifyContent="start"
+            content={formatTimeWithTimeZone(data.timestamp)}
+            rightAction={<Icon as={ExploreIcon} />}
           />
         </FormControl>
+      </>
+    );
+  };
+
+  return (
+    <Card backdropFilter="blur(7px)" h="fit-content" maxW={['full', '45rem']}>
+      <CardHeader w="full">
+        <Flex w="full" justify="space-between" align="center">
+          <Heading fontSize="lg" color="grey.100">
+            Validity
+          </Heading>
+          <Button
+            variant="ghosted"
+            color="grey.100"
+            hidden
+            _hover={{
+              bgColor: 'transparent',
+              color: 'button.500',
+            }}
+            rightIcon={<DoubleArrowRightIcon width={5} height={5} />}
+            isDisabled={!isMyDomain}
+            onClick={() => {}}
+          >
+            Extend
+          </Button>
+        </Flex>
+      </CardHeader>
+      <CardBody mt={4}>
+        <ValidityBody />
       </CardBody>
     </Card>
   );

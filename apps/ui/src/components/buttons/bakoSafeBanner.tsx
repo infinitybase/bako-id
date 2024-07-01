@@ -1,12 +1,12 @@
 import {
   Box,
-  type BoxProps,
   Button,
-  type ComponentWithAs,
   Flex,
   Icon,
-  type IconProps,
   Text,
+  type BoxProps,
+  type ComponentWithAs,
+  type IconProps,
 } from '@chakra-ui/react';
 import type { IconType } from 'react-icons/lib';
 import { ExploreIcon } from '../icons/explore';
@@ -34,14 +34,14 @@ export const BakoSafeBanner = (props: BakoSafeBannerProps) => {
     >
       <Flex gap={2} w="75%" flexDir="column">
         <Icon color="black" as={props.icon} h={12} w={32} />
-        <Text w="full" fontSize="xs" color="section.200" whiteSpace="pretty">
+        <Text w="full" fontSize="sm" color="section.200" whiteSpace="pretty">
           The ultimate Multisig Wallet experience
         </Text>
       </Flex>
       <Button
         variant="outline"
         color="grey.200"
-        fontSize="sm"
+        fontSize={['xs', 'sm']}
         rightIcon={<ExploreIcon w={4} h={4} />}
         _hover={{
           bgColor: 'initial',

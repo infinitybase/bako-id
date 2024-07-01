@@ -6,8 +6,9 @@ dotenv.config();
 export default createConfig({
   contracts: [
     '../sway/src/registry-contract',
-    '../sway/src/storage-contract',
     '../sway/src/metadata-contract',
+    '../sway/src/resolver-contract',
+    '../sway/src/storage-contract',
   ],
   forcBuildFlags: ['--release'],
   autoStartFuelCore: false,

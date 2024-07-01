@@ -1,11 +1,15 @@
-export { Domain, ResolverReturn } from './types';
+export { config } from './config';
 export {
-  resolver,
-  register,
-  reverseResolver,
-  simulateHandleCost,
   Metadata,
   UserMetadataContract,
+  editResolver,
+  getAll,
+  getGracePeriod,
+  owner,
+  register,
+  resolver,
+  resolverName,
+  simulateHandleCost,
+  tokenInfo,
 } from './methods';
 export { domainPrices, isValidDomain } from './utils';
-export { config } from './config';

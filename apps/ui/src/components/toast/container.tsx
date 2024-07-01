@@ -1,11 +1,12 @@
 import {
-  AlertStatus,
   Box,
   HStack,
   Text,
-  UseToastOptions,
+  type AlertStatus,
+  type UseToastOptions,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 
 interface ContainerProps {
   children: React.ReactNode;
@@ -19,15 +20,19 @@ const colors = {
     success: 'success.900',
     error: 'error.900',
     warning: 'warning.900',
+    info: 'info.900',
   },
   title: {
     success: 'brand.500',
     error: 'error.600',
     warning: 'warning.500',
+    info: 'info.500',
   },
   description: {
-    success: 'grey.200',
-    warning: 'warning.500',
+    success: 'success.200',
+    warning: 'warning.200',
+    error: 'error.200',
+    info: 'info.200',
   },
 };
 
@@ -38,10 +43,11 @@ const Container = (props: ContainerProps) => {
     <HStack
       px={5}
       py={3}
-      spacing={4}
+      spacing={3}
       boxShadow="lg"
       borderWidth={1}
       borderRadius={10}
+      mt={1}
       borderColor={
         colors.bg[props?.status as keyof typeof colors.bg] ?? 'dark.100'
       }
@@ -50,8 +56,11 @@ const Container = (props: ContainerProps) => {
       overflow="hidden"
       position="relative"
       backdropFilter="blur(17px)"
-      maxW={320}
+      maxW={350}
       onClick={() => setHide(!hide)}
+      display="flex"
+      alignItems="flex-start"
+      justifyContent="flex-start"
     >
       {props.leftIcon}
       <Box hidden={hide} overflow="hidden">
@@ -81,6 +90,7 @@ const Toast = (props: ToastProps) => {
         {props.title}
       </Text>
       <Text
+        mt={2}
         fontSize={14}
         noOfLines={2}
         whiteSpace="pre-wrap"

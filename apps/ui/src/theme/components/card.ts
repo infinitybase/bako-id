@@ -33,6 +33,7 @@ const glassmorphic = defineStyle({
 const solid = defineStyle({
   container: {
     ...commonStyles.container,
+    backgroundColor: 'background.600',
   },
   header: {
     ...commonStyles.header,

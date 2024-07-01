@@ -1,14 +1,14 @@
 import {
   Address,
   Provider,
-  RequireRevertError,
   TransactionStatus,
+  bn,
   type WalletUnlocked,
 } from 'fuels';
 import {
+  WALLET_PRIVATE_KEYS,
   createWallet,
   expectContainLogError,
-  expectErrorInstance,
   expectRequireRevertError,
   randomName,
   setupContractsAndDeploy,
@@ -16,7 +16,7 @@ import {
   txParams,
 } from './utils';
 
-describe('[METHODS] Test Registry Contract', () => {
+describe('[METHODS] Registry Contract', () => {
   let wallet: WalletUnlocked;
   let provider: Provider;
 
@@ -28,6 +28,51 @@ describe('[METHODS] Test Registry Contract', () => {
     contracts = await setupContractsAndDeploy(wallet);
   });
 
+  it('should register domain with 1 year', async () => {
+    const { registry, storage } = contracts;
+
+    const domain = randomName();
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(storage.initializeStorage());
+
+    const { transactionResult: txRegister } = await registry.register(
+      domain,
+      wallet.address.toB256(),
+      1,
+    );
+
+    expect(txRegister.status).toBe(TransactionStatus.success);
+  });
+  it('should register domain with 2 years', async () => {
+    const { registry, storage } = contracts;
+
+    const domain = randomName();
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(storage.initializeStorage());
+
+    const { transactionResult: txRegister } = await registry.register(
+      domain,
+      wallet.address.toB256(),
+      2,
+    );
+
+    expect(txRegister.status).toBe(TransactionStatus.success);
+  });
+  it('should register domain with 3 years', async () => {
+    const { registry, storage } = contracts;
+
+    const domain = randomName();
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(storage.initializeStorage());
+
+    const { transactionResult: txRegister } = await registry.register(
+      domain,
+      wallet.address.toB256(),
+      3,
+    );
+
+    expect(txRegister.status).toBe(TransactionStatus.success);
+  });
   it('should error on call method without a proxy contract started', async () => {
     const domain = randomName();
     const { registry, storage } = contracts;
@@ -36,13 +81,13 @@ describe('[METHODS] Test Registry Contract', () => {
 
     try {
       await registry.functions
-        .register(domain, wallet.address.toB256())
+        .register(domain, wallet.address.toB256(), 1)
         .addContracts([storage])
         .txParams(txParams)
         .call();
     } catch (error) {
       expectRequireRevertError(error);
-      expectContainLogError(error.cause.logs, 'StorageNotInitialized');
+      expectContainLogError(error, 'StorageNotInitialized');
     }
   });
 
@@ -57,7 +102,7 @@ describe('[METHODS] Test Registry Contract', () => {
       expect(txRegistryFailure.status).toBe(TransactionStatus.failure);
     } catch (error) {
       expectRequireRevertError(error);
-      expectContainLogError(error.cause.logs, 'AlreadyInitialized');
+      expectContainLogError(error, 'AlreadyInitialized');
     }
   });
 
@@ -65,56 +110,68 @@ describe('[METHODS] Test Registry Contract', () => {
     const { registry, storage } = contracts;
 
     const domain = randomName();
+    await tryExecute(registry.initializeRegistry());
     await tryExecute(storage.initializeStorage());
 
     try {
-      await registry.register(domain, wallet.address.toB256());
+      const { logs } = await registry.register(
+        domain,
+        wallet.address.toB256(),
+        1,
+      );
+      console.log(logs);
 
       const { transactionResult: txRegister } = await registry.register(
         domain,
         wallet.address.toB256(),
+        1,
       );
 
       expect(txRegister.status).toBe(TransactionStatus.failure);
     } catch (error) {
       expectRequireRevertError(error);
-      expectContainLogError(error.cause.logs, 'DomainNotAvailable');
+      expectContainLogError(error, 'DomainNotAvailable');
     }
   });
 
   it('should create domain register and get resolver', async () => {
-    const { registry, storage } = contracts;
+    const { registry, storage, resolver } = contracts;
 
     await tryExecute(storage.initializeStorage());
     await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
 
     const domain = randomName();
-    const { transactionResult: txRegister } = await registry.register(
+    const { transactionResult: txRegister, logs } = await registry.register(
       domain,
       wallet.address.toB256(),
+      1,
     );
 
-    const { value } = await registry.functions
+    console.log(logs);
+
+    const { value } = await resolver.functions
       .resolver(domain)
       .addContracts([storage])
       .txParams(txParams)
       .call();
 
-    expect(value.resolver).toBe(wallet.address.toB256());
+    expect(value).toBe(wallet.address.toB256());
     expect(txRegister.status).toBe('success');
   });
 
   it('should error register and get resolver with other domain', async () => {
-    const { registry, storage } = contracts;
+    const { registry, storage, resolver } = contracts;
 
     await tryExecute(storage.initializeStorage());
     await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
 
     const domain = randomName();
-    await registry.register(domain, wallet.address.toB256());
+    await registry.register(domain, wallet.address.toB256(), 1);
 
     const wrongDomain = randomName();
-    const { value } = await registry.functions
+    const { value } = await resolver.functions
       .resolver(wrongDomain)
       .txParams(txParams)
       .call();
@@ -122,72 +179,21 @@ describe('[METHODS] Test Registry Contract', () => {
     expect(value).toBe(undefined);
   });
 
-  it('should error resolver without being register', async () => {
-    const { registry, storage } = contracts;
-    const domain = randomName();
-
-    const { value } = await registry.functions
-      .resolver(domain)
-      .addContracts([storage])
-      .txParams(txParams)
-      .call();
-
-    expect(value).toBeUndefined();
-  });
-
-  it('should get name by resolver', async () => {
-    const { registry, storage } = contracts;
-
-    await tryExecute(storage.initializeStorage());
-    await tryExecute(registry.initializeRegistry());
-
-    const address = Address.fromRandom();
-
-    const domain = 'bako_handle';
-    await registry.register(domain, address.toB256());
-
-    const { value } = await registry.functions
-      .reverse_name(address.toB256())
-      .addContracts([storage])
-      .txParams(txParams)
-      .call();
-
-    expect(value).toBe(domain);
-  });
-
-  it('should empty name when not found handle', async () => {
-    const { registry, storage } = contracts;
-
-    await tryExecute(storage.initializeStorage());
-    await tryExecute(registry.initializeRegistry());
-
-    const address = wallet.address;
-
-    await registry.register(randomName(), address.toB256());
-
-    const { value } = await registry.functions
-      .reverse_name(Address.fromRandom().toB256())
-      .addContracts([storage])
-      .txParams(txParams)
-      .call();
-
-    expect(value).toBe('');
-  });
-
   it('should get primary domain', async () => {
-    const { registry, storage } = contracts;
+    const { registry, storage, resolver } = contracts;
 
     await tryExecute(storage.initializeStorage());
     await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
 
     const address = Address.fromRandom().toB256();
 
     const [primaryDomain, secondaryDomain] = [randomName(), randomName()];
-    await registry.register(primaryDomain, address);
-    await registry.register(secondaryDomain, address);
+    await registry.register(primaryDomain, address, 1);
+    await registry.register(secondaryDomain, address, 1);
 
-    const { value } = await registry.functions
-      .reverse_name(address)
+    const { value } = await resolver.functions
+      .name(address)
       .addContracts([storage])
       .txParams(txParams)
       .call();
@@ -195,36 +201,190 @@ describe('[METHODS] Test Registry Contract', () => {
     expect(value).toBe(primaryDomain);
   });
 
-  it('should throw a error when try register a handle with invalid chars', async () => {
-    const { registry, storage } = await setupContractsAndDeploy(wallet);
+  it('should get all handles by owner address', async () => {
+    const { registry, storage, resolver } =
+      await setupContractsAndDeploy(wallet);
 
     await tryExecute(storage.initializeStorage());
     await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
 
-    const register = (name: string) =>
-      registry.register(name, wallet.address.toB256());
+    const address = Address.fromRandom().toB256();
+    const handles = [randomName(), randomName(), randomName()];
 
-    const expectErrors = (error: unknown, logs: unknown[]) => {
+    await registry.register(handles[0], address, 1);
+    await registry.register(handles[1], address, 1);
+    await registry.register(handles[2], address, 1);
+
+    const { value: vecBytes } = await registry.functions
+      .get_all(wallet.address.toB256())
+      .addContracts([storage])
+      .txParams(txParams)
+      .call();
+
+    const expected = handles.flatMap((name, index) => {
+      const size = name.length;
+      // The first two bytes are the size of the string
+      return [
+        0,
+        size,
+        ...name.split('').map((char) => char.charCodeAt(0)),
+        0,
+        1,
+        index === 0 ? 1 : 0,
+      ];
+    });
+
+    expect(expected).toEqual(expect.arrayContaining(Array.from(vecBytes)));
+  });
+
+  it('should get timestamp by owner name', async () => {
+    const { registry, storage, resolver } =
+      await setupContractsAndDeploy(wallet);
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
+
+    const address = Address.fromRandom().toB256();
+
+    await registry.register('jonglazkov', address, 1);
+
+    const { value } = await registry.functions
+      .get_grace_period('jonglazkov')
+      .addContracts([storage])
+      .txParams(txParams)
+      .call();
+
+    console.log(value);
+    expect(value).toEqual({
+      grace_period: bn(value.grace_period),
+      timestamp: bn(value.timestamp),
+      period: bn(value.period),
+    });
+  });
+
+  it.each(['@invalid-!@#%$!', 'my@asd.other', '@MYHanDLE'])(
+    'should throw a error when try register %s',
+    async (handle) => {
+      const { registry, storage } = await setupContractsAndDeploy(wallet);
+
+      await tryExecute(registry.initializeRegistry());
+      await tryExecute(storage.initializeStorage());
+
+      const register = (name: string) =>
+        registry.register(name, wallet.address.toB256(), 1);
+
+      const expectErrors = (error: unknown) => {
+        expectRequireRevertError(error);
+        expectContainLogError(error, 'InvalidChars');
+      };
+
+      expect.assertions(2);
+
+      try {
+        await register(handle);
+      } catch (error) {
+        expectErrors(error);
+      }
+    },
+  );
+
+  it('should be able to edit resolver of a domain', async () => {
+    const { registry, storage, resolver } = contracts;
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
+
+    const domain = randomName();
+
+    const newAddress = Address.fromRandom().toB256();
+    await registry.register(domain, wallet.address.toB256(), 1);
+
+    const { transactionResult: txResolver } = await registry.functions
+      .edit_resolver(domain, newAddress)
+      .addContracts([storage])
+      .txParams(txParams)
+      .call();
+
+    const { value } = await resolver.functions.resolver(domain).call();
+
+    expect(value).toBe(newAddress);
+    expect(txResolver.status).toBe(TransactionStatus.success);
+  });
+
+  it('should not be able to edit resolver of a domain if domain it is not registered', async () => {
+    const { registry, storage, resolver } = contracts;
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
+
+    const domain = randomName();
+    const newAddress = Address.fromRandom().toB256();
+
+    try {
+      await registry.functions
+        .edit_resolver(domain, newAddress)
+        .addContracts([storage])
+        .txParams(txParams)
+        .call();
+    } catch (error) {
       expectRequireRevertError(error);
-      expectContainLogError(logs, 'InvalidChars');
-    };
-
-    try {
-      await register('@invalid-!@#%$!');
-    } catch (error) {
-      expectErrors(error, error.cause.logs);
+      expectContainLogError(error, 'InvalidDomain');
     }
+  });
+
+  it('should throw error if try to edit resolver with same address', async () => {
+    const { registry, storage, resolver } = contracts;
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
+
+    const domain = randomName();
+    const newAddress = wallet.address.toB256();
+
+    await registry.register(domain, wallet.address.toB256(), 1);
 
     try {
-      await register('my@asd.other');
+      await registry.functions
+        .edit_resolver(domain, newAddress)
+        .addContracts([storage])
+        .txParams(txParams)
+        .call();
     } catch (error) {
-      expectErrors(error, error.cause.logs);
+      expectRequireRevertError(error);
+      expectContainLogError(error, 'SameResolver');
     }
+  });
+
+  it('should not be able to edit resolver of a domain if not owner', async () => {
+    const { registry, storage, resolver } = contracts;
+
+    const fakeWallet = createWallet(provider, WALLET_PRIVATE_KEYS.FAKE);
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
+
+    const domain = randomName();
+    await registry.register(domain, wallet.address.toB256(), 1);
+
+    const newAddress = Address.fromRandom().toB256();
 
     try {
-      await register('@my123');
+      registry.account = fakeWallet;
+
+      await registry.functions
+        .edit_resolver(domain, newAddress)
+        .addContracts([storage])
+        .txParams(txParams)
+        .call();
     } catch (error) {
-      expectErrors(error, error.cause.logs);
+      expectRequireRevertError(error);
+      expectContainLogError(error, 'NotOwner');
     }
   });
 });

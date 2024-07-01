@@ -1,0 +1,31 @@
+org: bakoid
+app: bako-id-image-generator
+service: bako-id-image-generator
+frameworkVersion: '3'
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+custom:
+  serverless-offline:
+    httpPort: 3333
+
+  serverless-plugin-typescript:
+    tsconfigPath: ./tsconfig.json
+
+package:
+  include:
+    - src/fonts
+
+functions:
+  api:
+    handler: src/handlers.generateImage
+    events:
+      - httpApi:
+          path: /{domain}
+          method: get

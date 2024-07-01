@@ -20,9 +20,11 @@ import {
   TwitterIcon,
 } from '../../components';
 import { TransactionsDetailsButton } from '../../components/buttons/transactionsDetailsButton';
-import { ViewOnExploreButton } from '../../components/buttons/viewOnExploreButton';
+import { ViewOnExplorerButton } from '../../components/buttons/viewOnExploreButton';
 import { TransactionDomainDetailsModal } from '../../components/modal/transactionDetails';
+import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
 import { useScreenSize } from '../../hooks/useScreenSize';
+import { calculatePeriodYears } from '../../utils/calculator';
 
 interface IPurchased {
   domain: string;
@@ -35,13 +37,16 @@ export const Purchased = ({
   transactionId,
   transaction,
 }: IPurchased) => {
+  const { data } = useGetGracePeriod(domain.replace('@', ''));
   const modal = useDisclosure();
   const { isMobile } = useScreenSize();
   const navigate = useNavigate();
 
+  const year = calculatePeriodYears(data?.timestamp, data?.period);
+
   const navigateToMyHandle = () => {
     navigate({
-      to: `/profile/${domain}`,
+      to: `/profile/${domain.replace('@', '')}`,
     });
   };
 
@@ -51,8 +56,8 @@ export const Purchased = ({
       h="full"
       display="flex"
       alignItems="center"
-      mt={[12, 24, 0, 0]}
-      gap={[12, 12, 0, 6]}
+      mt={[12, 6, 0, 0]}
+      gap={[12, 5, 5, 5]}
       mb={[0, 0, 'auto', 0]}
       flexDirection="column"
     >
@@ -60,9 +65,10 @@ export const Purchased = ({
       <Card
         border="1px solid"
         borderColor="stroke.500"
+        backdropFilter="blur(5px)"
         p={6}
-        w={['95%', '70%', '50%', '40%']}
-        h={['70%', '65%', '75%', '70%']}
+        w={['95%', 'lg', 'lg', 'lg']}
+        h={['80%', 'xl']}
         alignSelf="center"
         display="flex"
         flexDir="column"
@@ -71,7 +77,7 @@ export const Purchased = ({
           <Box
             display="flex"
             flexDir="column"
-            gap={3}
+            gap={2}
             justifyContent="center"
             alignItems="center"
             mb={2}
@@ -79,7 +85,7 @@ export const Purchased = ({
             <Heading className="bg-pan-tl" bgClip="text" fontWeight={700}>
               Congratulations
             </Heading>
-            <Text color="section.200" fontSize="sm">
+            <Text color="section.200" fontSize={['sm', 'md']}>
               Now your are the owner of this Handles.
             </Text>
           </Box>
@@ -91,12 +97,12 @@ export const Purchased = ({
           alignItems="center"
           justifyContent="center"
         >
-          <CheckoutCard domain={domain} />
+          <CheckoutCard />
         </CardBody>
 
-        <HStack px={2} justify="space-between">
+        <HStack justify="space-between">
           <TransactionsDetailsButton onClick={modal.onOpen} />
-          <ViewOnExploreButton
+          <ViewOnExplorerButton
             onClick={() =>
               window.open(
                 `https://app.fuel.network/tx/${transactionId}`,
@@ -107,7 +113,7 @@ export const Purchased = ({
         </HStack>
         <Stack
           direction={['column', 'row', 'row', 'row']}
-          my={['1rem', '1.5rem', '.8rem', '1.5rem']}
+          my={['1rem', '.8rem']}
           gap={4}
         >
           <Button
@@ -118,7 +124,7 @@ export const Purchased = ({
             Share on Farcaster
           </Button>
 
-          <Button leftIcon={<TwitterIcon />} variant="primary">
+          <Button leftIcon={<TwitterIcon w={4} h={4} />} variant="primary">
             <TwitterShareButton
               url="http://localhost:5173/"
               title="Create your web3 domain!"
@@ -129,7 +135,12 @@ export const Purchased = ({
             </TwitterShareButton>
           </Button>
         </Stack>
-        <Button variant="secondary" onClick={navigateToMyHandle}>
+        <Button
+          variant="secondary"
+          borderColor="grey.100"
+          color="grey.100"
+          onClick={navigateToMyHandle}
+        >
           Go to my Handle
         </Button>
       </Card>
@@ -138,6 +149,7 @@ export const Purchased = ({
         isOpen={modal.isOpen}
         onClose={modal.onClose}
         domain={domain}
+        period={year}
         cost={transaction?.fee?.format()}
       />
     </Box>

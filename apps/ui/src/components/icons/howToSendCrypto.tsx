@@ -2,7 +2,7 @@ import { createIcon } from '@chakra-ui/react';
 
 export const HowToSendCrypto = createIcon({
   displayName: 'HowToSendCrypto',
-  viewBox: '0 0 130 129',
+  viewBox: '0 0 120 120',
   path: (
     <>
       <g filter="url(#filter0_d_14174_17465)">

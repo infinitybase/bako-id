@@ -18,6 +18,8 @@ import { useBuy } from './hooks/useBuy';
 
 export const Buy = () => {
   const { wallet } = useFuelConnect();
+  const buy = useBuy();
+
   const {
     domains,
     handlePeriodChange,
@@ -29,11 +31,12 @@ export const Buy = () => {
     walletBalance,
     registerDomain,
     domain,
-  } = useBuy();
+  } = buy;
 
   const { isMobile } = useScreenSize();
 
   if (registerDomain.isSuccess || registerDomain.data) {
+    console.log(registerDomain.data);
     return (
       <Purchased
         domain={domain}
@@ -60,8 +63,8 @@ export const Buy = () => {
       h="full"
       display="flex"
       alignItems="center"
-      mt={[12, 24, 0, 0]}
-      gap={[12, 12, 0, 12]}
+      mt={[12, 12, 0, 0]}
+      gap={[12, 12, 12, 12]}
       mb={[0, 0, 'auto', 0]}
       flexDirection="column"
     >
@@ -69,9 +72,10 @@ export const Buy = () => {
       <Card
         border="1px solid"
         borderColor="stroke.500"
-        p={6}
-        w={['95%', '70%', '50%', '45%']}
-        h={['60%', '55%', '75%', '70%']}
+        p={5}
+        w={['95%', 'lg', 'lg', 'lg']}
+        h="auto"
+        gap={2}
         alignSelf="center"
         display="flex"
         flexDir="column"
@@ -110,7 +114,7 @@ export const Buy = () => {
                 Select the token that you want to use for this purchase.
               </Text>
             </Box>
-            <BuyComponents.Checkout />
+            <BuyComponents.Checkout {...buy} />
           </VStack>
         </CardBody>
         <BuyError

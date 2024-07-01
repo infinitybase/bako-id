@@ -13,8 +13,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ChakraProvider theme={defaultTheme}>
       {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      {/*@ts-expect-error */}
-      <FuelProvider fuelConfig={{ connectors: defaultConnectors(), ui: true }}>
+      <FuelProvider
+        fuelConfig={{
+          //@ts-expect-error FuelConnector
+          connectors: defaultConnectors({ devMode: true }),
+          ui: true,
+        }}
+      >
         <QueryClientProvider client={queryClient}>
           <ColorModeScript initialColorMode="dark" />
           <InnerApp />

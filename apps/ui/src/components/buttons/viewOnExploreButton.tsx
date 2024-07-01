@@ -1,7 +1,9 @@
-import { Button, type ButtonProps } from '@chakra-ui/react';
+import { Button, useMediaQuery, type ButtonProps } from '@chakra-ui/react';
 import { ExploreIcon } from '../icons/explore';
 
-export const ViewOnExploreButton = (props: ButtonProps) => {
+export const ViewOnExplorerButton = (props: ButtonProps) => {
+  const [isMobile] = useMediaQuery('(max-width: 23em)');
+
   return (
     <Button
       variant="ghost"
@@ -15,7 +17,7 @@ export const ViewOnExploreButton = (props: ButtonProps) => {
       }}
       {...props}
     >
-      View on Explore
+      {isMobile ? 'Explorer' : 'View on Explorer'}
     </Button>
   );
 };

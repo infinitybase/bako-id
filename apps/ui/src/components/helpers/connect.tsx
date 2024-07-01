@@ -5,7 +5,7 @@ import { useScreenSize } from '../../hooks/useScreenSize';
 import { WalletIcon } from '../icons/wallet';
 
 export const Connect = () => {
-  const { connectors } = useFuelConnect();
+  const { connectors, isConnectError } = useFuelConnect();
   const { isMobile } = useScreenSize();
 
   return (
@@ -22,7 +22,7 @@ export const Connect = () => {
         _hover={{ bgColor: 'button.600' }}
         className="transition-all-05"
       >
-        {!connectors.isConnecting ? (
+        {!connectors.isConnecting && !isConnectError ? (
           <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
             {!isMobile && (
               <Icon

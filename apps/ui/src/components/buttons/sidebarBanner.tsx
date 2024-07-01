@@ -1,10 +1,10 @@
 import {
   Box,
+  Icon,
+  Text,
   type BoxProps,
   type ComponentWithAs,
-  Icon,
   type IconProps,
-  Text,
 } from '@chakra-ui/react';
 import type { IconType } from 'react-icons/lib';
 
@@ -24,7 +24,7 @@ export const SidebarBanner = (props: SidebarBannerProps) => {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      gap={6}
+      gap={3}
       h={16}
       _hover={{
         cursor: 'pointer',
@@ -36,15 +36,24 @@ export const SidebarBanner = (props: SidebarBannerProps) => {
         alignItems="center"
         display="flex"
         justifyContent="center"
-        bgColor="black"
+        bgColor="background.900"
         borderLeftRadius="xl"
+        style={{
+          boxShadow: '3px 0px 4px rgba(0, 0, 0, .5)',
+        }}
         h={16}
-        w={24}
+        w={20}
         {...props}
       >
-        <Icon color={props.iconColor} as={props.icon} h={9} w={9} />
+        <Icon color={props.iconColor} as={props.icon} h={8} w={8} />
       </Box>
-      <Text w="full" fontSize="xs" color="section.200" whiteSpace="pretty">
+      <Text
+        w="full"
+        fontSize="sm"
+        color="section.200"
+        fontWeight="normal"
+        whiteSpace="pretty"
+      >
         {props.text}
       </Text>
     </Box>

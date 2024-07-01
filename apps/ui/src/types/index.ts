@@ -6,19 +6,29 @@ export enum Coin {
   ETH = 'ETH',
 }
 
+export enum ExplorerTypes {
+  ASSETS = '/assets',
+  TRANSACTIONS = '/transactions',
+}
+
 export interface Domains {
   name: string;
   period: number;
 }
-
-type FuelDomainInput = { owner: string; resolver: string };
-type FuelDomainOutput = FuelDomainInput;
-
-type Nullable<T> = T | null;
-type Domain = FuelDomainOutput & {
+export type Handle = {
   name: string;
+  isPrimary: boolean;
 };
-export type ResolverReturn = Nullable<Domain>;
+
+export type EditResolverParams = {
+  domain: string;
+  resolver: string;
+  account: fuels.Account;
+};
+
+export type Option<T> = T | undefined;
+
+export type ResolverReturn = Option<string>;
 
 export interface IChildren {
   children?: ReactElement | ReactElement[];
@@ -52,6 +62,19 @@ export interface RegisterDomainPayload {
   domain: string;
   resolver: string;
   account: fuels.Account;
+  period: number;
+}
+
+export interface ProviderParams {
+  account?: fuels.Account;
+  provider?: fuels.Provider;
+  providerURL?: string;
+}
+
+export interface GracePeriodResponse {
+  timestamp: Date;
+  period: Date;
+  gracePeriod: Date;
 }
 
 /**
@@ -74,6 +97,14 @@ export interface ResolverDomainPayload {
   provider?: fuels.Provider;
   providerURL?: string;
 }
+
+export type TokenInfo = {
+  name: string;
+  image: string;
+  symbol: string;
+  subId: string;
+  contractId: string;
+};
 
 export interface ResolverDomainResponse {
   name: string;

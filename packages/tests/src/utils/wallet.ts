@@ -37,5 +37,5 @@ export function createWallet(
 
 export function randomName(size = 10) {
   const name = (Math.random() + 2).toString(32).substring(2);
-  return `${name}`.slice(0, size);
+  return `${name}`.slice(0, size).toLowerCase();
 }

@@ -1,22 +1,27 @@
 import { domainPrices } from '@bako-id/sdk';
-import { bn, BN } from 'fuels';
+import { useParams } from '@tanstack/react-router';
+import { bn, type BN } from 'fuels';
 import { useMemo } from 'react';
-import { useDomain, useUsdPrice } from '.';
-import { Coin, Domains } from '../types';
+import { useUsdPrice } from '.';
+import { Coin, type Domains } from '../types';
+import { useSimulateHandleCostRequest } from './useSimulateHandleCostRequest';
 
 const coinSymbol = {
-  USD: '$',
+  USD: 'USD',
   ETH: 'ETH',
 };
 
-export const useCheckoutPrice = (domains: Domains[], selectedCoin: Coin) => {
+export const useCheckoutPrice = (domains: Domains, selectedCoin: Coin) => {
+  const { domain } = useParams({ strict: false });
+
   const { usdPrice } = useUsdPrice();
-  const { simulateHandle } = useDomain();
+
+  const simulateHandle = useSimulateHandleCostRequest(domain, domains.period);
 
   const totalPrice = useMemo(() => {
-    if (!domains.length || !simulateHandle.data) return bn(0);
+    if (!domains || !simulateHandle.data) return bn(0);
 
-    const ETHPrice = domainPrices(domains[0].name, 1);
+    const ETHPrice = domainPrices(domains.name, domains.period);
 
     const USDPrice = ETHPrice.mul(usdPrice);
 
@@ -24,11 +29,11 @@ export const useCheckoutPrice = (domains: Domains[], selectedCoin: Coin) => {
   }, [domains, simulateHandle.data, usdPrice, selectedCoin]);
 
   const domainPrice = useMemo(() => {
-    if (!domains.length) return bn(0);
+    if (!domains) return bn(0);
 
     return selectedCoin === Coin.USD
-      ? domainPrices(domains[0].name, 1).mul(usdPrice)
-      : domainPrices(domains[0].name, 1);
+      ? domainPrices(domains.name, domains.period).mul(usdPrice)
+      : domainPrices(domains.name, domains.period);
   }, [domains, selectedCoin, usdPrice]);
 
   const fee = useMemo(() => {
@@ -42,9 +47,9 @@ export const useCheckoutPrice = (domains: Domains[], selectedCoin: Coin) => {
   const formatCoin = (value: BN, selectedCoin: Coin) => {
     if (!value) return '--.--';
 
-    const formatted = value.format({ precision: 4 });
+    const formatted = value.format({ precision: 7 });
 
-    return `${coinSymbol[selectedCoin]} ${formatted}`;
+    return `${formatted} ${coinSymbol[selectedCoin]}`;
   };
 
   return {
@@ -52,5 +57,6 @@ export const useCheckoutPrice = (domains: Domains[], selectedCoin: Coin) => {
     domainPrice,
     fee,
     formatCoin,
+    loading: simulateHandle.isLoading,
   };
 };

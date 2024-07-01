@@ -13,7 +13,7 @@ use std::{
 };
 use libraries::{
     abis::{StorageContract},
-    structures::{FuelDomain},
+    structures::{BakoHandle},
     permissions::{
         Permission,
         OWNER,
@@ -71,7 +71,7 @@ impl MetadataContract for Contract {
 
         require(handle_bytes.is_some(), MetadataContractError::InvalidDomain);
 
-        let domain = FuelDomain::from_bytes(handle_bytes.unwrap());
+        let domain = BakoHandle::from(handle_bytes.unwrap());
         let is_owner = Identity::Address(Address::from(domain.owner)) == msg_sender().unwrap();
 
         require(is_owner, MetadataContractError::InvalidPermission);

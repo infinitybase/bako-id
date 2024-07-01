@@ -5,7 +5,7 @@ import {
   MetadataContractAbi__factory,
 } from '../../types';
 import { NotOwnerError } from '../../utils';
-import { resolver } from '../resolver';
+import { owner } from '../resolver';
 import { type Metadata, decodeMetadata } from './utils';
 
 const txParams = {
@@ -46,9 +46,9 @@ export class UserMetadataContract {
    * @returns {Promise} - A promise that resolves with the result of the save operation.
    */
   async saveMetadata(metadata: Metadata) {
-    const handle = await resolver(this.handleName);
+    const ownerAddress = await owner(this.handleName);
 
-    if (handle?.owner !== this.account.address.toB256()) {
+    if (ownerAddress && ownerAddress !== this.account.address.toB256()) {
       throw new NotOwnerError();
     }
 

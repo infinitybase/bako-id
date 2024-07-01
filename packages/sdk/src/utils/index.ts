@@ -4,6 +4,7 @@ export * from './wallet';
 export * from './errors';
 export * from './domain';
 export * from './tests';
+export * from './provider';
 
 export const getTxParams = (provider: Provider) => {
   const _gasConfig = provider.getGasConfig();

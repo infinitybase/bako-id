@@ -1,8 +1,8 @@
 import { useParams } from '@tanstack/react-router';
-import { useFuelConnect } from '.';
+import { useFuelConnect, useResolveDomainRequests } from '.';
 import { useRegisterDomainRequests } from './useRegisterDomainRequests';
-import { useResolveDomainRequests } from './useResolveDomainRequests';
-import { useSimulateHandleCostRequest } from './useSimulateHandleCostRequest';
+import { useResolveNameRequests } from './useResolveNameRequests';
+import { useResolveOwnerRequests } from './useResolveOwnerRequests';
 
 export const useDomain = (newDomain?: string) => {
   const { domain } = useParams({ strict: false });
@@ -10,15 +10,13 @@ export const useDomain = (newDomain?: string) => {
 
   const registerDomain = useRegisterDomainRequests();
   const resolveDomain = useResolveDomainRequests(newDomain ?? domain);
-  const simulateHandle = useSimulateHandleCostRequest(
-    wallet!,
-    wallet?.address.toB256() ?? '',
-    domain,
-  );
+  const resolveName = useResolveNameRequests(wallet?.address.toB256() ?? '');
+  const resolveOwner = useResolveOwnerRequests(newDomain ?? domain);
 
   return {
     registerDomain,
+    resolveName,
+    resolveOwner,
     resolveDomain,
-    simulateHandle,
   };
 };

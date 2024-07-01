@@ -1,5 +1,6 @@
 import { useIsConnected } from '@fuels/react';
 import { RouterProvider } from '@tanstack/react-router';
+import { Suspense } from 'react';
 import { router } from '../../routes';
 
 export function InnerApp() {
@@ -7,5 +8,9 @@ export function InnerApp() {
 
   if (isConnected === null) return;
 
-  return <RouterProvider router={router} context={{ isConnected }} />;
+  return (
+    <Suspense>
+      <RouterProvider router={router} context={{ isConnected }} />
+    </Suspense>
+  );
 }

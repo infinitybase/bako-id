@@ -1,14 +1,17 @@
 import {
   Box,
   Container as ContainerChakra,
+  useMediaQuery,
   type ContainerProps as ContainerChakraProps,
 } from '@chakra-ui/react';
 
 import BackgroundTexture from '../../assets/bg-texture.svg';
+import MobileBackgroundTexture from '../../assets/mobile-background-texture.svg';
 
 export interface ContainerProps extends ContainerChakraProps {}
 
 const Container = ({ children, ...props }: ContainerProps) => {
+  const [isMobile] = useMediaQuery('(max-width: 48em)');
   return (
     <ContainerChakra
       maxWidth="full"
@@ -20,7 +23,7 @@ const Container = ({ children, ...props }: ContainerProps) => {
       {...props}
     >
       <Box
-        backgroundImage={BackgroundTexture}
+        backgroundImage={isMobile ? MobileBackgroundTexture : BackgroundTexture}
         backgroundSize={'cover'}
         backgroundRepeat={'no-repeat'}
         backgroundPosition="center"
