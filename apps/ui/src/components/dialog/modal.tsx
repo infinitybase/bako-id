@@ -10,12 +10,13 @@ import {
   VStack,
   type ModalProps,
 } from '@chakra-ui/react';
+import type { ReactNode } from 'react';
 import { SmallCloseIcon } from '../icons/smallCloseIcon';
 
 export interface DialogModalProps extends ModalProps {
   onClose: () => void;
   hideCloseButton?: boolean;
-  modalTitle?: string;
+  modalTitle?: string | ReactNode;
   modalSubtitle?: string;
 }
 
@@ -37,7 +38,11 @@ const DialogModal = (props: DialogModalProps) => {
       <ModalContent rounded="xl" p={6}>
         <VStack spacing={2} w="full" align="flex-start" mb={8}>
           <Flex w="full" align="center" justifyContent="space-between">
-            <ModalHeader minW="70%" fontSize="lg">
+            <ModalHeader
+              w="full"
+              minW={hideCloseButton ? '100%' : '70%'}
+              fontSize="lg"
+            >
               {modalTitle}
             </ModalHeader>
 
