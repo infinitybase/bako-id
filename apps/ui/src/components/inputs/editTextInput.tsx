@@ -1,3 +1,4 @@
+import type { Metadata } from '@bako-id/sdk';
 import {
   Box,
   Flex,
@@ -13,12 +14,15 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { Dialog } from '../dialog';
 import { CloseIcon } from '../icons/closeIcon';
 import { TrashIcon } from '../icons/trashIcon';
 
 interface IEditTextValueInput extends InputProps {
-  onSubmit: () => void;
+  title: string;
   modalType: string;
+  onSave: (metadata: Metadata) => Promise<void>;
+  onClose: () => void;
 }
 
 type EditTextValueInput = {
@@ -26,7 +30,7 @@ type EditTextValueInput = {
 };
 
 export const EditTextValueInput = (props: IEditTextValueInput) => {
-  const [inputValue, setInputValue] = useState<string>('');
+  const [inputValue, setInputValue] = useState<string>(props.title ?? '');
 
   const {
     control,
@@ -40,9 +44,27 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
     },
   });
 
+  const handleSave = () => {
+    props
+      .onSave({
+        key: props.modalType,
+        value: inputValue,
+      })
+      .then(
+        () => {
+          console.log('Saved');
+          props.onClose();
+        },
+        (error) => {
+          console.error(error);
+        },
+      );
+    setInputValue('');
+  };
+
   return (
     <Box w="full" h="full" display="flex" flexDirection="column">
-      <form onSubmit={handleSubmit(props.onSubmit)}>
+      <form onSubmit={handleSubmit(handleSave)}>
         <FormControl
           isInvalid={!!errors?.title && inputValue.length >= 0}
           display="flex"
@@ -154,6 +176,18 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
             )}
           </Box>
         </FormControl>
+
+        <Dialog.Actions hideDivider>
+          <Dialog.SecondaryAction onClick={props.onClose}>
+            Cancel
+          </Dialog.SecondaryAction>
+          <Dialog.PrimaryAction
+            type="submit"
+            isDisabled={inputValue.length <= 3}
+          >
+            Save
+          </Dialog.PrimaryAction>
+        </Dialog.Actions>
       </form>
     </Box>
   );

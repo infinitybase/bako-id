@@ -13,7 +13,7 @@ export const CheckBadge = ({ verified }: { verified: boolean | null }) => {
         alignItems="center"
         justifyContent="center"
       >
-        <CardBadge w={8} h={8} color={verified ? 'button.500' : '#5E5955'} />
+        <CardBadge w={8} h={8} color={!verified ? 'button.500' : '#5E5955'} />
       </Box>
 
       <Icon

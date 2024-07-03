@@ -36,7 +36,7 @@ export const MetadataCard = ({
         transition: 'all 0.2s',
       }}
       border="1.5px solid"
-      borderColor={verified ? 'button.500' : 'input.600'}
+      borderColor={verified !== null && !verified ? 'button.500' : 'input.600'}
     >
       {verified !== null && <CheckBadge verified={!!verified} />}
 

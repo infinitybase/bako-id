@@ -1,3 +1,6 @@
+import { UserMetadataContract, type Metadata } from '@bako-id/sdk';
+import { useWallet } from '@fuels/react';
+import { useParams } from '@tanstack/react-router';
 import { Dialog } from '../dialog';
 import { EditTextValueInput } from '../inputs/editTextInput';
 
@@ -16,9 +19,22 @@ export const EditProfileFieldsModal = ({
   title,
   validated,
 }: EditProfileFieldsModalProps) => {
+  const { domain } = useParams({ strict: false });
+  const { wallet } = useWallet();
+  if (!wallet) return;
+  const userMetadata = UserMetadataContract.initialize(wallet, domain);
+
+  const handleSave = async (metadata: Metadata) => {
+    await userMetadata.saveMetadata(metadata);
+  };
+
+  const selectedType = type.charAt(0).toUpperCase() + type.slice(1);
+
   return (
     <Dialog.Modal
-      modalTitle={validated === null ? `Add ${title}` : `Edit ${title}`}
+      modalTitle={
+        validated === null ? `Add ${selectedType}` : `Edit ${selectedType}`
+      }
       modalSubtitle="You can edit your profile fields here."
       isOpen={isOpen}
       autoFocus={false}
@@ -32,14 +48,19 @@ export const EditProfileFieldsModal = ({
         w="full"
         h={32}
       >
-        <EditTextValueInput modalType={type} onSubmit={() => {}} />
+        <EditTextValueInput
+          title={title}
+          modalType={selectedType}
+          onSave={handleSave}
+          onClose={onClose}
+        />
       </Dialog.Body>
-      <Dialog.Actions hideDivider>
+      {/* <Dialog.Actions hideDivider>
         <Dialog.SecondaryAction onClick={onClose}>
           Cancel
         </Dialog.SecondaryAction>
         <Dialog.PrimaryAction onClick={onClose}>Save</Dialog.PrimaryAction>
-      </Dialog.Actions>
+      </Dialog.Actions> */}
     </Dialog.Modal>
   );
 };

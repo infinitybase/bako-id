@@ -1,3 +1,4 @@
+import { UserMetadataContract, type Metadata } from '@bako-id/sdk';
 import {
   Button,
   CloseButton,
@@ -12,8 +13,9 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useWallet } from '@fuels/react';
 import { useParams } from '@tanstack/react-router';
-import { useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { Metadatas } from '../../utils/metadatas';
 import { MetadataCard } from '../card/metadataCard';
 import { Dialog } from '../dialog';
@@ -21,6 +23,7 @@ import { AvatarIcon } from '../icons';
 import { FlagIcon } from '../icons/flagIcon';
 import { EditProfileFieldsModal } from './editProfileFieldsModal';
 import { EditProfilePicModal } from './editProfilePicModal';
+import { TransactionsDetailsModal } from './transactionDetails';
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -138,14 +141,18 @@ const ModalFiltersButtons = () => {
   );
 };
 
-interface IMetadata {
+export interface IMetadata {
   key: string;
   title: string;
-  icon: ReactNode;
-  validated: boolean | null;
+  description: string;
+  icon?: ReactNode;
 }
 
-const ModalFiltersTabs = () => {
+interface IModalFilterTabsProps {
+  metadata: Metadata[];
+}
+
+const ModalFiltersTabs = ({ metadata }: IModalFilterTabsProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [activeMetadata, setActiveMetadata] = useState<IMetadata | null>(null);
 
@@ -158,6 +165,18 @@ const ModalFiltersTabs = () => {
     setActiveMetadata(null);
     onClose();
   };
+
+  const userMetadata = useMemo(() => {
+    return metadata.reduce((obj: Record<string, IMetadata>, item: Metadata) => {
+      obj[item.key] = {
+        key: item.key,
+        title: item.value, // Aqui você pode substituir por qualquer valor que você queira para o título
+        description: item.value,
+      };
+      return obj;
+    }, {});
+  }, [metadata]);
+
   return (
     <Tabs position="relative" borderColor="disabled.500">
       <TabList w="full" color="disabled.500">
@@ -184,55 +203,72 @@ const ModalFiltersTabs = () => {
           <Flex display="flex" flexDirection="column" gap={4}>
             <Text color="section.500">General</Text>
             <Flex display="flex" gap={4}>
-              {Metadatas.General.map((metadata) => (
-                <>
-                  <MetadataCard
-                    key={metadata.key}
-                    icon={metadata.icon}
-                    title={metadata.title}
-                    verified={metadata.validated}
-                    onClick={() => handleOpenModal(metadata)}
-                  />
+              {Metadatas.General.map((metadata) => {
+                const isVerified =
+                  metadata.key in userMetadata
+                    ? !!userMetadata[metadata.key]
+                    : null;
 
-                  {activeMetadata && activeMetadata.key === metadata.key && (
-                    <EditProfileFieldsModal
+                return (
+                  <>
+                    <MetadataCard
                       key={metadata.key}
-                      isOpen={isOpen}
-                      onClose={handleCloseModal}
-                      type={metadata.key}
+                      icon={metadata.icon}
                       title={metadata.title}
-                      validated={metadata.validated}
+                      verified={isVerified}
+                      onClick={() => handleOpenModal(metadata)}
                     />
-                  )}
-                </>
-              ))}
+
+                    {activeMetadata && activeMetadata.key === metadata.key && (
+                      <EditProfileFieldsModal
+                        key={metadata.key}
+                        isOpen={isOpen}
+                        onClose={handleCloseModal}
+                        type={metadata.key}
+                        title={
+                          isVerified ? userMetadata[metadata.key].title : ''
+                        }
+                        validated={isVerified}
+                      />
+                    )}
+                  </>
+                );
+              })}
             </Flex>
           </Flex>
           <Flex display="flex" mt={8} flexDirection="column" gap={4}>
             <Text color="section.500">Social</Text>
             <Flex display="flex" gap={4} wrap="wrap">
-              {Metadatas.Social.map((metadata) => (
-                <>
-                  <MetadataCard
-                    key={metadata.key}
-                    icon={metadata.icon}
-                    title={metadata.title}
-                    verified={metadata.validated}
-                    onClick={() => handleOpenModal(metadata)}
-                  />
-
-                  {activeMetadata && activeMetadata.key === metadata.key && (
-                    <EditProfileFieldsModal
+              {Metadatas.Social.map((metadata) => {
+                const isVerified =
+                  metadata.key in userMetadata
+                    ? !!userMetadata[metadata.key]
+                    : null;
+                return (
+                  <>
+                    <MetadataCard
                       key={metadata.key}
-                      isOpen={isOpen}
-                      onClose={handleCloseModal}
-                      type={metadata.key}
+                      icon={metadata.icon}
                       title={metadata.title}
-                      validated={metadata.validated}
+                      verified={isVerified}
+                      onClick={() => handleOpenModal(metadata)}
                     />
-                  )}
-                </>
-              ))}
+
+                    {activeMetadata && activeMetadata.key === metadata.key && (
+                      <EditProfileFieldsModal
+                        key={metadata.key}
+                        isOpen={isOpen}
+                        onClose={handleCloseModal}
+                        type={metadata.key}
+                        title={
+                          isVerified ? userMetadata[metadata.key].title : ''
+                        }
+                        validated={isVerified}
+                      />
+                    )}
+                  </>
+                );
+              })}
             </Flex>
           </Flex>
         </TabPanel>
@@ -284,9 +320,6 @@ const ModalFiltersTabs = () => {
             </Flex>
           </Flex>
         </TabPanel>
-        <TabPanel w="full" px={0}>
-          <p>alou</p>
-        </TabPanel>
       </TabPanels>
     </Tabs>
   );
@@ -296,25 +329,52 @@ export const EditProfileModal = ({
   isOpen,
   onClose,
 }: EditProfileModalProps) => {
-  return (
-    <Dialog.Modal
-      closeOnOverlayClick={false}
-      hideCloseButton
-      isOpen={isOpen}
-      onClose={onClose}
-      modalTitle={<ModalTitle onClose={onClose} />}
-    >
-      <Dialog.Body>
-        <ModalFiltersButtons />
-        <ModalFiltersTabs />
-      </Dialog.Body>
+  const { domain } = useParams({ strict: false });
+  const { wallet } = useWallet();
+  const [metadata, setMetadata] = useState<Metadata[]>([]);
+  const updates = Metadatas.General;
+  const transactionDetails = useDisclosure();
 
-      <Dialog.Actions>
-        <Dialog.SecondaryAction onClick={onClose}>
-          Cancel
-        </Dialog.SecondaryAction>
-        <Dialog.PrimaryAction>Save changes</Dialog.PrimaryAction>
-      </Dialog.Actions>
-    </Dialog.Modal>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useMemo(async () => {
+    if (!wallet) return;
+    const userMetadata = UserMetadataContract.initialize(wallet, domain);
+
+    await userMetadata.getAll().then((metadata) => {
+      setMetadata(metadata);
+    });
+  }, [wallet, domain, metadata.length]);
+
+  return (
+    <>
+      <Dialog.Modal
+        closeOnOverlayClick={false}
+        hideCloseButton
+        isOpen={isOpen}
+        onClose={onClose}
+        modalTitle={<ModalTitle onClose={onClose} />}
+      >
+        <Dialog.Body>
+          <ModalFiltersButtons />
+          <ModalFiltersTabs metadata={metadata} />
+        </Dialog.Body>
+
+        <Dialog.Actions>
+          <Dialog.SecondaryAction onClick={onClose}>
+            Cancel
+          </Dialog.SecondaryAction>
+          <Dialog.PrimaryAction onClick={transactionDetails.onOpen}>
+            Save changes
+          </Dialog.PrimaryAction>
+        </Dialog.Actions>
+      </Dialog.Modal>
+      <TransactionsDetailsModal
+        domain={domain}
+        isOpen={transactionDetails.isOpen}
+        onClose={transactionDetails.onClose}
+        updates={updates}
+        onConfirm={transactionDetails.onClose}
+      />
+    </>
   );
 };
