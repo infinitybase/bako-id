@@ -50,7 +50,7 @@ export const EditProfileFieldsModal = ({
       >
         <EditTextValueInput
           title={title}
-          modalType={selectedType}
+          modalType={type}
           onSave={handleSave}
           onClose={onClose}
         />

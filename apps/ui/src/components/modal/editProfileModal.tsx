@@ -46,8 +46,8 @@ const ModalTitle = ({ onClose }: Pick<EditProfileModalProps, 'onClose'>) => {
     <Flex w="full" justify="space-between">
       <Flex>
         <Icon
-          w={20}
-          h={20}
+          w={[16, 16, 16, 20]}
+          h={[16, 16, 16, 20]}
           rounded="lg"
           mr={3}
           as={AvatarIcon}
@@ -64,11 +64,21 @@ const ModalTitle = ({ onClose }: Pick<EditProfileModalProps, 'onClose'>) => {
           justifyContent="space-between"
         >
           <Flex gap={3} direction="column">
-            <Text fontWeight="semibold" fontSize={['md', 'lg']} color="white">
+            <Text
+              fontWeight="semibold"
+              fontSize={['md', 'md', 'md', 'lg']}
+              color="white"
+            >
               {domain?.startsWith('@') ? domain : `@${domain}`}
             </Text>
 
-            <Button variant="ghosted" color="grey.100" leftIcon={<FlagIcon />}>
+            <Button
+              variant="ghosted"
+              h={[8, 8, 8, 12]}
+              color="grey.100"
+              fontSize={['sm', 'sm', 'sm', 'md']}
+              leftIcon={<FlagIcon />}
+            >
               Set as primary Handles
             </Button>
           </Flex>
@@ -89,11 +99,20 @@ const ModalTitle = ({ onClose }: Pick<EditProfileModalProps, 'onClose'>) => {
   );
 };
 
-const ModalFiltersButtons = () => {
+enum FilterButtonTypes {
+  ALL = 'All',
+  ADDED = 'Added',
+  NOT_ADDED = 'Not Added',
+}
+
+interface IModalFiltersButtonsProps {
+  changeFilter: (filter: FilterButtonTypes) => void;
+}
+const ModalFiltersButtons = ({ changeFilter }: IModalFiltersButtonsProps) => {
   return (
     <Flex gap={2} my={4} w="full" justifyContent="space-between">
       <Button
-        h={12}
+        h={[10, 10, 10, 12]}
         variant="outline"
         fontWeight={500}
         rounded="md"
@@ -104,11 +123,12 @@ const ModalFiltersButtons = () => {
           color: 'button.500',
           borderColor: 'button.500',
         }}
+        onClick={() => changeFilter(FilterButtonTypes.ALL)}
       >
         All
       </Button>
       <Button
-        h={12}
+        h={[10, 10, 10, 12]}
         variant="outline"
         fontWeight={500}
         rounded="md"
@@ -119,11 +139,12 @@ const ModalFiltersButtons = () => {
           color: 'button.500',
           borderColor: 'button.500',
         }}
+        onClick={() => changeFilter(FilterButtonTypes.ADDED)}
       >
         Added
       </Button>
       <Button
-        h={12}
+        h={[10, 10, 10, 12]}
         variant="outline"
         fontWeight={500}
         rounded="md"
@@ -134,6 +155,7 @@ const ModalFiltersButtons = () => {
           color: 'button.500',
           borderColor: 'button.500',
         }}
+        onClick={() => changeFilter(FilterButtonTypes.NOT_ADDED)}
       >
         Not Added
       </Button>
@@ -150,11 +172,13 @@ export interface IMetadata {
 
 interface IModalFilterTabsProps {
   metadata: Metadata[];
+  filters: FilterButtonTypes;
 }
 
-const ModalFiltersTabs = ({ metadata }: IModalFilterTabsProps) => {
+const ModalFiltersTabs = ({ metadata, filters }: IModalFilterTabsProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [activeMetadata, setActiveMetadata] = useState<IMetadata | null>(null);
+  const [activeTab, setActiveTab] = useState(0);
 
   const handleOpenModal = (metadata: IMetadata) => {
     setActiveMetadata(metadata);
@@ -170,15 +194,28 @@ const ModalFiltersTabs = ({ metadata }: IModalFilterTabsProps) => {
     return metadata.reduce((obj: Record<string, IMetadata>, item: Metadata) => {
       obj[item.key] = {
         key: item.key,
-        title: item.value, // Aqui você pode substituir por qualquer valor que você queira para o título
+        title: item.value,
         description: item.value,
       };
       return obj;
     }, {});
   }, [metadata]);
 
+  const handleFilters = (metadata: Metadata, filters: FilterButtonTypes) => {
+    if (filters === FilterButtonTypes.ALL) return true;
+    if (filters === FilterButtonTypes.ADDED)
+      return metadata.key in userMetadata;
+    if (filters === FilterButtonTypes.NOT_ADDED)
+      return !(metadata.key in userMetadata);
+  };
+
   return (
-    <Tabs position="relative" borderColor="disabled.500">
+    <Tabs
+      position="relative"
+      borderColor="disabled.500"
+      index={activeTab}
+      onChange={(index) => setActiveTab(index)}
+    >
       <TabList w="full" color="disabled.500">
         {TabsTypes.map((tab) => (
           <Tab
@@ -198,12 +235,25 @@ const ModalFiltersTabs = ({ metadata }: IModalFilterTabsProps) => {
         bg="section.200"
         borderRadius="1px"
       />
-      <TabPanels h={520}>
+      <TabPanels
+        h={[300, 300, 350, 520]}
+        maxH={[300, 300, 350, 520]}
+        overflowY="scroll"
+        overflowX="hidden"
+        css={{
+          '&::-webkit-scrollbar': {
+            width: 0,
+            background: 'transparent',
+          },
+        }}
+      >
         <TabPanel w="full" px={0}>
           <Flex display="flex" flexDirection="column" gap={4}>
             <Text color="section.500">General</Text>
             <Flex display="flex" gap={4}>
-              {Metadatas.General.map((metadata) => {
+              {Metadatas.General.filter((metadata) => {
+                return handleFilters({ ...metadata, value: '' }, filters);
+              }).map((metadata) => {
                 const isVerified =
                   metadata.key in userMetadata
                     ? !!userMetadata[metadata.key]
@@ -239,7 +289,9 @@ const ModalFiltersTabs = ({ metadata }: IModalFilterTabsProps) => {
           <Flex display="flex" mt={8} flexDirection="column" gap={4}>
             <Text color="section.500">Social</Text>
             <Flex display="flex" gap={4} wrap="wrap">
-              {Metadatas.Social.map((metadata) => {
+              {Metadatas.Social.filter((metadata) => {
+                return handleFilters({ ...metadata, value: '' }, filters);
+              }).map((metadata) => {
                 const isVerified =
                   metadata.key in userMetadata
                     ? !!userMetadata[metadata.key]
@@ -272,7 +324,7 @@ const ModalFiltersTabs = ({ metadata }: IModalFilterTabsProps) => {
             </Flex>
           </Flex>
         </TabPanel>
-        <TabPanel w="full" px={0}>
+        {/* <TabPanel w="full" px={0}>
           <Flex display="flex" flexDirection="column" gap={4}>
             <Text color="section.500">Social</Text>
             <Flex display="flex" gap={4} wrap="wrap">
@@ -319,7 +371,7 @@ const ModalFiltersTabs = ({ metadata }: IModalFilterTabsProps) => {
               ))}
             </Flex>
           </Flex>
-        </TabPanel>
+        </TabPanel> */}
       </TabPanels>
     </Tabs>
   );
@@ -334,6 +386,11 @@ export const EditProfileModal = ({
   const [metadata, setMetadata] = useState<Metadata[]>([]);
   const updates = Metadatas.General;
   const transactionDetails = useDisclosure();
+  const [filter, setFilter] = useState(FilterButtonTypes.ALL);
+
+  const handleFilterClick = (newFilter: FilterButtonTypes) => {
+    setFilter(newFilter);
+  };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useMemo(async () => {
@@ -352,11 +409,12 @@ export const EditProfileModal = ({
         hideCloseButton
         isOpen={isOpen}
         onClose={onClose}
+        size={['full', '2xl', '2xl', '2xl']}
         modalTitle={<ModalTitle onClose={onClose} />}
       >
+        <ModalFiltersButtons changeFilter={handleFilterClick} />
         <Dialog.Body>
-          <ModalFiltersButtons />
-          <ModalFiltersTabs metadata={metadata} />
+          <ModalFiltersTabs metadata={metadata} filters={filter} />
         </Dialog.Body>
 
         <Dialog.Actions>
