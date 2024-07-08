@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { CheckBadge } from './checkBadge';
 
 interface IMetadataCard {
-  key: string;
+  keys: string;
   title: string;
   icon: ReactNode;
   onClick: () => void;
@@ -14,12 +14,12 @@ export const MetadataCard = ({
   icon,
   onClick,
   title,
-  key,
+  keys,
   verified,
 }: IMetadataCard) => {
   return (
     <Box
-      key={key}
+      key={keys}
       w={[32, 32, 36, 36]}
       h={[28, 28, 32, 32]}
       display="flex"

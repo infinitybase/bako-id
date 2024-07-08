@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
 import { useParams } from '@tanstack/react-router';
-import { useMemo, useState, type ReactNode } from 'react';
+import React, { useMemo, useState, type ReactNode } from 'react';
 import { Metadatas } from '../../utils/metadatas';
 import { MetadataCard } from '../card/metadataCard';
 import { Dialog } from '../dialog';
@@ -260,9 +260,10 @@ const ModalFiltersTabs = ({ metadata, filters }: IModalFilterTabsProps) => {
                     : null;
 
                 return (
-                  <>
+                  <React.Fragment key={metadata.key}>
                     <MetadataCard
                       key={metadata.key}
+                      keys={metadata.key}
                       icon={metadata.icon}
                       title={metadata.title}
                       verified={isVerified}
@@ -281,7 +282,7 @@ const ModalFiltersTabs = ({ metadata, filters }: IModalFilterTabsProps) => {
                         validated={isVerified}
                       />
                     )}
-                  </>
+                  </React.Fragment>
                 );
               })}
             </Flex>
@@ -297,9 +298,10 @@ const ModalFiltersTabs = ({ metadata, filters }: IModalFilterTabsProps) => {
                     ? !!userMetadata[metadata.key]
                     : null;
                 return (
-                  <>
+                  <React.Fragment key={metadata.key}>
                     <MetadataCard
                       key={metadata.key}
+                      keys={metadata.key}
                       icon={metadata.icon}
                       title={metadata.title}
                       verified={isVerified}
@@ -318,7 +320,7 @@ const ModalFiltersTabs = ({ metadata, filters }: IModalFilterTabsProps) => {
                         validated={isVerified}
                       />
                     )}
-                  </>
+                  </React.Fragment>
                 );
               })}
             </Flex>
@@ -402,6 +404,7 @@ export const EditProfileModal = ({
     });
   }, [wallet, domain, metadata.length]);
 
+  // console.log(metadata);
   return (
     <>
       <Dialog.Modal
