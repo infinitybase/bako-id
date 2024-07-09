@@ -1,7 +1,6 @@
 import type { Metadata } from '@bako-id/sdk';
 import {
   Box,
-  Input as ChakraInput,
   Icon,
   InputGroup,
   InputLeftAddon,
@@ -15,11 +14,14 @@ import {
   FarcasterIcon,
   GithubIcon,
   LocationIcon,
+  TelegramIcon,
   TwitterIcon,
+  WebsiteIcon,
 } from '..';
 import { AddIcon } from '../icons/addIcon';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
 
+//@ts-expect-error error
 interface CustomInputProps extends InputProps {
   value?: string;
   isVerified?: boolean;
@@ -79,6 +81,24 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
       verify: () => {},
       add: () => {},
     },
+    website: {
+      name: 'Website',
+      value: props.value,
+      icon: WebsiteIcon,
+      color: 'white',
+      bgColor: '#F05D48',
+      verify: () => {},
+      add: () => {},
+    },
+    telegram: {
+      name: 'Telegram',
+      value: props.value,
+      icon: TelegramIcon,
+      color: 'white',
+      bgColor: '#2EABEB',
+      verify: () => {},
+      add: () => {},
+    },
   };
 
   const copyValueToClipboard = () => {
@@ -88,6 +108,8 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
   const currentVariant = variants[variant.key as keyof typeof variants];
 
   if (!isMyDomain && !isVerified) return;
+  const isVerifiedVariant =
+    currentVariant?.name === 'Farcaster' || currentVariant?.name === 'X';
 
   if (currentVariant) {
     return (
@@ -112,7 +134,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
               w={6}
               h={6}
             />
-            {currentVariant?.value && (
+            {currentVariant?.value && isVerifiedVariant && (
               <Text
                 zIndex={1}
                 left="100%"
@@ -125,19 +147,18 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
             )}
           </InputLeftAddon>
 
-          <ChakraInput
-            defaultValue={
-              currentVariant?.value ?? `Add ${currentVariant?.name} account`
-            }
+          <Box
             type="text"
-            readOnly={true}
-            h={10}
+            w="full"
+            h="full"
             pr={2}
+            display="flex"
+            alignItems="center"
+            justifyContent="end"
             border="1px solid"
             borderColor="stroke.500"
             borderLeftColor="transparent"
             borderRightColor={rightAddon ? 'transparent' : 'stroke.500'}
-            borderRadius="xl"
             backgroundColor="input.600"
             color="grey.100"
             fontSize={['xs', 'sm']}
@@ -146,7 +167,9 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
             _focus={{}}
             _hover={{}}
             {...rest}
-          />
+          >
+            {currentVariant?.value ?? `Add ${currentVariant?.name} account`}
+          </Box>
           {rightAddon && isVerified ? (
             <InputRightAddon
               bgColor="input.600"
