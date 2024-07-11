@@ -192,4 +192,37 @@ describe('Metadata contract', () => {
 
     expect(metadataBytes).toHaveLength(52);
   });
+
+  it('should save all metadatas', async () => {
+    const { metadata, registry, storage } = contracts;
+    const { github, linkedin, user } = metadataConfig;
+
+    const handleName = user.handle();
+
+    metadata.account = wallet;
+
+    await tryExecute(metadata.initializeMetadata());
+    await tryExecute(registry.register(handleName, wallet.address.toB256(), 1));
+
+    const metadatas = [
+      { key: github.key, value: github.value },
+      { key: linkedin.key, value: linkedin.value },
+    ];
+
+    try {
+      console.log(storage.id.toB256());
+      const { logs } = await metadata
+        .multiCall(
+          metadatas.map(({ key, value }) =>
+            metadata.functions.save(handleName, key, value),
+          ),
+        )
+        .addContracts([storage])
+        .call();
+
+      console.log('Logs', logs);
+    } catch (error) {
+      console.log('Error', { ...error });
+    }
+  });
 });

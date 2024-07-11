@@ -68,7 +68,7 @@ impl MetadataContract for Contract {
         storage.metadata.insert(sha256(handle_name), key, value);
         let storage_contract = abi(StorageContract, storage_id.into());
         let handle_bytes = storage_contract.get(sha256(handle_name));
-
+        
         require(handle_bytes.is_some(), MetadataContractError::InvalidDomain);
 
         let domain = BakoHandle::from(handle_bytes.unwrap());

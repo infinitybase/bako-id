@@ -22,7 +22,7 @@ import type {
   StdString,
 } from 'fuels';
 
-import type { Enum } from "./common";
+import type { Option, Enum } from "./common";
 
 export enum MetadataContractErrorInput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', InvalidPermission = 'InvalidPermission', InvalidDomain = 'InvalidDomain' };
 export enum MetadataContractErrorOutput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', InvalidPermission = 'InvalidPermission', InvalidDomain = 'InvalidDomain' };
