@@ -182,6 +182,11 @@ const _abi = {
           "name": "SameResolver",
           "type": 0,
           "typeArguments": null
+        },
+        {
+          "name": "AlreadyPrimary",
+          "type": 0,
+          "typeArguments": null
         }
       ],
       "typeParameters": null
@@ -426,6 +431,35 @@ const _abi = {
           "name": "payable",
           "arguments": []
         },
+        {
+          "name": "storage",
+          "arguments": [
+            "read",
+            "write"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "resolver",
+          "type": 1,
+          "typeArguments": null
+        },
+        {
+          "name": "name",
+          "type": 17,
+          "typeArguments": null
+        }
+      ],
+      "name": "set_primary_handle",
+      "output": {
+        "name": "",
+        "type": 0,
+        "typeArguments": null
+      },
+      "attributes": [
         {
           "name": "storage",
           "arguments": [
@@ -785,7 +819,7 @@ const _abi = {
       "logId": 15,
       "loggedType": {
         "name": "",
-        "type": 4,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -793,7 +827,7 @@ const _abi = {
       "logId": 16,
       "loggedType": {
         "name": "",
-        "type": 4,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -801,7 +835,7 @@ const _abi = {
       "logId": 17,
       "loggedType": {
         "name": "",
-        "type": 4,
+        "type": 7,
         "typeArguments": []
       }
     },
@@ -815,6 +849,38 @@ const _abi = {
     },
     {
       "logId": 19,
+      "loggedType": {
+        "name": "",
+        "type": 4,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": 20,
+      "loggedType": {
+        "name": "",
+        "type": 4,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": 21,
+      "loggedType": {
+        "name": "",
+        "type": 4,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": 22,
+      "loggedType": {
+        "name": "",
+        "type": 7,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": 23,
       "loggedType": {
         "name": "",
         "type": 7,

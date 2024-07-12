@@ -210,8 +210,7 @@ describe('Metadata contract', () => {
     ];
 
     try {
-      console.log(storage.id.toB256());
-      const { logs } = await metadata
+      await metadata
         .multiCall(
           metadatas.map(({ key, value }) =>
             metadata.functions.save(handleName, key, value),
@@ -219,8 +218,6 @@ describe('Metadata contract', () => {
         )
         .addContracts([storage])
         .call();
-
-      console.log('Logs', logs);
     } catch (error) {
       console.log('Error', { ...error });
     }

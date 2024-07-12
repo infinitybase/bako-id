@@ -86,6 +86,7 @@ describe('[METHODS] Registry Contract', () => {
         .txParams(txParams)
         .call();
     } catch (error) {
+      console.log({ ...error });
       expectRequireRevertError(error);
       expectContainLogError(error, 'StorageNotInitialized');
     }
@@ -114,12 +115,7 @@ describe('[METHODS] Registry Contract', () => {
     await tryExecute(storage.initializeStorage());
 
     try {
-      const { logs } = await registry.register(
-        domain,
-        wallet.address.toB256(),
-        1,
-      );
-      console.log(logs);
+      await registry.register(domain, wallet.address.toB256(), 1);
 
       const { transactionResult: txRegister } = await registry.register(
         domain,
@@ -142,13 +138,11 @@ describe('[METHODS] Registry Contract', () => {
     await tryExecute(resolver.initializeResolver());
 
     const domain = randomName();
-    const { transactionResult: txRegister, logs } = await registry.register(
+    const { transactionResult: txRegister } = await registry.register(
       domain,
       wallet.address.toB256(),
       1,
     );
-
-    console.log(logs);
 
     const { value } = await resolver.functions
       .resolver(domain)
@@ -256,7 +250,6 @@ describe('[METHODS] Registry Contract', () => {
       .txParams(txParams)
       .call();
 
-    console.log(value);
     expect(value).toEqual({
       grace_period: bn(value.grace_period),
       timestamp: bn(value.timestamp),
@@ -385,6 +378,86 @@ describe('[METHODS] Registry Contract', () => {
     } catch (error) {
       expectRequireRevertError(error);
       expectContainLogError(error, 'NotOwner');
+    }
+  });
+
+  it('should be able to set a domain as primary', async () => {
+    const { registry, storage, resolver } = contracts;
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
+
+    const domain = randomName();
+    const secondaryDomain = randomName();
+    const address = Address.fromRandom().toB256();
+
+    await registry.register(domain, address, 1);
+
+    await registry.register(secondaryDomain, address, 1);
+
+    const { transactionResult: txPrimary } = await registry.functions
+      .set_primary_handle(address, secondaryDomain)
+      .addContracts([storage])
+      .txParams(txParams)
+      .call();
+
+    expect(txPrimary.status).toBe(TransactionStatus.success);
+  });
+
+  it('should not be able to set a domain as primary if not owner', async () => {
+    const { registry, storage, resolver } = contracts;
+
+    const fakeWallet = createWallet(provider, WALLET_PRIVATE_KEYS.FAKE);
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
+
+    const domain = randomName();
+    const secondaryDomain = randomName();
+    const address = Address.fromRandom().toB256();
+
+    await registry.register(domain, address, 1);
+
+    await registry.register(secondaryDomain, address, 1);
+
+    try {
+      registry.account = fakeWallet;
+
+      await registry.functions
+        .set_primary_handle(address, secondaryDomain)
+        .addContracts([storage])
+        .txParams(txParams)
+        .call();
+    } catch (error) {
+      expectRequireRevertError(error);
+      expectContainLogError(error, 'NotOwner');
+    }
+  });
+
+  it('should not be able to set a domain as primary if domain not registered', async () => {
+    const { registry, storage, resolver } = contracts;
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
+
+    const domain = randomName();
+    const secondaryDomain = randomName();
+    const address = Address.fromRandom().toB256();
+
+    await registry.register(domain, address, 1);
+
+    try {
+      await registry.functions
+        .set_primary_handle(address, secondaryDomain)
+        .addContracts([storage])
+        .txParams(txParams)
+        .call();
+    } catch (error) {
+      expectRequireRevertError(error);
+      expectContainLogError(error, 'InvalidDomain');
     }
   });
 });

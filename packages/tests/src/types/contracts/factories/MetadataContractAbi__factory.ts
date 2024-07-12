@@ -29,12 +29,6 @@ const _abi = {
     },
     {
       "typeId": 2,
-      "type": "bool",
-      "components": null,
-      "typeParameters": null
-    },
-    {
-      "typeId": 3,
       "type": "enum MetadataContractError",
       "components": [
         {
@@ -61,55 +55,30 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 4,
-      "type": "enum Option",
-      "components": [
-        {
-          "name": "None",
-          "type": 0,
-          "typeArguments": null
-        },
-        {
-          "name": "Some",
-          "type": 5,
-          "typeArguments": null
-        }
-      ],
-      "typeParameters": [
-        5
-      ]
-    },
-    {
-      "typeId": 5,
-      "type": "generic T",
-      "components": null,
-      "typeParameters": null
-    },
-    {
-      "typeId": 6,
+      "typeId": 3,
       "type": "raw untyped ptr",
       "components": null,
       "typeParameters": null
     },
     {
-      "typeId": 7,
+      "typeId": 4,
       "type": "struct Bytes",
       "components": [
         {
           "name": "buf",
-          "type": 9,
+          "type": 6,
           "typeArguments": null
         },
         {
           "name": "len",
-          "type": 11,
+          "type": 8,
           "typeArguments": null
         }
       ],
       "typeParameters": null
     },
     {
-      "typeId": 8,
+      "typeId": 5,
       "type": "struct ContractId",
       "components": [
         {
@@ -121,36 +90,36 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 9,
+      "typeId": 6,
       "type": "struct RawBytes",
       "components": [
         {
           "name": "ptr",
-          "type": 6,
+          "type": 3,
           "typeArguments": null
         },
         {
           "name": "cap",
-          "type": 11,
+          "type": 8,
           "typeArguments": null
         }
       ],
       "typeParameters": null
     },
     {
-      "typeId": 10,
+      "typeId": 7,
       "type": "struct String",
       "components": [
         {
           "name": "bytes",
-          "type": 7,
+          "type": 4,
           "typeArguments": null
         }
       ],
       "typeParameters": null
     },
     {
-      "typeId": 11,
+      "typeId": 8,
       "type": "u64",
       "components": null,
       "typeParameters": null
@@ -161,7 +130,7 @@ const _abi = {
       "inputs": [
         {
           "name": "storage_id",
-          "type": 8,
+          "type": 5,
           "typeArguments": null
         }
       ],
@@ -185,39 +154,16 @@ const _abi = {
       "inputs": [
         {
           "name": "handle_name",
-          "type": 10,
+          "type": 7,
           "typeArguments": null
         },
         {
           "name": "key",
-          "type": 10,
+          "type": 7,
           "typeArguments": null
         }
       ],
       "name": "get",
-      "output": {
-        "name": "",
-        "type": 10,
-        "typeArguments": null
-      },
-      "attributes": [
-        {
-          "name": "storage",
-          "arguments": [
-            "read"
-          ]
-        }
-      ]
-    },
-    {
-      "inputs": [
-        {
-          "name": "handle_name",
-          "type": 10,
-          "typeArguments": null
-        }
-      ],
-      "name": "get_all",
       "output": {
         "name": "",
         "type": 7,
@@ -236,17 +182,40 @@ const _abi = {
       "inputs": [
         {
           "name": "handle_name",
-          "type": 10,
+          "type": 7,
+          "typeArguments": null
+        }
+      ],
+      "name": "get_all",
+      "output": {
+        "name": "",
+        "type": 4,
+        "typeArguments": null
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "handle_name",
+          "type": 7,
           "typeArguments": null
         },
         {
           "name": "key",
-          "type": 10,
+          "type": 7,
           "typeArguments": null
         },
         {
           "name": "value",
-          "type": 10,
+          "type": 7,
           "typeArguments": null
         }
       ],
@@ -272,7 +241,7 @@ const _abi = {
       "logId": 0,
       "loggedType": {
         "name": "",
-        "type": 3,
+        "type": 2,
         "typeArguments": []
       }
     },
@@ -280,77 +249,23 @@ const _abi = {
       "logId": 1,
       "loggedType": {
         "name": "",
-        "type": 1,
-        "typeArguments": null
+        "type": 2,
+        "typeArguments": []
       }
     },
     {
       "logId": 2,
       "loggedType": {
         "name": "",
-        "type": 1,
-        "typeArguments": null
+        "type": 2,
+        "typeArguments": []
       }
     },
     {
       "logId": 3,
       "loggedType": {
         "name": "",
-        "type": 3,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 4,
-      "loggedType": {
-        "name": "",
-        "type": 1,
-        "typeArguments": null
-      }
-    },
-    {
-      "logId": 5,
-      "loggedType": {
-        "name": "",
-        "type": 1,
-        "typeArguments": null
-      }
-    },
-    {
-      "logId": 6,
-      "loggedType": {
-        "name": "",
-        "type": 4,
-        "typeArguments": [
-          {
-            "name": "",
-            "type": 7,
-            "typeArguments": []
-          }
-        ]
-      }
-    },
-    {
-      "logId": 7,
-      "loggedType": {
-        "name": "",
         "type": 2,
-        "typeArguments": null
-      }
-    },
-    {
-      "logId": 8,
-      "loggedType": {
-        "name": "",
-        "type": 3,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 9,
-      "loggedType": {
-        "name": "",
-        "type": 3,
         "typeArguments": []
       }
     }

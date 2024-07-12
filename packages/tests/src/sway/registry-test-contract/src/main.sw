@@ -79,8 +79,6 @@ impl RegistryTestContract for Contract {
 
         let domain_price = domain_price(name, period);
 
-        log(domain_price);
-        log(msg_amount());
         require(msg_amount() == domain_price, RegistryTestContractError::InvalidAmount);
 
         let retrived_handle = BakoHandle::new(

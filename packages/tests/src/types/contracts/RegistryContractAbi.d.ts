@@ -32,8 +32,8 @@ export enum NameValidationErrorInput { InvalidLenght = 'InvalidLenght', InvalidC
 export enum NameValidationErrorOutput { InvalidLenght = 'InvalidLenght', InvalidChars = 'InvalidChars', IsEmpty = 'IsEmpty' };
 export type PermissionInput = Enum<{ Authorized: IdentityInput, Unauthorized: [], NotFound: [] }>;
 export type PermissionOutput = Enum<{ Authorized: IdentityOutput, Unauthorized: [], NotFound: [] }>;
-export enum RegistryContractErrorInput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable', IncorrectAssetId = 'IncorrectAssetId', InvalidDomain = 'InvalidDomain', InvalidAmount = 'InvalidAmount', InvalidPermission = 'InvalidPermission', NotOwner = 'NotOwner', SameResolver = 'SameResolver' };
-export enum RegistryContractErrorOutput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable', IncorrectAssetId = 'IncorrectAssetId', InvalidDomain = 'InvalidDomain', InvalidAmount = 'InvalidAmount', InvalidPermission = 'InvalidPermission', NotOwner = 'NotOwner', SameResolver = 'SameResolver' };
+export enum RegistryContractErrorInput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable', IncorrectAssetId = 'IncorrectAssetId', InvalidDomain = 'InvalidDomain', InvalidAmount = 'InvalidAmount', InvalidPermission = 'InvalidPermission', NotOwner = 'NotOwner', SameResolver = 'SameResolver', AlreadyPrimary = 'AlreadyPrimary' };
+export enum RegistryContractErrorOutput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable', IncorrectAssetId = 'IncorrectAssetId', InvalidDomain = 'InvalidDomain', InvalidAmount = 'InvalidAmount', InvalidPermission = 'InvalidPermission', NotOwner = 'NotOwner', SameResolver = 'SameResolver', AlreadyPrimary = 'AlreadyPrimary' };
 
 export type AddressInput = { value: string };
 export type AddressOutput = AddressInput;
@@ -53,6 +53,7 @@ interface RegistryContractAbiInterface extends Interface {
     constructor: FunctionFragment;
     edit_resolver: FunctionFragment;
     register: FunctionFragment;
+    set_primary_handle: FunctionFragment;
     decimals: FunctionFragment;
     name: FunctionFragment;
     symbol: FunctionFragment;
@@ -67,6 +68,7 @@ interface RegistryContractAbiInterface extends Interface {
   encodeFunctionData(functionFragment: 'constructor', values: [AddressInput, ContractIdInput]): Uint8Array;
   encodeFunctionData(functionFragment: 'edit_resolver', values: [StdString, string]): Uint8Array;
   encodeFunctionData(functionFragment: 'register', values: [StdString, string, BigNumberish]): Uint8Array;
+  encodeFunctionData(functionFragment: 'set_primary_handle', values: [string, StdString]): Uint8Array;
   encodeFunctionData(functionFragment: 'decimals', values: [AssetIdInput]): Uint8Array;
   encodeFunctionData(functionFragment: 'name', values: [AssetIdInput]): Uint8Array;
   encodeFunctionData(functionFragment: 'symbol', values: [AssetIdInput]): Uint8Array;
@@ -80,6 +82,7 @@ interface RegistryContractAbiInterface extends Interface {
   decodeFunctionData(functionFragment: 'constructor', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'edit_resolver', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'register', data: BytesLike): DecodedValue;
+  decodeFunctionData(functionFragment: 'set_primary_handle', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'decimals', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'name', data: BytesLike): DecodedValue;
   decodeFunctionData(functionFragment: 'symbol', data: BytesLike): DecodedValue;
@@ -97,6 +100,7 @@ export class RegistryContractAbi extends Contract {
     constructor: InvokeFunction<[owner: AddressInput, storage_id: ContractIdInput], void>;
     edit_resolver: InvokeFunction<[name: StdString, resolver: string], void>;
     register: InvokeFunction<[name: StdString, resolver: string, period: BigNumberish], AssetIdOutput>;
+    set_primary_handle: InvokeFunction<[resolver: string, name: StdString], void>;
     decimals: InvokeFunction<[asset: AssetIdInput], Option<number>>;
     name: InvokeFunction<[asset: AssetIdInput], StdString>;
     symbol: InvokeFunction<[asset: AssetIdInput], StdString>;
