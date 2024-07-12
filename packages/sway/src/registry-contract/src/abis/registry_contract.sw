@@ -30,6 +30,7 @@ pub enum RegistryContractError {
     InvalidPermission: (),
     NotOwner: (),
     SameResolver: (),
+    AlreadyPrimary: (),
 }
 
 abi RegistryContract {
@@ -41,6 +42,9 @@ abi RegistryContract {
 
     #[storage(read, write)]
     fn edit_resolver(name: String, resolver: b256);
+
+    #[storage(read, write)]
+    fn set_primary_handle(resolver: b256, name: String);
 }
 
 pub struct RegisterInput {
@@ -52,6 +56,11 @@ pub struct RegisterInput {
 pub struct EditResolverInput {
     name: String,
     resolver: b256,
+}
+
+pub struct SetPrimaryHandleInput {
+    resolver: b256,
+    name: String,
 }
 
 #[storage(read)]
@@ -127,6 +136,26 @@ pub fn _edit_resolver(input: EditResolverInput, bako_id: ContractId) {
     
     domain.resolver = input.resolver;
     storage_contract.change(domain_hash, domain.into());
+}
+
+#[storage(read, write)]
+pub fn _set_primary_handle(params: SetPrimaryHandleInput, bako_id: ContractId) {
+    let domain_hash = sha256(params.name);
+
+    let storage = abi(StorageContract, bako_id.into());
+    let domain = storage.get(domain_hash);
+    require(domain.is_some(), RegistryContractError::InvalidDomain);
+
+    let mut handle = BakoHandle::from(domain.unwrap());
+    require(
+        Identity::Address(Address::from(handle.owner)) == msg_sender().unwrap(),
+        RegistryContractError::NotOwner,
+    );
+
+    require(!handle.primary, RegistryContractError::AlreadyPrimary);
+
+    handle.primary = true;
+    storage.set_primary(params.resolver, params.name);
 }
 
 pub fn domain_price(domain: String, period: u16) -> u64 {

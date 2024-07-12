@@ -187,7 +187,7 @@ impl BakoHandle {
 
         // Check if the current timestamp is greater than the grace period, if so, the domain is expired
         return grace_period > current_timestamp;
-    } 
+    }
 }
 
 
