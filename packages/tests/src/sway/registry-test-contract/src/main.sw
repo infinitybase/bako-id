@@ -33,7 +33,7 @@ fn msgsender_address() -> Address {
 }
 
 fn domain_price(domain: String, period: u16) -> u64 {
-    let domain_len = domain.as_bytes().len;
+    let domain_len = domain.as_bytes().len();
     let mut amount = match domain_len {
         3 => 5_000,
         4 => 1_000,
@@ -92,8 +92,9 @@ impl RegistryTestContract for Contract {
             period
         );
 
+        let bytes_handle: Bytes = retrived_handle.into();
         storage.domains.insert(handle, StorageBytes {});
-        storage.domains.get(handle).write_slice(retrived_handle.into());
+        storage.domains.get(handle).write_slice(bytes_handle);
     }
     
     fn calculate_domain_price(domain: String, period: u16) -> u64 {
@@ -180,6 +181,7 @@ impl RegistryTestContract for Contract {
             period
         );
 
+        let bytes_handle: Bytes = retrived_handle.into();
         storage.domains.insert(handle, StorageBytes {});
-        storage.domains.get(handle).write_slice(retrived_handle.into());
+        storage.domains.get(handle).write_slice(bytes_handle);
     }
