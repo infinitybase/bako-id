@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.81.0
-  Forc version: 0.49.3
-  Fuel-Core version: 0.22.1
+  Fuels version: 0.90.0
+  Forc version: 0.60.0
+  Fuel-Core version: 0.30.0
 */
 
 import { Interface, Contract, ContractFactory } from "fuels";
@@ -14,6 +14,7 @@ import type { Provider, Account, AbstractAddress, BytesLike, DeployContractOptio
 import type { ResolverContractAbi, ResolverContractAbiInterface } from "../ResolverContractAbi";
 
 const _abi = {
+  "encoding": "1",
   "types": [
     {
       "typeId": 0,
@@ -97,7 +98,7 @@ const _abi = {
       "type": "struct ContractId",
       "components": [
         {
-          "name": "value",
+          "name": "bits",
           "type": 1,
           "typeArguments": null
         }
@@ -249,31 +250,7 @@ const _abi = {
   ],
   "loggedTypes": [
     {
-      "logId": 0,
-      "loggedType": {
-        "name": "",
-        "type": 3,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 1,
-      "loggedType": {
-        "name": "",
-        "type": 3,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 2,
-      "loggedType": {
-        "name": "",
-        "type": 3,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 3,
+      "logId": "16258305334599345639",
       "loggedType": {
         "name": "",
         "type": 3,
@@ -287,46 +264,44 @@ const _abi = {
 
 const _storageSlots: StorageSlot[] = [
   {
-    "key": "de9090cb50e71c2588c773487d1da7066d0c719849a7e58dc8b6397a25c567c0",
+    "key": "8ecd865d933483a43363a1a3babfd71cbc3ade9a24d8d98b7c62fdcf4f5fdbce",
     "value": "0000000000000000000000000000000000000000000000000000000000000000"
   },
   {
-    "key": "f383b0ce51358be57daa3b725fe44acdb2d880604e367199080b4379c41bb6ed",
+    "key": "8ecd865d933483a43363a1a3babfd71cbc3ade9a24d8d98b7c62fdcf4f5fdbcf",
     "value": "0000000000000000000000000000000000000000000000000000000000000000"
   },
   {
-    "key": "f383b0ce51358be57daa3b725fe44acdb2d880604e367199080b4379c41bb6ee",
+    "key": "b61e266e75c64ac989315805e532e6125db4ee10ad42b2038897cf0ff4ec740a",
     "value": "0000000000000000000000000000000000000000000000000000000000000000"
   }
 ];
 
-export class ResolverContractAbi__factory {
-  static readonly abi = _abi;
+export const ResolverContractAbi__factory = {
+  abi: _abi,
 
-  static readonly storageSlots = _storageSlots;
+  storageSlots: _storageSlots,
 
-  static createInterface(): ResolverContractAbiInterface {
+  createInterface(): ResolverContractAbiInterface {
     return new Interface(_abi) as unknown as ResolverContractAbiInterface
-  }
+  },
 
-  static connect(
+  connect(
     id: string | AbstractAddress,
     accountOrProvider: Account | Provider
   ): ResolverContractAbi {
     return new Contract(id, _abi, accountOrProvider) as unknown as ResolverContractAbi
-  }
+  },
 
-  static async deployContract(
+  async deployContract(
     bytecode: BytesLike,
     wallet: Account,
     options: DeployContractOptions = {}
   ): Promise<ResolverContractAbi> {
     const factory = new ContractFactory(bytecode, _abi, wallet);
 
-    const { storageSlots } = ResolverContractAbi__factory;
-
     const contract = await factory.deployContract({
-      storageSlots,
+      storageSlots: _storageSlots,
       ...options,
     });
 

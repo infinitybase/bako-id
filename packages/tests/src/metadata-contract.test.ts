@@ -33,7 +33,7 @@ describe('Metadata contract', () => {
   let contracts: Awaited<ReturnType<typeof setupContractsAndDeploy>>;
 
   beforeAll(async () => {
-    provider = await Provider.create('http://localhost:4000/graphql');
+    provider = await Provider.create('http://localhost:4000/v1/graphql');
     wallet = createWallet(provider);
     contracts = await setupContractsAndDeploy(wallet);
 
@@ -42,7 +42,7 @@ describe('Metadata contract', () => {
   });
 
   it('should error on call method without started metadata contract', async () => {
-    const { metadata } = contracts;
+    const { metadata, storage } = contracts;
 
     expect.assertions(2);
 
@@ -51,8 +51,9 @@ describe('Metadata contract', () => {
         .save(
           metadataConfig.user.handle(),
           metadataConfig.github.key,
-          metadataConfig.github.value,
+          metadataConfig.github.value
         )
+        .addContracts([storage])
         .txParams(txParams)
         .call();
     } catch (error) {

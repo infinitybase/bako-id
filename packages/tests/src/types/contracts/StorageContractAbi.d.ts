@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.81.0
-  Forc version: 0.49.3
-  Fuel-Core version: 0.22.1
+  Fuels version: 0.90.0
+  Forc version: 0.60.0
+  Fuel-Core version: 0.30.0
 */
 
 import type {
@@ -31,12 +31,10 @@ export type PermissionOutput = Enum<{ Authorized: IdentityOutput, Unauthorized: 
 export enum StorageContractErrorInput { AlreadyInitialized = 'AlreadyInitialized' };
 export enum StorageContractErrorOutput { AlreadyInitialized = 'AlreadyInitialized' };
 
-export type AddressInput = { value: string };
+export type AddressInput = { bits: string };
 export type AddressOutput = AddressInput;
-export type ContractIdInput = { value: string };
+export type ContractIdInput = { bits: string };
 export type ContractIdOutput = ContractIdInput;
-export type RawBytesInput = { ptr: BigNumberish, cap: BigNumberish };
-export type RawBytesOutput = { ptr: BN, cap: BN };
 
 interface StorageContractAbiInterface extends Interface {
   functions: {
@@ -52,30 +50,6 @@ interface StorageContractAbiInterface extends Interface {
     set_owner: FunctionFragment;
     set_primary: FunctionFragment;
   };
-
-  encodeFunctionData(functionFragment: 'change', values: [string, Bytes]): Uint8Array;
-  encodeFunctionData(functionFragment: 'constructor', values: [AddressInput, ContractIdInput]): Uint8Array;
-  encodeFunctionData(functionFragment: 'get', values: [string]): Uint8Array;
-  encodeFunctionData(functionFragment: 'get_all', values: [string]): Uint8Array;
-  encodeFunctionData(functionFragment: 'get_implementation', values: []): Uint8Array;
-  encodeFunctionData(functionFragment: 'get_owner', values: []): Uint8Array;
-  encodeFunctionData(functionFragment: 'get_primary', values: [string]): Uint8Array;
-  encodeFunctionData(functionFragment: 'set', values: [string, string, Bytes]): Uint8Array;
-  encodeFunctionData(functionFragment: 'set_implementation', values: [ContractIdInput]): Uint8Array;
-  encodeFunctionData(functionFragment: 'set_owner', values: [AddressInput]): Uint8Array;
-  encodeFunctionData(functionFragment: 'set_primary', values: [string, StdString]): Uint8Array;
-
-  decodeFunctionData(functionFragment: 'change', data: BytesLike): DecodedValue;
-  decodeFunctionData(functionFragment: 'constructor', data: BytesLike): DecodedValue;
-  decodeFunctionData(functionFragment: 'get', data: BytesLike): DecodedValue;
-  decodeFunctionData(functionFragment: 'get_all', data: BytesLike): DecodedValue;
-  decodeFunctionData(functionFragment: 'get_implementation', data: BytesLike): DecodedValue;
-  decodeFunctionData(functionFragment: 'get_owner', data: BytesLike): DecodedValue;
-  decodeFunctionData(functionFragment: 'get_primary', data: BytesLike): DecodedValue;
-  decodeFunctionData(functionFragment: 'set', data: BytesLike): DecodedValue;
-  decodeFunctionData(functionFragment: 'set_implementation', data: BytesLike): DecodedValue;
-  decodeFunctionData(functionFragment: 'set_owner', data: BytesLike): DecodedValue;
-  decodeFunctionData(functionFragment: 'set_primary', data: BytesLike): DecodedValue;
 }
 
 export class StorageContractAbi extends Contract {

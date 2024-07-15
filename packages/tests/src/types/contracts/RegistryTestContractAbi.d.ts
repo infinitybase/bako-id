@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.81.0
-  Forc version: 0.49.3
-  Fuel-Core version: 0.22.1
+  Fuels version: 0.90.0
+  Forc version: 0.60.0
+  Fuel-Core version: 0.30.0
 */
 
 import type {
@@ -27,12 +27,10 @@ import type { Enum } from "./common";
 export enum RegistryTestContractErrorInput { DomainUnavailable = 'DomainUnavailable', InvalidAmount = 'InvalidAmount', DomainExpired = 'DomainExpired' };
 export enum RegistryTestContractErrorOutput { DomainUnavailable = 'DomainUnavailable', InvalidAmount = 'InvalidAmount', DomainExpired = 'DomainExpired' };
 
-export type ContractIdInput = { value: string };
+export type ContractIdInput = { bits: string };
 export type ContractIdOutput = ContractIdInput;
 export type GracePeriodInput = { timestamp: BigNumberish, period: BigNumberish, grace_period: BigNumberish };
 export type GracePeriodOutput = { timestamp: BN, period: BN, grace_period: BN };
-export type RawBytesInput = { ptr: BigNumberish, cap: BigNumberish };
-export type RawBytesOutput = { ptr: BN, cap: BN };
 
 interface RegistryTestContractAbiInterface extends Interface {
   functions: {
@@ -41,16 +39,6 @@ interface RegistryTestContractAbiInterface extends Interface {
     get_grace_period: FunctionFragment;
     register: FunctionFragment;
   };
-
-  encodeFunctionData(functionFragment: 'calculate_domain_price', values: [StdString, BigNumberish]): Uint8Array;
-  encodeFunctionData(functionFragment: 'get_all', values: [string, ContractIdInput]): Uint8Array;
-  encodeFunctionData(functionFragment: 'get_grace_period', values: [StdString]): Uint8Array;
-  encodeFunctionData(functionFragment: 'register', values: [StdString, string, BigNumberish, BigNumberish]): Uint8Array;
-
-  decodeFunctionData(functionFragment: 'calculate_domain_price', data: BytesLike): DecodedValue;
-  decodeFunctionData(functionFragment: 'get_all', data: BytesLike): DecodedValue;
-  decodeFunctionData(functionFragment: 'get_grace_period', data: BytesLike): DecodedValue;
-  decodeFunctionData(functionFragment: 'register', data: BytesLike): DecodedValue;
 }
 
 export class RegistryTestContractAbi extends Contract {

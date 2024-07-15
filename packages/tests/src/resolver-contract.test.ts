@@ -16,7 +16,7 @@ describe('[METHODS] Resolver Contract', () => {
   let contracts: Awaited<ReturnType<typeof setupContractsAndDeploy>>;
 
   beforeAll(async () => {
-    provider = await Provider.create('http://localhost:4000/graphql');
+    provider = await Provider.create('http://localhost:4000/v1/graphql');
     wallet = createWallet(provider);
     contracts = await setupContractsAndDeploy(wallet);
   });
@@ -28,11 +28,7 @@ describe('[METHODS] Resolver Contract', () => {
     expect.assertions(2);
 
     try {
-      await resolver.functions
-        .resolver(domain)
-        .addContracts([storage])
-        .txParams(txParams)
-        .call();
+      await resolver.functions.resolver(domain).addContracts([storage]).call();
     } catch (error) {
       expectRequireRevertError(error);
       expectContainLogError(error, 'StorageNotInitialized');

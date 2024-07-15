@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.81.0
-  Forc version: 0.49.3
-  Fuel-Core version: 0.22.1
+  Fuels version: 0.90.0
+  Forc version: 0.60.0
+  Fuel-Core version: 0.30.0
 */
 
 import { Interface, Contract, ContractFactory } from "fuels";
@@ -14,6 +14,7 @@ import type { Provider, Account, AbstractAddress, BytesLike, DeployContractOptio
 import type { RegistryTestContractAbi, RegistryTestContractAbiInterface } from "../RegistryTestContractAbi";
 
 const _abi = {
+  "encoding": "1",
   "types": [
     {
       "typeId": 0,
@@ -77,7 +78,7 @@ const _abi = {
       "type": "struct ContractId",
       "components": [
         {
-          "name": "value",
+          "name": "bits",
           "type": 1,
           "typeArguments": null
         }
@@ -257,13 +258,17 @@ const _abi = {
             "read",
             "write"
           ]
+        },
+        {
+          "name": "payable",
+          "arguments": []
         }
       ]
     }
   ],
   "loggedTypes": [
     {
-      "logId": 0,
+      "logId": "121406953622164950",
       "loggedType": {
         "name": "",
         "type": 2,
@@ -271,27 +276,11 @@ const _abi = {
       }
     },
     {
-      "logId": 1,
+      "logId": "1515152261580153489",
       "loggedType": {
         "name": "",
         "type": 10,
         "typeArguments": null
-      }
-    },
-    {
-      "logId": 2,
-      "loggedType": {
-        "name": "",
-        "type": 10,
-        "typeArguments": null
-      }
-    },
-    {
-      "logId": 3,
-      "loggedType": {
-        "name": "",
-        "type": 2,
-        "typeArguments": []
       }
     }
   ],
@@ -301,33 +290,31 @@ const _abi = {
 
 const _storageSlots: StorageSlot[] = [];
 
-export class RegistryTestContractAbi__factory {
-  static readonly abi = _abi;
+export const RegistryTestContractAbi__factory = {
+  abi: _abi,
 
-  static readonly storageSlots = _storageSlots;
+  storageSlots: _storageSlots,
 
-  static createInterface(): RegistryTestContractAbiInterface {
+  createInterface(): RegistryTestContractAbiInterface {
     return new Interface(_abi) as unknown as RegistryTestContractAbiInterface
-  }
+  },
 
-  static connect(
+  connect(
     id: string | AbstractAddress,
     accountOrProvider: Account | Provider
   ): RegistryTestContractAbi {
     return new Contract(id, _abi, accountOrProvider) as unknown as RegistryTestContractAbi
-  }
+  },
 
-  static async deployContract(
+  async deployContract(
     bytecode: BytesLike,
     wallet: Account,
     options: DeployContractOptions = {}
   ): Promise<RegistryTestContractAbi> {
     const factory = new ContractFactory(bytecode, _abi, wallet);
 
-    const { storageSlots } = RegistryTestContractAbi__factory;
-
     const contract = await factory.deployContract({
-      storageSlots,
+      storageSlots: _storageSlots,
       ...options,
     });
 

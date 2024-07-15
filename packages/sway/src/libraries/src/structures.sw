@@ -183,7 +183,6 @@ impl BakoHandle {
         let handle_period: u16 = self.period;
 
         let grace_period = handle_timestamp + (handle_period.as_u64() * year_in_seconds) + grace_period_90days;
-
         // Check if the current timestamp is greater than the grace period, if so, the domain is expired
         return grace_period > current_timestamp;
     } 

@@ -49,10 +49,7 @@
       "build/**",
       "dist/**",
       "sway/**",
-      "**/types",
-      "pnpm-lock.yaml",
-      "sway/contracts/**",
-      "packages/tests/src/types/**"
+      "pnpm-lock.yaml"
     ]
   }
 }
