@@ -9,8 +9,8 @@ use std::{
 
 pub struct NewResolverEvent {
     /// b256 of name string   
-    domain_hash: b256,
+    pub domain_hash: b256,
 
     /// the new resolver address
-    resolver: b256,
+    pub resolver: b256,
 }

@@ -23,13 +23,22 @@ use events::{
     NewResolverEvent,
 };
 
-use asset::{ 
-    base::{
-        _total_assets,
-        _total_supply,
+use standards::{ src7::*, src20::* };
+use sway_libs::{
+    asset::{
+        metadata::*,
+        supply::{
+            _burn,
+            _mint,
+        },
+        base::{
+            _total_assets,
+            _total_supply,
+            SetAssetAttributes,
+        },
     },
-    metadata::*,
 };
+
 use std::{
     hash::*,
     bytes::Bytes,
@@ -38,7 +47,6 @@ use std::{
     storage::storage_map::*,
     storage::storage_bytes::*,
 };
-use src7::{ Metadata };
 
 storage {
     // Flow control
@@ -114,18 +122,18 @@ impl SRC20 for Contract {
     }
 
     #[storage(read)]
-    fn name(asset: AssetId) -> String {
+    fn name(asset: AssetId) -> Option<String> {
         _name()
     }
 
     #[storage(read)]
-    fn symbol(asset: AssetId) -> String {
+    fn symbol(asset: AssetId) -> Option<String> {
         _symbol()
     }
 
     #[storage(read)]
     fn decimals(asset: AssetId) -> Option<u8> {
-        Some(_decimals())
+        _decimals()
     }
 }
 
@@ -134,7 +142,9 @@ impl SRC7 for Contract {
     fn metadata(asset: AssetId, key: String) -> Option<Metadata> {
         storage.metadata.get(asset, key)
     }
+}
 
+impl NFTContract for Contract {
     #[storage(read)]
     fn image_url(name: String) -> String {
         _image_url(storage.metadata, name)

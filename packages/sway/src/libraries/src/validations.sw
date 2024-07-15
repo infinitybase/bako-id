@@ -101,10 +101,10 @@ fn test_name_as_bytes() {
     let name_with_at_bytes = name_as_bytes(name_with_at);
 
     assert(name_bytes == name.as_bytes());  
-    assert(name_bytes.len == name.as_bytes().len);
+    assert(name_bytes.len() == name.as_bytes().len());
     
     assert(name_with_at_bytes == name.as_bytes());
-    assert(name_with_at_bytes.len == name.as_bytes().len);
+    assert(name_with_at_bytes.len() == name.as_bytes().len());
 }
 
 #[test]
