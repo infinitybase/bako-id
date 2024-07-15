@@ -1,13 +1,15 @@
+export { config } from './config';
 export {
-  owner,
-  getAll,
-  resolver,
-  register,
-  tokenInfo,
-  resolverName,
-  simulateHandleCost,
   Metadata,
   UserMetadataContract,
+  editResolver,
+  getAll,
+  getGracePeriod,
+  owner,
+  register,
+  resolver,
+  resolverName,
+  simulateHandleCost,
+  tokenInfo,
 } from './methods';
 export { domainPrices, isValidDomain } from './utils';
-export { config } from './config';

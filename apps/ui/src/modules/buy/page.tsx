@@ -18,6 +18,8 @@ import { useBuy } from './hooks/useBuy';
 
 export const Buy = () => {
   const { wallet } = useFuelConnect();
+  const buy = useBuy();
+
   const {
     domains,
     handlePeriodChange,
@@ -29,11 +31,12 @@ export const Buy = () => {
     walletBalance,
     registerDomain,
     domain,
-  } = useBuy();
+  } = buy;
 
   const { isMobile } = useScreenSize();
 
   if (registerDomain.isSuccess || registerDomain.data) {
+    console.log(registerDomain.data);
     return (
       <Purchased
         domain={domain}
@@ -111,7 +114,7 @@ export const Buy = () => {
                 Select the token that you want to use for this purchase.
               </Text>
             </Box>
-            <BuyComponents.Checkout />
+            <BuyComponents.Checkout {...buy} />
           </VStack>
         </CardBody>
         <BuyError

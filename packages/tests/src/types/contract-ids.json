@@ -1,7 +1,8 @@
 {
-  "registryContract": "0xbe9cd8cde540497d5688f6d7e9e6c98bfc55d968793a59b0f286e8c865c3709a",
-  "metadataContract": "0x3686751b1c0a816094d33463cfd4cd4eca9754a74b54c79bac5ffa7fb7a505a8",
-  "storageContract": "0xf004162eb143a1accbbbc94195f9360e698b33c15e939b82d0924f44aaba2371",
-  "resolverContract": "0x9acf07f17717cf8bfa932e5ac75232ca6433620027058ebb058d5cbe6e4491c4",
-  "testContract": "0x9c13714a31ef87ec7ee946ed7f42410605b75d1834f7c19eb6ff05de7c253f98"
+  "registryContract": "0x2787de0b4c3406f80e70392689a5f19a4b7bb0f5a0a5ab2f2b846b35dbde2bd8",
+  "metadataContract": "0xe5a265e3c6a2d60b885f956197b88b58a832cb86d8da97258ff94cec505db2b3",
+  "storageContract": "0xbe0d4f1e5e59ede5581f5631ed747f5cf56385687d1d3479dec4c972137ae732",
+  "resolverContract": "0xa6c56ae72633ce41b7d2be56d4448a72cf40cfc272186002f0520724512e8e6c",
+  "testContract": "0x26dd5b7fcc06358759a47d984ffdf870e1ecb1770336cbb175523f58eee0ce46",
+  "registryTestContract": "0xadcd3f1652216b16929905652c9d06511a38e9f352cdc6a7036d92e27dd4ab63"
 }

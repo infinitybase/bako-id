@@ -22,7 +22,9 @@ import {
 import { TransactionsDetailsButton } from '../../components/buttons/transactionsDetailsButton';
 import { ViewOnExplorerButton } from '../../components/buttons/viewOnExploreButton';
 import { TransactionDomainDetailsModal } from '../../components/modal/transactionDetails';
+import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
 import { useScreenSize } from '../../hooks/useScreenSize';
+import { calculatePeriodYears } from '../../utils/calculator';
 
 interface IPurchased {
   domain: string;
@@ -35,13 +37,16 @@ export const Purchased = ({
   transactionId,
   transaction,
 }: IPurchased) => {
+  const { data } = useGetGracePeriod(domain.replace('@', ''));
   const modal = useDisclosure();
   const { isMobile } = useScreenSize();
   const navigate = useNavigate();
 
+  const year = calculatePeriodYears(data?.timestamp, data?.period);
+
   const navigateToMyHandle = () => {
     navigate({
-      to: `/profile/${domain}`,
+      to: `/profile/${domain.replace('@', '')}`,
     });
   };
 
@@ -144,6 +149,7 @@ export const Purchased = ({
         isOpen={modal.isOpen}
         onClose={modal.onClose}
         domain={domain}
+        period={year}
         cost={transaction?.fee?.format()}
       />
     </Box>

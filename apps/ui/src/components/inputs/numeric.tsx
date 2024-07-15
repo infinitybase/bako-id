@@ -24,7 +24,7 @@ export const NumericInput = ({ index, onChange }: NumericInputProps) => {
     <Box
       display="flex"
       w="55%"
-      h={12}
+      h={10}
       backgroundColor="background.900"
       justifyContent="space-around"
       borderRadius="lg"
@@ -36,6 +36,7 @@ export const NumericInput = ({ index, onChange }: NumericInputProps) => {
         color="section.200"
         backgroundColor="transparent"
         fontSize={24}
+        h={9}
         isDisabled={period <= 1}
         onClick={decrement}
         _active={{ backgroundColor: 'inherit' }}
@@ -52,6 +53,7 @@ export const NumericInput = ({ index, onChange }: NumericInputProps) => {
         color="section.200"
         value={`${period} years`}
         type="text"
+        h={19}
         fontSize="sm"
         textAlign="center"
         border="none"
@@ -61,6 +63,7 @@ export const NumericInput = ({ index, onChange }: NumericInputProps) => {
         color="section.200"
         backgroundColor="transparent"
         fontSize={24}
+        h={9}
         onClick={increment}
         _active={{ bgColor: 'inherit' }}
         _focus={{ bgColor: 'inherit' }}

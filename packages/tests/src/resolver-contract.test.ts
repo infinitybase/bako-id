@@ -80,7 +80,7 @@ describe('[METHODS] Resolver Contract', () => {
     await tryExecute(storage.initializeStorage());
 
     const b256Address = wallet.address.toB256();
-    await registry.register(domain, b256Address);
+    await registry.register(domain, b256Address, 1);
 
     const { value: resolverAddress } = await resolver.functions
       .resolver(domain)

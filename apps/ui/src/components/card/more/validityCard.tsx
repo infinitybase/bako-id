@@ -9,13 +9,21 @@ import {
   Icon,
   Text,
 } from '@chakra-ui/react';
+import { useParams } from '@tanstack/react-router';
+import { format } from 'date-fns';
 import { Card } from '..';
 import { DoubleArrowRightIcon, TextValue } from '../..';
+import { useGetGracePeriod } from '../../../hooks/useGetGracePeriod';
+import { formatTimeWithTimeZone } from '../../../utils/formatter';
 import { ExploreIcon } from '../../icons/explore';
 import { useSidebar } from '../../sidebar/hooks/useSidebar';
 
 export const ValidityCard = () => {
+  const { domain } = useParams({ strict: false });
   const { isMyDomain } = useSidebar();
+  const { data } = useGetGracePeriod(domain.replace('@', ''));
+
+  if (!data) return null;
 
   const ValidityBody = () => {
     return (
@@ -25,11 +33,11 @@ export const ValidityCard = () => {
             Name expires
           </FormHelperText>
           <TextValue
-            leftAction={'march 31, 2024'}
+            leftAction={format(data.period, 'MMMM dd, yyyy')}
             leftColor="grey.100"
             color="section.500"
             justifyContent="start"
-            content="18:48:23 GMT +1"
+            content={formatTimeWithTimeZone(data.period)}
           />
         </FormControl>
         <FormControl my={4}>
@@ -54,10 +62,10 @@ export const ValidityCard = () => {
           </FormHelperText>
           <TextValue
             leftColor="grey.100"
-            leftAction={'april 30, 2024'}
+            leftAction={format(data.gracePeriod, 'MMMM dd, yyyy')}
             color="section.500"
             justifyContent="start"
-            content="23:59:59 GMT +1"
+            content={formatTimeWithTimeZone(data.gracePeriod)}
           />
         </FormControl>
         <FormControl>
@@ -66,10 +74,10 @@ export const ValidityCard = () => {
           </FormHelperText>
           <TextValue
             leftColor="grey.100"
-            leftAction={'march 31, 2024'}
+            leftAction={format(data.timestamp, 'MMMM dd, yyyy')}
             color="section.500"
             justifyContent="start"
-            content="8:48:23 GMT +1"
+            content={formatTimeWithTimeZone(data.timestamp)}
             rightAction={<Icon as={ExploreIcon} />}
           />
         </FormControl>

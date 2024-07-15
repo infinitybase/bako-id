@@ -20,6 +20,12 @@ export type Handle = {
   isPrimary: boolean;
 };
 
+export type EditResolverParams = {
+  domain: string;
+  resolver: string;
+  account: fuels.Account;
+};
+
 export type Option<T> = T | undefined;
 
 export type ResolverReturn = Option<string>;
@@ -56,6 +62,19 @@ export interface RegisterDomainPayload {
   domain: string;
   resolver: string;
   account: fuels.Account;
+  period: number;
+}
+
+export interface ProviderParams {
+  account?: fuels.Account;
+  provider?: fuels.Provider;
+  providerURL?: string;
+}
+
+export interface GracePeriodResponse {
+  timestamp: Date;
+  period: Date;
+  gracePeriod: Date;
 }
 
 /**

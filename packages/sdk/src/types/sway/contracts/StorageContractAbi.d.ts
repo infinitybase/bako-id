@@ -22,7 +22,7 @@ import type {
   StdString,
 } from 'fuels';
 
-import type { Option, Enum, Vec } from './common';
+import type { Enum, Option, Vec } from './common';
 
 export type IdentityInput = Enum<{
   Address: AddressInput;
@@ -58,6 +58,7 @@ export type RawBytesOutput = { ptr: BN; cap: BN };
 
 export interface StorageContractAbiInterface extends Interface {
   functions: {
+    change: FunctionFragment;
     constructor: FunctionFragment;
     get: FunctionFragment;
     get_all: FunctionFragment;
@@ -70,6 +71,10 @@ export interface StorageContractAbiInterface extends Interface {
     set_primary: FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: 'change',
+    values: [string, Bytes],
+  ): Uint8Array;
   encodeFunctionData(
     functionFragment: 'constructor',
     values: [AddressInput, ContractIdInput],
@@ -102,6 +107,7 @@ export interface StorageContractAbiInterface extends Interface {
     values: [string, StdString],
   ): Uint8Array;
 
+  decodeFunctionData(functionFragment: 'change', data: BytesLike): DecodedValue;
   decodeFunctionData(
     functionFragment: 'constructor',
     data: BytesLike,
@@ -141,6 +147,7 @@ export interface StorageContractAbiInterface extends Interface {
 export class StorageContractAbi extends Contract {
   interface: StorageContractAbiInterface;
   functions: {
+    change: InvokeFunction<[key: string, bytes_domain: Bytes], void>;
     constructor: InvokeFunction<
       [owner: AddressInput, registry_id: ContractIdInput],
       void

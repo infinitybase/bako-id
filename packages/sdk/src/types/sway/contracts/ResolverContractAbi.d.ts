@@ -12,7 +12,6 @@
 import type {
   BigNumberish,
   BN,
-  Bytes,
   BytesLike,
   Contract,
   DecodedValue,
@@ -22,7 +21,7 @@ import type {
   StdString,
 } from 'fuels';
 
-import type { Option, Enum } from './common';
+import type { Option } from './common';
 
 export enum ResolverContractErrorInput {
   AlreadyInitialized = 'AlreadyInitialized',

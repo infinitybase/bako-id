@@ -5,11 +5,13 @@ use std::{
     bytes::Bytes,
     string::String,
     context::msg_amount,
+    block::timestamp,
     contract_id::ContractId,
     constants::BASE_ASSET_ID,
     bytes_conversions::u16::*,
     call_frames::{ msg_asset_id },
 };
+
 use libraries::{
     abis::{StorageContract},
     structures::{BakoHandle},
@@ -23,7 +25,11 @@ pub enum RegistryContractError {
     AlreadyInitialized: (),
     DomainNotAvailable: (),
     IncorrectAssetId: (),
+    InvalidDomain: (),
     InvalidAmount: (),
+    InvalidPermission: (),
+    NotOwner: (),
+    SameResolver: (),
 }
 
 abi RegistryContract {
@@ -31,31 +37,53 @@ abi RegistryContract {
     fn constructor(owner: Address, storage_id: ContractId);
 
     #[storage(read, write), payable]
-    fn register(name: String, resolver: b256) -> AssetId;
+    fn register(name: String, resolver: b256, period: u16) -> AssetId;
 
-    #[storage(read)]
-    fn get_all(owner: b256) -> Bytes;
+    #[storage(read, write)]
+    fn edit_resolver(name: String, resolver: b256);
+}
+
+pub struct RegisterInput {
+    name: String,
+    resolver: b256,
+    period: u16,
+}
+
+pub struct EditResolverInput {
+    name: String,
+    resolver: b256,
 }
 
 #[storage(read)]
-pub fn _register(name: String, resolver: b256, bako_id: ContractId) -> String {
+pub fn _register(input: RegisterInput, bako_id: ContractId) -> String {
     require(
         msg_asset_id() == BASE_ASSET_ID,
         RegistryContractError::IncorrectAssetId,
     );
 
-    let name = assert_name_validity(name);
+    let name = assert_name_validity(input.name);
     let domain_hash = sha256(name);
+    let current_timestamp = timestamp();
+    let resolver = input.resolver;
 
     // Check domain is available
     let storage = abi(StorageContract, bako_id.into());
+
+
+    let domain = storage.get(domain_hash);
+    if (domain.is_some()) {
+        let handle = BakoHandle::from(domain.unwrap());
+        require(!handle.is_expired(), RegistryContractError::DomainNotAvailable); 
+    }
+
 
     let domain_available = storage.get(domain_hash).is_none();
     require(domain_available, RegistryContractError::DomainNotAvailable);
 
     // TODO: change to receive the period, the default now is 1 year
-    let domain_price = domain_price(name, 1);
+    let domain_price = domain_price(name, input.period);   
     require(msg_amount() == domain_price, RegistryContractError::InvalidAmount);
+
 
     let owner = msg_sender().unwrap().as_address().unwrap().value;
     let is_primary = storage.get_primary(resolver).is_none();
@@ -64,6 +92,9 @@ pub fn _register(name: String, resolver: b256, bako_id: ContractId) -> String {
         owner, 
         resolver,
         is_primary,
+        current_timestamp,
+        input.period,
+
     );
     storage.set(domain_hash, owner, domain.into());
     
@@ -74,29 +105,31 @@ pub fn _register(name: String, resolver: b256, bako_id: ContractId) -> String {
     return name;
 }
 
-#[storage(read)]
-pub fn _get_all(owner: b256, bako_id: ContractId) -> Bytes {
-    let storage = abi(StorageContract, bako_id.into());
+#[storage(read, write)]
+pub fn _edit_resolver(input: EditResolverInput, bako_id: ContractId) {
+    let domain_hash = sha256(input.name);
+   
+    let storage_contract = abi(StorageContract, bako_id.into());
+    let handle_bytes = storage_contract.get(domain_hash);
 
-    let vec = storage.get_all(owner);
-    let mut vec_bytes = Bytes::new();
+    require(handle_bytes.is_some(), RegistryContractError::InvalidDomain);
+    let mut domain = BakoHandle::from(handle_bytes.unwrap());
 
-    let mut i = 0;
-    while i < vec.len() {
-        let handle_bytes = vec.get(i).unwrap();
-        let handle = BakoHandle::from(handle_bytes);
-        vec_bytes.append(handle.name.as_bytes().len().try_as_u16().unwrap().to_be_bytes());
-        vec_bytes.append(handle.name.as_bytes());
-        vec_bytes.push(0u8);
-        vec_bytes.push(1u8);
-        vec_bytes.push(match handle.primary { true => 1u8, false => 0u8, });
-        i += 1;
-    }
+    require(
+        Identity::Address(Address::from(domain.owner)) == msg_sender().unwrap(),
+        RegistryContractError::NotOwner,
+    );
 
-    return vec_bytes;
+    require(
+        domain.resolver != input.resolver,
+        RegistryContractError::SameResolver,
+    );
+    
+    domain.resolver = input.resolver;
+    storage_contract.change(domain_hash, domain.into());
 }
 
-pub fn domain_price(domain: String, period: u64) -> u64 {
+pub fn domain_price(domain: String, period: u16) -> u64 {
     let domain_len = domain.as_bytes().len;
     let mut amount = match domain_len {
         3 => 5_000,
@@ -106,5 +139,5 @@ pub fn domain_price(domain: String, period: u64) -> u64 {
 
     amount = amount * 1000;
 
-    return amount * period;
+    return amount * period.as_u64();
 }

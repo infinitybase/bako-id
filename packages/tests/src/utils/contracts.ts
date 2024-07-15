@@ -1,18 +1,20 @@
 import { BaseAssetId, type WalletUnlocked } from 'fuels';
 import {
-  type MetadataContractAbi,
   MetadataContractAbi__factory,
-  type RegistryContractAbi,
   RegistryContractAbi__factory,
-  type ResolverContractAbi,
+  RegistryTestContractAbi__factory,
   ResolverContractAbi__factory,
-  type StorageContractAbi,
   StorageContractAbi__factory,
   TestContractAbi__factory,
+  type MetadataContractAbi,
+  type RegistryContractAbi,
+  type ResolverContractAbi,
+  type StorageContractAbi,
 } from '../types';
 import {
   metadataContract,
   registryContract,
+  registryTestContract,
   resolverContract,
   storageContract,
   testContract,
@@ -67,11 +69,17 @@ const initializeResolver =
 
 const register =
   (contractAbi: RegistryContractAbi, storageAbi: StorageContractAbi) =>
-  async (domain: string, account: string, calculateAmount = true) => {
-    const amount = domainPrices(domain);
+  async (
+    domain: string,
+    account: string,
+    period: number,
+    calculateAmount = true,
+  ) => {
+    const amount = domainPrices(domain, period);
     const callBuilder = contractAbi.functions.register(
       domain,
-      account ?? contractAbi.account.address.toB256()
+      account ?? contractAbi.account.address.toB256(),
+      period,
     );
 
     if (calculateAmount) {
@@ -86,19 +94,19 @@ const register =
 export async function setupContractsAndDeploy(wallet: WalletUnlocked) {
   const storage = await StorageContractAbi__factory.deployContract(
     storageHex,
-    wallet
+    wallet,
   );
   const registry = await RegistryContractAbi__factory.deployContract(
     registryHex,
-    wallet
+    wallet,
   );
   const metadata = await MetadataContractAbi__factory.deployContract(
     metadataHex,
-    wallet
+    wallet,
   );
   const resolver = await ResolverContractAbi__factory.deployContract(
     resolverHex,
-    wallet
+    wallet,
   );
 
   const connect = (wallet: WalletUnlocked) =>
@@ -109,7 +117,7 @@ export async function setupContractsAndDeploy(wallet: WalletUnlocked) {
       initializeStorage: initializeStorage(
         wallet.address.toB256(),
         registry.id.toB256(),
-        storage
+        storage,
       ),
       connect,
     }),
@@ -117,7 +125,7 @@ export async function setupContractsAndDeploy(wallet: WalletUnlocked) {
       initializeRegistry: initializeRegistry(
         wallet.address.toB256(),
         storage.id.toB256(),
-        registry
+        registry,
       ),
       register: register(registry, storage),
     }),
@@ -134,24 +142,28 @@ export async function setupContracts(wallet: WalletUnlocked) {
   const storage = StorageContractAbi__factory.connect(storageContract, wallet);
   const registry = RegistryContractAbi__factory.connect(
     registryContract,
-    wallet
+    wallet,
   );
   const metadata = MetadataContractAbi__factory.connect(
     metadataContract,
-    wallet
+    wallet,
   );
   const resolver = ResolverContractAbi__factory.connect(
     resolverContract,
-    wallet
+    wallet,
   );
   const testCaller = TestContractAbi__factory.connect(testContract, wallet);
+  const registryTestCaller = RegistryTestContractAbi__factory.connect(
+    registryTestContract,
+    wallet,
+  );
 
   return {
     storage: Object.assign(storage, {
       initializeStorage: initializeStorage(
         wallet.address.toB256(),
         registry.id.toB256(),
-        storage
+        storage,
       ),
       connect: StorageContractAbi__factory.connect,
     }),
@@ -159,7 +171,7 @@ export async function setupContracts(wallet: WalletUnlocked) {
       initializeRegistry: initializeRegistry(
         wallet.address.toB256(),
         storage.id.toB256(),
-        registry
+        registry,
       ),
       register: register(registry, storage),
     }),
@@ -168,7 +180,8 @@ export async function setupContracts(wallet: WalletUnlocked) {
     }),
     metadata,
     testCaller,
+    registryTestCaller,
   };
 }
 
-export { testContract, storageContract, registryContract, metadataContract };
+export { metadataContract, registryContract, storageContract, testContract };

@@ -1,3 +1,5 @@
+import { differenceInYears } from 'date-fns';
+
 // 5 digitos - 0.002 -> (1 ano = 0.002 / 2 anos = 0.004)
 // 4 digitos - 0.01  -> (1 ano = 0.01 / 2 anos = 0.02)
 // 3 digitos - 0.05  -> (1 ano = 0.05 / 2 anos = 0.1)
@@ -13,4 +15,12 @@ const calculateDomainPrice = (domain: string, period: number) => {
   return period * multiplier;
 };
 
-export { calculateDomainPrice };
+const calculatePeriodYears = (timestamp?: Date, period?: Date) => {
+  if (!timestamp || !period) return 1;
+
+  const difference = differenceInYears(period, timestamp);
+
+  return difference + 1;
+};
+
+export { calculateDomainPrice, calculatePeriodYears };

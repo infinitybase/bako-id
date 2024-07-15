@@ -22,8 +22,6 @@ import type {
   StdString,
 } from 'fuels';
 
-import type { Enum } from './common';
-
 export enum MetadataContractErrorInput {
   StorageNotInitialized = 'StorageNotInitialized',
   AlreadyInitialized = 'AlreadyInitialized',
