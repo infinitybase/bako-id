@@ -1,6 +1,7 @@
 contract;
 
 mod abis;
+mod events;
 
 use abis::{
     nft_contract::*,
@@ -8,7 +9,7 @@ use abis::{
     info_contract::*,
 };
 
-use libraries::{
+use libraries::{ 
     permissions::{
         Permission,
         OWNER,
@@ -17,6 +18,11 @@ use libraries::{
         get_permission,
     },
 };
+
+use events::{
+    NewResolverEvent,
+};
+
 use asset::{ 
     base::{
         _total_assets,
@@ -80,6 +86,19 @@ impl RegistryContract for Contract {
             storage.metadata,
             name,
         );
+    }
+
+    #[storage(read, write)]
+    fn edit_resolver(name: String, resolver: b256) {
+        _edit_resolver(
+            EditResolverInput { name, resolver },
+            get_storage_id()
+        );
+
+        log(NewResolverEvent {
+            domain_hash: sha256(name),
+            resolver,
+        });
     }
 }
 

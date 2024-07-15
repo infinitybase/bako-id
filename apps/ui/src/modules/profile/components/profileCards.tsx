@@ -1,4 +1,5 @@
 import { Flex, Stack } from '@chakra-ui/react';
+import { Suspense } from 'react';
 import { AccountsCard } from '../../../components/card/accountsCard';
 import { AddressesCard } from '../../../components/card/addressesCard';
 import { OwnershipCard } from '../../../components/card/ownershipCard';
@@ -22,54 +23,58 @@ export const ProfileCards = ({
   owner,
 }: ProfileCardsProps) => {
   const LoadingData = () => (
-    <Stack
-      display="flex"
-      h="fit-content"
-      spacing={6}
-      direction={['column', 'column', 'column', 'row']}
-      w="full"
-    >
-      <Flex w="full" h="full" flexDirection="column" gap={[4, 4, 4, 6]}>
-        <ProfileCardSkeleton />
+    <Suspense>
+      <Stack
+        display="flex"
+        h="fit-content"
+        spacing={6}
+        direction={['column', 'column', 'column', 'row']}
+        w="full"
+      >
+        <Flex w="full" h="full" flexDirection="column" gap={[4, 4, 4, 6]}>
+          <ProfileCardSkeleton />
 
-        <Stack
-          w="full"
-          h="full"
-          direction={['column', 'column', 'column', 'row']}
-          gap={[4, 4, 4, 6]}
-        >
-          <OwnershipCardSkeleton />
-          <AddressCardSkeleton />
-        </Stack>
-      </Flex>
-      <AccountsCardSkeleton />
-    </Stack>
+          <Stack
+            w="full"
+            h="full"
+            direction={['column', 'column', 'column', 'row']}
+            gap={[4, 4, 4, 6]}
+          >
+            <OwnershipCardSkeleton />
+            <AddressCardSkeleton />
+          </Stack>
+        </Flex>
+        <AccountsCardSkeleton />
+      </Stack>
+    </Suspense>
   );
 
   const LoadedData = () => (
-    <Stack
-      display="flex"
-      h="fit-content"
-      spacing={6}
-      direction={['column', 'column', 'column', 'row']}
-      w="full"
-    >
-      <Flex w="full" h="full" flexDirection="column" gap={[4, 4, 4, 6]}>
-        <ProfileCard domainName={domainParam} domain={domain ?? ''} />
+    <Suspense>
+      <Stack
+        display="flex"
+        h="fit-content"
+        spacing={6}
+        direction={['column', 'column', 'column', 'row']}
+        w="full"
+      >
+        <Flex w="full" h="full" flexDirection="column" gap={[4, 4, 4, 6]}>
+          <ProfileCard domainName={domainParam} domain={domain ?? ''} />
 
-        <Stack
-          w="full"
-          h="full"
-          direction={['column', 'column', 'column', 'row']}
-          gap={[4, 4, 4, 6]}
-        >
-          <OwnershipCard owner={owner ?? ''} />
+          <Stack
+            w="full"
+            h="full"
+            direction={['column', 'column', 'column', 'row']}
+            gap={[4, 4, 4, 6]}
+          >
+            <OwnershipCard owner={owner ?? ''} />
 
-          <AddressesCard domain={domain ?? ''} />
-        </Stack>
-      </Flex>
-      <AccountsCard />
-    </Stack>
+            <AddressesCard domain={domain ?? ''} />
+          </Stack>
+        </Flex>
+        <AccountsCard />
+      </Stack>
+    </Suspense>
   );
 
   // No componente principal

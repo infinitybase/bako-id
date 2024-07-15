@@ -1,7 +1,15 @@
 import { Provider, Wallet, type WalletUnlocked } from 'fuels';
 import { register, resolver } from '../index';
 import { createFakeWallet } from '../test';
-import { InvalidDomainError, NotFoundBalanceError, randomName } from '../utils';
+import {
+  InvalidDomainError,
+  InvalidHandleError,
+  NotFoundBalanceError,
+  NotOwnerError,
+  SameResolverError,
+  randomName,
+} from '../utils';
+import { editResolver, simulateHandleCost } from './register';
 
 const { PROVIDER_URL, TEST_WALLET } = process.env;
 
@@ -86,5 +94,111 @@ describe('Test Registry', () => {
     });
 
     expect(result.transactionResult.status).toBe('success');
+  });
+
+  it('should be able to edit a domain resolver', async () => {
+    const domain = randomName();
+
+    const newAddress = fakeWallet.address.toB256();
+
+    await register({
+      account: wallet,
+      resolver: wallet.address.toB256(),
+      domain,
+      period: 1,
+    });
+
+    const newResolver = await editResolver({
+      account: wallet,
+      resolver: newAddress,
+      domain,
+    });
+
+    const resolverAddress = await resolver(domain, {
+      provider,
+    });
+
+    expect(resolverAddress).toBe(newAddress);
+    expect(newResolver?.transactionResult.status).toBe('success');
+  });
+
+  it('should not be able to edit a domain resolver of a domain not registered', async () => {
+    const domain = randomName();
+
+    const newAddress = fakeWallet.address.toB256();
+
+    const edit = editResolver({
+      account: wallet,
+      resolver: newAddress,
+      domain,
+    });
+
+    await expect(edit).rejects.toBeInstanceOf(InvalidHandleError);
+  });
+
+  it('should not be able to edit a domain that is not the owner', async () => {
+    const domain = randomName();
+
+    const newAddress = fakeWallet.address.toB256();
+
+    await register({
+      account: wallet,
+      resolver: wallet.address.toB256(),
+      domain,
+      period: 1,
+    });
+
+    const editFakeWallet = await createFakeWallet(provider, wallet, '100');
+
+    const edit = editResolver({
+      account: editFakeWallet,
+      resolver: newAddress,
+      domain,
+    });
+
+    await expect(edit).rejects.toBeInstanceOf(NotOwnerError);
+  });
+
+  it('should not be able to edit a domain resolver with same address', async () => {
+    const domain = randomName();
+
+    const newAddress = wallet.address.toB256();
+
+    await register({
+      account: wallet,
+      resolver: newAddress,
+      domain,
+      period: 1,
+    });
+
+    const edit = editResolver({
+      account: wallet,
+      resolver: newAddress,
+      domain,
+    });
+
+    await expect(edit).rejects.toBeInstanceOf(SameResolverError);
+  });
+
+  it('should simulate handle cost', async () => {
+    const domain = randomName();
+
+    const cost = await simulateHandleCost({
+      domain,
+      period: 1,
+    });
+
+    expect(cost).toBeDefined();
+  });
+
+  it('should simulate handle cost with 2 years', async () => {
+    const domain = randomName();
+
+    const cost = await simulateHandleCost({
+      domain,
+      period: 2,
+    });
+
+    expect(cost).toBeDefined();
   });
 });

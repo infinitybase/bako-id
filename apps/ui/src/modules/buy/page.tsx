@@ -114,7 +114,7 @@ export const Buy = () => {
                 Select the token that you want to use for this purchase.
               </Text>
             </Box>
-            <BuyComponents.Checkout {...buy} wallet={wallet} />
+            <BuyComponents.Checkout {...buy} />
           </VStack>
         </CardBody>
         <BuyError

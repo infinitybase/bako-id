@@ -97,6 +97,12 @@ impl StorageContract for Contract {
         storage.owners_handles.get(owner).push(key);
     }
 
+    #[storage(write)]
+    fn change(key: b256, bytes_domain: Bytes){
+        with_permission(IMPLEMENTATION);
+        write_slice(key, bytes_domain.as_raw_slice());
+    }
+
     #[storage(read)]
     fn get(key: b256) -> Option<Bytes> {
         return get_handle_by_namehash(key);

@@ -1,7 +1,7 @@
 import {
   Image as ChakraImage,
-  type ImageProps,
   Spinner,
+  type ImageProps,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 
