@@ -27,10 +27,12 @@ describe('Test Storage Contract', () => {
   it('should error on call method without a storage contract started', async () => {
     expect.assertions(2);
     try {
-      await contracts.storage.functions
+      const storageSetFn = await contracts.storage.functions
         .set(hash(Buffer.from('20')), wallet.address.toB256(), [10, 10])
         .txParams(txParams)
         .call();
+
+      await storageSetFn.waitForResult();
     } catch (e) {
       expectRequireRevertError(e);
       expectContainLogError(e, 'Unauthorized');
@@ -70,10 +72,12 @@ describe('Test Storage Contract', () => {
   it('should get contract implementation', async () => {
     await tryExecute(contracts.storage.initializeStorage());
 
-    const { transactionResult, value } = await contracts.storage.functions
+    const callFn = await contracts.storage.functions
       .get_implementation()
       .txParams(txParams)
       .call();
+
+    const { transactionResult, value } = await callFn.waitForResult();
 
     expect(transactionResult.status).toBe(TransactionStatus.success);
     expect(value.bits).toBe(contracts.registry.id.toB256());
@@ -89,44 +93,53 @@ describe('Test Storage Contract', () => {
     await tryExecute(storage.initializeStorage());
 
     // Change implementation to testContract
-    const { transactionResult } = await storage.functions
+    const implementationCall = await storage.functions
       .set_implementation({ bits: testContract })
       .txParams(txParams)
       .call();
-    const { value } = await storage.functions
+    const { transactionResult } = await implementationCall.waitForResult();
+    const getImplementationCall = await storage.functions
       .get_implementation()
       .txParams(txParams)
       .call();
+    const { value } = await getImplementationCall.waitForResult();
     expect(value.bits).toBe(testContract);
     expect(transactionResult.status).toBe(TransactionStatus.success);
 
     // Execute method in testContract
-    const { transactionResult: transactionResult2 } = await testCaller.functions
+    const testSetCall = await testCaller.functions
       .test_set({
         bits: storage.id.toB256(),
       })
       .txParams(txParams)
       .call();
+    const { transactionResult: transactionResult2 } =
+      await testSetCall.waitForResult();
     expect(transactionResult2.status).toBe(TransactionStatus.success);
 
     // Change implementation to registryContract
-    const { transactionResult: transactionResult3 } = await storage.functions
+    const implementation2Call = await storage.functions
       .set_implementation({ bits: contracts.registry.id.toB256() })
       .txParams(txParams)
       .call();
-    const { value: value2 } = await storage.functions
+    const { transactionResult: transactionResult3 } =
+      await implementation2Call.waitForResult();
+    const getImplementation2Call = await storage.functions
       .get_implementation()
       .txParams(txParams)
       .call();
+    const { value: value2 } = await getImplementation2Call.waitForResult();
     expect(value2.bits).toBe(contracts.registry.id.toB256());
     expect(transactionResult3.status).toBe(TransactionStatus.success);
 
     try {
       // Try set implementation with fake wallet
-      const { transactionResult } = await storage2.functions
+      const implementationFn3 = await storage2.functions
         .set_implementation({ bits: testContract })
         .txParams(txParams)
         .call();
+
+      const { transactionResult } = await implementationFn3.waitForResult();
 
       expect(transactionResult.status).toBe(TransactionStatus.failure);
     } catch (e) {
@@ -144,25 +157,30 @@ describe('Test Storage Contract', () => {
     await tryExecute(storage.initializeStorage());
 
     // Change owner to walletFake
-    const { transactionResult } = await storage.functions
+    const ownerFn = await storage.functions
       .set_owner({ bits: walletFake.address.toB256() })
       .txParams(txParams)
       .call();
+    const { transactionResult } = await ownerFn.waitForResult();
     expect(transactionResult.status).toBe(TransactionStatus.success);
 
     // Change owner to main wallet
-    const { transactionResult: transactionResult2 } = await storage2.functions
+    const owner2Fn = await storage2.functions
       .set_owner({ bits: wallet.address.toB256() })
       .txParams(txParams)
       .call();
+    const { transactionResult: transactionResult2 } =
+      await owner2Fn.waitForResult();
     expect(transactionResult2.status).toBe(TransactionStatus.success);
 
     // Get owner from storage contract
-    const { value: storageOwner } = await storage.functions
+    const owner3 = await storage.functions
       .get_owner()
       .txParams(txParams)
       .call();
-    expect(transactionResult.status).toBe(TransactionStatus.success);
+    const { transactionResult: transactionResult3, value: storageOwner } =
+      await owner3.waitForResult();
+    expect(transactionResult3.status).toBe(TransactionStatus.success);
     expect(storageOwner.bits).toBe(wallet.address.toB256());
 
     try {

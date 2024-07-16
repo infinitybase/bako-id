@@ -1,4 +1,4 @@
-import { type WalletUnlocked, bn } from 'fuels';
+import { type Contract, type WalletUnlocked, bn } from 'fuels';
 import {
   type MetadataContractAbi,
   MetadataContractAbi__factory,
@@ -26,43 +26,51 @@ import { domainPrices, txParams } from './index';
 const initializeStorage =
   (owner: string, registryId: string, contractAbi: StorageContractAbi) =>
   async (contractId = registryId) => {
-    const { transactionResult: txProxy } = await contractAbi.functions
+    const callFn = await contractAbi.functions
       .constructor({ bits: owner }, { bits: contractId })
       .txParams(txParams)
       .call();
 
-    return { txProxy };
+    const { transactionResult } = await callFn.waitForResult();
+
+    return { txProxy: transactionResult };
   };
 
 const initializeRegistry =
   (owner: string, storageId: string, contractAbi: RegistryContractAbi) =>
   async () => {
-    const { transactionResult: txRegistry } = await contractAbi.functions
+    const callFn = await contractAbi.functions
       .constructor({ bits: owner }, { bits: storageId })
       .txParams(txParams)
       .call();
 
-    return { txRegistry };
+    const { transactionResult } = await callFn.waitForResult();
+
+    return { txRegistry: transactionResult };
   };
 
 const initializeMetadata =
   (storageId: string, contractAbi: MetadataContractAbi) => async () => {
-    const { transactionResult: txRegistry } = await contractAbi.functions
+    const callFn = await contractAbi.functions
       .constructor({ bits: storageId })
       .txParams(txParams)
       .call();
 
-    return { txRegistry };
+    const { transactionResult } = await callFn.waitForResult();
+
+    return { txRegistry: transactionResult };
   };
 
 const initializeResolver =
   (storageId: string, contractAbi: ResolverContractAbi) => async () => {
-    const { transactionResult: txRegistry } = await contractAbi.functions
+    const callFn = await contractAbi.functions
       .constructor({ bits: storageId })
       .txParams(txParams)
       .call();
 
-    return { txRegistry };
+    const { transactionResult } = await callFn.waitForResult();
+
+    return { txRegistry: transactionResult };
   };
 
 const register =
@@ -93,26 +101,34 @@ const register =
       });
     }
 
-    return callBuilder.addContracts([storageAbi]).txParams(txParams).call();
+    const fn = await callBuilder
+      .addContracts([storageAbi])
+      .txParams(txParams)
+      .call();
+    return fn.waitForResult();
   };
 
+type DeployedContract<ABI extends Contract> = Awaited<Promise<ABI>>;
+type Contracts = [
+  DeployedContract<StorageContractAbi>,
+  DeployedContract<RegistryContractAbi>,
+  DeployedContract<MetadataContractAbi>,
+  DeployedContract<ResolverContractAbi>,
+];
 export async function setupContractsAndDeploy(wallet: WalletUnlocked) {
-  const storage = await StorageContractAbi__factory.deployContract(
-    storageHex,
-    wallet
-  );
-  const registry = await RegistryContractAbi__factory.deployContract(
-    registryHex,
-    wallet
-  );
-  const metadata = await MetadataContractAbi__factory.deployContract(
-    metadataHex,
-    wallet
-  );
-  const resolver = await ResolverContractAbi__factory.deployContract(
-    resolverHex,
-    wallet
-  );
+  const contractsSetup = [
+    await StorageContractAbi__factory.deployContract(storageHex, wallet),
+    await RegistryContractAbi__factory.deployContract(registryHex, wallet),
+    await MetadataContractAbi__factory.deployContract(metadataHex, wallet),
+    await ResolverContractAbi__factory.deployContract(resolverHex, wallet),
+  ];
+
+  const [storage, registry, metadata, resolver] = (await Promise.all(
+    contractsSetup.map(async (contract) => {
+      const result = await contract.waitForResult();
+      return result.contract;
+    })
+  )) as Contracts;
 
   const connect = (wallet: WalletUnlocked) =>
     StorageContractAbi__factory.connect(storage.id, wallet);

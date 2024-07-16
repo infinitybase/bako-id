@@ -71,10 +71,12 @@ describe('Metadata contract', () => {
 
     await registry.register(handleName, wallet.address.toB256(), 1);
 
-    const { transactionResult } = await metadata.functions
+    const saveFn = await metadata.functions
       .save(handleName, github.key, github.value)
       .txParams(txParams)
       .call();
+
+    const { transactionResult } = await saveFn.waitForResult();
 
     expect(transactionResult.status).toBe(TransactionStatus.success);
   });
@@ -110,10 +112,11 @@ describe('Metadata contract', () => {
     const handleName = user.handle();
 
     const getGithubMetadata = async () => {
-      const { value } = await metadata.functions
+      const getFn = await metadata.functions
         .get(handleName, github.key)
         .txParams(txParams)
         .call();
+      const { value } = await getFn.waitForResult();
       return value;
     };
 
@@ -140,10 +143,11 @@ describe('Metadata contract', () => {
     const handleName = user.handle();
 
     const getGithubMetadata = async () => {
-      const { value } = await metadata.functions
+      const getFn = await metadata.functions
         .get(handleName, github.key)
         .txParams(txParams)
         .call();
+      const { value } = await getFn.waitForResult();
       return value;
     };
 

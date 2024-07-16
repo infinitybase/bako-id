@@ -5,7 +5,6 @@ import {
   expectContainLogError,
   expectRequireRevertError,
   randomName,
-  setupContracts,
   setupContractsAndDeploy,
 } from './utils';
 
@@ -13,14 +12,12 @@ describe('[PRICES] Registry Contract', () => {
   let wallet: WalletUnlocked;
   let provider: Provider;
 
-  let _testContracts: Awaited<ReturnType<typeof setupContracts>>;
   let contracts: Awaited<ReturnType<typeof setupContractsAndDeploy>>;
 
   beforeAll(async () => {
     provider = await Provider.create('http://localhost:4000/v1/graphql');
     wallet = createWallet(provider);
     contracts = await setupContractsAndDeploy(wallet);
-    _testContracts = await setupContracts(wallet);
 
     await contracts.registry.initializeRegistry();
     await contracts.storage.initializeStorage();

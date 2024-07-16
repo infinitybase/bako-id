@@ -144,19 +144,19 @@ describe('[METHODS] Registry Contract', () => {
     await tryExecute(resolver.initializeResolver());
 
     const domain = randomName();
-    const { transactionResult: txRegister, logs } = await registry.register(
+    const { transactionResult: txRegister } = await registry.register(
       domain,
       wallet.address.toB256(),
       1
     );
 
-    console.log(logs);
-
-    const { value } = await resolver.functions
+    const resolverFn = await resolver.functions
       .resolver(domain)
       .addContracts([storage])
       .txParams(txParams)
       .call();
+
+    const { value } = await resolverFn.waitForResult();
 
     expect(value).toBe(wallet.address.toB256());
     expect(txRegister.status).toBe('success');
@@ -173,10 +173,11 @@ describe('[METHODS] Registry Contract', () => {
     await registry.register(domain, wallet.address.toB256(), 1);
 
     const wrongDomain = randomName();
-    const { value } = await resolver.functions
+    const resolverFn = await resolver.functions
       .resolver(wrongDomain)
       .txParams(txParams)
       .call();
+    const { value } = await resolverFn.waitForResult();
 
     expect(value).toBe(undefined);
   });
@@ -194,11 +195,12 @@ describe('[METHODS] Registry Contract', () => {
     await registry.register(primaryDomain, address, 1);
     await registry.register(secondaryDomain, address, 1);
 
-    const { value } = await resolver.functions
+    const nameFn = await resolver.functions
       .name(address)
       .addContracts([storage])
       .txParams(txParams)
       .call();
+    const { value } = await nameFn.waitForResult();
 
     expect(value).toBe(primaryDomain);
   });
@@ -218,11 +220,13 @@ describe('[METHODS] Registry Contract', () => {
     await registry.register(handles[1], address, 1);
     await registry.register(handles[2], address, 1);
 
-    const { value: vecBytes } = await registry.functions
+    const getAllFn = await registry.functions
       .get_all(wallet.address.toB256())
       .addContracts([storage])
       .txParams(txParams)
       .call();
+
+    const { value: vecBytes } = await getAllFn.waitForResult();
 
     const expected = handles.flatMap((name, index) => {
       const size = name.length;
@@ -252,13 +256,14 @@ describe('[METHODS] Registry Contract', () => {
 
     await registry.register('jonglazkov', address, 1);
 
-    const { value } = await registry.functions
+    const periodFn = await registry.functions
       .get_grace_period('jonglazkov')
       .addContracts([storage])
       .txParams(txParams)
       .call();
 
-    console.log(value);
+    const { value } = await periodFn.waitForResult();
+
     expect(value).toEqual({
       grace_period: bn(value.grace_period),
       timestamp: bn(value.timestamp),
@@ -304,13 +309,16 @@ describe('[METHODS] Registry Contract', () => {
     const newAddress = Address.fromRandom().toB256();
     await registry.register(domain, wallet.address.toB256(), 1);
 
-    const { transactionResult: txResolver } = await registry.functions
+    const editFn = await registry.functions
       .edit_resolver(domain, newAddress)
       .addContracts([storage])
       .txParams(txParams)
       .call();
 
-    const { value } = await resolver.functions.resolver(domain).call();
+    const { transactionResult: txResolver } = await editFn.waitForResult();
+
+    const resolverFn = await resolver.functions.resolver(domain).call();
+    const { value } = await resolverFn.waitForResult();
 
     expect(value).toBe(newAddress);
     expect(txResolver.status).toBe(TransactionStatus.success);

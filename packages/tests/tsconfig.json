@@ -1,6 +1,6 @@
 {
   "include": ["./**/*.ts"],
-  "exclude": ["node_modules", "src/types"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "resolveJsonModule": true
   }
