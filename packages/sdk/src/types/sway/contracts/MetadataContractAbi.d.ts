@@ -22,15 +22,25 @@ import type {
   StdString,
 } from 'fuels';
 
-import type { Enum } from "./common";
+import type { Enum } from './common';
 
-export enum MetadataContractErrorInput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', InvalidPermission = 'InvalidPermission', InvalidDomain = 'InvalidDomain' };
-export enum MetadataContractErrorOutput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', InvalidPermission = 'InvalidPermission', InvalidDomain = 'InvalidDomain' };
+export enum MetadataContractErrorInput {
+  StorageNotInitialized = 'StorageNotInitialized',
+  AlreadyInitialized = 'AlreadyInitialized',
+  InvalidPermission = 'InvalidPermission',
+  InvalidDomain = 'InvalidDomain',
+}
+export enum MetadataContractErrorOutput {
+  StorageNotInitialized = 'StorageNotInitialized',
+  AlreadyInitialized = 'AlreadyInitialized',
+  InvalidPermission = 'InvalidPermission',
+  InvalidDomain = 'InvalidDomain',
+}
 
 export type ContractIdInput = { bits: string };
 export type ContractIdOutput = ContractIdInput;
 
-interface MetadataContractAbiInterface extends Interface {
+export interface MetadataContractAbiInterface extends Interface {
   functions: {
     constructor: FunctionFragment;
     get: FunctionFragment;
@@ -45,6 +55,9 @@ export class MetadataContractAbi extends Contract {
     constructor: InvokeFunction<[storage_id: ContractIdInput], void>;
     get: InvokeFunction<[handle_name: StdString, key: StdString], StdString>;
     get_all: InvokeFunction<[handle_name: StdString], Bytes>;
-    save: InvokeFunction<[handle_name: StdString, key: StdString, value: StdString], void>;
+    save: InvokeFunction<
+      [handle_name: StdString, key: StdString, value: StdString],
+      void
+    >;
   };
 }

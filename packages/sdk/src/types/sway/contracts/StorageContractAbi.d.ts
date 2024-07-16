@@ -36,7 +36,7 @@ export type AddressOutput = AddressInput;
 export type ContractIdInput = { bits: string };
 export type ContractIdOutput = ContractIdInput;
 
-interface StorageContractAbiInterface extends Interface {
+export interface StorageContractAbiInterface extends Interface {
   functions: {
     change: FunctionFragment;
     constructor: FunctionFragment;
