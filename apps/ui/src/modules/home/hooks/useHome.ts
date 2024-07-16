@@ -2,7 +2,7 @@ import { isValidDomain } from '@bako-id/sdk';
 import { useFuel } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
 import { debounce } from 'lodash';
-import { useCallback, useEffect, useState, type ChangeEvent } from 'react';
+import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useDomain } from '../../../hooks';
 
 export const useHome = () => {
@@ -15,7 +15,7 @@ export const useHome = () => {
   const [available, setAvailable] = useState<boolean | null>(null);
   const [isConnected, setIsConnected] = useState<boolean | null>(null);
   const [domainIsAvailable, setDomainIsAvailable] = useState<boolean | null>(
-    null,
+    null
   );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -42,7 +42,7 @@ export const useHome = () => {
           setAvailable(false);
         });
     }, 500),
-    [],
+    []
   );
 
   const handleChangeDomain = (e: ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +63,6 @@ export const useHome = () => {
   };
 
   const handleConfirmDomain = async () => {
-    console.log(domain);
     const isValid = isValidDomain(domain);
     if (!isValid) return;
 
