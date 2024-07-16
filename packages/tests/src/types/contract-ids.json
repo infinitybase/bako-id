@@ -1,0 +1,7 @@
+{
+  "registryContract": "0x7e2e4e8a11f40dbfd1565154cd09d6b8ee9c84aa89ca0f4c1f27d7a220eff753",
+  "metadataContract": "0x8c9aafd22142ceb1d8cad65d157499f904f203a8550c4356986b294a5e1c816a",
+  "storageContract": "0x23fa52425fcc0d2b71a59e619e7730ff75e6f6f9f2c42c3e99b981aa629e2157",
+  "resolverContract": "0x3d07444e1c3a704d893576bee4ca7b0fda228f9ad23a4f92b958cd7d550a4ccc",
+  "testContract": "0xbfcf2d4532590a48cf2b9182fc3af6487889a4314f8b890212a98c841d98b920"
+}
