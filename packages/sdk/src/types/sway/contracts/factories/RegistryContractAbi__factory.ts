@@ -61,12 +61,12 @@ const _abi = {
         },
         {
           "name": "Int",
-          "type": 19,
+          "type": 20,
           "typeArguments": null
         },
         {
           "name": "String",
-          "type": 17,
+          "type": 18,
           "typeArguments": null
         }
       ],
@@ -229,12 +229,12 @@ const _abi = {
       "components": [
         {
           "name": "buf",
-          "type": 16,
+          "type": 17,
           "typeArguments": null
         },
         {
           "name": "len",
-          "type": 19,
+          "type": 20,
           "typeArguments": null
         }
       ],
@@ -258,17 +258,17 @@ const _abi = {
       "components": [
         {
           "name": "timestamp",
-          "type": 19,
+          "type": 20,
           "typeArguments": null
         },
         {
           "name": "period",
-          "type": 19,
+          "type": 20,
           "typeArguments": null
         },
         {
           "name": "grace_period",
-          "type": 19,
+          "type": 20,
           "typeArguments": null
         }
       ],
@@ -276,6 +276,33 @@ const _abi = {
     },
     {
       "typeId": 15,
+      "type": "struct HandleMintedEvent",
+      "components": [
+        {
+          "name": "domain_hash",
+          "type": 1,
+          "typeArguments": null
+        },
+        {
+          "name": "owner",
+          "type": 2,
+          "typeArguments": null
+        },
+        {
+          "name": "resolver",
+          "type": 1,
+          "typeArguments": null
+        },
+        {
+          "name": "asset",
+          "type": 11,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": null
+    },
+    {
+      "typeId": 16,
       "type": "struct NewResolverEvent",
       "components": [
         {
@@ -292,7 +319,7 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 16,
+      "typeId": 17,
       "type": "struct RawBytes",
       "components": [
         {
@@ -302,14 +329,14 @@ const _abi = {
         },
         {
           "name": "cap",
-          "type": 19,
+          "type": 20,
           "typeArguments": null
         }
       ],
       "typeParameters": null
     },
     {
-      "typeId": 17,
+      "typeId": 18,
       "type": "struct String",
       "components": [
         {
@@ -321,19 +348,19 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 18,
+      "typeId": 19,
       "type": "u16",
       "components": null,
       "typeParameters": null
     },
     {
-      "typeId": 19,
+      "typeId": 20,
       "type": "u64",
       "components": null,
       "typeParameters": null
     },
     {
-      "typeId": 20,
+      "typeId": 21,
       "type": "u8",
       "components": null,
       "typeParameters": null
@@ -373,7 +400,7 @@ const _abi = {
       "inputs": [
         {
           "name": "name",
-          "type": 17,
+          "type": 18,
           "typeArguments": null
         },
         {
@@ -402,7 +429,7 @@ const _abi = {
       "inputs": [
         {
           "name": "name",
-          "type": 17,
+          "type": 18,
           "typeArguments": null
         },
         {
@@ -412,7 +439,7 @@ const _abi = {
         },
         {
           "name": "period",
-          "type": 18,
+          "type": 19,
           "typeArguments": null
         }
       ],
@@ -451,7 +478,7 @@ const _abi = {
         "typeArguments": [
           {
             "name": "",
-            "type": 20,
+            "type": 21,
             "typeArguments": null
           }
         ]
@@ -480,7 +507,7 @@ const _abi = {
         "typeArguments": [
           {
             "name": "",
-            "type": 17,
+            "type": 18,
             "typeArguments": null
           }
         ]
@@ -509,7 +536,7 @@ const _abi = {
         "typeArguments": [
           {
             "name": "",
-            "type": 17,
+            "type": 18,
             "typeArguments": null
           }
         ]
@@ -528,7 +555,7 @@ const _abi = {
       "name": "total_assets",
       "output": {
         "name": "",
-        "type": 19,
+        "type": 20,
         "typeArguments": null
       },
       "attributes": [
@@ -555,7 +582,7 @@ const _abi = {
         "typeArguments": [
           {
             "name": "",
-            "type": 19,
+            "type": 20,
             "typeArguments": null
           }
         ]
@@ -578,7 +605,7 @@ const _abi = {
         },
         {
           "name": "key",
-          "type": 17,
+          "type": 18,
           "typeArguments": null
         }
       ],
@@ -607,14 +634,14 @@ const _abi = {
       "inputs": [
         {
           "name": "name",
-          "type": 17,
+          "type": 18,
           "typeArguments": null
         }
       ],
       "name": "image_url",
       "output": {
         "name": "",
-        "type": 17,
+        "type": 18,
         "typeArguments": null
       },
       "attributes": [
@@ -653,7 +680,7 @@ const _abi = {
       "inputs": [
         {
           "name": "owner",
-          "type": 17,
+          "type": 18,
           "typeArguments": null
         }
       ],
@@ -694,7 +721,7 @@ const _abi = {
       "logId": "18306683036667780221",
       "loggedType": {
         "name": "",
-        "type": 15,
+        "type": 16,
         "typeArguments": []
       }
     },
@@ -703,6 +730,14 @@ const _abi = {
       "loggedType": {
         "name": "",
         "type": 4,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": "948408975679390927",
+      "loggedType": {
+        "name": "",
+        "type": 15,
         "typeArguments": []
       }
     }

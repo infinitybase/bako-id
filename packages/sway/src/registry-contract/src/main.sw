@@ -21,6 +21,7 @@ use libraries::{
 
 use events::{
     NewResolverEvent,
+    HandleMintedEvent,
 };
 
 use standards::{ src7::*, src20::* };
@@ -88,12 +89,21 @@ impl RegistryContract for Contract {
             get_storage_id()
         );
         
-        return _mint_bako_nft(
+        let asset_id = _mint_bako_nft(
             storage.total_assets,
             storage.total_supply,
             storage.metadata,
             name,
         );
+
+        log(HandleMintedEvent {
+            domain_hash: sha256(name),
+            owner: msg_sender().unwrap(),
+            resolver,
+            asset: asset_id,
+        });
+
+        return asset_id;
     }
 
     #[storage(read, write)]

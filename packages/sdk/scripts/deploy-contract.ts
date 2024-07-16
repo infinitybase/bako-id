@@ -52,6 +52,7 @@ export const deployContracts = async (config: ContractConfig) => {
 
     await metadataFn.waitForResult();
   } catch (_e) {
+    console.log(_e);
     throw new Error('[DEPLOY] Error on deploy Metadata Contract.');
   }
 
@@ -65,6 +66,7 @@ export const deployContracts = async (config: ContractConfig) => {
 
     await resolverFn.waitForResult();
   } catch (_e) {
+    console.log(_e);
     throw new Error('[DEPLOY] Error on deploy Resolver Contract.');
   }
 };
