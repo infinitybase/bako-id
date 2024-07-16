@@ -10,6 +10,7 @@ import { register } from '../register';
 import { UserMetadataContract } from './index';
 
 const { PROVIDER_URL, PRIVATE_KEY } = process.env;
+
 describe('Test metadata', () => {
   let wallet: WalletUnlocked;
   let provider: Provider;

@@ -19,31 +19,38 @@ export const deployContracts = async (config: ContractConfig) => {
   const txParams = getTxParams(provider);
 
   try {
-    await registry.functions
-      .constructor({ value: account!.address.toB256() }, { value: storageId })
+    const registryFn = await registry.functions
+      .constructor({ bits: account!.address.toB256() }, { bits: storageId })
       .txParams(txParams)
       .call();
+
+    await registryFn.waitForResult();
   } catch (e) {
     console.log(e);
     throw new Error('[DEPLOY] Error on deploy Registry Contract: ');
   }
 
   try {
-    await storage.functions
-      .constructor({ value: account!.address.toB256() }, { value: registryId! })
+    const storageFn = await storage.functions
+      .constructor({ bits: account!.address.toB256() }, { bits: registryId! })
       .txParams(txParams)
       .call();
+
+    await storageFn.waitForResult();
   } catch (_e) {
+    console.log(_e);
     throw new Error('[DEPLOY] Error on deploy Storage Contract.');
   }
 
   try {
     if (!metadata) return;
 
-    await metadata.functions
-      .constructor({ value: storageId })
+    const metadataFn = await metadata.functions
+      .constructor({ bits: storageId })
       .txParams(txParams)
       .call();
+
+    await metadataFn.waitForResult();
   } catch (_e) {
     throw new Error('[DEPLOY] Error on deploy Metadata Contract.');
   }
@@ -51,10 +58,12 @@ export const deployContracts = async (config: ContractConfig) => {
   try {
     if (!resolver) return;
 
-    await resolver.functions
-      .constructor({ value: storageId })
+    const resolverFn = await resolver.functions
+      .constructor({ bits: storageId })
       .txParams(txParams)
       .call();
+
+    await resolverFn.waitForResult();
   } catch (_e) {
     throw new Error('[DEPLOY] Error on deploy Resolver Contract.');
   }

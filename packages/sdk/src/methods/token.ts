@@ -1,4 +1,4 @@
-import { BaseAssetId, sha256 } from 'fuels';
+import { ZeroBytes32, sha256 } from 'fuels';
 import { config } from '../config';
 import { getRegistryContract } from '../setup';
 import {
@@ -45,10 +45,10 @@ export async function tokenInfo(handle: string, params?: ProviderParams) {
   }
 
   const { value: tokenName } = await registry.functions
-    .name({ value: BaseAssetId })
+    .name({ bits: ZeroBytes32 })
     .get();
   const { value: tokenSymbol } = await registry.functions
-    .symbol({ value: BaseAssetId })
+    .symbol({ bits: ZeroBytes32 })
     .get();
 
   return {

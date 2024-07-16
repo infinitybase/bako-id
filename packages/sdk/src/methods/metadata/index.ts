@@ -52,10 +52,12 @@ export class UserMetadataContract {
       throw new NotOwnerError();
     }
 
-    return this.contract.functions
+    const saveFn = await this.contract.functions
       .save(this.handleName, metadata.key, metadata.value)
       .txParams(txParams)
       .call();
+
+    return saveFn.waitForResult();
   }
 
   /**
