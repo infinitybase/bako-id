@@ -32,7 +32,7 @@ export type ContractIdOutput = ContractIdInput;
 export type MetadataRegisteredEventInput = { metadata_id: string, metadata_key: StdString, metadata_value: StdString };
 export type MetadataRegisteredEventOutput = MetadataRegisteredEventInput;
 
-export interface MetadataContractAbiInterface extends Interface {
+interface MetadataContractAbiInterface extends Interface {
   functions: {
     constructor: FunctionFragment;
     get: FunctionFragment;

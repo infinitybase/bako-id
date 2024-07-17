@@ -48,7 +48,7 @@ export type HandleMintedEventOutput = { domain_hash: string, owner: IdentityOutp
 export type NewResolverEventInput = { domain_hash: string, resolver: string };
 export type NewResolverEventOutput = NewResolverEventInput;
 
-export interface RegistryContractAbiInterface extends Interface {
+interface RegistryContractAbiInterface extends Interface {
   functions: {
     constructor: FunctionFragment;
     edit_resolver: FunctionFragment;

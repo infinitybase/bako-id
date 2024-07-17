@@ -139,4 +139,26 @@ describe('Test metadata', () => {
     const metadata = await userMetadataContract.getAll();
     expect(metadata).toEqual([metadataConfig.gihtub, metadataConfig.linkedin]);
   });
+
+  it('should batch save metadata', async () => {
+    const domain = randomName();
+
+    await register({
+      account: wallet,
+      resolver: wallet.address.toB256(),
+      domain: domain,
+    });
+
+    const userMetadataContract = UserMetadataContract.initialize(
+      wallet,
+      domain
+    );
+
+    const metadata = [metadataConfig.gihtub, metadataConfig.linkedin];
+
+    const { transactionResult } =
+      await userMetadataContract.batchSaveMetadata(metadata);
+
+    expect(transactionResult.status).toBe(TransactionStatus.success);
+  });
 });

@@ -61,6 +61,31 @@ export class UserMetadataContract {
   }
 
   /**
+   * Saves multiple metadata for the given handle name.
+   *
+   * @param {Metadata[]} metadata - An array of metadata objects to save.
+   * @throws {NotOwnerError} if the handle owner is not the same as the current account address.
+   * @returns {Promise} - A promise that resolves with the result of the save operation.
+   */
+  async batchSaveMetadata(metadata: Metadata[]) {
+    const ownerAddress = await owner(this.handleName);
+
+    if (ownerAddress && ownerAddress !== this.account.address.toB256()) {
+      throw new NotOwnerError();
+    }
+
+    const saveFn = await this.contract
+      .multiCall(
+        metadata.map((m) =>
+          this.contract.functions.save(this.handleName, m.key, m.value)
+        )
+      )
+      .call();
+
+    return saveFn.waitForResult();
+  }
+
+  /**
    * Retrieves the metadata for the given key.
    *
    * @param {string} key - The key to retrieve the metadata for.
