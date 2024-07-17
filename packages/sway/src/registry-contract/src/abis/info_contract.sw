@@ -7,7 +7,6 @@ use std::{
     context::msg_amount,
     block::timestamp,
     contract_id::ContractId,
-    constants::BASE_ASSET_ID,
     bytes_conversions::u16::*,
     call_frames::{ msg_asset_id },
 };
@@ -25,7 +24,6 @@ pub struct GracePeriod {
     grace_period: u64,
 }
 
-
 abi InfoContract {
     #[storage(read)]
     fn get_all(owner: b256) -> Bytes;
@@ -33,9 +31,6 @@ abi InfoContract {
     #[storage(read)]
     fn get_grace_period(owner: String) -> GracePeriod;
 }
-
-
-
 
 #[storage(read)]
 pub fn _get_all(owner: b256, bako_id: ContractId) -> Bytes {
@@ -72,18 +67,13 @@ pub fn _get_grace_period(owner: String, bako_id: ContractId) -> GracePeriod {
    match handle {
         Some(handle_bytes) => {
             let handle = BakoHandle::from(handle_bytes);
-            
             let timestamp = handle.timestamp;
             let period = (handle.period.as_u64() * year) + handle.timestamp;
             let grace_period = period + grace_period;
-
-
             return GracePeriod { timestamp, period, grace_period }
-            
         },
         None => {
             return GracePeriod { timestamp: 0, period: 0, grace_period: 0 }
-            
         }
     }
 }

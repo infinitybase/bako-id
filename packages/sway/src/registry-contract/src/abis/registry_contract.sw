@@ -7,7 +7,6 @@ use std::{
     context::msg_amount,
     block::timestamp,
     contract_id::ContractId,
-    constants::BASE_ASSET_ID,
     bytes_conversions::u16::*,
     call_frames::{ msg_asset_id },
 };
@@ -44,20 +43,20 @@ abi RegistryContract {
 }
 
 pub struct RegisterInput {
-    name: String,
-    resolver: b256,
-    period: u16,
+    pub name: String,
+    pub resolver: b256,
+    pub period: u16,
 }
 
 pub struct EditResolverInput {
-    name: String,
-    resolver: b256,
+    pub name: String,
+    pub resolver: b256,
 }
 
 #[storage(read)]
 pub fn _register(input: RegisterInput, bako_id: ContractId) -> String {
     require(
-        msg_asset_id() == BASE_ASSET_ID,
+        msg_asset_id() == AssetId::base(),
         RegistryContractError::IncorrectAssetId,
     );
 
@@ -84,8 +83,7 @@ pub fn _register(input: RegisterInput, bako_id: ContractId) -> String {
     let domain_price = domain_price(name, input.period);   
     require(msg_amount() == domain_price, RegistryContractError::InvalidAmount);
 
-
-    let owner = msg_sender().unwrap().as_address().unwrap().value;
+    let owner: b256 = msg_sender().unwrap().as_address().unwrap().into();
     let is_primary = storage.get_primary(resolver).is_none();
     let domain = BakoHandle::new(
         name, 
@@ -130,7 +128,7 @@ pub fn _edit_resolver(input: EditResolverInput, bako_id: ContractId) {
 }
 
 pub fn domain_price(domain: String, period: u16) -> u64 {
-    let domain_len = domain.as_bytes().len;
+    let domain_len = domain.as_bytes().len();
     let mut amount = match domain_len {
         3 => 5_000,
         4 => 1_000,

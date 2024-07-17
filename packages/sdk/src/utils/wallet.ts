@@ -1,23 +1,26 @@
 import {
-  type BN,
-  BaseAssetId,
-  type CoinQuantity,
+  type EstimatedTxParams,
   type Provider,
   type TransactionRequest,
   WalletLocked,
+  ZeroBytes32,
 } from 'fuels';
 
 export class FakeAccount extends WalletLocked {
   constructor(provider: Provider) {
-    super(BaseAssetId, provider);
+    super(ZeroBytes32, provider);
   }
 
   async fund<T extends TransactionRequest>(
     request: T,
-    coinQuantities: CoinQuantity[],
-    _fee: BN
+    coinQuantities: EstimatedTxParams
   ) {
-    await request.fundWithFakeUtxos(coinQuantities);
+    request.fundWithFakeUtxos(
+      coinQuantities.requiredQuantities,
+      this.provider.getBaseAssetId()
+    );
+
+    return request;
   }
 }
 

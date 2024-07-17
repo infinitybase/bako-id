@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.81.0
-  Forc version: 0.49.3
-  Fuel-Core version: 0.22.1
+  Fuels version: 0.92.0
+  Forc version: 0.61.2
+  Fuel-Core version: 0.31.0
 */
 
 export type { RegistryContractAbi } from './RegistryContractAbi';

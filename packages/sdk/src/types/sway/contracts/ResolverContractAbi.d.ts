@@ -4,14 +4,15 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.81.0
-  Forc version: 0.49.3
-  Fuel-Core version: 0.22.1
+  Fuels version: 0.92.0
+  Forc version: 0.61.2
+  Fuel-Core version: 0.31.0
 */
 
 import type {
   BigNumberish,
   BN,
+  Bytes,
   BytesLike,
   Contract,
   DecodedValue,
@@ -21,7 +22,7 @@ import type {
   StdString,
 } from 'fuels';
 
-import type { Option } from './common';
+import type { Option, Enum } from './common';
 
 export enum ResolverContractErrorInput {
   AlreadyInitialized = 'AlreadyInitialized',
@@ -32,10 +33,8 @@ export enum ResolverContractErrorOutput {
   StorageNotInitialized = 'StorageNotInitialized',
 }
 
-export type ContractIdInput = { value: string };
+export type ContractIdInput = { bits: string };
 export type ContractIdOutput = ContractIdInput;
-export type RawBytesInput = { ptr: BigNumberish; cap: BigNumberish };
-export type RawBytesOutput = { ptr: BN; cap: BN };
 
 export interface ResolverContractAbiInterface extends Interface {
   functions: {
@@ -44,31 +43,6 @@ export interface ResolverContractAbiInterface extends Interface {
     resolver: FunctionFragment;
     name: FunctionFragment;
   };
-
-  encodeFunctionData(
-    functionFragment: 'constructor',
-    values: [ContractIdInput],
-  ): Uint8Array;
-  encodeFunctionData(
-    functionFragment: 'owner',
-    values: [StdString],
-  ): Uint8Array;
-  encodeFunctionData(
-    functionFragment: 'resolver',
-    values: [StdString],
-  ): Uint8Array;
-  encodeFunctionData(functionFragment: 'name', values: [string]): Uint8Array;
-
-  decodeFunctionData(
-    functionFragment: 'constructor',
-    data: BytesLike,
-  ): DecodedValue;
-  decodeFunctionData(functionFragment: 'owner', data: BytesLike): DecodedValue;
-  decodeFunctionData(
-    functionFragment: 'resolver',
-    data: BytesLike,
-  ): DecodedValue;
-  decodeFunctionData(functionFragment: 'name', data: BytesLike): DecodedValue;
 }
 
 export class ResolverContractAbi extends Contract {

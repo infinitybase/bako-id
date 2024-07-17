@@ -5,57 +5,39 @@ use std::{
     bytes::Bytes,
     string::String,
     storage::storage_key::*,
-    call_frames::{ contract_id },
 };
-use src7::{ Metadata };
-use asset::{ 
-    mint::{ _mint },
-    metadata::*,
+use standards::{
+    src7::{Metadata}
+};
+use sway_libs::{
+    asset::{
+        metadata::*,
+        supply::{
+            _burn,
+            _mint,
+        },
+    },
 };
 use libraries::{ validations::assert_name_validity };
 
-// TODO: Remove this abi when fix issue in fuels-ts with String decoder 
-// Rewrite the `SRC20` ABI, remove `Option<String>` and use `String`.
-abi SRC20 {
-    #[storage(read)]
-    fn total_assets() -> u64;
-
-    #[storage(read)]
-    fn total_supply(asset: AssetId) -> Option<u64>;
-
-    #[storage(read)]
-    fn name(asset: AssetId) -> String;
-
-    #[storage(read)]
-    fn symbol(asset: AssetId) -> String;
-
-    #[storage(read)]
-    fn decimals(asset: AssetId) -> Option<u8>;
-}
-
-// TODO: Remove this abi when fix issue in fuels-ts with String decoder 
-// Rewrite the `SRC7` ABI, remove `Option<Metadata>` and use the `Metadata` enum.
-abi SRC7 {
-    #[storage(read)]
-    fn metadata(asset: AssetId, key: String) -> Option<Metadata>;
-
-    #[storage(read)]
-    fn image_url(name: String) -> String;
-}
-
 // Token name
-pub fn _name() -> String {
-    return String::from_ascii_str("Bako ID");
+pub fn _name() -> Option<String> {
+    return Option::Some(String::from_ascii_str("Bako ID"));
 }
 
 // Token symbol
-pub fn _symbol() -> String {
-    return String::from_ascii_str("BNFT");
+pub fn _symbol() -> Option<String> {
+    return Option::Some(String::from_ascii_str("BNFT"));
 }
 
 // Token decimals
-pub fn _decimals() -> u8 {
-    return 0u8;
+pub fn _decimals() -> Option<u8> {
+    return Option::Some(0u8);
+}
+
+abi NFTContract {
+    #[storage(read)]
+    fn image_url(name: String) -> String;
 }
 
 // Get image of asset
@@ -102,7 +84,7 @@ fn _sub_id(name: String) -> b256 {
 }
 
 fn _asset_id(name: String) -> AssetId {
-    AssetId::new(contract_id(), _sub_id(name))
+    AssetId::new(ContractId::this(), _sub_id(name))
 }
 
 // TODO: move to utils

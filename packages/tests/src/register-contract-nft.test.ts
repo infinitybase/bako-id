@@ -8,7 +8,7 @@ describe('[NFT] Registry Contract', () => {
   let contracts: Awaited<ReturnType<typeof setupContractsAndDeploy>>;
 
   beforeAll(async () => {
-    provider = await Provider.create('http://localhost:4000/graphql');
+    provider = await Provider.create('http://localhost:4000/v1/graphql');
     wallet = createWallet(provider);
     contracts = await setupContractsAndDeploy(wallet);
   });
@@ -22,7 +22,7 @@ describe('[NFT] Registry Contract', () => {
     const { value: assetId } = await registry.register(
       '@my_handle',
       wallet.address.toB256(),
-      1,
+      1
     );
 
     const { value: assetName } = await registry.functions.name(assetId).get();

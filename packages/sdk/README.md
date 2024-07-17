@@ -19,7 +19,7 @@ npm install fuels @bako-id/sdk
 ```ts
 import { resolver } from '@bako-id/sdk';
 
-const providerURL = 'https://beta-5.fuel.network/graphql';
+const providerURL = 'https://testnet.fuel.network/v1/graphql';
 
 // Get Bako handle resolver
 const fuelDomain = await resolver('@my_domain');

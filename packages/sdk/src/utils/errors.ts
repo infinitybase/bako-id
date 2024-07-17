@@ -63,25 +63,27 @@ export const expectContainLogError = (error: unknown, value: unknown) =>
   // @ts-ignore
   expect(containLogError(error.metadata.logs, value)).toBeTruthy();
 
-const errors = {
+type ErrorType = new () => Error;
+
+const errors: Record<string, ErrorType> = {
   NotOwner: NotOwnerError,
   InvalidDomain: InvalidHandleError,
   SameResolver: SameResolverError,
   NotFoundBalanceError: NotFoundBalanceError,
   Default: Error,
-};
+} as const;
 
-const getError = (error: string) => errors[error] ?? errors.Default;
+const getError = (error: string) =>
+  error in errors ? errors[error] : errors.Default;
+
 export const getContractError = (error: FuelError) => {
-  if (error.metadata.logs) {
-    const errorTypes = Object.keys(errors);
-    const errorValue = errorTypes.find((errorType) =>
-      (error.metadata.logs as unknown[]).includes(errorType),
-    );
+  if (!error.metadata.logs) return new errors.Default();
 
-    if (errorValue) {
-      const ErrorClass = getError(errorValue);
-      throw new ErrorClass();
-    }
-  }
+  const errorTypes = Object.keys(errors);
+  const errorValue = errorTypes.find((errorType) =>
+    (error.metadata.logs as unknown[]).includes(errorType)
+  );
+
+  const ErrorClass = getError(errorValue || '');
+  return new ErrorClass();
 };

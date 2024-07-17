@@ -75,12 +75,10 @@ export const useBuy = () => {
           setSignInLoad(false);
         },
         onError: (error: unknown) => {
-          // @ts-expect-error error
-          console.log({ ...error });
           setBuyError((error as Error).message);
           setSignInLoad(false);
         },
-      },
+      }
     );
   };
 

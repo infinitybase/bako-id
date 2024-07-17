@@ -82,8 +82,8 @@ impl StorageKey<StorageMetadata> {
     #[storage(read, write)]
     pub fn insert(self, user_id: b256, key: String, value: String) {
         let user_metadata_key_id = sha256((user_id, key));
-        let metadata_value_id = _metadata_value_id(self.field_id, user_metadata_key_id);
-        let metadata_key_id = _metadata_key_id(self.field_id, user_metadata_key_id);
+        let metadata_value_id = _metadata_value_id(self.field_id(), user_metadata_key_id);
+        let metadata_key_id = _metadata_key_id(self.field_id(), user_metadata_key_id);
         
         write_slice(metadata_value_id, value.as_bytes().as_raw_slice());
         
@@ -91,7 +91,7 @@ impl StorageKey<StorageMetadata> {
             Some(_) => (),
             None => {
                 write_slice(metadata_key_id, key.as_bytes().as_raw_slice());
-                let metadata_list_id = _metadata_list_id(self.field_id, user_id);
+                let metadata_list_id = _metadata_list_id(self.field_id(), user_id);
                 store_user_metadata_list(metadata_list_id, metadata_key_id);
             }
         }
@@ -100,14 +100,14 @@ impl StorageKey<StorageMetadata> {
     #[storage(read)]
     pub fn get(self, user_id: b256, key: String) -> String {
         let user_metadata_key_id = sha256((user_id, key));
-        let metadata_value_id = _metadata_value_id(self.field_id, user_metadata_key_id);
+        let metadata_value_id = _metadata_value_id(self.field_id(), user_metadata_key_id);
         
         return load_metadata_field_id(metadata_value_id);
     }
 
     #[storage(read)]
     pub fn get_all(self, user_id: b256) -> Vec<String> {
-        let metadata_list_id = _metadata_list_id(self.field_id, user_id);
+        let metadata_list_id = _metadata_list_id(self.field_id(), user_id);
         
         let metadata_ids = load_user_metadata_list(metadata_list_id);
         let mut metadata_values: Vec<String> = Vec::new();
@@ -117,7 +117,7 @@ impl StorageKey<StorageMetadata> {
             let metdata_key = load_metadata_field_id(metadata_ids.get(i).unwrap());
 
             let user_metadata_key_hash = sha256((user_id, metdata_key));
-            let metadata_value_hash = _metadata_value_id(self.field_id, user_metadata_key_hash);
+            let metadata_value_hash = _metadata_value_id(self.field_id(), user_metadata_key_hash);
             let metadata_value = load_metadata_field_id(metadata_value_hash);
 
             metadata_values.push(metdata_key);
