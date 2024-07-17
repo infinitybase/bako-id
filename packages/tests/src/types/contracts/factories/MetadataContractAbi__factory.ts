@@ -67,12 +67,12 @@ const _abi = {
       "components": [
         {
           "name": "buf",
-          "type": 6,
+          "type": 7,
           "typeArguments": null
         },
         {
           "name": "len",
-          "type": 8,
+          "type": 9,
           "typeArguments": null
         }
       ],
@@ -92,6 +92,28 @@ const _abi = {
     },
     {
       "typeId": 6,
+      "type": "struct MetadataRegisteredEvent",
+      "components": [
+        {
+          "name": "metadata_id",
+          "type": 1,
+          "typeArguments": null
+        },
+        {
+          "name": "metadata_key",
+          "type": 8,
+          "typeArguments": null
+        },
+        {
+          "name": "metadata_value",
+          "type": 8,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": null
+    },
+    {
+      "typeId": 7,
       "type": "struct RawBytes",
       "components": [
         {
@@ -101,14 +123,14 @@ const _abi = {
         },
         {
           "name": "cap",
-          "type": 8,
+          "type": 9,
           "typeArguments": null
         }
       ],
       "typeParameters": null
     },
     {
-      "typeId": 7,
+      "typeId": 8,
       "type": "struct String",
       "components": [
         {
@@ -120,7 +142,7 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 8,
+      "typeId": 9,
       "type": "u64",
       "components": null,
       "typeParameters": null
@@ -155,19 +177,19 @@ const _abi = {
       "inputs": [
         {
           "name": "handle_name",
-          "type": 7,
+          "type": 8,
           "typeArguments": null
         },
         {
           "name": "key",
-          "type": 7,
+          "type": 8,
           "typeArguments": null
         }
       ],
       "name": "get",
       "output": {
         "name": "",
-        "type": 7,
+        "type": 8,
         "typeArguments": null
       },
       "attributes": [
@@ -183,7 +205,7 @@ const _abi = {
       "inputs": [
         {
           "name": "handle_name",
-          "type": 7,
+          "type": 8,
           "typeArguments": null
         }
       ],
@@ -206,17 +228,17 @@ const _abi = {
       "inputs": [
         {
           "name": "handle_name",
-          "type": 7,
+          "type": 8,
           "typeArguments": null
         },
         {
           "name": "key",
-          "type": 7,
+          "type": 8,
           "typeArguments": null
         },
         {
           "name": "value",
-          "type": 7,
+          "type": 8,
           "typeArguments": null
         }
       ],
@@ -243,6 +265,14 @@ const _abi = {
       "loggedType": {
         "name": "",
         "type": 2,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": "17487540704360855503",
+      "loggedType": {
+        "name": "",
+        "type": 6,
         "typeArguments": []
       }
     }

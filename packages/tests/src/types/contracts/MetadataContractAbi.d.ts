@@ -29,6 +29,8 @@ export enum MetadataContractErrorOutput { StorageNotInitialized = 'StorageNotIni
 
 export type ContractIdInput = { bits: string };
 export type ContractIdOutput = ContractIdInput;
+export type MetadataRegisteredEventInput = { metadata_id: string, metadata_key: StdString, metadata_value: StdString };
+export type MetadataRegisteredEventOutput = MetadataRegisteredEventInput;
 
 interface MetadataContractAbiInterface extends Interface {
   functions: {

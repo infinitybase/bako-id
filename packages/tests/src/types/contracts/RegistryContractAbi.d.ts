@@ -43,6 +43,8 @@ export type ContractIdInput = { bits: string };
 export type ContractIdOutput = ContractIdInput;
 export type GracePeriodInput = { timestamp: BigNumberish, period: BigNumberish, grace_period: BigNumberish };
 export type GracePeriodOutput = { timestamp: BN, period: BN, grace_period: BN };
+export type HandleMintedEventInput = { domain_hash: string, owner: IdentityInput, resolver: string, asset: AssetIdInput };
+export type HandleMintedEventOutput = { domain_hash: string, owner: IdentityOutput, resolver: string, asset: AssetIdOutput };
 export type NewResolverEventInput = { domain_hash: string, resolver: string };
 export type NewResolverEventOutput = NewResolverEventInput;
 
