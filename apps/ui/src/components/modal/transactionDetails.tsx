@@ -28,7 +28,6 @@ export const TransactionDomainDetailsModal = ({
   period,
   modalTitle,
 }: ITransactionDomainDetailsModal) => {
-  console.log(period);
   return (
     <Dialog.Modal
       motionPreset="slideInBottom"

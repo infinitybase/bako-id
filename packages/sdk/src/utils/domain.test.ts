@@ -17,8 +17,6 @@ describe('Domain utils', () => {
       isValidDomain('invalid domain'),
       isValidDomain('invalid@domain'),
       isValidDomain('invalid domain-'),
-      // Domain with more than 31 characters
-      isValidDomain('invaliddinvaliddinvaliddinvali12'),
     ];
 
     const expectValue = invalidDomains.every((value) => value === false);

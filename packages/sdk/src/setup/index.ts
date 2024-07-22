@@ -18,16 +18,16 @@ export interface ContractConfig {
 const connectContracts = (config: ContractConfig) => {
   if (!config.account || !config.registryId) {
     throw new Error(
-      'Account and registryId are required to connect contracts.',
+      'Account and registryId are required to connect contracts.'
     );
   }
   const storage = StorageContractAbi__factory.connect(
     config.storageId,
-    config.account,
+    config.account
   );
   const registry = RegistryContractAbi__factory.connect(
     config.registryId,
-    config.account,
+    config.account
   );
 
   return {
@@ -51,20 +51,20 @@ const getRegistryContract = async (config: ContractConfig) => {
   const fakeAccount = getFakeAccount(provider);
   const storage = StorageContractAbi__factory.connect(
     config.storageId,
-    fakeAccount,
+    fakeAccount
   );
   const { value: registryId } = await storage.functions
     .get_implementation()
     .txParams(getTxParams(provider))
-    .dryRun();
+    .get();
 
   if (!registryId) {
     throw new Error('Registry Contract not found.');
   }
 
   const registry = RegistryContractAbi__factory.connect(
-    registryId.value,
-    fakeAccount,
+    registryId.bits,
+    fakeAccount
   );
 
   return {

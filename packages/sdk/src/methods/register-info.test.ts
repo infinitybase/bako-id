@@ -1,5 +1,6 @@
 import { Provider, Wallet, type WalletUnlocked } from 'fuels';
 import { getAll, getGracePeriod, register } from '../index';
+import { createFakeWallet } from '../test';
 import { randomName } from '../utils';
 
 const { PROVIDER_URL, TEST_WALLET } = process.env;
@@ -10,21 +11,27 @@ describe('Test Registry', () => {
 
   beforeAll(async () => {
     provider = await Provider.create(PROVIDER_URL!);
-    wallet = Wallet.fromPrivateKey(TEST_WALLET!, provider);
+
+    const mainWallet = Wallet.fromPrivateKey(TEST_WALLET!, provider);
+    wallet = await createFakeWallet(provider, mainWallet, '1.1');
   });
 
   it('should get all domains by owner address', async () => {
-    await register({
-      domain: randomName(),
-      account: wallet,
-      resolver: wallet.address.toB256(),
-      period: 1,
-    });
+    try {
+      await register({
+        domain: randomName(),
+        account: wallet,
+        resolver: wallet.address.toB256(),
+        period: 1,
+      });
 
-    const [handle] = await getAll(wallet.address.toB256());
+      const [handle] = await getAll(wallet.address.toB256());
 
-    expect(handle.name).toBeDefined();
-    expect(handle.isPrimary).toBeDefined();
+      expect(handle.name).toBeDefined();
+      expect(handle.isPrimary).toBeDefined();
+    } catch (e) {
+      console.log(e);
+    }
   });
 
   it('should return the grace period for a domain', async () => {

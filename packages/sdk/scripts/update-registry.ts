@@ -19,18 +19,24 @@ const updataStorageRegistry = async () => {
 
   await storage.functions
     .set_implementation({
-      value: registry.id.toB256(),
+      bits: registry.id.toB256(),
     })
     .txParams(txParams)
     .call();
 
   await registry.functions
     .constructor(
-      { value: mainWallet.address.toB256() },
-      { value: storage.id.toB256() }
+      { bits: mainWallet.address.toB256() },
+      { bits: storage.id.toB256() },
     )
     .txParams(txParams)
     .call();
 };
 
-updataStorageRegistry();
+updataStorageRegistry()
+  .then(() => {
+    console.log(`✅ Registry updated`);
+  })
+  .catch((e) => {
+    console.log(`🚫 Error on update registry`, e);
+  });

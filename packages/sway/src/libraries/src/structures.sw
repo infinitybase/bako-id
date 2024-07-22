@@ -2,7 +2,7 @@ library;
 
 use std::{
     bytes::Bytes,
-    convert::From,
+    convert::{From, Into},
     string::String,
     block::timestamp,
     bytes_conversions::{u16::*, u64::*},
@@ -55,16 +55,13 @@ impl BytesValue {
     }
 }
 
-// !!!!!! NEW FIELDS SHOULD BE ADDED TO THE END OF THE STRUCT !!!!!!
-// changing the order of this fields will break the parsing from bytes
-// to struct and vice versa from older versions.
 pub struct BakoHandle {
-    name: String,
-    owner: b256,
-    resolver: b256,
-    primary: bool,
-    timestamp: u64,
-    period: u16,
+    pub name: String,
+    pub owner: b256,
+    pub resolver: b256,
+    pub primary: bool,
+    pub timestamp: u64,
+    pub period: u16,
 }
 
 fn read_bytes(bytes: Bytes) -> (Bytes, BytesValue) {
@@ -118,35 +115,37 @@ impl From<Bytes> for BakoHandle {
             period,
         };
     }
+} 
 
-    fn into(self) -> Bytes {
+impl From<BakoHandle> for Bytes {
+    fn from(hanle: BakoHandle) -> Bytes {
         let mut bytes = Bytes::new();
 
         // Append the name length and name bytes
-        bytes.append(self.name.as_bytes().len().try_as_u16().unwrap().to_be_bytes());
+        bytes.append(hanle.name.as_bytes().len().try_as_u16().unwrap().to_be_bytes());
         bytes.push(1u8);
-        bytes.append(self.name.as_bytes());
+        bytes.append(hanle.name.as_bytes());
 
         // Append the owner address length and address bytes
-        bytes.append(Bytes::from(self.owner).len().try_as_u16().unwrap().to_be_bytes());
+        bytes.append(Bytes::from(hanle.owner).len().try_as_u16().unwrap().to_be_bytes());
         bytes.push(2u8);
-        bytes.append(Bytes::from(self.owner));
+        bytes.append(Bytes::from(hanle.owner));
 
         // Append the resolver address length and address bytes
-        bytes.append(Bytes::from(self.resolver).len().try_as_u16().unwrap().to_be_bytes());
+        bytes.append(Bytes::from(hanle.resolver).len().try_as_u16().unwrap().to_be_bytes());
         bytes.push(2u8);
-        bytes.append(Bytes::from(self.resolver));
+        bytes.append(Bytes::from(hanle.resolver));
         
         // Append bytes representing the primary field
         bytes.push(0u8);
         bytes.push(1u8);
         bytes.push(3u8);
-        bytes.push(match self.primary { true => 1u8, false => 0u8, });
+        bytes.push(match hanle.primary { true => 1u8, false => 0u8, });
 
         
         // Append bytes representing the timestamp field
         let mut timestamp_bytes = Bytes::new();
-        let timestamp_number = self.timestamp;
+        let timestamp_number = hanle.timestamp;
         timestamp_bytes.append(timestamp_number.to_be_bytes());
 
         bytes.append(timestamp_bytes.len().try_as_u16().unwrap().to_be_bytes());
@@ -154,14 +153,14 @@ impl From<Bytes> for BakoHandle {
         bytes.append(timestamp_bytes);
 
         // Append bytes representing the period field
-        let period_bytes = self.period.to_be_bytes();
+        let period_bytes = hanle.period.to_be_bytes();
         bytes.append(period_bytes.len().try_as_u16().unwrap().to_be_bytes());
         bytes.push(5u8);
         bytes.append(period_bytes);
 
         return bytes;
     }
-} 
+}
 
 impl BakoHandle {
     pub fn new(name: String, owner: b256, resolver: b256,  primary: bool, timestamp: u64, period: u16) -> Self {
@@ -184,7 +183,6 @@ impl BakoHandle {
         let handle_period: u16 = self.period;
 
         let grace_period = handle_timestamp + (handle_period.as_u64() * year_in_seconds) + grace_period_90days;
-
         // Check if the current timestamp is greater than the grace period, if so, the domain is expired
         return grace_period > current_timestamp;
     }

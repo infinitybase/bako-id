@@ -1,8 +1,12 @@
 contract;
 
 mod storage_metadata;
+mod events;
 
-use ::storage_metadata::*;
+use storage_metadata::*;
+use events::{
+    MetadataRegisteredEvent,
+};
 
 use std::{
     hash::*,
@@ -75,6 +79,12 @@ impl MetadataContract for Contract {
         let is_owner = Identity::Address(Address::from(domain.owner)) == msg_sender().unwrap();
 
         require(is_owner, MetadataContractError::InvalidPermission);
+
+        log(MetadataRegisteredEvent {
+            metadata_id: sha256(handle_name),
+            metadata_key: key,
+            metadata_value: value,
+        });
     }
 
     #[storage(read)]

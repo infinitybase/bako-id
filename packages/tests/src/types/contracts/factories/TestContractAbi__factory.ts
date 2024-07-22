@@ -4,16 +4,17 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.81.0
-  Forc version: 0.49.3
-  Fuel-Core version: 0.22.1
+  Fuels version: 0.92.0
+  Forc version: 0.61.2
+  Fuel-Core version: 0.31.0
 */
 
 import { Interface, Contract, ContractFactory } from "fuels";
-import type { Provider, Account, AbstractAddress, BytesLike, DeployContractOptions, StorageSlot } from "fuels";
+import type { Provider, Account, AbstractAddress, BytesLike, DeployContractOptions, StorageSlot, DeployContractResult } from "fuels";
 import type { TestContractAbi, TestContractAbiInterface } from "../TestContractAbi";
 
 const _abi = {
+  "encoding": "1",
   "types": [
     {
       "typeId": 0,
@@ -32,7 +33,7 @@ const _abi = {
       "type": "struct ContractId",
       "components": [
         {
-          "name": "value",
+          "name": "bits",
           "type": 1,
           "typeArguments": null
         }
@@ -81,36 +82,32 @@ const _abi = {
 
 const _storageSlots: StorageSlot[] = [];
 
-export class TestContractAbi__factory {
-  static readonly abi = _abi;
+export const TestContractAbi__factory = {
+  abi: _abi,
 
-  static readonly storageSlots = _storageSlots;
+  storageSlots: _storageSlots,
 
-  static createInterface(): TestContractAbiInterface {
+  createInterface(): TestContractAbiInterface {
     return new Interface(_abi) as unknown as TestContractAbiInterface
-  }
+  },
 
-  static connect(
+  connect(
     id: string | AbstractAddress,
     accountOrProvider: Account | Provider
   ): TestContractAbi {
     return new Contract(id, _abi, accountOrProvider) as unknown as TestContractAbi
-  }
+  },
 
-  static async deployContract(
+  async deployContract(
     bytecode: BytesLike,
     wallet: Account,
     options: DeployContractOptions = {}
-  ): Promise<TestContractAbi> {
+  ): Promise<DeployContractResult<TestContractAbi>> {
     const factory = new ContractFactory(bytecode, _abi, wallet);
 
-    const { storageSlots } = TestContractAbi__factory;
-
-    const contract = await factory.deployContract({
-      storageSlots,
+    return factory.deployContract<TestContractAbi>({
+      storageSlots: _storageSlots,
       ...options,
     });
-
-    return contract as unknown as TestContractAbi;
-  }
+  },
 }
