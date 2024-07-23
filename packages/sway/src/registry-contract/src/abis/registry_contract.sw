@@ -43,7 +43,7 @@ abi RegistryContract {
     fn edit_resolver(name: String, resolver: b256);
 
     #[storage(read, write)]
-    fn set_primary_handle(resolver: b256, name: String);
+    fn set_primary_handle(name: String);
 }
 
 pub struct RegisterInput {
@@ -58,8 +58,14 @@ pub struct EditResolverInput {
 }
 
 pub struct SetPrimaryHandleInput {
-    resolver: b256,
-    name: String,
+    pub name: String,
+}
+
+pub fn msg_sender_address() -> b256 {
+    match msg_sender().unwrap() {
+        Identity::Address(address) => address.bits(),
+        _ => revert(0),
+    }
 }
 
 #[storage(read)]
@@ -153,7 +159,7 @@ pub fn _set_primary_handle(params: SetPrimaryHandleInput, bako_id: ContractId) {
     require(!handle.primary, RegistryContractError::AlreadyPrimary);
 
     handle.primary = true;
-    storage.set_primary(params.resolver, params.name);
+    storage.set_primary(msg_sender_address(), params.name);
 }
 
 pub fn domain_price(domain: String, period: u16) -> u64 {

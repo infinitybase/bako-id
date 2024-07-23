@@ -120,9 +120,9 @@ impl RegistryContract for Contract {
     }
 
     #[storage(read, write)]
-    fn set_primary_handle(resolver: b256, name: String) {
+    fn set_primary_handle(name: String) {
         _set_primary_handle(
-            SetPrimaryHandleInput { resolver, name },
+            SetPrimaryHandleInput { name },
             get_storage_id()
         );
     }
