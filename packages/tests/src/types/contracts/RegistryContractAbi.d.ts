@@ -13,6 +13,8 @@ import type {
   BN,
   BigNumberish,
   Bytes,
+  // biome-ignore lint/correctness/noUnusedImports: <explanation>
+  Contract,
   FunctionFragment,
   Interface,
   InvokeFunction,

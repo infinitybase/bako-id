@@ -2,6 +2,7 @@ import {
   Address,
   Provider,
   TransactionStatus,
+  bn,
   type WalletUnlocked,
 } from 'fuels';
 import {
@@ -9,6 +10,7 @@ import {
   createWallet,
   expectContainLogError,
   expectRequireRevertError,
+  fundWallet,
   randomName,
   setupContractsAndDeploy,
   tryExecute,
@@ -23,8 +25,10 @@ describe('[METHODS] Registry Contract', () => {
 
   beforeAll(async () => {
     provider = await Provider.create('http://localhost:4000/v1/graphql');
-    wallet = createWallet(provider);
+    wallet = createWallet(provider, WALLET_PRIVATE_KEYS.MAIN);
     contracts = await setupContractsAndDeploy(wallet);
+
+    await fundWallet(wallet);
   });
 
   it('should error on call method without a proxy contract started', async () => {
@@ -40,7 +44,6 @@ describe('[METHODS] Registry Contract', () => {
         .txParams(txParams)
         .call();
     } catch (error) {
-      console.log({ ...error });
       expectRequireRevertError(error);
       expectContainLogError(error, 'StorageNotInitialized');
     }
@@ -56,7 +59,7 @@ describe('[METHODS] Registry Contract', () => {
     const { transactionResult: txRegister } = await registry.register(
       domain,
       wallet.address.toB256(),
-      1
+      1,
     );
 
     expect(txRegister.status).toBe(TransactionStatus.success);
@@ -72,7 +75,7 @@ describe('[METHODS] Registry Contract', () => {
     const { transactionResult: txRegister } = await registry.register(
       domain,
       wallet.address.toB256(),
-      2
+      2,
     );
 
     expect(txRegister.status).toBe(TransactionStatus.success);
@@ -87,7 +90,7 @@ describe('[METHODS] Registry Contract', () => {
     const { transactionResult: txRegister } = await registry.register(
       domain,
       wallet.address.toB256(),
-      3
+      3,
     );
 
     expect(txRegister.status).toBe(TransactionStatus.success);
@@ -121,7 +124,7 @@ describe('[METHODS] Registry Contract', () => {
       const { transactionResult: txRegister } = await registry.register(
         domain,
         wallet.address.toB256(),
-        1
+        1,
       );
 
       expect(txRegister.status).toBe(TransactionStatus.failure);
@@ -142,7 +145,7 @@ describe('[METHODS] Registry Contract', () => {
     const { transactionResult: txRegister } = await registry.register(
       domain,
       wallet.address.toB256(),
-      1
+      1,
     );
 
     const resolverFn = await resolver.functions
@@ -259,10 +262,11 @@ describe('[METHODS] Registry Contract', () => {
 
     const { value } = await periodFn.waitForResult();
 
-    expect(value).toEqual(
+    expect(value).toEqual({
       grace_period: bn(value.grace_period),
       timestamp: bn(value.timestamp),
-      period: bn(value.period),);
+      period: bn(value.period),
+    });
   });
 
   it.each(['@invalid-!@#%$!', 'my@asd.other', '@MYHanDLE'])(
@@ -288,7 +292,7 @@ describe('[METHODS] Registry Contract', () => {
       } catch (error) {
         expectErrors(error);
       }
-    }
+    },
   );
 
   it('should be able to edit resolver of a domain', async () => {
@@ -398,6 +402,7 @@ describe('[METHODS] Registry Contract', () => {
     await tryExecute(storage.initializeStorage());
     await tryExecute(registry.initializeRegistry());
     await tryExecute(resolver.initializeResolver());
+    fundWallet(wallet);
 
     const domain = randomName();
     const secondaryDomain = randomName();
@@ -407,13 +412,15 @@ describe('[METHODS] Registry Contract', () => {
 
     await registry.register(secondaryDomain, address, 1);
 
-    const { transactionResult: txPrimary } = await registry.functions
+    const registryFn = await registry.functions
       .set_primary_handle(address, secondaryDomain)
       .addContracts([storage])
       .txParams(txParams)
       .call();
 
-    expect(txPrimary.status).toBe(TransactionStatus.success);
+    const value = await registryFn.waitForResult();
+
+    expect(value.transactionResult.status).toBe(TransactionStatus.success);
   });
 
   it('should not be able to set a domain as primary if not owner', async () => {
