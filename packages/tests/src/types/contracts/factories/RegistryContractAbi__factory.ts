@@ -471,11 +471,6 @@ const _abi = {
     {
       "inputs": [
         {
-          "name": "resolver",
-          "type": 1,
-          "typeArguments": null
-        },
-        {
           "name": "name",
           "type": 18,
           "typeArguments": null

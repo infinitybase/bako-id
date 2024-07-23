@@ -413,7 +413,7 @@ describe('[METHODS] Registry Contract', () => {
     await registry.register(secondaryDomain, address, 1);
 
     const registryFn = await registry.functions
-      .set_primary_handle(address, secondaryDomain)
+      .set_primary_handle(secondaryDomain)
       .addContracts([storage])
       .txParams(txParams)
       .call();
@@ -444,7 +444,7 @@ describe('[METHODS] Registry Contract', () => {
       registry.account = fakeWallet;
 
       await registry.functions
-        .set_primary_handle(address, secondaryDomain)
+        .set_primary_handle(secondaryDomain)
         .addContracts([storage])
         .txParams(txParams)
         .call();
@@ -469,7 +469,7 @@ describe('[METHODS] Registry Contract', () => {
 
     try {
       await registry.functions
-        .set_primary_handle(address, secondaryDomain)
+        .set_primary_handle(secondaryDomain)
         .addContracts([storage])
         .txParams(txParams)
         .call();
