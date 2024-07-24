@@ -221,6 +221,7 @@ export const setPrimaryHandle = async (params: SetPrimaryHandleParams) => {
 
   const txParams = getTxParams(account.provider);
 
+  // Change account for the user account!
   registry.account = account;
 
   try {
