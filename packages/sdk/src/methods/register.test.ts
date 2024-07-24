@@ -9,7 +9,7 @@ import {
   SameResolverError,
   randomName,
 } from '../utils';
-import { editResolver, simulateHandleCost } from './register';
+import { editResolver, setPrimaryHandle, simulateHandleCost } from './register';
 
 const { PROVIDER_URL, TEST_WALLET } = process.env;
 
@@ -200,5 +200,75 @@ describe('Test Registry', () => {
     });
 
     expect(cost).toBeDefined();
+  });
+
+  it('should be able to set primary handle', async () => {
+    const domain = randomName();
+    const secondaryDomain = randomName();
+
+    await register({
+      account: wallet,
+      resolver: wallet.address.toB256(),
+      domain,
+      period: 1,
+    });
+
+    await register({
+      account: wallet,
+      resolver: wallet.address.toB256(),
+      domain: secondaryDomain,
+      period: 1,
+    });
+
+    const setPrimary = await setPrimaryHandle({
+      domain: secondaryDomain,
+      account: wallet,
+    });
+
+    expect(setPrimary.transactionResult.status).toBe('success');
+  });
+
+  it('should not be able to set primary handle with invalid domain', async () => {
+    const setPrimary = setPrimaryHandle({
+      domain: 'invalid',
+      account: wallet,
+    });
+
+    await expect(setPrimary).rejects.toBeInstanceOf(InvalidHandleError);
+  });
+
+  it('should not be able to set primary handle with domain not registered', async () => {
+    const setPrimary = setPrimaryHandle({
+      domain: randomName(),
+      account: wallet,
+    });
+
+    await expect(setPrimary).rejects.toBeInstanceOf(InvalidHandleError);
+  });
+
+  it('should not be able to set primary handle of a domain that is not the owner', async () => {
+    const domain = randomName();
+    const secondaryDomain = randomName();
+
+    await register({
+      account: wallet,
+      resolver: wallet.address.toB256(),
+      domain,
+      period: 1,
+    });
+
+    await register({
+      account: wallet,
+      resolver: wallet.address.toB256(),
+      domain: secondaryDomain,
+      period: 1,
+    });
+
+    const setPrimary = setPrimaryHandle({
+      domain: secondaryDomain,
+      account: fakeWallet,
+    });
+
+    await expect(setPrimary).rejects.toBeInstanceOf(NotOwnerError);
   });
 });

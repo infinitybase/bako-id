@@ -44,7 +44,7 @@ type SimulateHandleCostParams = {
 async function checkAccountBalance(
   account: Account,
   domain: string,
-  period?: number
+  period?: number,
 ) {
   const amount = domainPrices(domain, period);
   const accountBalance = await account.getBalance();
@@ -205,3 +205,40 @@ export async function editResolver(params: EditResolverParams) {
     throw getContractError(<FuelError>error);
   }
 }
+
+type SetPrimaryHandleParams = {
+  domain: string;
+  account: Account;
+};
+
+export const setPrimaryHandle = async (params: SetPrimaryHandleParams) => {
+  const { domain, account } = params;
+
+  const { registry } = await getRegistryContract({
+    account: account,
+    storageId: config.STORAGE_CONTRACT_ID!,
+  });
+
+  const txParams = getTxParams(account.provider);
+
+  registry.account = account;
+
+  try {
+    const setPrimaryFn = await registry.functions
+      .set_primary_handle(domain)
+      .txParams(txParams)
+      .call();
+
+    const { transactionResult, transactionResponse, gasUsed, transactionId } =
+      await setPrimaryFn.waitForResult();
+
+    return {
+      gasUsed,
+      transactionId,
+      transactionResult,
+      transactionResponse,
+    };
+  } catch (error) {
+    throw getContractError(error as FuelError);
+  }
+};

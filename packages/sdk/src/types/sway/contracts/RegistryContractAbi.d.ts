@@ -32,8 +32,8 @@ export enum NameValidationErrorInput { InvalidLenght = 'InvalidLenght', InvalidC
 export enum NameValidationErrorOutput { InvalidLenght = 'InvalidLenght', InvalidChars = 'InvalidChars', IsEmpty = 'IsEmpty' };
 export type PermissionInput = Enum<{ Authorized: IdentityInput, Unauthorized: [], NotFound: [] }>;
 export type PermissionOutput = Enum<{ Authorized: IdentityOutput, Unauthorized: [], NotFound: [] }>;
-export enum RegistryContractErrorInput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable', IncorrectAssetId = 'IncorrectAssetId', InvalidDomain = 'InvalidDomain', InvalidAmount = 'InvalidAmount', InvalidPermission = 'InvalidPermission', NotOwner = 'NotOwner', SameResolver = 'SameResolver' };
-export enum RegistryContractErrorOutput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable', IncorrectAssetId = 'IncorrectAssetId', InvalidDomain = 'InvalidDomain', InvalidAmount = 'InvalidAmount', InvalidPermission = 'InvalidPermission', NotOwner = 'NotOwner', SameResolver = 'SameResolver' };
+export enum RegistryContractErrorInput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable', IncorrectAssetId = 'IncorrectAssetId', InvalidDomain = 'InvalidDomain', InvalidAmount = 'InvalidAmount', InvalidPermission = 'InvalidPermission', NotOwner = 'NotOwner', SameResolver = 'SameResolver', AlreadyPrimary = 'AlreadyPrimary' };
+export enum RegistryContractErrorOutput { StorageNotInitialized = 'StorageNotInitialized', AlreadyInitialized = 'AlreadyInitialized', DomainNotAvailable = 'DomainNotAvailable', IncorrectAssetId = 'IncorrectAssetId', InvalidDomain = 'InvalidDomain', InvalidAmount = 'InvalidAmount', InvalidPermission = 'InvalidPermission', NotOwner = 'NotOwner', SameResolver = 'SameResolver', AlreadyPrimary = 'AlreadyPrimary' };
 
 export type AddressInput = { bits: string };
 export type AddressOutput = AddressInput;
@@ -53,6 +53,7 @@ interface RegistryContractAbiInterface extends Interface {
     constructor: FunctionFragment;
     edit_resolver: FunctionFragment;
     register: FunctionFragment;
+    set_primary_handle: FunctionFragment;
     decimals: FunctionFragment;
     name: FunctionFragment;
     symbol: FunctionFragment;
@@ -71,6 +72,7 @@ export class RegistryContractAbi extends Contract {
     constructor: InvokeFunction<[owner: AddressInput, storage_id: ContractIdInput], void>;
     edit_resolver: InvokeFunction<[name: StdString, resolver: string], void>;
     register: InvokeFunction<[name: StdString, resolver: string, period: BigNumberish], AssetIdOutput>;
+    set_primary_handle: InvokeFunction<[name: StdString], void>;
     decimals: InvokeFunction<[asset: AssetIdInput], Option<number>>;
     name: InvokeFunction<[asset: AssetIdInput], Option<StdString>>;
     symbol: InvokeFunction<[asset: AssetIdInput], Option<StdString>>;
