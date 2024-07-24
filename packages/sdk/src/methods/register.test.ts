@@ -84,7 +84,7 @@ describe('Test Registry', () => {
   });
 
   it('should be able to register domain with 2 years', async () => {
-    const domain = randomName(1);
+    const domain = randomName();
 
     const result = await register({
       account: wallet,
