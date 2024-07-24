@@ -20,8 +20,8 @@ export const MetadataCard = ({
   return (
     <Box
       key={keys}
-      w={[32, 32, 36, 36]}
-      h={[28, 28, 32, 32]}
+      w={['8.5rem', '8.8rem']}
+      h="8rem"
       display="flex"
       flexDirection="row"
       onClick={onClick}
