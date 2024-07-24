@@ -1,4 +1,4 @@
-import { type BN, type Provider, Wallet, bn } from 'fuels';
+import { type Account, type BN, type Provider, Wallet, bn } from 'fuels';
 
 export const domainPrices = (domain: string, period = 1) => {
   const domainSize = domain.length;
@@ -19,8 +19,8 @@ export const domainPrices = (domain: string, period = 1) => {
 };
 
 export const txParams = {
-  gasPrice: 1,
-  gasLimit: 1_000_000,
+  gasPrice: bn(1),
+  gasLimit: bn(2_000_000),
 };
 
 export const WALLET_PRIVATE_KEYS = {
@@ -33,6 +33,18 @@ export function createWallet(
   privateKey = WALLET_PRIVATE_KEYS.MAIN
 ) {
   return Wallet.fromPrivateKey(privateKey, provider);
+}
+
+export async function fundWallet(wallet: Account) {
+  const genesisWallet = Wallet.fromPrivateKey(
+    WALLET_PRIVATE_KEYS.MAIN,
+    wallet.provider
+  );
+  await genesisWallet.transfer(
+    wallet.address,
+    bn(10000000),
+    wallet.provider.getBaseAssetId()
+  );
 }
 
 export function randomName(size = 10) {

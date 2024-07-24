@@ -10,6 +10,7 @@ import { register } from '../register';
 import { UserMetadataContract } from './index';
 
 const { PROVIDER_URL, PRIVATE_KEY } = process.env;
+
 describe('Test metadata', () => {
   let wallet: WalletUnlocked;
   let provider: Provider;
@@ -137,5 +138,27 @@ describe('Test metadata', () => {
 
     const metadata = await userMetadataContract.getAll();
     expect(metadata).toEqual([metadataConfig.gihtub, metadataConfig.linkedin]);
+  });
+
+  it('should batch save metadata', async () => {
+    const domain = randomName();
+
+    await register({
+      account: wallet,
+      resolver: wallet.address.toB256(),
+      domain: domain,
+    });
+
+    const userMetadataContract = UserMetadataContract.initialize(
+      wallet,
+      domain
+    );
+
+    const metadata = [metadataConfig.gihtub, metadataConfig.linkedin];
+
+    const { transactionResult } =
+      await userMetadataContract.batchSaveMetadata(metadata);
+
+    expect(transactionResult.status).toBe(TransactionStatus.success);
   });
 });

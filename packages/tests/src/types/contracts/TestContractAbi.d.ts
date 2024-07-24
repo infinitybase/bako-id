@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.81.0
-  Forc version: 0.49.3
-  Fuel-Core version: 0.22.1
+  Fuels version: 0.92.0
+  Forc version: 0.61.2
+  Fuel-Core version: 0.31.0
 */
 
 import type {
@@ -18,7 +18,7 @@ import type {
   InvokeFunction,
 } from 'fuels';
 
-export type ContractIdInput = { value: string };
+export type ContractIdInput = { bits: string };
 export type ContractIdOutput = ContractIdInput;
 
 interface TestContractAbiInterface extends Interface {
@@ -26,12 +26,6 @@ interface TestContractAbiInterface extends Interface {
     test_get: FunctionFragment;
     test_set: FunctionFragment;
   };
-
-  encodeFunctionData(functionFragment: 'test_get', values: [ContractIdInput]): Uint8Array;
-  encodeFunctionData(functionFragment: 'test_set', values: [ContractIdInput]): Uint8Array;
-
-  decodeFunctionData(functionFragment: 'test_get', data: BytesLike): DecodedValue;
-  decodeFunctionData(functionFragment: 'test_set', data: BytesLike): DecodedValue;
 }
 
 export class TestContractAbi extends Contract {

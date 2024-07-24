@@ -33,7 +33,7 @@ describe('Metadata contract', () => {
   let contracts: Awaited<ReturnType<typeof setupContractsAndDeploy>>;
 
   beforeAll(async () => {
-    provider = await Provider.create('http://localhost:4000/graphql');
+    provider = await Provider.create('http://localhost:4000/v1/graphql');
     wallet = createWallet(provider);
     contracts = await setupContractsAndDeploy(wallet);
 
@@ -42,7 +42,7 @@ describe('Metadata contract', () => {
   });
 
   it('should error on call method without started metadata contract', async () => {
-    const { metadata } = contracts;
+    const { metadata, storage } = contracts;
 
     expect.assertions(2);
 
@@ -51,8 +51,9 @@ describe('Metadata contract', () => {
         .save(
           metadataConfig.user.handle(),
           metadataConfig.github.key,
-          metadataConfig.github.value,
+          metadataConfig.github.value
         )
+        .addContracts([storage])
         .txParams(txParams)
         .call();
     } catch (error) {
@@ -70,10 +71,12 @@ describe('Metadata contract', () => {
 
     await registry.register(handleName, wallet.address.toB256(), 1);
 
-    const { transactionResult } = await metadata.functions
+    const saveFn = await metadata.functions
       .save(handleName, github.key, github.value)
       .txParams(txParams)
       .call();
+
+    const { transactionResult } = await saveFn.waitForResult();
 
     expect(transactionResult.status).toBe(TransactionStatus.success);
   });
@@ -109,10 +112,11 @@ describe('Metadata contract', () => {
     const handleName = user.handle();
 
     const getGithubMetadata = async () => {
-      const { value } = await metadata.functions
+      const getFn = await metadata.functions
         .get(handleName, github.key)
         .txParams(txParams)
         .call();
+      const { value } = await getFn.waitForResult();
       return value;
     };
 
@@ -139,10 +143,11 @@ describe('Metadata contract', () => {
     const handleName = user.handle();
 
     const getGithubMetadata = async () => {
-      const { value } = await metadata.functions
+      const getFn = await metadata.functions
         .get(handleName, github.key)
         .txParams(txParams)
         .call();
+      const { value } = await getFn.waitForResult();
       return value;
     };
 
@@ -163,6 +168,27 @@ describe('Metadata contract', () => {
       .txParams(txParams)
       .call();
     expect(await getGithubMetadata()).toBe(newValue);
+  });
+
+  it('should update metadata values', async () => {
+    const { metadata, registry } = contracts;
+    const { github, linkedin, user } = metadataConfig;
+    const handleName = user.handle();
+
+    metadata.account = wallet;
+
+    await tryExecute(metadata.initializeMetadata());
+    await tryExecute(registry.register(handleName, wallet.address.toB256(), 1));
+
+    const { waitForResult } = await metadata
+      .multiCall([
+        metadata.functions.save(handleName, github.key, github.value),
+        metadata.functions.save(handleName, linkedin.key, linkedin.value),
+      ])
+      .call();
+
+    const { logs } = await waitForResult();
+    expect(logs).toHaveLength(2);
   });
 
   it('should get all metadata', async () => {

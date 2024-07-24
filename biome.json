@@ -49,8 +49,7 @@
       "build/**",
       "dist/**",
       "sway/**",
-      "pnpm-lock.yaml",
-      "sway/contracts/**"
+      "pnpm-lock.yaml"
     ]
   }
 }

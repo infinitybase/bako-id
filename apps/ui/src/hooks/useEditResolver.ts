@@ -1,4 +1,4 @@
-import { Address, type Account } from 'fuels';
+import { type Account, Address } from 'fuels';
 import { useCustomToast } from '../components';
 import { useProfile } from '../modules/profile/hooks/useProfile';
 import { useEditResolverRequests } from './useEditResolverRequests';
@@ -14,12 +14,6 @@ export const useEditResolver = ({ domain, account }: EditResolverParams) => {
   const editResolver = useEditResolverRequests();
 
   const handleChangeResolver = (resolver: string) => {
-    console.log({
-      domain,
-      resolver: Address.fromAddressOrString(resolver).toB256(),
-      account,
-    });
-
     editResolver.mutate(
       {
         domain,
@@ -28,16 +22,14 @@ export const useEditResolver = ({ domain, account }: EditResolverParams) => {
       },
       {
         onError: (error: unknown) => {
-          console.log(error);
           // @ts-expect-error error
           errorToast({ title: 'Error', description: error.message });
         },
-        onSuccess: (data) => {
-          console.log(data);
+        onSuccess: () => {
           successToast({ title: 'Success', description: 'Resolver updated' });
           domainMethods.refetch();
         },
-      },
+      }
     );
   };
 

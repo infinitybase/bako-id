@@ -1,4 +1,5 @@
-import { BaseAssetId, type Account, type Provider } from 'fuels';
+import type { FuelError } from '@fuel-ts/errors';
+import type { Account, Provider } from 'fuels';
 import { config } from '../config';
 import { getRegistryContract } from '../setup';
 import {
@@ -43,7 +44,7 @@ type SimulateHandleCostParams = {
 async function checkAccountBalance(
   account: Account,
   domain: string,
-  period?: number,
+  period?: number
 ) {
   const amount = domainPrices(domain, period);
   const accountBalance = await account.getBalance();
@@ -87,26 +88,28 @@ export async function register(params: RegisterDomainParams) {
   const amount = await checkAccountBalance(account, domainName, period);
   // const amount = await domainPrices(domain, period);
 
+  const registerFn = await registry.functions
+    .register(domainName, resolver, period ?? 1)
+    .callParams({
+      forward: { amount, assetId: registry.provider.getBaseAssetId() },
+    })
+    .txParams(txParams)
+    .call();
+
   const {
     transactionResult,
     transactionResponse,
     gasUsed,
     transactionId,
     value,
-  } = await registry.functions
-    .register(domainName, resolver, period ?? 1)
-    .callParams({
-      forward: { amount, assetId: BaseAssetId },
-    })
-    .txParams(txParams)
-    .call();
+  } = await registerFn.waitForResult();
 
   return {
     gasUsed,
     transactionId,
     transactionResult,
     transactionResponse,
-    assetId: value.value,
+    assetId: value.bits,
   };
 }
 
@@ -141,7 +144,7 @@ export async function simulateHandleCost(params: SimulateHandleCostParams) {
   const transactionRequest = await registry.functions
     .register(domainName, fakeAccount.address.toB256(), period ?? 1)
     .callParams({
-      forward: { amount, assetId: BaseAssetId },
+      forward: { amount, assetId: provider.getBaseAssetId() },
     })
     .txParams(txParams)
     .getTransactionRequest();
@@ -184,11 +187,13 @@ export async function editResolver(params: EditResolverParams) {
   const txParams = getTxParams(account.provider);
 
   try {
+    const editFn = await registry.functions
+      .edit_resolver(domain, resolver)
+      .txParams(txParams)
+      .call();
+
     const { transactionResult, transactionResponse, gasUsed, transactionId } =
-      await registry.functions
-        .edit_resolver(domain, resolver)
-        .txParams(txParams)
-        .call();
+      await editFn.waitForResult();
 
     return {
       gasUsed,
@@ -197,7 +202,6 @@ export async function editResolver(params: EditResolverParams) {
       transactionResponse,
     };
   } catch (error) {
-    //@ts-ignore
-    return getContractError(error);
+    throw getContractError(<FuelError>error);
   }
 }

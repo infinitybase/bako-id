@@ -1,5 +1,5 @@
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
-import { defaultConnectors } from '@fuel-wallet/sdk';
+import { defaultConnectors } from '@fuels/connectors';
 import { FuelProvider } from '@fuels/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
@@ -13,18 +13,16 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ChakraProvider theme={defaultTheme}>
       {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      <FuelProvider
-        fuelConfig={{
-          //@ts-expect-error FuelConnector
-          connectors: defaultConnectors({ devMode: true }),
-          ui: true,
-        }}
-      >
-        <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <FuelProvider
+          fuelConfig={{
+            connectors: defaultConnectors({ devMode: true }),
+          }}
+        >
           <ColorModeScript initialColorMode="dark" />
           <InnerApp />
-        </QueryClientProvider>
-      </FuelProvider>
+        </FuelProvider>
+      </QueryClientProvider>
     </ChakraProvider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );

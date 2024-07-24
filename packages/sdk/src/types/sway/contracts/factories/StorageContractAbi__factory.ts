@@ -4,16 +4,17 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.81.0
-  Forc version: 0.49.3
-  Fuel-Core version: 0.22.1
+  Fuels version: 0.92.0
+  Forc version: 0.61.2
+  Fuel-Core version: 0.31.0
 */
 
 import { Interface, Contract, ContractFactory } from "fuels";
-import type { Provider, Account, AbstractAddress, BytesLike, DeployContractOptions, StorageSlot } from "fuels";
+import type { Provider, Account, AbstractAddress, BytesLike, DeployContractOptions, StorageSlot, DeployContractResult } from "fuels";
 import type { StorageContractAbi, StorageContractAbiInterface } from "../StorageContractAbi";
 
 const _abi = {
+  "encoding": "1",
   "types": [
     {
       "typeId": 0,
@@ -114,7 +115,7 @@ const _abi = {
       "type": "struct Address",
       "components": [
         {
-          "name": "value",
+          "name": "bits",
           "type": 1,
           "typeArguments": null
         }
@@ -143,7 +144,7 @@ const _abi = {
       "type": "struct ContractId",
       "components": [
         {
-          "name": "value",
+          "name": "bits",
           "type": 1,
           "typeArguments": null
         }
@@ -533,7 +534,7 @@ const _abi = {
   ],
   "loggedTypes": [
     {
-      "logId": 0,
+      "logId": "16850777566225060202",
       "loggedType": {
         "name": "",
         "type": 4,
@@ -541,74 +542,10 @@ const _abi = {
       }
     },
     {
-      "logId": 1,
+      "logId": "5436863990471376381",
       "loggedType": {
         "name": "",
         "type": 5,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 2,
-      "loggedType": {
-        "name": "",
-        "type": 4,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 3,
-      "loggedType": {
-        "name": "",
-        "type": 4,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 4,
-      "loggedType": {
-        "name": "",
-        "type": 4,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 5,
-      "loggedType": {
-        "name": "",
-        "type": 4,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 6,
-      "loggedType": {
-        "name": "",
-        "type": 4,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 7,
-      "loggedType": {
-        "name": "",
-        "type": 4,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 8,
-      "loggedType": {
-        "name": "",
-        "type": 4,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 9,
-      "loggedType": {
-        "name": "",
-        "type": 4,
         "typeArguments": []
       }
     }
@@ -619,41 +556,37 @@ const _abi = {
 
 const _storageSlots: StorageSlot[] = [
   {
-    "key": "f383b0ce51358be57daa3b725fe44acdb2d880604e367199080b4379c41bb6ed",
+    "key": "b61e266e75c64ac989315805e532e6125db4ee10ad42b2038897cf0ff4ec740a",
     "value": "0000000000000000000000000000000000000000000000000000000000000000"
   }
 ];
 
-export class StorageContractAbi__factory {
-  static readonly abi = _abi;
+export const StorageContractAbi__factory = {
+  abi: _abi,
 
-  static readonly storageSlots = _storageSlots;
+  storageSlots: _storageSlots,
 
-  static createInterface(): StorageContractAbiInterface {
+  createInterface(): StorageContractAbiInterface {
     return new Interface(_abi) as unknown as StorageContractAbiInterface
-  }
+  },
 
-  static connect(
+  connect(
     id: string | AbstractAddress,
     accountOrProvider: Account | Provider
   ): StorageContractAbi {
     return new Contract(id, _abi, accountOrProvider) as unknown as StorageContractAbi
-  }
+  },
 
-  static async deployContract(
+  async deployContract(
     bytecode: BytesLike,
     wallet: Account,
     options: DeployContractOptions = {}
-  ): Promise<StorageContractAbi> {
+  ): Promise<DeployContractResult<StorageContractAbi>> {
     const factory = new ContractFactory(bytecode, _abi, wallet);
 
-    const { storageSlots } = StorageContractAbi__factory;
-
-    const contract = await factory.deployContract({
-      storageSlots,
+    return factory.deployContract<StorageContractAbi>({
+      storageSlots: _storageSlots,
       ...options,
     });
-
-    return contract as unknown as StorageContractAbi;
-  }
+  },
 }

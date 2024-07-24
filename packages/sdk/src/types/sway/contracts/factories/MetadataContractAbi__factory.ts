@@ -4,16 +4,17 @@
 /* eslint-disable */
 
 /*
-  Fuels version: 0.81.0
-  Forc version: 0.49.3
-  Fuel-Core version: 0.22.1
+  Fuels version: 0.92.0
+  Forc version: 0.61.2
+  Fuel-Core version: 0.31.0
 */
 
 import { Interface, Contract, ContractFactory } from "fuels";
-import type { Provider, Account, AbstractAddress, BytesLike, DeployContractOptions, StorageSlot } from "fuels";
+import type { Provider, Account, AbstractAddress, BytesLike, DeployContractOptions, StorageSlot, DeployContractResult } from "fuels";
 import type { MetadataContractAbi, MetadataContractAbiInterface } from "../MetadataContractAbi";
 
 const _abi = {
+  "encoding": "1",
   "types": [
     {
       "typeId": 0,
@@ -66,12 +67,12 @@ const _abi = {
       "components": [
         {
           "name": "buf",
-          "type": 6,
+          "type": 7,
           "typeArguments": null
         },
         {
           "name": "len",
-          "type": 8,
+          "type": 9,
           "typeArguments": null
         }
       ],
@@ -82,7 +83,7 @@ const _abi = {
       "type": "struct ContractId",
       "components": [
         {
-          "name": "value",
+          "name": "bits",
           "type": 1,
           "typeArguments": null
         }
@@ -91,6 +92,28 @@ const _abi = {
     },
     {
       "typeId": 6,
+      "type": "struct MetadataRegisteredEvent",
+      "components": [
+        {
+          "name": "metadata_id",
+          "type": 1,
+          "typeArguments": null
+        },
+        {
+          "name": "metadata_key",
+          "type": 8,
+          "typeArguments": null
+        },
+        {
+          "name": "metadata_value",
+          "type": 8,
+          "typeArguments": null
+        }
+      ],
+      "typeParameters": null
+    },
+    {
+      "typeId": 7,
       "type": "struct RawBytes",
       "components": [
         {
@@ -100,14 +123,14 @@ const _abi = {
         },
         {
           "name": "cap",
-          "type": 8,
+          "type": 9,
           "typeArguments": null
         }
       ],
       "typeParameters": null
     },
     {
-      "typeId": 7,
+      "typeId": 8,
       "type": "struct String",
       "components": [
         {
@@ -119,7 +142,7 @@ const _abi = {
       "typeParameters": null
     },
     {
-      "typeId": 8,
+      "typeId": 9,
       "type": "u64",
       "components": null,
       "typeParameters": null
@@ -154,19 +177,19 @@ const _abi = {
       "inputs": [
         {
           "name": "handle_name",
-          "type": 7,
+          "type": 8,
           "typeArguments": null
         },
         {
           "name": "key",
-          "type": 7,
+          "type": 8,
           "typeArguments": null
         }
       ],
       "name": "get",
       "output": {
         "name": "",
-        "type": 7,
+        "type": 8,
         "typeArguments": null
       },
       "attributes": [
@@ -182,7 +205,7 @@ const _abi = {
       "inputs": [
         {
           "name": "handle_name",
-          "type": 7,
+          "type": 8,
           "typeArguments": null
         }
       ],
@@ -205,17 +228,17 @@ const _abi = {
       "inputs": [
         {
           "name": "handle_name",
-          "type": 7,
+          "type": 8,
           "typeArguments": null
         },
         {
           "name": "key",
-          "type": 7,
+          "type": 8,
           "typeArguments": null
         },
         {
           "name": "value",
-          "type": 7,
+          "type": 8,
           "typeArguments": null
         }
       ],
@@ -238,7 +261,7 @@ const _abi = {
   ],
   "loggedTypes": [
     {
-      "logId": 0,
+      "logId": "41786149422294694",
       "loggedType": {
         "name": "",
         "type": 2,
@@ -246,26 +269,10 @@ const _abi = {
       }
     },
     {
-      "logId": 1,
+      "logId": "17487540704360855503",
       "loggedType": {
         "name": "",
-        "type": 2,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 2,
-      "loggedType": {
-        "name": "",
-        "type": 2,
-        "typeArguments": []
-      }
-    },
-    {
-      "logId": 3,
-      "loggedType": {
-        "name": "",
-        "type": 2,
+        "type": 6,
         "typeArguments": []
       }
     }
@@ -276,49 +283,45 @@ const _abi = {
 
 const _storageSlots: StorageSlot[] = [
   {
-    "key": "b48b753af346966d0d169c0b2e3234611f65d5cfdb57c7b6e7cd6ca93707bee0",
+    "key": "8ecd865d933483a43363a1a3babfd71cbc3ade9a24d8d98b7c62fdcf4f5fdbce",
     "value": "0000000000000000000000000000000000000000000000000000000000000000"
   },
   {
-    "key": "de9090cb50e71c2588c773487d1da7066d0c719849a7e58dc8b6397a25c567c0",
+    "key": "8ecd865d933483a43363a1a3babfd71cbc3ade9a24d8d98b7c62fdcf4f5fdbcf",
     "value": "0000000000000000000000000000000000000000000000000000000000000000"
   },
   {
-    "key": "de9090cb50e71c2588c773487d1da7066d0c719849a7e58dc8b6397a25c567c1",
+    "key": "b61e266e75c64ac989315805e532e6125db4ee10ad42b2038897cf0ff4ec740a",
     "value": "0000000000000000000000000000000000000000000000000000000000000000"
   }
 ];
 
-export class MetadataContractAbi__factory {
-  static readonly abi = _abi;
+export const MetadataContractAbi__factory = {
+  abi: _abi,
 
-  static readonly storageSlots = _storageSlots;
+  storageSlots: _storageSlots,
 
-  static createInterface(): MetadataContractAbiInterface {
+  createInterface(): MetadataContractAbiInterface {
     return new Interface(_abi) as unknown as MetadataContractAbiInterface
-  }
+  },
 
-  static connect(
+  connect(
     id: string | AbstractAddress,
     accountOrProvider: Account | Provider
   ): MetadataContractAbi {
     return new Contract(id, _abi, accountOrProvider) as unknown as MetadataContractAbi
-  }
+  },
 
-  static async deployContract(
+  async deployContract(
     bytecode: BytesLike,
     wallet: Account,
     options: DeployContractOptions = {}
-  ): Promise<MetadataContractAbi> {
+  ): Promise<DeployContractResult<MetadataContractAbi>> {
     const factory = new ContractFactory(bytecode, _abi, wallet);
 
-    const { storageSlots } = MetadataContractAbi__factory;
-
-    const contract = await factory.deployContract({
-      storageSlots,
+    return factory.deployContract<MetadataContractAbi>({
+      storageSlots: _storageSlots,
       ...options,
     });
-
-    return contract as unknown as MetadataContractAbi;
-  }
+  },
 }
