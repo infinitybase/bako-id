@@ -45,8 +45,8 @@ interface IModalFilterTabsProps {
 interface MetadataTabPanelProps {
   title: string;
   metadatas: typeof Metadatas.Social;
-  userMetadata: Record<string, IMetadata>; // Substitua 'any' pelo tipo correto
-  filters: FilterButtonTypes; // Substitua 'any' pelo tipo correto
+  userMetadata: Record<string, IMetadata>;
+  filters: FilterButtonTypes;
 }
 
 enum FilterButtonTypes {
