@@ -30,6 +30,35 @@ interface EditProfileModalProps {
   onClose: () => void;
 }
 
+export interface IMetadata {
+  key: string;
+  title: string;
+  description: string;
+  icon?: ReactNode;
+}
+
+interface IModalFilterTabsProps {
+  metadata: Metadata[];
+  filters: FilterButtonTypes;
+}
+
+interface MetadataTabPanelProps {
+  title: string;
+  metadatas: typeof Metadatas.Social;
+  userMetadata: Record<string, IMetadata>;
+  filters: FilterButtonTypes;
+}
+
+enum FilterButtonTypes {
+  ALL = 'All',
+  ADDED = 'Added',
+  NOT_ADDED = 'Not Added',
+}
+
+interface IModalFiltersButtonsProps {
+  changeFilter: (filter: FilterButtonTypes) => void;
+}
+
 const TabsTypes = [
   { key: 'General', name: 'General' },
   { key: 'Social', name: 'Social' },
@@ -74,7 +103,7 @@ const ModalTitle = ({ onClose }: Pick<EditProfileModalProps, 'onClose'>) => {
 
             <Button
               variant="ghosted"
-              h={[8, 8, 8, 12]}
+              h={[8, 8, 8, 10]}
               color="grey.100"
               fontSize={['sm', 'sm', 'sm', 'md']}
               leftIcon={<FlagIcon />}
@@ -99,15 +128,6 @@ const ModalTitle = ({ onClose }: Pick<EditProfileModalProps, 'onClose'>) => {
   );
 };
 
-enum FilterButtonTypes {
-  ALL = 'All',
-  ADDED = 'Added',
-  NOT_ADDED = 'Not Added',
-}
-
-interface IModalFiltersButtonsProps {
-  changeFilter: (filter: FilterButtonTypes) => void;
-}
 const ModalFiltersButtons = ({ changeFilter }: IModalFiltersButtonsProps) => {
   return (
     <Flex gap={2} my={4} w="full" justifyContent="space-between">
@@ -163,22 +183,14 @@ const ModalFiltersButtons = ({ changeFilter }: IModalFiltersButtonsProps) => {
   );
 };
 
-export interface IMetadata {
-  key: string;
-  title: string;
-  description: string;
-  icon?: ReactNode;
-}
-
-interface IModalFilterTabsProps {
-  metadata: Metadata[];
-  filters: FilterButtonTypes;
-}
-
-const ModalFiltersTabs = ({ metadata, filters }: IModalFilterTabsProps) => {
+const MetadataTabPanel = ({
+  title,
+  metadatas,
+  userMetadata,
+  filters,
+}: MetadataTabPanelProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [activeMetadata, setActiveMetadata] = useState<IMetadata | null>(null);
-  const [activeTab, setActiveTab] = useState(0);
 
   const handleOpenModal = (metadata: IMetadata) => {
     setActiveMetadata(metadata);
@@ -190,6 +202,59 @@ const ModalFiltersTabs = ({ metadata, filters }: IModalFilterTabsProps) => {
     onClose();
   };
 
+  const handleFilters = (metadata: Metadata, filters: FilterButtonTypes) => {
+    if (filters === FilterButtonTypes.ALL) return true;
+    if (filters === FilterButtonTypes.ADDED)
+      return metadata.key in userMetadata;
+    if (filters === FilterButtonTypes.NOT_ADDED)
+      return !(metadata.key in userMetadata);
+  };
+
+  return (
+    <TabPanel w="full" px={0}>
+      <Flex display="flex" flexDirection="column" gap={4}>
+        <Text color="section.500">{title}</Text>
+        <Flex display="flex" gap={4} wrap="wrap">
+          {metadatas
+            .filter((metadata) => {
+              return handleFilters({ ...metadata, value: '' }, filters);
+            })
+            .map((metadata) => {
+              const isVerified =
+                metadata.key in userMetadata
+                  ? !!userMetadata[metadata.key]
+                  : null;
+              return (
+                <React.Fragment key={metadata.key}>
+                  <MetadataCard
+                    key={metadata.key}
+                    keys={metadata.key}
+                    icon={metadata.icon}
+                    title={metadata.title}
+                    verified={isVerified}
+                    onClick={() => handleOpenModal(metadata)}
+                  />
+
+                  {activeMetadata && activeMetadata.key === metadata.key && (
+                    <EditProfileFieldsModal
+                      key={metadata.key}
+                      isOpen={isOpen}
+                      onClose={handleCloseModal}
+                      type={metadata.key}
+                      title={isVerified ? userMetadata[metadata.key].title : ''}
+                      validated={isVerified}
+                    />
+                  )}
+                </React.Fragment>
+              );
+            })}
+        </Flex>
+      </Flex>
+    </TabPanel>
+  );
+};
+
+const ModalFiltersTabs = ({ metadata, filters }: IModalFilterTabsProps) => {
   const userMetadata = useMemo(() => {
     return metadata.reduce((obj: Record<string, IMetadata>, item: Metadata) => {
       obj[item.key] = {
@@ -201,21 +266,8 @@ const ModalFiltersTabs = ({ metadata, filters }: IModalFilterTabsProps) => {
     }, {});
   }, [metadata]);
 
-  const handleFilters = (metadata: Metadata, filters: FilterButtonTypes) => {
-    if (filters === FilterButtonTypes.ALL) return true;
-    if (filters === FilterButtonTypes.ADDED)
-      return metadata.key in userMetadata;
-    if (filters === FilterButtonTypes.NOT_ADDED)
-      return !(metadata.key in userMetadata);
-  };
-
   return (
-    <Tabs
-      position="relative"
-      borderColor="disabled.500"
-      index={activeTab}
-      onChange={(index) => setActiveTab(index)}
-    >
+    <Tabs position="relative" borderColor="disabled.500">
       <TabList w="full" color="disabled.500">
         {TabsTypes.map((tab) => (
           <Tab
@@ -248,132 +300,43 @@ const ModalFiltersTabs = ({ metadata, filters }: IModalFilterTabsProps) => {
         }}
       >
         <TabPanel w="full" px={0}>
-          <Flex display="flex" flexDirection="column" gap={4}>
-            <Text color="section.500">General</Text>
-            <Flex display="flex" gap={4}>
-              {Metadatas.General.filter((metadata) => {
-                return handleFilters({ ...metadata, value: '' }, filters);
-              }).map((metadata) => {
-                const isVerified =
-                  metadata.key in userMetadata
-                    ? !!userMetadata[metadata.key]
-                    : null;
-
-                return (
-                  <React.Fragment key={metadata.key}>
-                    <MetadataCard
-                      key={metadata.key}
-                      keys={metadata.key}
-                      icon={metadata.icon}
-                      title={metadata.title}
-                      verified={isVerified}
-                      onClick={() => handleOpenModal(metadata)}
-                    />
-
-                    {activeMetadata && activeMetadata.key === metadata.key && (
-                      <EditProfileFieldsModal
-                        key={metadata.key}
-                        isOpen={isOpen}
-                        onClose={handleCloseModal}
-                        type={metadata.key}
-                        title={
-                          isVerified ? userMetadata[metadata.key].title : ''
-                        }
-                        validated={isVerified}
-                      />
-                    )}
-                  </React.Fragment>
-                );
-              })}
-            </Flex>
-          </Flex>
-          <Flex display="flex" mt={8} flexDirection="column" gap={4}>
-            <Text color="section.500">Social</Text>
-            <Flex display="flex" gap={4} wrap="wrap">
-              {Metadatas.Social.filter((metadata) => {
-                return handleFilters({ ...metadata, value: '' }, filters);
-              }).map((metadata) => {
-                const isVerified =
-                  metadata.key in userMetadata
-                    ? !!userMetadata[metadata.key]
-                    : null;
-                return (
-                  <React.Fragment key={metadata.key}>
-                    <MetadataCard
-                      key={metadata.key}
-                      keys={metadata.key}
-                      icon={metadata.icon}
-                      title={metadata.title}
-                      verified={isVerified}
-                      onClick={() => handleOpenModal(metadata)}
-                    />
-
-                    {activeMetadata && activeMetadata.key === metadata.key && (
-                      <EditProfileFieldsModal
-                        key={metadata.key}
-                        isOpen={isOpen}
-                        onClose={handleCloseModal}
-                        type={metadata.key}
-                        title={
-                          isVerified ? userMetadata[metadata.key].title : ''
-                        }
-                        validated={isVerified}
-                      />
-                    )}
-                  </React.Fragment>
-                );
-              })}
-            </Flex>
-          </Flex>
-        </TabPanel>
-        {/* <TabPanel w="full" px={0}>
-          <Flex display="flex" flexDirection="column" gap={4}>
-            <Text color="section.500">Social</Text>
-            <Flex display="flex" gap={4} wrap="wrap">
-              {Metadatas.Social.map((metadata) => (
-                <MetadataCard
-                  key={metadata.key}
-                  icon={metadata.icon}
-                  title={metadata.title}
-                  verified={metadata.validated}
-                  onClick={() => {}}
-                />
-              ))}
-            </Flex>
-          </Flex>
+          <MetadataTabPanel
+            title="General"
+            metadatas={Metadatas.General}
+            userMetadata={userMetadata}
+            filters={filters}
+          />
+          <MetadataTabPanel
+            title="Social"
+            metadatas={Metadatas.Social}
+            userMetadata={userMetadata}
+            filters={filters}
+          />
         </TabPanel>
         <TabPanel w="full" px={0}>
-          <Flex display="flex" flexDirection="column" gap={4}>
-            <Text color="section.500">Addresses</Text>
-            <Flex display="flex" gap={4} wrap="wrap">
-              {Metadatas.Address.map((metadata) => (
-                <MetadataCard
-                  key={metadata.key}
-                  icon={metadata.icon}
-                  title={metadata.title}
-                  verified={metadata.validated}
-                  onClick={() => {}}
-                />
-              ))}
-            </Flex>
-          </Flex>
+          <MetadataTabPanel
+            title="Social"
+            metadatas={Metadatas.Social}
+            userMetadata={userMetadata}
+            filters={filters}
+          />
         </TabPanel>
         <TabPanel w="full" px={0}>
-          <Flex display="flex" flexDirection="column" gap={4}>
-            <Text color="section.500">Website</Text>
-            <Flex display="flex" gap={4} wrap="wrap">
-              {Metadatas.Website.map((metadata) => (
-                <MetadataCard
-                  key={metadata.key}
-                  icon={metadata.icon}
-                  title={metadata.title}
-                  verified={metadata.validated}
-                  onClick={() => {}}
-                />
-              ))}
-            </Flex>
-          </Flex>
-        </TabPanel> */}
+          <MetadataTabPanel
+            title="Addresses"
+            metadatas={Metadatas.Address}
+            userMetadata={userMetadata}
+            filters={filters}
+          />
+        </TabPanel>
+        <TabPanel w="full" px={0}>
+          <MetadataTabPanel
+            title="Website"
+            metadatas={Metadatas.Website}
+            userMetadata={userMetadata}
+            filters={filters}
+          />
+        </TabPanel>
       </TabPanels>
     </Tabs>
   );

@@ -68,6 +68,7 @@ export const ProfileCards = ({
         );
 
         userMetadata.getAll().then((metadata) => {
+          console.log(metadata);
           setMetadata(metadata);
         });
       } catch (error) {
