@@ -14,8 +14,9 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
+import { useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
-import React, { useMemo, useState, type ReactNode } from 'react';
+import React, { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Metadatas } from '../../utils/metadatas';
 import { MetadataCard } from '../card/metadataCard';
 import { Dialog } from '../dialog';
@@ -358,14 +359,31 @@ export const EditProfileModal = ({
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useMemo(async () => {
-    if (!wallet) return;
-    const userMetadata = UserMetadataContract.initialize(wallet, domain);
 
-    await userMetadata.getAll().then((metadata) => {
-      setMetadata(metadata);
-    });
-  }, [wallet, domain, metadata.length]);
+  const {
+    data: metadatas,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['fetchMetadatas'],
+    queryFn: async () => {
+      if (!wallet) return;
+
+      const userMetadata = UserMetadataContract.initialize(wallet, domain);
+
+      return userMetadata.getAll();
+    },
+  });
+
+  useEffect(() => {
+    if (metadatas) {
+      setMetadata(metadatas);
+    }
+
+    if (isError) {
+      console.error(error);
+    }
+  }, [metadatas, isError, error]);
 
   // console.log(metadata);
   return (
