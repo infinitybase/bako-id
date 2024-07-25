@@ -103,7 +103,7 @@ const ModalTitle = ({ onClose }: Pick<EditProfileModalProps, 'onClose'>) => {
 
             <Button
               variant="ghosted"
-              h={[8, 8, 8, 12]}
+              h={[8, 8, 8, 10]}
               color="grey.100"
               fontSize={['sm', 'sm', 'sm', 'md']}
               leftIcon={<FlagIcon />}
