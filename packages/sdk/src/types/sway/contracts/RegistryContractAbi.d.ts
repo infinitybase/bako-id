@@ -36,6 +36,7 @@ export type MetadataInput = Enum<{
   Int: BigNumberish;
   String: StdString;
 }>;
+
 export type MetadataOutput = Enum<{
   B256: string;
   Bytes: Bytes;
@@ -47,21 +48,13 @@ export enum NameValidationErrorInput {
   InvalidChars = 'InvalidChars',
   IsEmpty = 'IsEmpty',
 }
-export enum NameValidationErrorOutput {
-  InvalidLenght = 'InvalidLenght',
-  InvalidChars = 'InvalidChars',
-  IsEmpty = 'IsEmpty',
-}
+
 export type PermissionInput = Enum<{
   Authorized: IdentityInput;
   Unauthorized: [];
   NotFound: [];
 }>;
-export type PermissionOutput = Enum<{
-  Authorized: IdentityOutput;
-  Unauthorized: [];
-  NotFound: [];
-}>;
+
 export enum RegistryContractErrorInput {
   StorageNotInitialized = 'StorageNotInitialized',
   AlreadyInitialized = 'AlreadyInitialized',

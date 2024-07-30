@@ -183,11 +183,6 @@ const _abi = {
           "name": "SameResolver",
           "type": 0,
           "typeArguments": null
-        },
-        {
-          "name": "AlreadyPrimary",
-          "type": 0,
-          "typeArguments": null
         }
       ],
       "typeParameters": null
@@ -465,30 +460,6 @@ const _abi = {
         {
           "name": "payable",
           "arguments": []
-        }
-      ]
-    },
-    {
-      "inputs": [
-        {
-          "name": "name",
-          "type": 18,
-          "typeArguments": null
-        }
-      ],
-      "name": "set_primary_handle",
-      "output": {
-        "name": "",
-        "type": 0,
-        "typeArguments": null
-      },
-      "attributes": [
-        {
-          "name": "storage",
-          "arguments": [
-            "read",
-            "write"
-          ]
         }
       ]
     },
