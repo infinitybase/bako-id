@@ -66,6 +66,7 @@ enum FilterButtonTypes {
 
 interface IModalFiltersButtonsProps {
   changeFilter: (filter: FilterButtonTypes) => void;
+  filter: FilterButtonTypes;
 }
 
 const TabsTypes = [
@@ -185,57 +186,43 @@ const ModalTitle = ({
   );
 };
 
-const ModalFiltersButtons = ({ changeFilter }: IModalFiltersButtonsProps) => {
+const ModalFiltersButtons = ({
+  changeFilter,
+  filter,
+}: IModalFiltersButtonsProps) => {
+  const filterTypes = [
+    { type: FilterButtonTypes.ALL, label: 'All' },
+    { type: FilterButtonTypes.ADDED, label: 'Added' },
+    { type: FilterButtonTypes.NOT_ADDED, label: 'Not Added' },
+  ];
+
   return (
     <Flex gap={2} my={4} w="full" justifyContent="space-between">
-      <Button
-        h={[10, 10, 10, 12]}
-        variant="outline"
-        fontWeight={500}
-        rounded="md"
-        w="full"
-        color="grey.100"
-        _hover={{
-          bgColor: 'transparent',
-          color: 'button.500',
-          borderColor: 'button.500',
-        }}
-        onClick={() => changeFilter(FilterButtonTypes.ALL)}
-      >
-        All
-      </Button>
-      <Button
-        h={[10, 10, 10, 12]}
-        variant="outline"
-        fontWeight={500}
-        rounded="md"
-        w="full"
-        color="grey.100"
-        _hover={{
-          bgColor: 'transparent',
-          color: 'button.500',
-          borderColor: 'button.500',
-        }}
-        onClick={() => changeFilter(FilterButtonTypes.ADDED)}
-      >
-        Added
-      </Button>
-      <Button
-        h={[10, 10, 10, 12]}
-        variant="outline"
-        fontWeight={500}
-        rounded="md"
-        w="full"
-        color="grey.100"
-        _hover={{
-          bgColor: 'transparent',
-          color: 'button.500',
-          borderColor: 'button.500',
-        }}
-        onClick={() => changeFilter(FilterButtonTypes.NOT_ADDED)}
-      >
-        Not Added
-      </Button>
+      {filterTypes.map((filterType) => (
+        <Button
+          key={filterType.type}
+          h={[10, 10, 10, 12]}
+          variant="outline"
+          fontWeight={500}
+          rounded="md"
+          w="full"
+          color="grey.100"
+          _hover={{
+            bgColor: 'transparent',
+            color: 'button.500',
+            borderColor: 'button.500',
+          }}
+          _active={{
+            bgColor: 'transparent',
+            color: 'button.500',
+            borderColor: 'button.500',
+          }}
+          isActive={filter === filterType.type}
+          onClick={() => changeFilter(filterType.type)}
+        >
+          {filterType.label}
+        </Button>
+      ))}
     </Flex>
   );
 };
@@ -435,7 +422,7 @@ export const EditProfileModal = ({
         size={['full', '2xl', '2xl', '2xl']}
         modalTitle={<ModalTitle onClose={onClose} wallet={wallet!} />}
       >
-        <ModalFiltersButtons changeFilter={handleFilterClick} />
+        <ModalFiltersButtons changeFilter={handleFilterClick} filter={filter} />
         <Dialog.Body>
           <ModalFiltersTabs metadata={metadata ?? []} filters={filter} />
         </Dialog.Body>
