@@ -145,6 +145,7 @@ pub fn _edit_resolver(input: EditResolverInput, bako_id: ContractId) {
 #[storage(read, write)]
 pub fn _set_primary_handle(params: SetPrimaryHandleInput, bako_id: ContractId) {
     let domain_hash = sha256(params.name);
+    let caller = msg_sender_address();
 
     let storage = abi(StorageContract, bako_id.into());
     let domain = storage.get(domain_hash);
@@ -158,8 +159,20 @@ pub fn _set_primary_handle(params: SetPrimaryHandleInput, bako_id: ContractId) {
 
     require(!handle.primary, RegistryContractError::AlreadyPrimary);
 
+    let previous_primary_handle = storage.get_primary(caller);
+    if let Some(previous_handle_name) = previous_primary_handle {
+        log(previous_handle_name);
+        let mut previous_handle = BakoHandle::from(previous_handle_name);
+
+        log(previous_handle_name);
+        previous_handle.primary = false;
+        storage.change(sha256(previous_handle.name), previous_handle.into());
+    }
+
     handle.primary = true;
-    storage.set_primary(msg_sender_address(), params.name);
+
+    storage.set_primary(caller, params.name);
+    storage.change(domain_hash, handle.into());
 }
 
 pub fn domain_price(domain: String, period: u16) -> u64 {

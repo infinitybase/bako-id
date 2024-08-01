@@ -125,6 +125,7 @@ impl RegistryContract for Contract {
             SetPrimaryHandleInput { name },
             get_storage_id()
         );
+        
     }
 }
 
