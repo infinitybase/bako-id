@@ -11,6 +11,7 @@ import {
 import type { Metadata } from '@bako-id/sdk';
 import { Card } from '.';
 import { DisabledXBadgeIcon, EditIcon } from '..';
+import { useMyHandles } from '../../modules/myHandles/hooks';
 import { ExplorerTypes } from '../../types';
 import { AvatarIcon } from '../icons/avatarIcon';
 import { ExploreIcon } from '../icons/explore';
@@ -26,10 +27,14 @@ interface IProfileCard {
 
 export const ProfileCard = ({ domain, domainName, metadata }: IProfileCard) => {
   const action = useDisclosure();
+  const { data: handles } = useMyHandles();
   const [isLowerThanMobile] = useMediaQuery('(max-width: 25em)');
 
   const nickname = metadata?.find((m) => m.key === 'nickname');
   const shortBio = metadata?.find((m) => m.key === 'shortBio');
+
+  console.log(handles);
+  const handle = handles?.find((handle) => handle.name === domainName);
 
   return (
     <Card
@@ -66,20 +71,22 @@ export const ProfileCard = ({ domain, domainName, metadata }: IProfileCard) => {
             </Flex>
           </Flex>
           <Flex flexDir="column" gap={2}>
-            <Box
-              bgColor="warning.750"
-              p={2}
-              rounded="lg"
-              display="flex"
-              gap={2}
-              alignItems="center"
-              alignSelf={['inherit', 'flex-end']}
-            >
-              <Text fontSize={['sm', 'md']} color="button.500">
-                Your primary Handles
-              </Text>
-              <Icon color="button.500" w={6} h={6} as={FlagIconFilled} />
-            </Box>
+            {handle?.isPrimary && (
+              <Box
+                bgColor="warning.750"
+                p={2}
+                rounded="lg"
+                display="flex"
+                gap={2}
+                alignItems="center"
+                alignSelf={['inherit', 'flex-end']}
+              >
+                <Text fontSize={['sm', 'md']} color="button.500">
+                  Your primary Handles
+                </Text>
+                <Icon color="button.500" w={6} h={6} as={FlagIconFilled} />
+              </Box>
+            )}
             <Button
               alignSelf={['inherit', 'flex-end']}
               variant="ghosted"

@@ -1,4 +1,8 @@
-import { UserMetadataContract, type Metadata } from '@bako-id/sdk';
+import {
+  UserMetadataContract,
+  setPrimaryHandle,
+  type Metadata,
+} from '@bako-id/sdk';
 import {
   Button,
   CloseButton,
@@ -14,13 +18,18 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
+import type { Account } from 'fuels';
 import React, { useMemo, useState, type ReactNode } from 'react';
+import { useMyHandles } from '../../modules/myHandles/hooks';
 import { Metadatas } from '../../utils/metadatas';
 import { MetadataCard } from '../card/metadataCard';
 import { Dialog } from '../dialog';
 import { AvatarIcon } from '../icons';
 import { FlagIcon } from '../icons/flagIcon';
+import { FlagIconFilled } from '../icons/flagIconFilled';
+import { useCustomToast } from '../toast';
 import { EditProfileFieldsModal } from './editProfileFieldsModal';
 import { EditProfilePicModal } from './editProfilePicModal';
 import { TransactionsDetailsModal } from './transactionDetails';
@@ -67,9 +76,40 @@ const TabsTypes = [
   // { key: 'Other', name: 'Other' },
 ];
 
-const ModalTitle = ({ onClose }: Pick<EditProfileModalProps, 'onClose'>) => {
+const ModalTitle = ({
+  onClose,
+  wallet,
+}: Pick<EditProfileModalProps, 'onClose'> & { wallet: Account }) => {
   const modalTitle = useDisclosure();
   const { domain } = useParams({ strict: false });
+  const { data: handles, refetch: refetchHandles } = useMyHandles();
+  const { successToast } = useCustomToast();
+
+  const handle = handles?.find((handle) => handle.name === domain);
+
+  const setPrimaryHandleMutation = useMutation({
+    mutationKey: ['setPrimaryHandle'],
+    mutationFn: async () =>
+      await setPrimaryHandle({
+        account: wallet,
+        domain: handle?.name ?? domain,
+      }),
+    onSuccess: () => {
+      successToast({
+        title: 'Primary Handle Set',
+        description:
+          'You have successfully set this handle as your primary handle',
+      });
+      refetchHandles();
+    },
+    onError: (error) => {
+      console.error(error.message);
+    },
+  });
+
+  const handleSetPrimaryHandle = async () => {
+    await setPrimaryHandleMutation.mutate();
+  };
 
   return (
     <Flex w="full" justify="space-between">
@@ -101,15 +141,32 @@ const ModalTitle = ({ onClose }: Pick<EditProfileModalProps, 'onClose'>) => {
               {domain?.startsWith('@') ? domain : `@${domain}`}
             </Text>
 
-            <Button
-              variant="ghosted"
-              h={[8, 8, 8, 10]}
-              color="grey.100"
-              fontSize={['sm', 'sm', 'sm', 'md']}
-              leftIcon={<FlagIcon />}
-            >
-              Set as primary Handles
-            </Button>
+            {handle?.isPrimary ? (
+              <Button
+                variant="ghosted"
+                h={[8, 8, 8, 10]}
+                _hover={{
+                  cursor: 'inherit',
+                }}
+                color="button.500"
+                bg="warning.750"
+                fontSize={['sm', 'sm', 'sm', 'md']}
+                leftIcon={<FlagIconFilled w={5} h={5} color="button.500" />}
+              >
+                Your primary Handles
+              </Button>
+            ) : (
+              <Button
+                variant="ghosted"
+                h={[8, 8, 8, 10]}
+                color="grey.100"
+                fontSize={['sm', 'sm', 'sm', 'md']}
+                leftIcon={<FlagIcon />}
+                onClick={handleSetPrimaryHandle}
+              >
+                Set as primary Handles
+              </Button>
+            )}
           </Flex>
         </Flex>
       </Flex>
@@ -348,7 +405,7 @@ export const EditProfileModal = ({
 }: EditProfileModalProps) => {
   const { domain } = useParams({ strict: false });
   const { wallet } = useWallet();
-  const [metadata, setMetadata] = useState<Metadata[]>([]);
+
   const updates = Metadatas.General;
   const transactionDetails = useDisclosure();
   const [filter, setFilter] = useState(FilterButtonTypes.ALL);
@@ -357,17 +414,17 @@ export const EditProfileModal = ({
     setFilter(newFilter);
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useMemo(async () => {
-    if (!wallet) return;
-    const userMetadata = UserMetadataContract.initialize(wallet, domain);
+  const { data: metadata } = useQuery({
+    queryKey: ['fetchMetadatas'],
+    queryFn: async () => {
+      if (!wallet) return;
 
-    await userMetadata.getAll().then((metadata) => {
-      setMetadata(metadata);
-    });
-  }, [wallet, domain, metadata.length]);
+      const userMetadata = UserMetadataContract.initialize(wallet, domain);
 
-  // console.log(metadata);
+      return userMetadata.getAll();
+    },
+  });
+
   return (
     <>
       <Dialog.Modal
@@ -376,11 +433,11 @@ export const EditProfileModal = ({
         isOpen={isOpen}
         onClose={onClose}
         size={['full', '2xl', '2xl', '2xl']}
-        modalTitle={<ModalTitle onClose={onClose} />}
+        modalTitle={<ModalTitle onClose={onClose} wallet={wallet!} />}
       >
         <ModalFiltersButtons changeFilter={handleFilterClick} />
         <Dialog.Body>
-          <ModalFiltersTabs metadata={metadata} filters={filter} />
+          <ModalFiltersTabs metadata={metadata ?? []} filters={filter} />
         </Dialog.Body>
 
         <Dialog.Actions>

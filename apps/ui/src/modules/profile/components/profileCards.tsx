@@ -1,8 +1,9 @@
-import { UserMetadataContract, type Metadata } from '@bako-id/sdk';
+import { UserMetadataContract } from '@bako-id/sdk';
 import { Flex, Stack } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
+import { useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense } from 'react';
 import { AccountsCard } from '../../../components/card/accountsCard';
 import { AddressesCard } from '../../../components/card/addressesCard';
 import { OwnershipCard } from '../../../components/card/ownershipCard';
@@ -55,28 +56,20 @@ export const ProfileCards = ({
   const LoadedData = () => {
     const { domain: domainName } = useParams({ strict: false });
     const { wallet } = useWallet();
-    const [metadata, setMetadata] = useState<Metadata[] | undefined>();
+    const { data: metadata } = useQuery({
+      queryKey: ['getAllMetadatas'],
+      queryFn: async () => {
+        if (!wallet) return;
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-    useEffect(() => {
-      if (!wallet) return;
-
-      try {
         const userMetadata = UserMetadataContract.initialize(
           wallet,
           domainName,
         );
 
-        userMetadata.getAll().then((metadata) => {
-          console.log(metadata);
-          setMetadata(metadata);
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    }, [wallet, domain, metadata?.length]);
-
-    // console.log(metadata);
+        return userMetadata.getAll();
+      },
+      enabled: !!wallet && !!domainName,
+    });
 
     return (
       <Suspense>
