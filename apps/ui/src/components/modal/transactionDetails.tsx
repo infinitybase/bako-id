@@ -1,7 +1,7 @@
+import type { Metadata } from '@bako-id/sdk';
 import { Box, Divider, Text, VStack } from '@chakra-ui/react';
 import { TextValue } from '..';
 import { Dialog } from '../dialog';
-import type { IMetadata } from './editProfileModal';
 
 interface ITransactionDomainDetailsModal {
   isOpen: boolean;
@@ -17,7 +17,7 @@ interface ITranscationDetailsModal {
   onClose: () => void;
   onConfirm: () => void;
   domain: string;
-  updates: IMetadata[];
+  updates: Metadata[];
 }
 
 export const TransactionDomainDetailsModal = ({
@@ -121,7 +121,7 @@ export const TransactionsDetailsModal = ({
               key={update.key}
               textColor="grey.100"
               leftAction={update.key}
-              content={update.description}
+              content={update.value}
             />
           ))}
         </VStack>

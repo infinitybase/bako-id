@@ -33,7 +33,6 @@ export const ProfileCard = ({ domain, domainName, metadata }: IProfileCard) => {
   const nickname = metadata?.find((m) => m.key === 'nickname');
   const shortBio = metadata?.find((m) => m.key === 'shortBio');
 
-  console.log(handles);
   const handle = handles?.find((handle) => handle.name === domainName);
 
   return (

@@ -51,13 +51,8 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
         value: inputValue,
       })
       .then(
-        () => {
-          console.log('Saved');
-          props.onClose();
-        },
-        (error) => {
-          console.error(error);
-        },
+        () => props.onClose(),
+        (error) => console.error(error),
       );
     setInputValue('');
   };
