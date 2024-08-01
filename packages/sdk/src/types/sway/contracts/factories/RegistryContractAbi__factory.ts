@@ -183,6 +183,11 @@ const _abi = {
           "name": "SameResolver",
           "type": 0,
           "typeArguments": null
+        },
+        {
+          "name": "AlreadyPrimary",
+          "type": 0,
+          "typeArguments": null
         }
       ],
       "typeParameters": null
@@ -466,6 +471,30 @@ const _abi = {
     {
       "inputs": [
         {
+          "name": "name",
+          "type": 18,
+          "typeArguments": null
+        }
+      ],
+      "name": "set_primary_handle",
+      "output": {
+        "name": "",
+        "type": 0,
+        "typeArguments": null
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read",
+            "write"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
           "name": "asset",
           "type": 11,
           "typeArguments": null
@@ -738,6 +767,14 @@ const _abi = {
       "loggedType": {
         "name": "",
         "type": 15,
+        "typeArguments": []
+      }
+    },
+    {
+      "logId": "14832741149864513620",
+      "loggedType": {
+        "name": "",
+        "type": 12,
         "typeArguments": []
       }
     }

@@ -1,5 +1,5 @@
 import { Provider, Wallet, type WalletUnlocked } from 'fuels';
-import { register, resolver } from '../index';
+import { getAll, register, resolver } from '../index';
 import { createFakeWallet } from '../test';
 import {
   InvalidDomainError,
@@ -225,7 +225,13 @@ describe('Test Registry', () => {
       account: wallet,
     });
 
+    const handles = await getAll(wallet.address.toB256());
+    const primaryHandle = handles.find((handle) => handle.isPrimary);
+
+    console.log(handles);
+
     expect(setPrimary.transactionResult.status).toBe('success');
+    expect(primaryHandle?.name).toBe(secondaryDomain);
   });
 
   it('should not be able to set primary handle with invalid domain', async () => {

@@ -77,11 +77,12 @@ const getError = (error: string) =>
   error in errors ? errors[error] : errors.Default;
 
 export const getContractError = (error: FuelError) => {
+  console.error('Error', { ...error });
   if (!error.metadata.logs) return new errors.Default();
 
   const errorTypes = Object.keys(errors);
   const errorValue = errorTypes.find((errorType) =>
-    (error.metadata.logs as unknown[]).includes(errorType)
+    (error.metadata.logs as unknown[]).includes(errorType),
   );
 
   const ErrorClass = getError(errorValue || '');
