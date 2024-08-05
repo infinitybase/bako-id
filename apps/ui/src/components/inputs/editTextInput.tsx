@@ -78,7 +78,7 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
               rules={{
                 required: { value: true, message: 'You must type something' },
                 minLength: {
-                  value: 4,
+                  value: 3,
                   message: `${props.modalType} must be at least 3 characters long.`,
                 },
               }}
@@ -178,7 +178,7 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
           </Dialog.SecondaryAction>
           <Dialog.PrimaryAction
             type="submit"
-            isDisabled={inputValue.length <= 3}
+            isDisabled={inputValue.length < 3}
           >
             Save
           </Dialog.PrimaryAction>
