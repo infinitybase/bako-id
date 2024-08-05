@@ -40,16 +40,6 @@ abi NFTContract {
     fn image_url(name: String) -> String;
 }
 
-// Get image of asset
-#[storage(read)]
-pub fn _image_url(metadatas: StorageKey<StorageMetadata>, name: String) -> String {
-    let name = assert_name_validity(name);
-    let image_url_metadata = metadatas.get(
-        _asset_id(name), 
-        String::from_ascii_str("image_url"),
-    ).unwrap_or(Metadata::String(String::from_ascii_str("")));
-    return image_url_metadata.as_string().unwrap_or(String::new());
-}
 
 #[storage(read, write)]
 pub fn _mint_bako_nft(
@@ -67,7 +57,7 @@ pub fn _mint_bako_nft(
     );
     metadatas.insert(
         asset_id, 
-        String::from_ascii_str("image_url"), 
+        String::from_ascii_str("image:png"), 
         Metadata::String(
             concat_string(
                 String::from_ascii_str("https://assets.bako.id/"),
