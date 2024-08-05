@@ -18,6 +18,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
+
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import type { Account } from 'fuels';
@@ -440,6 +441,7 @@ export const EditProfileModal = ({
   const handleSave = useMutation({
     mutationKey: ['saveBatchMetadatas'],
     mutationFn: async () => {
+
       if (!wallet) return;
 
       const userMetadata = UserMetadataContract.initialize(wallet, domain);

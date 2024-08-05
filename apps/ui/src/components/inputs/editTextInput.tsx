@@ -50,9 +50,13 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
         key: props.modalType,
         value: inputValue,
       })
-      .then(
-        () => props.onClose(),
-        (error) => console.error(error),
+      .then
+        () => {
+          props.onClose();
+        },
+        (error) => {
+          console.error(error);
+        },
       );
     setInputValue('');
   };

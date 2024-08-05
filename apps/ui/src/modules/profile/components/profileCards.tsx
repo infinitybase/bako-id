@@ -56,6 +56,7 @@ export const ProfileCards = ({
   const LoadedData = () => {
     const { domain: domainName } = useParams({ strict: false });
     const { wallet } = useWallet();
+
     const { data: metadata } = useQuery({
       queryKey: ['getAllMetadatas'],
       queryFn: async () => {
@@ -70,6 +71,7 @@ export const ProfileCards = ({
       },
       enabled: !!wallet && !!domainName,
     });
+
 
     return (
       <Suspense>
@@ -104,6 +106,5 @@ export const ProfileCards = ({
     );
   };
 
-  // No componente principal
   return isLoading ? <LoadingData /> : <LoadedData />;
 };
