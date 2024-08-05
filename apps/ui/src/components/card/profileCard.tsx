@@ -1,64 +1,135 @@
-import { Button, Flex, Icon, Text, useMediaQuery } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Icon,
+  Text,
+  useDisclosure,
+  useMediaQuery,
+} from '@chakra-ui/react';
+
+import type { Metadata } from '@bako-id/sdk';
 import { Card } from '.';
-import { DisabledXBadgeIcon } from '..';
+import { DisabledXBadgeIcon, EditIcon } from '..';
 import { ExplorerTypes } from '../../types';
 import { AvatarIcon } from '../icons/avatarIcon';
 import { ExploreIcon } from '../icons/explore';
 import { FarcasterBadgeIcon } from '../icons/farcasterBadgeIcon';
+import { FlagIconFilled } from '../icons/flagIconFilled';
+import { EditProfileModal } from '../modal/editProfileModal';
 
 interface IProfileCard {
   domainName: string | null;
   domain: string;
+  metadata: Metadata[] | undefined;
 }
 
-export const ProfileCard = ({ domain, domainName }: IProfileCard) => {
+export const ProfileCard = ({ domain, domainName, metadata }: IProfileCard) => {
+  const action = useDisclosure();
   const [isLowerThanMobile] = useMediaQuery('(max-width: 25em)');
+
+  const nickname = metadata?.find((m) => m.key === 'nickname');
+  const shortBio = metadata?.find((m) => m.key === 'shortBio');
 
   return (
     <Card
       w="full"
       h="fit-content"
-      flexDirection="row"
-      alignItems="center"
+      alignItems="flex-start"
       backdropFilter="blur(7px)"
       justifyContent="space-between"
+      gap={4}
     >
-      <Icon w={24} h={24} rounded="lg" mr={3} as={AvatarIcon} />
-      <Flex
-        gap={4}
-        alignItems={isLowerThanMobile ? 'flex-start' : 'flex-start'}
-        w="full"
-        flexDir={isLowerThanMobile ? 'column' : 'row'}
-        justifyContent="space-between"
-      >
-        <Flex gap={2} direction="column">
-          <Text fontWeight="semibold" fontSize={['md', 'lg']} color="white">
-            {domainName?.startsWith('@') ? domainName : `@${domainName}`}
-          </Text>
+      <Flex w="full">
+        <Icon w={32} h={32} rounded="lg" mr={4} as={AvatarIcon} />
+        <Flex
+          gap={4}
+          alignItems={isLowerThanMobile ? 'flex-start' : 'flex-start'}
+          w="full"
+          flexDir={isLowerThanMobile ? 'column' : 'row'}
+          justifyContent="space-between"
+        >
+          <Flex gap={2.5} direction="column" alignItems="flex-start">
+            <Text fontWeight="semibold" fontSize={['md', 'lg']} color="white">
+              {domainName?.startsWith('@') ? domainName : `@${domainName}`}
+            </Text>
 
-          <Flex gap={1}>
-            <FarcasterBadgeIcon w={8} h={8} />
-            <DisabledXBadgeIcon w={8} h={8} />
+            {nickname?.value && (
+              <Text fontSize={['sm', 'md']} color="grey.200" ml={0.5}>
+                {nickname.value}
+              </Text>
+            )}
+
+            <Flex gap={1} ml={0}>
+              <FarcasterBadgeIcon w={8} h={8} />
+              <DisabledXBadgeIcon w={8} h={8} />
+            </Flex>
+          </Flex>
+          <Flex flexDir="column" gap={2}>
+            <Box
+              bgColor="warning.750"
+              p={2}
+              rounded="lg"
+              display="flex"
+              gap={2}
+              alignItems="center"
+              alignSelf={['inherit', 'flex-end']}
+            >
+              <Text fontSize={['sm', 'md']} color="button.500">
+                Your primary Handles
+              </Text>
+              <Icon color="button.500" w={6} h={6} as={FlagIconFilled} />
+            </Box>
+            <Button
+              alignSelf={['inherit', 'flex-end']}
+              variant="ghosted"
+              color="grey.100"
+              bgColor={isLowerThanMobile ? 'transparent' : undefined}
+              fontWeight="normal"
+              fontSize={['sm', 'sm']}
+              h={9}
+              rightIcon={<EditIcon w={5} h={5} />}
+              onClick={action.onOpen}
+            >
+              Edit Profile
+            </Button>
+            <Button
+              alignSelf={['inherit', 'flex-end']}
+              variant="ghosted"
+              color="grey.100"
+              bgColor={isLowerThanMobile ? 'transparent' : undefined}
+              fontWeight="normal"
+              fontSize={['sm', 'sm']}
+              h={9}
+              rightIcon={<ExploreIcon />}
+              onClick={() =>
+                window.open(
+                  `${import.meta.env.VITE_EXPLORER_URL}${domain}${ExplorerTypes.ASSETS}`,
+                  '_blank',
+                )
+              }
+            >
+              Explorer
+            </Button>
           </Flex>
         </Flex>
-        <Button
-          alignSelf={['inherit', 'flex-start']}
-          variant="ghosted"
-          color="grey.100"
-          bgColor={isLowerThanMobile ? 'transparent' : undefined}
-          fontWeight="normal"
-          fontSize={['sm', 'md']}
-          rightIcon={<ExploreIcon />}
-          onClick={() =>
-            window.open(
-              `${import.meta.env.VITE_EXPLORER_URL}${domain}${ExplorerTypes.ASSETS}`,
-              '_blank',
-            )
-          }
-        >
-          Explorer
-        </Button>
       </Flex>
+
+      {shortBio?.value && (
+        <Flex>
+          <Box>
+            <Text fontSize={['sm', 'sm']} fontWeight="400" color="grey.100">
+              {shortBio?.value}
+              {/* Robust security. Uncompromising performance. Built like no other,
+              Bako Safe is the next evolution in Multisig wallets. Stateless.
+              Future-proof. Our stateless design allows for the creation of
+              unlimited vaults at no cost (without sponsorships), and the very
+              low transaction fees of Fuel Network. */}
+            </Text>
+          </Box>
+        </Flex>
+      )}
+      <EditProfileModal isOpen={action.isOpen} onClose={action.onClose} />
     </Card>
   );
 };

@@ -1,11 +1,17 @@
+import type { Metadata } from '@bako-id/sdk';
 import { Flex, Heading, Icon, VStack } from '@chakra-ui/react';
 import { Card } from '..';
 import { CopyIcon } from '../icons/copyIcon';
 import { VerifiedAccountInput } from '../inputs/verifiedAccount';
 
-export const AccountsCard = () => {
+interface AccountsCardProps {
+  metadata: Metadata[] | undefined;
+}
+
+export const AccountsCard = ({ metadata }: AccountsCardProps) => {
   // const { isMyDomain } = useSidebar();
 
+  console.log(metadata);
   return (
     <Card
       w={['full', 'full', 'full', '50%']}
@@ -25,13 +31,16 @@ export const AccountsCard = () => {
       </Flex>
 
       <VStack spacing={5}>
-        <VerifiedAccountInput
-          value={'@jonglazkov'}
-          variant="farcaster"
-          isVerified
-          rightAddon
-          rightAddonName={<Icon as={CopyIcon} />}
-        />
+        {metadata?.map((m) => (
+          <VerifiedAccountInput
+            key={m.key}
+            value={m.value}
+            variant={m}
+            isVerified
+            rightAddon
+            rightAddonName={<Icon as={CopyIcon} />}
+          />
+        ))}
         {/* <VerifiedAccountInput
           variant="twitter"
           isVerified={false}

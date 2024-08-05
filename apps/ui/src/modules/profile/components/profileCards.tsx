@@ -1,5 +1,9 @@
+import { UserMetadataContract, type Metadata } from '@bako-id/sdk';
 import { Flex, Stack } from '@chakra-ui/react';
-import { Suspense } from 'react';
+import { useWallet } from '@fuels/react';
+import { useQuery } from '@tanstack/react-query';
+import { useParams } from '@tanstack/react-router';
+import { Suspense, useEffect, useState } from 'react';
 import { AccountsCard } from '../../../components/card/accountsCard';
 import { AddressesCard } from '../../../components/card/addressesCard';
 import { OwnershipCard } from '../../../components/card/ownershipCard';
@@ -49,34 +53,74 @@ export const ProfileCards = ({
     </Suspense>
   );
 
-  const LoadedData = () => (
-    <Suspense>
-      <Stack
-        display="flex"
-        h="fit-content"
-        spacing={6}
-        direction={['column', 'column', 'column', 'row']}
-        w="full"
-      >
-        <Flex w="full" h="full" flexDirection="column" gap={[4, 4, 4, 6]}>
-          <ProfileCard domainName={domainParam} domain={domain ?? ''} />
+  const LoadedData = () => {
+    const { domain: domainName } = useParams({ strict: false });
+    const { wallet } = useWallet();
 
-          <Stack
-            w="full"
-            h="full"
-            direction={['column', 'column', 'column', 'row']}
-            gap={[4, 4, 4, 6]}
-          >
-            <OwnershipCard owner={owner ?? ''} />
+    const {
+      data: metadatas,
+      isError,
+      error,
+    } = useQuery({
+      queryKey: ['fetchMetadatas'],
+      queryFn: async () => {
+        if (!wallet) return;
 
-            <AddressesCard domain={domain ?? ''} />
-          </Stack>
-        </Flex>
-        <AccountsCard />
-      </Stack>
-    </Suspense>
-  );
+        const userMetadata = UserMetadataContract.initialize(
+          wallet,
+          domainName,
+        );
 
-  // No componente principal
+        return userMetadata.getAll();
+      },
+    });
+
+    const [metadata, setMetadata] = useState<Metadata[] | undefined>(metadatas);
+
+    useEffect(() => {
+      if (metadatas) {
+        setMetadata(metadatas);
+      }
+
+      if (isError) {
+        console.error(error);
+      }
+    }, [metadatas, isError, error]);
+
+    // console.log(metadata);
+
+    return (
+      <Suspense>
+        <Stack
+          display="flex"
+          h="fit-content"
+          spacing={6}
+          direction={['column', 'column', 'column', 'row']}
+          w="full"
+        >
+          <Flex w="full" h="full" flexDirection="column" gap={[4, 4, 4, 6]}>
+            <ProfileCard
+              domainName={domainParam}
+              domain={domain ?? ''}
+              metadata={metadata}
+            />
+
+            <Stack
+              w="full"
+              h="full"
+              direction={['column', 'column', 'column', 'row']}
+              gap={[4, 4, 4, 6]}
+            >
+              <OwnershipCard owner={owner ?? ''} />
+
+              <AddressesCard domain={domain ?? ''} />
+            </Stack>
+          </Flex>
+          <AccountsCard metadata={metadata} />
+        </Stack>
+      </Suspense>
+    );
+  };
+
   return isLoading ? <LoadingData /> : <LoadedData />;
 };
