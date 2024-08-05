@@ -1,4 +1,11 @@
-import { Address, Provider, Wallet, type WalletUnlocked, sha256 } from 'fuels';
+import {
+  Address,
+  Provider,
+  Wallet,
+  getMintedAssetId,
+  sha256,
+  type WalletUnlocked,
+} from 'fuels';
 import { config, register } from '../index';
 import { domainToBytes, randomName } from '../utils';
 import { tokenInfo } from './token';
@@ -17,6 +24,7 @@ describe('Test token', () => {
   it('should get token infos', async () => {
     const name = randomName();
     const resolverAddress = Address.fromRandom().toB256();
+    const domainHash = sha256(domainToBytes(name));
 
     await register({
       domain: name,
@@ -24,24 +32,20 @@ describe('Test token', () => {
       resolver: resolverAddress,
     });
 
-    const {
-      image,
-      subId,
-      symbol,
-      contractId,
-      name: tokenName,
-    } = await tokenInfo(name);
+    //@ts-ignore
+    const { assetId, subId, contractId } = await tokenInfo(name);
 
-    expect(tokenName).toBe('Bako ID');
-    expect(image).toBe(`https://assets.bako.id/${name}`);
-    expect(symbol).toBe('BNFT');
-    expect(subId).toBe(sha256(domainToBytes(name)));
+    expect(assetId).toBe(
+      getMintedAssetId(config.REGISTRY_CONTRACT_ID, domainHash),
+    );
+    expect(subId).toBe(domainHash);
     expect(contractId).toBe(config.REGISTRY_CONTRACT_ID);
   });
 
   it('should undefined values on token not minted', async () => {
     const name = randomName();
     const tokenResult = await tokenInfo(name, { provider });
+
     expect(tokenResult).toBeUndefined();
   });
 });
