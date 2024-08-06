@@ -47,7 +47,7 @@ export const EditProfileFieldsModal = ({
         <EditTextValueInput
           title={title}
           modalType={type}
-          onSave={handleSave}
+          onMetadataChange={handleSave}
           onClose={onClose}
         />
       </Dialog.Body>
