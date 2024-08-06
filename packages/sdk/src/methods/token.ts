@@ -1,4 +1,4 @@
-import { getMintedAssetId, sha256 } from 'fuels';
+import { ZeroBytes32, getMintedAssetId, sha256 } from 'fuels';
 import { config } from '../config';
 import { getRegistryContract } from '../setup';
 import {
@@ -9,6 +9,9 @@ import {
 } from '../utils';
 
 type TokenInfo = {
+  name: string;
+  image: string;
+  symbol: string;
   assetId: string;
   subId: string;
   contractId: string;
@@ -29,7 +32,7 @@ export async function tokenInfo(handle: string, params?: ProviderParams) {
   const handleName = assertValidDomain(handle);
   const provider = await getProviderFromParams(params);
 
-  const subId = sha256(domainToBytes(handle));
+  const subId = sha256(domainToBytes(handleName));
   const assetId = getMintedAssetId(config.REGISTRY_CONTRACT_ID, subId);
 
   const { registry } = await getRegistryContract({
@@ -38,18 +41,27 @@ export async function tokenInfo(handle: string, params?: ProviderParams) {
   });
 
   const { value: tokenImage } = await registry.functions
-    .image_url(handleName)
+    .metadata({ bits: assetId }, 'image:png')
     .get();
 
-  if (!tokenImage) {
-    return undefined;
-  }
+  console.log('tokenImage', {
+    tokenImageB256: tokenImage?.B256,
+    tokenImageString: tokenImage?.String,
+  });
 
-  registry.functions.metadata({ bits: assetId }, 'image:png');
+  const { value: tokenName } = await registry.functions
+    .name({ bits: ZeroBytes32 })
+    .get();
+  const { value: tokenSymbol } = await registry.functions
+    .symbol({ bits: ZeroBytes32 })
+    .get();
 
   return {
+    name: tokenName,
+    image: tokenImage?.B256,
+    symbol: tokenSymbol,
     assetId,
-    subId: sha256(domainToBytes(handleName)),
+    subId,
     contractId: config.REGISTRY_CONTRACT_ID,
   } as TokenInfo;
 }

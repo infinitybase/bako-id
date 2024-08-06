@@ -26,20 +26,25 @@ describe('Test token', () => {
     const resolverAddress = Address.fromRandom().toB256();
     const domainHash = sha256(domainToBytes(name));
 
-    await register({
+    const { assetId } = await register({
       domain: name,
       account: wallet,
       resolver: resolverAddress,
     });
 
-    //@ts-ignore
-    const { assetId, subId, contractId } = await tokenInfo(name);
+    console.log('assetId in register', assetId);
 
-    expect(assetId).toBe(
+    const token = await tokenInfo(name, { provider });
+    console.log('assetId in tokenInfo', token?.assetId);
+
+    expect(token?.name).toBe('Bako ID');
+    expect(token?.image).toBe(`https://assets.bako.id/${name}`);
+    expect(token?.symbol).toBe('BNFT');
+    expect(token?.assetId).toBe(
       getMintedAssetId(config.REGISTRY_CONTRACT_ID, domainHash),
     );
-    expect(subId).toBe(domainHash);
-    expect(contractId).toBe(config.REGISTRY_CONTRACT_ID);
+    expect(token?.subId).toBe(domainHash);
+    expect(token?.contractId).toBe(config.REGISTRY_CONTRACT_ID);
   });
 
   it('should undefined values on token not minted', async () => {
