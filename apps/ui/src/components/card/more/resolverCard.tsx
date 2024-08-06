@@ -62,7 +62,7 @@ export const ResolverCard = () => {
           <CardBody mt={4}>
             <TextValue
               leftAction="address"
-              content={Address.fromB256(domain ?? '').toString()}
+              content={Address.fromB256(domain ?? '').toB256()}
               rightAction={
                 <Explorer id={domain ?? ''} type={ExplorerTypes.ASSETS} />
               }
@@ -76,7 +76,7 @@ export const ResolverCard = () => {
           isOpen={action.isOpen}
           onClose={() => action.onClose()}
           domain={`${domainParam}`}
-          resolver={Address.fromB256(domain ?? '').toString()}
+          resolver={Address.fromB256(domain ?? '').toB256()}
           onConfirm={(resolver) => handleChangeResolver(resolver)}
         />
       </Suspense>
