@@ -426,6 +426,7 @@ export const EditProfileModal = ({
     setFilter(newFilter);
   };
 
+
   const { data: metadata, refetch: refetchMetadatas } = useQuery({
     queryKey: ['getAllMetadatas'],
     queryFn: async () => {
@@ -463,6 +464,7 @@ export const EditProfileModal = ({
       });
     },
   });
+
 
   return (
     <>

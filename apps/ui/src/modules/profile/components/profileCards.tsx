@@ -71,6 +71,7 @@ export const ProfileCards = ({
       enabled: !!wallet && !!domainName,
     });
 
+
     return (
       <Suspense>
         <Stack
@@ -104,6 +105,5 @@ export const ProfileCards = ({
     );
   };
 
-  // No componente principal
   return isLoading ? <LoadingData /> : <LoadedData />;
 };
