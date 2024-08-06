@@ -102,6 +102,7 @@ export type TokenInfo = {
   name: string;
   image: string;
   symbol: string;
+  assetId: string;
   subId: string;
   contractId: string;
 };

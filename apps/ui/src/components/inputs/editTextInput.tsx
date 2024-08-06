@@ -45,19 +45,10 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
   });
 
   const handleSave = () => {
-    props
-      .onSave({
-        key: props.modalType,
-        value: inputValue,
-      })
-      .then
-        () => {
-          props.onClose();
-        },
-        (error) => {
-          console.error(error);
-        },
-      );
+    props.onSave({
+      key: props.modalType,
+      value: inputValue,
+    });
     setInputValue('');
   };
 
