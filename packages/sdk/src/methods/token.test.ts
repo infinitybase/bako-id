@@ -26,16 +26,13 @@ describe('Test token', () => {
     const resolverAddress = Address.fromRandom().toB256();
     const domainHash = sha256(domainToBytes(name));
 
-    const { assetId } = await register({
+    await register({
       domain: name,
       account: wallet,
       resolver: resolverAddress,
     });
 
-    console.log('assetId in register', assetId);
-
     const token = await tokenInfo(name, { provider });
-    console.log('assetId in tokenInfo', token?.assetId);
 
     expect(token?.name).toBe('Bako ID');
     expect(token?.image).toBe(`https://assets.bako.id/${name}`);
