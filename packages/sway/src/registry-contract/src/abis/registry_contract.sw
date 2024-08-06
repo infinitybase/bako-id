@@ -161,10 +161,8 @@ pub fn _set_primary_handle(params: SetPrimaryHandleInput, bako_id: ContractId) {
 
     let previous_primary_handle = storage.get_primary(caller);
     if let Some(previous_handle_name) = previous_primary_handle {
-        log(previous_handle_name);
         let mut previous_handle = BakoHandle::from(previous_handle_name);
 
-        log(previous_handle_name);
         previous_handle.primary = false;
         storage.change(sha256(previous_handle.name), previous_handle.into());
     }
