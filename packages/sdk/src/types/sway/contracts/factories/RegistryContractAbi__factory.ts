@@ -769,14 +769,6 @@ const _abi = {
         "type": 15,
         "typeArguments": []
       }
-    },
-    {
-      "logId": "14832741149864513620",
-      "loggedType": {
-        "name": "",
-        "type": 12,
-        "typeArguments": []
-      }
     }
   ],
   "messagesTypes": [],

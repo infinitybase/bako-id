@@ -10,15 +10,19 @@
 */
 
 import type {
+  BigNumberish,
+  BN,
   Bytes,
+  BytesLike,
   Contract,
+  DecodedValue,
   FunctionFragment,
   Interface,
   InvokeFunction,
   StdString,
 } from 'fuels';
 
-import type { Enum, Option, Vec } from './common';
+import type { Option, Enum, Vec } from './common';
 
 export type IdentityInput = Enum<{
   Address: AddressInput;
