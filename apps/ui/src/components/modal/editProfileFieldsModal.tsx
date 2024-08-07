@@ -1,12 +1,11 @@
-import { UserMetadataContract, type Metadata } from '@bako-id/sdk';
-import { useWallet } from '@fuels/react';
-import { useParams } from '@tanstack/react-router';
+import type { Metadata } from '@bako-id/sdk';
 import { Dialog } from '../dialog';
 import { EditTextValueInput } from '../inputs/editTextInput';
 
 interface EditProfileFieldsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  setUpdates: React.Dispatch<React.SetStateAction<Metadata[]>>;
   type: string;
   title: string;
   validated: boolean | null;
@@ -15,17 +14,14 @@ interface EditProfileFieldsModalProps {
 export const EditProfileFieldsModal = ({
   isOpen,
   onClose,
+  setUpdates,
   type,
   title,
   validated,
 }: EditProfileFieldsModalProps) => {
-  const { domain } = useParams({ strict: false });
-  const { wallet } = useWallet();
-  if (!wallet) return;
-  const userMetadata = UserMetadataContract.initialize(wallet, domain);
-
   const handleSave = async (metadata: Metadata) => {
-    await userMetadata.saveMetadata(metadata);
+    setUpdates((prevUpdates) => [...prevUpdates, metadata]);
+    onClose();
   };
 
   const selectedType = type.charAt(0).toUpperCase() + type.slice(1);
@@ -51,7 +47,7 @@ export const EditProfileFieldsModal = ({
         <EditTextValueInput
           title={title}
           modalType={type}
-          onSave={handleSave}
+          onMetadataChange={handleSave}
           onClose={onClose}
         />
       </Dialog.Body>

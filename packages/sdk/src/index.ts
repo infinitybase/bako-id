@@ -9,6 +9,7 @@ export {
   register,
   resolver,
   resolverName,
+  setPrimaryHandle,
   simulateHandleCost,
   tokenInfo,
 } from './methods';

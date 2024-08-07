@@ -81,7 +81,7 @@ export const getContractError = (error: FuelError) => {
 
   const errorTypes = Object.keys(errors);
   const errorValue = errorTypes.find((errorType) =>
-    (error.metadata.logs as unknown[]).includes(errorType)
+    (error.metadata.logs as unknown[]).includes(errorType),
   );
 
   const ErrorClass = getError(errorValue || '');

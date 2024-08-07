@@ -2,14 +2,15 @@ import {
   Address,
   Provider,
   TransactionStatus,
-  type WalletUnlocked,
   bn,
+  type WalletUnlocked,
 } from 'fuels';
 import {
   WALLET_PRIVATE_KEYS,
   createWallet,
   expectContainLogError,
   expectRequireRevertError,
+  fundWallet,
   randomName,
   setupContractsAndDeploy,
   tryExecute,
@@ -24,8 +25,10 @@ describe('[METHODS] Registry Contract', () => {
 
   beforeAll(async () => {
     provider = await Provider.create('http://localhost:4000/v1/graphql');
-    wallet = createWallet(provider);
+    wallet = createWallet(provider, WALLET_PRIVATE_KEYS.MAIN);
     contracts = await setupContractsAndDeploy(wallet);
+
+    await fundWallet(wallet);
   });
 
   it('should error on call method without a proxy contract started', async () => {
@@ -56,7 +59,7 @@ describe('[METHODS] Registry Contract', () => {
     const { transactionResult: txRegister } = await registry.register(
       domain,
       wallet.address.toB256(),
-      1
+      1,
     );
 
     expect(txRegister.status).toBe(TransactionStatus.success);
@@ -72,7 +75,7 @@ describe('[METHODS] Registry Contract', () => {
     const { transactionResult: txRegister } = await registry.register(
       domain,
       wallet.address.toB256(),
-      2
+      2,
     );
 
     expect(txRegister.status).toBe(TransactionStatus.success);
@@ -87,7 +90,7 @@ describe('[METHODS] Registry Contract', () => {
     const { transactionResult: txRegister } = await registry.register(
       domain,
       wallet.address.toB256(),
-      3
+      3,
     );
 
     expect(txRegister.status).toBe(TransactionStatus.success);
@@ -116,17 +119,12 @@ describe('[METHODS] Registry Contract', () => {
     await tryExecute(storage.initializeStorage());
 
     try {
-      const { logs } = await registry.register(
-        domain,
-        wallet.address.toB256(),
-        1
-      );
-      console.log(logs);
+      await registry.register(domain, wallet.address.toB256(), 1);
 
       const { transactionResult: txRegister } = await registry.register(
         domain,
         wallet.address.toB256(),
-        1
+        1,
       );
 
       expect(txRegister.status).toBe(TransactionStatus.failure);
@@ -147,7 +145,7 @@ describe('[METHODS] Registry Contract', () => {
     const { transactionResult: txRegister } = await registry.register(
       domain,
       wallet.address.toB256(),
-      1
+      1,
     );
 
     const resolverFn = await resolver.functions
@@ -294,7 +292,7 @@ describe('[METHODS] Registry Contract', () => {
       } catch (error) {
         expectErrors(error);
       }
-    }
+    },
   );
 
   it('should be able to edit resolver of a domain', async () => {
@@ -395,6 +393,89 @@ describe('[METHODS] Registry Contract', () => {
     } catch (error) {
       expectRequireRevertError(error);
       expectContainLogError(error, 'NotOwner');
+    }
+  });
+
+  it('should be able to set a domain as primary', async () => {
+    const { registry, storage, resolver } = contracts;
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
+    fundWallet(wallet);
+
+    const domain = randomName();
+    const secondaryDomain = randomName();
+    const address = Address.fromRandom().toB256();
+
+    await registry.register(domain, address, 1);
+
+    await registry.register(secondaryDomain, address, 1);
+
+    const registryFn = await registry.functions
+      .set_primary_handle(secondaryDomain)
+      .addContracts([storage])
+      .txParams(txParams)
+      .call();
+
+    const value = await registryFn.waitForResult();
+
+    expect(value.transactionResult.status).toBe(TransactionStatus.success);
+  });
+
+  it('should not be able to set a domain as primary if not owner', async () => {
+    const { registry, storage, resolver } = contracts;
+
+    const fakeWallet = createWallet(provider, WALLET_PRIVATE_KEYS.FAKE);
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
+
+    const domain = randomName();
+    const secondaryDomain = randomName();
+    const address = Address.fromRandom().toB256();
+
+    await registry.register(domain, address, 1);
+
+    await registry.register(secondaryDomain, address, 1);
+
+    try {
+      registry.account = fakeWallet;
+
+      await registry.functions
+        .set_primary_handle(secondaryDomain)
+        .addContracts([storage])
+        .txParams(txParams)
+        .call();
+    } catch (error) {
+      expectRequireRevertError(error);
+      expectContainLogError(error, 'NotOwner');
+    }
+  });
+
+  it('should not be able to set a domain as primary if domain not registered', async () => {
+    const { registry, storage, resolver } = contracts;
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+    await tryExecute(resolver.initializeResolver());
+
+    const domain = randomName();
+    const secondaryDomain = randomName();
+    const address = Address.fromRandom().toB256();
+
+    await registry.register(domain, address, 1);
+
+    try {
+      await registry.functions
+        .set_primary_handle(secondaryDomain)
+        .addContracts([storage])
+        .txParams(txParams)
+        .call();
+    } catch (error) {
+      expectRequireRevertError(error);
+      expectContainLogError(error, 'InvalidDomain');
     }
   });
 });

@@ -29,6 +29,7 @@ pub enum RegistryContractError {
     InvalidPermission: (),
     NotOwner: (),
     SameResolver: (),
+    AlreadyPrimary: (),
 }
 
 abi RegistryContract {
@@ -40,6 +41,9 @@ abi RegistryContract {
 
     #[storage(read, write)]
     fn edit_resolver(name: String, resolver: b256);
+
+    #[storage(read, write)]
+    fn set_primary_handle(name: String);
 }
 
 pub struct RegisterInput {
@@ -51,6 +55,17 @@ pub struct RegisterInput {
 pub struct EditResolverInput {
     pub name: String,
     pub resolver: b256,
+}
+
+pub struct SetPrimaryHandleInput {
+    pub name: String,
+}
+
+pub fn msg_sender_address() -> b256 {
+    match msg_sender().unwrap() {
+        Identity::Address(address) => address.bits(),
+        _ => revert(0),
+    }
 }
 
 #[storage(read)]
@@ -125,6 +140,37 @@ pub fn _edit_resolver(input: EditResolverInput, bako_id: ContractId) {
     
     domain.resolver = input.resolver;
     storage_contract.change(domain_hash, domain.into());
+}
+
+#[storage(read, write)]
+pub fn _set_primary_handle(params: SetPrimaryHandleInput, bako_id: ContractId) {
+    let domain_hash = sha256(params.name);
+    let caller = msg_sender_address();
+
+    let storage = abi(StorageContract, bako_id.into());
+    let domain = storage.get(domain_hash);
+    require(domain.is_some(), RegistryContractError::InvalidDomain);
+
+    let mut handle = BakoHandle::from(domain.unwrap());
+    require(
+        Identity::Address(Address::from(handle.owner)) == msg_sender().unwrap(),
+        RegistryContractError::NotOwner,
+    );
+
+    require(!handle.primary, RegistryContractError::AlreadyPrimary);
+
+    let previous_primary_handle = storage.get_primary(caller);
+    if let Some(previous_handle_name) = previous_primary_handle {
+        let mut previous_handle = BakoHandle::from(previous_handle_name);
+
+        previous_handle.primary = false;
+        storage.change(sha256(previous_handle.name), previous_handle.into());
+    }
+
+    handle.primary = true;
+
+    storage.set_primary(caller, params.name);
+    storage.change(domain_hash, handle.into());
 }
 
 pub fn domain_price(domain: String, period: u16) -> u64 {

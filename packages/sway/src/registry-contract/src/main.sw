@@ -118,6 +118,15 @@ impl RegistryContract for Contract {
             resolver,
         });
     }
+
+    #[storage(read, write)]
+    fn set_primary_handle(name: String) {
+        _set_primary_handle(
+            SetPrimaryHandleInput { name },
+            get_storage_id()
+        );
+        
+    }
 }
 
 impl SRC20 for Contract {

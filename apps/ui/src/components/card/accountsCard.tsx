@@ -11,7 +11,6 @@ interface AccountsCardProps {
 export const AccountsCard = ({ metadata }: AccountsCardProps) => {
   // const { isMyDomain } = useSidebar();
 
-  console.log(metadata);
   return (
     <Card
       w={['full', 'full', 'full', '50%']}

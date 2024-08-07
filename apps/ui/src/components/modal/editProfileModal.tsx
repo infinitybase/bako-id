@@ -1,4 +1,8 @@
-import { UserMetadataContract, type Metadata } from '@bako-id/sdk';
+import {
+  UserMetadataContract,
+  setPrimaryHandle,
+  type Metadata,
+} from '@bako-id/sdk';
 import {
   Button,
   CloseButton,
@@ -14,14 +18,18 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
-import React, { useEffect, useMemo, useState, type ReactNode } from 'react';
+import type { Account } from 'fuels';
+import React, { useMemo, useState, type ReactNode } from 'react';
+import { useMyHandles } from '../../modules/myHandles/hooks';
 import { Metadatas } from '../../utils/metadatas';
 import { MetadataCard } from '../card/metadataCard';
 import { Dialog } from '../dialog';
 import { AvatarIcon } from '../icons';
 import { FlagIcon } from '../icons/flagIcon';
+import { FlagIconFilled } from '../icons/flagIconFilled';
+import { useCustomToast } from '../toast';
 import { EditProfileFieldsModal } from './editProfileFieldsModal';
 import { EditProfilePicModal } from './editProfilePicModal';
 import { TransactionsDetailsModal } from './transactionDetails';
@@ -41,12 +49,16 @@ export interface IMetadata {
 interface IModalFilterTabsProps {
   metadata: Metadata[];
   filters: FilterButtonTypes;
+  updates: Metadata[];
+  setUpdates: React.Dispatch<React.SetStateAction<Metadata[]>>;
 }
 
 interface MetadataTabPanelProps {
   title: string;
   metadatas: typeof Metadatas.Social;
   userMetadata: Record<string, IMetadata>;
+  updates: Metadata[];
+  setUpdates: React.Dispatch<React.SetStateAction<Metadata[]>>;
   filters: FilterButtonTypes;
 }
 
@@ -58,6 +70,7 @@ enum FilterButtonTypes {
 
 interface IModalFiltersButtonsProps {
   changeFilter: (filter: FilterButtonTypes) => void;
+  filter: FilterButtonTypes;
 }
 
 const TabsTypes = [
@@ -68,9 +81,40 @@ const TabsTypes = [
   // { key: 'Other', name: 'Other' },
 ];
 
-const ModalTitle = ({ onClose }: Pick<EditProfileModalProps, 'onClose'>) => {
+const ModalTitle = ({
+  onClose,
+  wallet,
+}: Pick<EditProfileModalProps, 'onClose'> & { wallet: Account }) => {
   const modalTitle = useDisclosure();
   const { domain } = useParams({ strict: false });
+  const { data: handles, refetch: refetchHandles } = useMyHandles();
+  const { successToast } = useCustomToast();
+
+  const handle = handles?.find((handle) => handle.name === domain);
+
+  const setPrimaryHandleMutation = useMutation({
+    mutationKey: ['setPrimaryHandle'],
+    mutationFn: async () =>
+      await setPrimaryHandle({
+        account: wallet,
+        domain: handle?.name ?? domain,
+      }),
+    onSuccess: () => {
+      successToast({
+        title: 'Primary Handle Set',
+        description:
+          'You have successfully set this handle as your primary handle',
+      });
+      refetchHandles();
+    },
+    onError: (error) => {
+      console.error(error.message);
+    },
+  });
+
+  const handleSetPrimaryHandle = async () => {
+    await setPrimaryHandleMutation.mutate();
+  };
 
   return (
     <Flex w="full" justify="space-between">
@@ -102,15 +146,32 @@ const ModalTitle = ({ onClose }: Pick<EditProfileModalProps, 'onClose'>) => {
               {domain?.startsWith('@') ? domain : `@${domain}`}
             </Text>
 
-            <Button
-              variant="ghosted"
-              h={[8, 8, 8, 10]}
-              color="grey.100"
-              fontSize={['sm', 'sm', 'sm', 'md']}
-              leftIcon={<FlagIcon />}
-            >
-              Set as primary Handles
-            </Button>
+            {handle?.isPrimary ? (
+              <Button
+                variant="ghosted"
+                h={[8, 8, 8, 10]}
+                _hover={{
+                  cursor: 'inherit',
+                }}
+                color="button.500"
+                bg="warning.750"
+                fontSize={['sm', 'sm', 'sm', 'md']}
+                leftIcon={<FlagIconFilled w={5} h={5} color="button.500" />}
+              >
+                Your primary Handles
+              </Button>
+            ) : (
+              <Button
+                variant="ghosted"
+                h={[8, 8, 8, 10]}
+                color="grey.100"
+                fontSize={['sm', 'sm', 'sm', 'md']}
+                leftIcon={<FlagIcon />}
+                onClick={handleSetPrimaryHandle}
+              >
+                Set as primary Handles
+              </Button>
+            )}
           </Flex>
         </Flex>
       </Flex>
@@ -129,57 +190,43 @@ const ModalTitle = ({ onClose }: Pick<EditProfileModalProps, 'onClose'>) => {
   );
 };
 
-const ModalFiltersButtons = ({ changeFilter }: IModalFiltersButtonsProps) => {
+const ModalFiltersButtons = ({
+  changeFilter,
+  filter,
+}: IModalFiltersButtonsProps) => {
+  const filterTypes = [
+    { type: FilterButtonTypes.ALL, label: 'All' },
+    { type: FilterButtonTypes.ADDED, label: 'Added' },
+    { type: FilterButtonTypes.NOT_ADDED, label: 'Not Added' },
+  ];
+
   return (
     <Flex gap={2} my={4} w="full" justifyContent="space-between">
-      <Button
-        h={[10, 10, 10, 12]}
-        variant="outline"
-        fontWeight={500}
-        rounded="md"
-        w="full"
-        color="grey.100"
-        _hover={{
-          bgColor: 'transparent',
-          color: 'button.500',
-          borderColor: 'button.500',
-        }}
-        onClick={() => changeFilter(FilterButtonTypes.ALL)}
-      >
-        All
-      </Button>
-      <Button
-        h={[10, 10, 10, 12]}
-        variant="outline"
-        fontWeight={500}
-        rounded="md"
-        w="full"
-        color="grey.100"
-        _hover={{
-          bgColor: 'transparent',
-          color: 'button.500',
-          borderColor: 'button.500',
-        }}
-        onClick={() => changeFilter(FilterButtonTypes.ADDED)}
-      >
-        Added
-      </Button>
-      <Button
-        h={[10, 10, 10, 12]}
-        variant="outline"
-        fontWeight={500}
-        rounded="md"
-        w="full"
-        color="grey.100"
-        _hover={{
-          bgColor: 'transparent',
-          color: 'button.500',
-          borderColor: 'button.500',
-        }}
-        onClick={() => changeFilter(FilterButtonTypes.NOT_ADDED)}
-      >
-        Not Added
-      </Button>
+      {filterTypes.map((filterType) => (
+        <Button
+          key={filterType.type}
+          h={[10, 10, 10, 12]}
+          variant="outline"
+          fontWeight={500}
+          rounded="md"
+          w="full"
+          color="grey.100"
+          _hover={{
+            bgColor: 'transparent',
+            color: 'button.500',
+            borderColor: 'button.500',
+          }}
+          _active={{
+            bgColor: 'transparent',
+            color: 'button.500',
+            borderColor: 'button.500',
+          }}
+          isActive={filter === filterType.type}
+          onClick={() => changeFilter(filterType.type)}
+        >
+          {filterType.label}
+        </Button>
+      ))}
     </Flex>
   );
 };
@@ -187,6 +234,8 @@ const ModalFiltersButtons = ({ changeFilter }: IModalFiltersButtonsProps) => {
 const MetadataTabPanel = ({
   title,
   metadatas,
+  updates,
+  setUpdates,
   userMetadata,
   filters,
 }: MetadataTabPanelProps) => {
@@ -224,7 +273,9 @@ const MetadataTabPanel = ({
               const isVerified =
                 metadata.key in userMetadata
                   ? !!userMetadata[metadata.key]
-                  : null;
+                  : updates.some((update) => update.key === metadata.key)
+                    ? false
+                    : null;
               return (
                 <React.Fragment key={metadata.key}>
                   <MetadataCard
@@ -241,6 +292,7 @@ const MetadataTabPanel = ({
                       key={metadata.key}
                       isOpen={isOpen}
                       onClose={handleCloseModal}
+                      setUpdates={setUpdates}
                       type={metadata.key}
                       title={isVerified ? userMetadata[metadata.key].title : ''}
                       validated={isVerified}
@@ -255,7 +307,12 @@ const MetadataTabPanel = ({
   );
 };
 
-const ModalFiltersTabs = ({ metadata, filters }: IModalFilterTabsProps) => {
+const ModalFiltersTabs = ({
+  metadata,
+  updates,
+  setUpdates,
+  filters,
+}: IModalFilterTabsProps) => {
   const userMetadata = useMemo(() => {
     return metadata.reduce((obj: Record<string, IMetadata>, item: Metadata) => {
       obj[item.key] = {
@@ -303,38 +360,48 @@ const ModalFiltersTabs = ({ metadata, filters }: IModalFilterTabsProps) => {
         <TabPanel w="full" px={0}>
           <MetadataTabPanel
             title="General"
+            updates={updates}
             metadatas={Metadatas.General}
             userMetadata={userMetadata}
+            setUpdates={setUpdates}
             filters={filters}
           />
           <MetadataTabPanel
             title="Social"
+            updates={updates}
             metadatas={Metadatas.Social}
             userMetadata={userMetadata}
+            setUpdates={setUpdates}
             filters={filters}
           />
         </TabPanel>
         <TabPanel w="full" px={0}>
           <MetadataTabPanel
             title="Social"
+            updates={updates}
             metadatas={Metadatas.Social}
             userMetadata={userMetadata}
+            setUpdates={setUpdates}
             filters={filters}
           />
         </TabPanel>
         <TabPanel w="full" px={0}>
           <MetadataTabPanel
             title="Addresses"
+            updates={updates}
             metadatas={Metadatas.Address}
             userMetadata={userMetadata}
+            setUpdates={setUpdates}
             filters={filters}
           />
         </TabPanel>
         <TabPanel w="full" px={0}>
           <MetadataTabPanel
             title="Website"
+            updates={updates}
             metadatas={Metadatas.Website}
             userMetadata={userMetadata}
+            setUpdates={setUpdates}
             filters={filters}
           />
         </TabPanel>
@@ -349,23 +416,19 @@ export const EditProfileModal = ({
 }: EditProfileModalProps) => {
   const { domain } = useParams({ strict: false });
   const { wallet } = useWallet();
-  const [metadata, setMetadata] = useState<Metadata[]>([]);
-  const updates = Metadatas.General;
   const transactionDetails = useDisclosure();
+  const { successToast, errorToast } = useCustomToast();
+
   const [filter, setFilter] = useState(FilterButtonTypes.ALL);
+  const [updates, setUpdates] = useState<Metadata[]>([]);
 
   const handleFilterClick = (newFilter: FilterButtonTypes) => {
     setFilter(newFilter);
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 
-  const {
-    data: metadatas,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ['fetchMetadatas'],
+  const { data: metadata, refetch: refetchMetadatas } = useQuery({
+    queryKey: ['getAllMetadatas'],
     queryFn: async () => {
       if (!wallet) return;
 
@@ -375,17 +438,34 @@ export const EditProfileModal = ({
     },
   });
 
-  useEffect(() => {
-    if (metadatas) {
-      setMetadata(metadatas);
-    }
+  const handleSave = useMutation({
+    mutationKey: ['saveBatchMetadatas'],
+    mutationFn: async () => {
+      if (!wallet) return;
 
-    if (isError) {
-      console.error(error);
-    }
-  }, [metadatas, isError, error]);
+      const userMetadata = UserMetadataContract.initialize(wallet, domain);
 
-  // console.log(metadata);
+      return userMetadata.batchSaveMetadata(updates);
+    },
+    onSuccess: () => {
+      successToast({
+        title: 'Profile Updated',
+        description: 'You have successfully updated your profile',
+      });
+      refetchMetadatas();
+      transactionDetails.onClose();
+    },
+    onError: (error) => {
+      console.error(error.message);
+      errorToast({
+        title: 'Profile Update Failed',
+        description:
+          'There was an error updating your profile, please try again',
+      });
+    },
+  });
+
+
   return (
     <>
       <Dialog.Modal
@@ -394,11 +474,16 @@ export const EditProfileModal = ({
         isOpen={isOpen}
         onClose={onClose}
         size={['full', '2xl', '2xl', '2xl']}
-        modalTitle={<ModalTitle onClose={onClose} />}
+        modalTitle={<ModalTitle onClose={onClose} wallet={wallet!} />}
       >
-        <ModalFiltersButtons changeFilter={handleFilterClick} />
+        <ModalFiltersButtons changeFilter={handleFilterClick} filter={filter} />
         <Dialog.Body>
-          <ModalFiltersTabs metadata={metadata} filters={filter} />
+          <ModalFiltersTabs
+            metadata={metadata ?? []}
+            updates={updates}
+            setUpdates={setUpdates}
+            filters={filter}
+          />
         </Dialog.Body>
 
         <Dialog.Actions>
@@ -415,7 +500,7 @@ export const EditProfileModal = ({
         isOpen={transactionDetails.isOpen}
         onClose={transactionDetails.onClose}
         updates={updates}
-        onConfirm={transactionDetails.onClose}
+        onConfirm={handleSave.mutate}
       />
     </>
   );

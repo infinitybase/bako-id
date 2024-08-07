@@ -32,6 +32,10 @@ function convertBytesToDomain(bytes: number[]) {
   const [, nameSize] = bytes.splice(0, 2);
   const name = String.fromCharCode(...bytes.splice(0, nameSize));
 
+  if (!name) {
+    return [];
+  }
+
   const [, boolSize] = bytes.splice(0, 2);
   const [isPrimary] = bytes.splice(0, boolSize);
   result.push({ name, isPrimary: !!isPrimary });

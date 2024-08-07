@@ -10,27 +10,28 @@
 */
 
 import type {
-  BigNumberish,
-  BN,
-  Bytes,
-  BytesLike,
   Contract,
-  DecodedValue,
   FunctionFragment,
   Interface,
   InvokeFunction,
   StdString,
 } from 'fuels';
 
-import type { Option, Enum } from "./common";
+import type { Option } from './common';
 
-export enum ResolverContractErrorInput { AlreadyInitialized = 'AlreadyInitialized', StorageNotInitialized = 'StorageNotInitialized' };
-export enum ResolverContractErrorOutput { AlreadyInitialized = 'AlreadyInitialized', StorageNotInitialized = 'StorageNotInitialized' };
+export enum ResolverContractErrorInput {
+  AlreadyInitialized = 'AlreadyInitialized',
+  StorageNotInitialized = 'StorageNotInitialized',
+}
+export enum ResolverContractErrorOutput {
+  AlreadyInitialized = 'AlreadyInitialized',
+  StorageNotInitialized = 'StorageNotInitialized',
+}
 
 export type ContractIdInput = { bits: string };
 export type ContractIdOutput = ContractIdInput;
 
-interface ResolverContractAbiInterface extends Interface {
+export interface ResolverContractAbiInterface extends Interface {
   functions: {
     constructor: FunctionFragment;
     owner: FunctionFragment;
