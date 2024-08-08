@@ -32,6 +32,10 @@ type EditTextValueInput = {
 export const EditTextValueInput = (props: IEditTextValueInput) => {
   const [inputValue, setInputValue] = useState<string>(props.title ?? '');
 
+  const selectedType =
+    props.modalType.split(':')[1].charAt(0).toUpperCase() +
+    props.modalType.split(':')[1].slice(1);
+
   const {
     control,
     handleSubmit,
@@ -74,7 +78,7 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
                 required: { value: true, message: 'You must type something' },
                 minLength: {
                   value: 3,
-                  message: `${props.modalType} must be at least 3 characters long.`,
+                  message: `${selectedType} must be at least 3 characters long.`,
                 },
               }}
               render={({ field }) => (
@@ -104,8 +108,7 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
               )}
             />
             <FormLabel isTruncated fontWeight="normal" maxW="80%" fontSize="sm">
-              {props.modalType.charAt(0).toUpperCase() +
-                props.modalType.slice(1)}
+              {selectedType}
             </FormLabel>
 
             {inputValue.length > 0 && (

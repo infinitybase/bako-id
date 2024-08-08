@@ -30,16 +30,25 @@ export const AccountsCard = ({ metadata }: AccountsCardProps) => {
       </Flex>
 
       <VStack spacing={5}>
-        {metadata?.map((m) => (
-          <VerifiedAccountInput
-            key={m.key}
-            value={m.value}
-            variant={m}
-            isVerified
-            rightAddon
-            rightAddonName={<Icon as={CopyIcon} />}
-          />
-        ))}
+        {metadata?.map((m) => {
+          const keyAfterColon = m.key.split(':')[1];
+
+          const variant = {
+            key: keyAfterColon,
+            value: m.value,
+          };
+
+          return (
+            <VerifiedAccountInput
+              key={m.key}
+              value={m.value}
+              variant={variant}
+              isVerified
+              rightAddon
+              rightAddonName={<Icon as={CopyIcon} />}
+            />
+          );
+        })}
         {/* <VerifiedAccountInput
           variant="twitter"
           isVerified={false}
