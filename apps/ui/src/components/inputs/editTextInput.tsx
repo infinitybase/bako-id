@@ -21,7 +21,7 @@ import { TrashIcon } from '../icons/trashIcon';
 interface IEditTextValueInput extends InputProps {
   title: string;
   modalType: string;
-  onSave: (metadata: Metadata) => Promise<void>;
+  onMetadataChange: (metadata: Metadata) => void;
   onClose: () => void;
 }
 
@@ -45,7 +45,7 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
   });
 
   const handleSave = () => {
-    props.onSave({
+    props.onMetadataChange({
       key: props.modalType,
       value: inputValue,
     });
