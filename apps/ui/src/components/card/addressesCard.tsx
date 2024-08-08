@@ -32,13 +32,10 @@ export const AddressesCard = ({ domain }: IAddressesCard) => {
         )} */}
       </Flex>
       <Flex direction="column" alignItems="center" justifyContent="center">
-
         <TextValue
           leftAction={<Icon as={FuelIcon} />}
-          rightAction={
-            <CopyText value={Address.fromB256(domain).toString()} />
-          }
-          content={formatAddress(Address.fromB256(domain).toString())}
+          rightAction={<CopyText value={Address.fromB256(domain).toB256()} />}
+          content={formatAddress(Address.fromB256(domain).toB256())}
         />
       </Flex>
     </Card>
