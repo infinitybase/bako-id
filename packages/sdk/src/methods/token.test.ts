@@ -48,6 +48,6 @@ describe('Test token', () => {
     const name = randomName();
     const tokenResult = await tokenInfo(name, { provider });
 
-    expect(tokenResult).toBeUndefined();
+    expect(tokenResult.image).toBeUndefined();
   });
 });

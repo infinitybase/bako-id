@@ -53,7 +53,7 @@ export async function tokenInfo(handle: string, params?: ProviderParams) {
 
   return {
     name: tokenName,
-    image: tokenImage?.B256,
+    image: tokenImage?.String,
     symbol: tokenSymbol,
     assetId,
     subId,
