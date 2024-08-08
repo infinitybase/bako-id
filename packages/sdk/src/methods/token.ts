@@ -44,6 +44,10 @@ export async function tokenInfo(handle: string, params?: ProviderParams) {
     .metadata({ bits: assetId }, 'image:png')
     .get();
 
+  if (!tokenImage) {
+    return undefined;
+  }
+
   const { value: tokenName } = await registry.functions
     .name({ bits: ZeroBytes32 })
     .get();
