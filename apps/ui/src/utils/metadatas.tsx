@@ -14,28 +14,28 @@ import {
 export const Metadatas = {
   General: [
     {
-      key: 'nickname',
+      key: 'contact:nickname',
       title: 'Nickname',
       icon: <UserIcon w={7} h={7} />,
       description: 'Your display name',
       validated: true,
     },
     {
-      key: 'shortBio',
+      key: 'contact:bio',
       title: 'Short bio',
       icon: <BioIcon w={7} h={7} />,
       description: 'A brief description about you',
       validated: null,
     },
     {
-      key: 'website',
+      key: 'link:website',
       title: 'Website',
       icon: <WebsiteIcon w={7} h={7} />,
       description: 'Your personal or professional website',
       validated: false,
     },
     {
-      key: 'location',
+      key: 'contact:location',
       title: 'Location',
       icon: <LocationIcon w={7} h={7} />,
       description: 'Your current location',
@@ -44,42 +44,42 @@ export const Metadatas = {
   ],
   Social: [
     {
-      key: 'twitter',
+      key: 'social:x',
       title: 'Twitter',
       icon: <TwitterIcon w={7} h={7} />,
       description: 'Your Twitter handle',
       validated: false,
     },
     {
-      key: 'farcaster',
+      key: 'social:farcaster',
       title: 'Farcaster',
       icon: <FarcasterIcon w={7} h={7} />,
       description: 'Your Farcaster handle',
       validated: false,
     },
     {
-      key: 'github',
+      key: 'social:github',
       title: 'Github',
       icon: <GithubIcon w={7} h={7} />,
       description: 'Your GitHub profile',
       validated: null,
     },
     {
-      key: 'discord',
+      key: 'social:discord',
       title: 'Discord',
       icon: <DiscordIcon w={7} h={7} />,
       description: 'Your Discord username',
       validated: false,
     },
     {
-      key: 'telegram',
+      key: 'social:telegram',
       title: 'Telegram',
       icon: <TelegramIcon w={7} h={7} />,
       description: 'Your Telegram handle',
       validated: true,
     },
     {
-      key: 'email',
+      key: 'social:email',
       title: 'E-mail',
       icon: <MailIcon w={7} h={7} />,
       description: 'Your email address',
@@ -88,7 +88,7 @@ export const Metadatas = {
   ],
   Address: [
     {
-      key: 'location',
+      key: 'contact:location',
       title: 'Location',
       icon: <LocationIcon w={7} h={7} />,
       description: 'Your current location',
@@ -97,7 +97,7 @@ export const Metadatas = {
   ],
   Website: [
     {
-      key: 'website',
+      key: 'link:website',
       title: 'Website',
       icon: <WebsiteIcon w={7} h={7} />,
       description: 'Your personal or professional website',

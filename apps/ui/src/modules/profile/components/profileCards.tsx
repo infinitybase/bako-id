@@ -56,6 +56,7 @@ export const ProfileCards = ({
   const LoadedData = () => {
     const { domain: domainName } = useParams({ strict: false });
     const { wallet } = useWallet();
+
     const { data: metadata } = useQuery({
       queryKey: ['getAllMetadatas'],
       queryFn: async () => {

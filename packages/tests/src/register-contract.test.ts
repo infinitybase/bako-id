@@ -372,7 +372,7 @@ describe('[METHODS] Registry Contract', () => {
     const { registry, storage, resolver } = contracts;
 
     const fakeWallet = createWallet(provider, WALLET_PRIVATE_KEYS.FAKE);
-
+    fundWallet(wallet);
     await tryExecute(storage.initializeStorage());
     await tryExecute(registry.initializeRegistry());
     await tryExecute(resolver.initializeResolver());

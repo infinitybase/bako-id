@@ -24,7 +24,8 @@ export const EditProfileFieldsModal = ({
     onClose();
   };
 
-  const selectedType = type.charAt(0).toUpperCase() + type.slice(1);
+  const selectedType =
+    type.split(':')[1].charAt(0).toUpperCase() + type.split(':')[1].slice(1);
 
   return (
     <Dialog.Modal

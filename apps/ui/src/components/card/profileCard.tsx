@@ -13,6 +13,7 @@ import { Card } from '.';
 import { DisabledXBadgeIcon, EditIcon } from '..';
 import { useMyHandles } from '../../modules/myHandles/hooks';
 import { ExplorerTypes } from '../../types';
+import { ContactMetadataKeys } from '../../utils/metadataKeys';
 import { AvatarIcon } from '../icons/avatarIcon';
 import { ExploreIcon } from '../icons/explore';
 import { FarcasterBadgeIcon } from '../icons/farcasterBadgeIcon';
@@ -30,8 +31,10 @@ export const ProfileCard = ({ domain, domainName, metadata }: IProfileCard) => {
   const { data: handles } = useMyHandles();
   const [isLowerThanMobile] = useMediaQuery('(max-width: 25em)');
 
-  const nickname = metadata?.find((m) => m.key === 'nickname');
-  const shortBio = metadata?.find((m) => m.key === 'shortBio');
+  const nickname = metadata?.find(
+    (m) => m.key === ContactMetadataKeys.Nickname,
+  );
+  const shortBio = metadata?.find((m) => m.key === ContactMetadataKeys.Bio);
 
   const handle = handles?.find((handle) => handle.name === domainName);
 

@@ -60,7 +60,6 @@ export interface RegistryContractAbiInterface extends Interface {
     total_assets: FunctionFragment;
     total_supply: FunctionFragment;
     metadata: FunctionFragment;
-    image_url: FunctionFragment;
     get_all: FunctionFragment;
     get_grace_period: FunctionFragment;
   };
@@ -78,8 +77,10 @@ export class RegistryContractAbi extends Contract {
     symbol: InvokeFunction<[asset: AssetIdInput], Option<StdString>>;
     total_assets: InvokeFunction<[], BN>;
     total_supply: InvokeFunction<[asset: AssetIdInput], Option<BN>>;
-    metadata: InvokeFunction<[asset: AssetIdInput, key: StdString], Option<MetadataOutput>>;
-    image_url: InvokeFunction<[name: StdString], StdString>;
+    metadata: InvokeFunction<
+      [asset: AssetIdInput, key: StdString],
+      Option<MetadataOutput>
+    >;
     get_all: InvokeFunction<[owner: string], Bytes>;
     get_grace_period: InvokeFunction<[owner: StdString], GracePeriodOutput>;
   };

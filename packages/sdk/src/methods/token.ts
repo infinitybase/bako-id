@@ -1,17 +1,18 @@
-import { ZeroBytes32, sha256 } from 'fuels';
+import { ZeroBytes32, getMintedAssetId, sha256 } from 'fuels';
 import { config } from '../config';
 import { getRegistryContract } from '../setup';
 import {
-  type ProviderParams,
   assertValidDomain,
   domainToBytes,
   getProviderFromParams,
+  type ProviderParams,
 } from '../utils';
 
 type TokenInfo = {
   name: string;
   image: string;
   symbol: string;
+  assetId: string;
   subId: string;
   contractId: string;
 };
@@ -31,13 +32,16 @@ export async function tokenInfo(handle: string, params?: ProviderParams) {
   const handleName = assertValidDomain(handle);
   const provider = await getProviderFromParams(params);
 
+  const subId = sha256(domainToBytes(handleName));
+  const assetId = getMintedAssetId(config.REGISTRY_CONTRACT_ID, subId);
+
   const { registry } = await getRegistryContract({
     storageId: config.STORAGE_CONTRACT_ID!,
     provider,
   });
 
   const { value: tokenImage } = await registry.functions
-    .image_url(handleName)
+    .metadata({ bits: assetId }, 'image:png')
     .get();
 
   if (!tokenImage) {
@@ -53,9 +57,10 @@ export async function tokenInfo(handle: string, params?: ProviderParams) {
 
   return {
     name: tokenName,
-    image: tokenImage,
+    image: tokenImage?.String,
     symbol: tokenSymbol,
-    subId: sha256(domainToBytes(handleName)),
+    assetId,
+    subId,
     contractId: config.REGISTRY_CONTRACT_ID,
   } as TokenInfo;
 }

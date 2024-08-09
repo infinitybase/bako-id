@@ -662,29 +662,6 @@ const _abi = {
     {
       "inputs": [
         {
-          "name": "name",
-          "type": 18,
-          "typeArguments": null
-        }
-      ],
-      "name": "image_url",
-      "output": {
-        "name": "",
-        "type": 18,
-        "typeArguments": null
-      },
-      "attributes": [
-        {
-          "name": "storage",
-          "arguments": [
-            "read"
-          ]
-        }
-      ]
-    },
-    {
-      "inputs": [
-        {
           "name": "owner",
           "type": 1,
           "typeArguments": null

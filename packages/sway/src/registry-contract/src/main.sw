@@ -163,13 +163,6 @@ impl SRC7 for Contract {
     }
 }
 
-impl NFTContract for Contract {
-    #[storage(read)]
-    fn image_url(name: String) -> String {
-        _image_url(storage.metadata, name)
-    }
-}
-
 impl InfoContract for Contract {
     #[storage(read)]
     fn get_all(owner: b256) -> Bytes {
