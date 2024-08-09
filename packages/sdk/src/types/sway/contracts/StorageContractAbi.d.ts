@@ -22,32 +22,14 @@ import type {
   StdString,
 } from 'fuels';
 
-import type { Option, Enum, Vec } from './common';
+import type { Option, Enum, Vec } from "./common";
 
-export type IdentityInput = Enum<{
-  Address: AddressInput;
-  ContractId: ContractIdInput;
-}>;
-export type IdentityOutput = Enum<{
-  Address: AddressOutput;
-  ContractId: ContractIdOutput;
-}>;
-export type PermissionInput = Enum<{
-  Authorized: IdentityInput;
-  Unauthorized: [];
-  NotFound: [];
-}>;
-export type PermissionOutput = Enum<{
-  Authorized: IdentityOutput;
-  Unauthorized: [];
-  NotFound: [];
-}>;
-export enum StorageContractErrorInput {
-  AlreadyInitialized = 'AlreadyInitialized',
-}
-export enum StorageContractErrorOutput {
-  AlreadyInitialized = 'AlreadyInitialized',
-}
+export type IdentityInput = Enum<{ Address: AddressInput, ContractId: ContractIdInput }>;
+export type IdentityOutput = Enum<{ Address: AddressOutput, ContractId: ContractIdOutput }>;
+export type PermissionInput = Enum<{ Authorized: IdentityInput, Unauthorized: [], NotFound: [] }>;
+export type PermissionOutput = Enum<{ Authorized: IdentityOutput, Unauthorized: [], NotFound: [] }>;
+export enum StorageContractErrorInput { AlreadyInitialized = 'AlreadyInitialized' };
+export enum StorageContractErrorOutput { AlreadyInitialized = 'AlreadyInitialized' };
 
 export type AddressInput = { bits: string };
 export type AddressOutput = AddressInput;
@@ -74,19 +56,13 @@ export class StorageContractAbi extends Contract {
   interface: StorageContractAbiInterface;
   functions: {
     change: InvokeFunction<[key: string, bytes_domain: Bytes], void>;
-    constructor: InvokeFunction<
-      [owner: AddressInput, registry_id: ContractIdInput],
-      void
-    >;
+    constructor: InvokeFunction<[owner: AddressInput, registry_id: ContractIdInput], void>;
     get: InvokeFunction<[key: string], Option<Bytes>>;
     get_all: InvokeFunction<[owner: string], Vec<Bytes>>;
     get_implementation: InvokeFunction<[], Option<ContractIdOutput>>;
     get_owner: InvokeFunction<[], Option<AddressOutput>>;
     get_primary: InvokeFunction<[resolver: string], Option<Bytes>>;
-    set: InvokeFunction<
-      [key: string, owner: string, bytes_domain: Bytes],
-      void
-    >;
+    set: InvokeFunction<[key: string, owner: string, bytes_domain: Bytes], void>;
     set_implementation: InvokeFunction<[registry_id: ContractIdInput], void>;
     set_owner: InvokeFunction<[owner: AddressInput], void>;
     set_primary: InvokeFunction<[key: string, value: StdString], void>;
