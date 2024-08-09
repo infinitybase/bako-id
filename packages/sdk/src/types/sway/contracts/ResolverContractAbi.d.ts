@@ -10,14 +10,19 @@
 */
 
 import type {
+  BigNumberish,
+  BN,
+  Bytes,
+  BytesLike,
   Contract,
+  DecodedValue,
   FunctionFragment,
   Interface,
   InvokeFunction,
   StdString,
 } from 'fuels';
 
-import type { Option } from './common';
+import type { Option, Enum } from './common';
 
 export enum ResolverContractErrorInput {
   AlreadyInitialized = 'AlreadyInitialized',

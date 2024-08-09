@@ -10,13 +10,19 @@
 */
 
 import type {
+  BigNumberish,
+  BN,
   Bytes,
+  BytesLike,
   Contract,
+  DecodedValue,
   FunctionFragment,
   Interface,
   InvokeFunction,
   StdString,
 } from 'fuels';
+
+import type { Enum } from './common';
 
 export enum MetadataContractErrorInput {
   StorageNotInitialized = 'StorageNotInitialized',
