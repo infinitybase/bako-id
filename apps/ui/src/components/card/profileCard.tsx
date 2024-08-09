@@ -11,6 +11,7 @@ import {
 import type { Metadata } from '@bako-id/sdk';
 import { Card } from '.';
 import { DisabledXBadgeIcon, EditIcon } from '..';
+import { useDomain, useFuelConnect } from '../../hooks';
 import { useMyHandles } from '../../modules/myHandles/hooks';
 import { ExplorerTypes } from '../../types';
 import { ContactMetadataKeys } from '../../utils/metadataKeys';
@@ -28,8 +29,12 @@ interface IProfileCard {
 
 export const ProfileCard = ({ domain, domainName, metadata }: IProfileCard) => {
   const action = useDisclosure();
+  const { wallet } = useFuelConnect();
   const { data: handles } = useMyHandles();
+  const { resolveOwner } = useDomain();
   const [isLowerThanMobile] = useMediaQuery('(max-width: 25em)');
+
+  const isOwner = resolveOwner.data === wallet?.address.toB256();
 
   const nickname = metadata?.find(
     (m) => m.key === ContactMetadataKeys.Nickname,
@@ -89,19 +94,21 @@ export const ProfileCard = ({ domain, domainName, metadata }: IProfileCard) => {
                 <Icon color="button.500" w={6} h={6} as={FlagIconFilled} />
               </Box>
             )}
-            <Button
-              alignSelf={['inherit', 'flex-end']}
-              variant="ghosted"
-              color="grey.100"
-              bgColor={isLowerThanMobile ? 'transparent' : undefined}
-              fontWeight="normal"
-              fontSize={['sm', 'sm']}
-              h={9}
-              rightIcon={<EditIcon w={5} h={5} />}
-              onClick={action.onOpen}
-            >
-              Edit Profile
-            </Button>
+            {isOwner && (
+              <Button
+                alignSelf={['inherit', 'flex-end']}
+                variant="ghosted"
+                color="grey.100"
+                bgColor={isLowerThanMobile ? 'transparent' : undefined}
+                fontWeight="normal"
+                fontSize={['sm', 'sm']}
+                h={9}
+                rightIcon={<EditIcon w={5} h={5} />}
+                onClick={action.onOpen}
+              >
+                Edit Profile
+              </Button>
+            )}
             <Button
               alignSelf={['inherit', 'flex-end']}
               variant="ghosted"
