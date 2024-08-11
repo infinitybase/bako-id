@@ -95,7 +95,7 @@ export const TokenCard = () => {
               variant="ghosted"
               color="grey.100"
               rightIcon={<ExploreIcon w={5} h={5} />}
-              isDisabled={!isMyDomain}
+              // isDisabled={!isMyDomain}
               onClick={() =>
                 window.open(`https://app.fuel.network/account/${domain}/assets`)
               }
