@@ -45,10 +45,12 @@ export const Info = ({
     });
   };
 
-  // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
-  const onOpenMenu = () => document.body.style.overflow = 'hidden';
-  // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
-  const onCloseMenu = () => document.body.style.overflow = 'auto';
+  const onOpenMenu = () => {
+    document.body.style.overflow = 'hidden';
+  };
+  const onCloseMenu = () => {
+    document.body.style.overflow = 'auto';
+  };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const icon = useMemo(() => {
