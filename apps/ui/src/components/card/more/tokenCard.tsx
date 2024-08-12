@@ -14,11 +14,9 @@ import { useProfile } from '../../../modules/profile/hooks/useProfile';
 import { CopyText } from '../../helpers/copy';
 import { ExploreIcon } from '../../icons/explore';
 import { ActionDomainModal } from '../../modal/actionDomainModal';
-import { useSidebar } from '../../sidebar/hooks/useSidebar';
 
 export const TokenCard = () => {
   const { token } = useToken();
-  const { isMyDomain } = useSidebar();
   const { domain, domainParam } = useProfile();
   const action = useDisclosure();
 
