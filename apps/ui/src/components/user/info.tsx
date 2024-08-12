@@ -15,7 +15,7 @@ import {
 import { useFuel } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
 import type { AbstractAddress } from 'fuels';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BeginnersGuide } from '../icons/beginnersGuide.tsx';
 import { FileIcon } from '../icons/fileIcon.tsx';
 import { HowToSendCrypto } from '../icons/howToSendCrypto.tsx';
@@ -37,6 +37,7 @@ export const Info = ({
   } = useFuel();
   const navigate = useNavigate();
   const { successToast } = useCustomToast();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const copy = () => {
     navigator.clipboard.writeText(account.toString());
@@ -45,6 +46,14 @@ export const Info = ({
     });
   };
 
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [isMenuOpen]);
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const icon = useMemo(() => {
     const path = localStorage.getItem(`@BAKO-ID/AVATAR/${account}`);
@@ -52,7 +61,11 @@ export const Info = ({
   }, []);
 
   return (
-    <Menu strategy="fixed">
+    <Menu
+      strategy="fixed"
+      onOpen={() => setIsMenuOpen(true)}
+      onClose={() => setIsMenuOpen(false)}
+    >
       {({ onClose }) => (
         <>
           <MenuButton
