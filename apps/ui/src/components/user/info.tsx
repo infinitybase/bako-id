@@ -15,7 +15,7 @@ import {
 import { useFuel } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
 import type { AbstractAddress } from 'fuels';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { BeginnersGuide } from '../icons/beginnersGuide.tsx';
 import { FileIcon } from '../icons/fileIcon.tsx';
 import { HowToSendCrypto } from '../icons/howToSendCrypto.tsx';
@@ -37,7 +37,6 @@ export const Info = ({
   } = useFuel();
   const navigate = useNavigate();
   const { successToast } = useCustomToast();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const copy = () => {
     navigator.clipboard.writeText(account.toString());
@@ -46,13 +45,10 @@ export const Info = ({
     });
   };
 
-  useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-  }, [isMenuOpen]);
+  // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+  const onOpenMenu = () => document.body.style.overflow = 'hidden';
+  // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+  const onCloseMenu = () => document.body.style.overflow = 'auto';
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const icon = useMemo(() => {
@@ -61,11 +57,7 @@ export const Info = ({
   }, []);
 
   return (
-    <Menu
-      strategy="fixed"
-      onOpen={() => setIsMenuOpen(true)}
-      onClose={() => setIsMenuOpen(false)}
-    >
+    <Menu strategy="fixed" onOpen={onOpenMenu} onClose={onCloseMenu}>
       {({ onClose }) => (
         <>
           <MenuButton
