@@ -45,6 +45,13 @@ export const Info = ({
     });
   };
 
+  const onOpenMenu = () => {
+    document.body.style.overflow = 'hidden';
+  };
+  const onCloseMenu = () => {
+    document.body.style.overflow = 'auto';
+  };
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const icon = useMemo(() => {
     const path = localStorage.getItem(`@BAKO-ID/AVATAR/${account}`);
@@ -52,7 +59,7 @@ export const Info = ({
   }, []);
 
   return (
-    <Menu strategy="fixed">
+    <Menu strategy="fixed" onOpen={onOpenMenu} onClose={onCloseMenu}>
       {({ onClose }) => (
         <>
           <MenuButton
