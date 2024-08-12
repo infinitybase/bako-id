@@ -293,6 +293,7 @@ const MetadataTabPanel = ({
                       key={metadata.key}
                       isOpen={isOpen}
                       onClose={handleCloseModal}
+                      updates={updates}
                       setUpdates={setUpdates}
                       type={metadata.key}
                       title={isVerified ? userMetadata[metadata.key].title : ''}
@@ -427,7 +428,6 @@ export const EditProfileModal = ({
     setFilter(newFilter);
   };
 
-
   const { data: metadata, refetch: refetchMetadatas } = useQuery({
     queryKey: ['getAllMetadatas'],
     queryFn: async () => {
@@ -442,7 +442,6 @@ export const EditProfileModal = ({
   const handleSave = useMutation({
     mutationKey: ['saveBatchMetadatas'],
     mutationFn: async () => {
-
       if (!wallet) return;
 
       const userMetadata = UserMetadataContract.initialize(wallet, domain);
@@ -466,7 +465,6 @@ export const EditProfileModal = ({
       });
     },
   });
-
 
   return (
     <>

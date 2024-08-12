@@ -5,6 +5,7 @@ import { EditTextValueInput } from '../inputs/editTextInput';
 interface EditProfileFieldsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  updates: Metadata[];
   setUpdates: React.Dispatch<React.SetStateAction<Metadata[]>>;
   type: string;
   title: string;
@@ -15,14 +16,27 @@ export const EditProfileFieldsModal = ({
   isOpen,
   onClose,
   setUpdates,
+  updates,
   type,
   title,
   validated,
 }: EditProfileFieldsModalProps) => {
   const handleSave = async (metadata: Metadata) => {
-    setUpdates((prevUpdates) => [...prevUpdates, metadata]);
+    setUpdates((prevUpdates) => {
+      const index = prevUpdates.findIndex((m) => m.key === metadata.key);
+      if (index !== -1) {
+        // If the metadata already exists, update it
+        const newUpdates = [...prevUpdates];
+        newUpdates[index] = metadata;
+        return newUpdates;
+      }
+
+      return [...prevUpdates, metadata];
+    });
     onClose();
   };
+
+  const currentValue = updates.find((m) => m.key === type)?.value;
 
   const selectedType =
     type.split(':')[1].charAt(0).toUpperCase() + type.split(':')[1].slice(1);
@@ -46,7 +60,7 @@ export const EditProfileFieldsModal = ({
         h={32}
       >
         <EditTextValueInput
-          title={title}
+          title={currentValue ?? title}
           modalType={type}
           onMetadataChange={handleSave}
           onClose={onClose}

@@ -116,14 +116,20 @@ export const TransactionsDetailsModal = ({
           </Box>
         </VStack>
         <VStack mb={5}>
-          {updates.map((update) => (
-            <TextValue
-              key={update.key}
-              textColor="grey.100"
-              leftAction={update.key}
-              content={update.value}
-            />
-          ))}
+          {updates.map((update) => {
+            const formatedUpdates =
+              update.key.split(':')[1].charAt(0) +
+              update.key.split(':')[1].slice(1);
+
+            return (
+              <TextValue
+                key={update.key}
+                textColor="grey.100"
+                leftAction={formatedUpdates}
+                content={update.value}
+              />
+            );
+          })}
         </VStack>
       </Dialog.Body>
       <Dialog.Actions hideDivider>
