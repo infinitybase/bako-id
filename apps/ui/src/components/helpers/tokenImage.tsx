@@ -1,31 +1,17 @@
-import {
-  Image as ChakraImage,
-  Spinner,
-  type ImageProps,
-} from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { Image as ChakraImage, type ImageProps } from '@chakra-ui/react';
+import { useEffect } from 'react';
 
 interface TokenImageProps extends ImageProps {
   src: string;
 }
 
 export const TokenImage = ({ src, ...props }: TokenImageProps) => {
-  const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
-    setIsLoading(true);
     if (src) {
       const img = new Image();
       img.src = src;
-      img.onload = () => {
-        setIsLoading(false);
-      };
     }
   }, [src]);
-
-  if (isLoading) {
-    return <Spinner />;
-  }
 
   return (
     <ChakraImage
