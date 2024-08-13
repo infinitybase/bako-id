@@ -10,7 +10,7 @@ use abis::{
 type AttestationKey = b256;
 type AttestationHash = b256;
 
-struct AttestationInput {
+pub struct AttestationInput {
     id: String,
     app: String,
     handle: String,
@@ -50,5 +50,26 @@ impl Attestation for Contract {
     #[storage(read)]
     fn verify(attestation_key: AttestationKey) -> Option<AttestationHash> {
         attestations.get(attestation_key)
+    }
+}
+
+impl AttestationAdmin for Contract {
+    #[storage(read, write)]
+    fn constructor(attester: Address) {
+        if storage.attester != Address::from(b256::zero()) {
+            revert(1); // Retorna um erro se o attester já foi inicializado
+        }
+        storage.attester = attester;
+    }
+
+    #[storage(read)]
+    fn attester() -> Address {
+        storage.attester
+    }
+
+    #[storage(write)]
+    fn set_attester(attester: Address) {
+        only_attester();
+        storage.attester = attester;
     }
 }
