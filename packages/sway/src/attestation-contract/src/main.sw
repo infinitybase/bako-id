@@ -16,6 +16,12 @@ pub struct AttestationInput {
     handle: String,
 }
 
+enum AttestationContractError {
+    AttesterNotSet: (),
+    AttesterMismatch: (),
+    OnlyAttester: (),
+}
+
 storage {
     attester: Address = Address::from(b256::zero()),
     attestations: StorageMap<AttestationKey, AttestationHash> = StorageMap {},
@@ -26,7 +32,10 @@ fn only_attester() {
     let attester = storage.attester;
     match msg_sender() {
         Identity::Address(address) if address == attester => (),
-        _ => revert(0),
+        Identity::Address(address) => if address != attester {
+            revert(AttestationContractError::OnlyAttester)
+        },
+        _ => revert(AttestationContractError::AttesterNotSet),
     }
 }
 
@@ -57,14 +66,14 @@ impl AttestationAdmin for Contract {
     #[storage(read, write)]
     fn constructor(attester: Address) {
         if storage.attester != Address::from(b256::zero()) {
-            revert(1); // Retorna um erro se o attester já foi inicializado
+            revert(AttestationContractError::AttesterMismatch)
         }
         storage.attester = attester;
     }
 
     #[storage(read)]
     fn attester() -> Address {
-        storage.attester
+        return storage.attester
     }
 
     #[storage(write)]
