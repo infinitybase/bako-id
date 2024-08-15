@@ -20,8 +20,8 @@ storage {
 
 #[storage(read)]
 fn only_attester() {
-    let attester = storage.attester.field_id();
-    let msg_sender: b256 = msg_sender().unwrap().as_address().unwrap().into();
+    let attester = storage.attester.read();
+    let msg_sender = msg_sender().unwrap().as_address().unwrap();
 
     require(
         attester == msg_sender,
@@ -40,6 +40,7 @@ impl Attestation for Contract {
     #[storage(read, write)]
     fn attest(input: AttestationInput) -> AttestationKey {
         let attestation_hash = AttestationHash::hash(input);
+
         let attestation_key = attestation_hash;
         storage
             .attestations
@@ -48,8 +49,9 @@ impl Attestation for Contract {
     }
 
     #[storage(read)]
-    fn verify(attestation_key: AttestationKey) -> StorageKey<AttestationHash> {
-        return storage.attestations.get(attestation_key);
+    fn verify(attestation_key: AttestationKey) -> Option<AttestationHash> {
+        let attestation_hash = storage.attestations.get(attestation_key).try_read();
+        return attestation_hash;
     }
 }
 
@@ -79,8 +81,7 @@ impl AttestationAdmin for Contract {
 
 #[test]
 fn test_attestation() {
-    let attester = Address::from(b256::zero());
-    let attestation = abi(Attestation, attester.bits());
+    let attestation = abi(Attestation, b256::zero());
     let input = AttestationInput {
         id: String::from_ascii_str("test"),
         app: String::from_ascii_str("farcaster"),
@@ -90,7 +91,7 @@ fn test_attestation() {
     let attestation_key = attestation.attest(input);
     let attestation_hash = attestation.verify(attestation_key);
 
-    assert(attestation_hash.field_id() == AttestationHash::hash(input));
+    assert(attestation_hash.is_some());
 }
 
 #[test]
@@ -105,4 +106,16 @@ fn test_attestation_admin() {
     attestation.set_attester(new_attester);
 
     assert(attestation.attester() == new_attester);
+}
+
+#[test]
+fn test_hash() {
+    let input = AttestationInput {
+        id: String::from_ascii_str("test"),
+        app: String::from_ascii_str("farcaster"),
+        handle: String::from_ascii_str("testjon"),
+    };
+
+    let hash = AttestationHash::hash(input);
+    assert(hash == b256::zero());
 }

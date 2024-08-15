@@ -15,5 +15,5 @@ abi Attestation {
     fn attest(input: AttestationInput) -> AttestationKey;
 
     #[storage(read)]
-    fn verify(attestation_key: AttestationKey) -> StorageKey<AttestationHash>;
+    fn verify(attestation_key: AttestationKey) -> Option<AttestationHash>;
 }
