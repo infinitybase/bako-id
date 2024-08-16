@@ -1,4 +1,9 @@
 [[package]]
+name = "attestation-contract"
+source = "member"
+dependencies = ["std"]
+
+[[package]]
 name = "core"
 source = "path+from-root-2AB5BCE55EAAEFF4"
 

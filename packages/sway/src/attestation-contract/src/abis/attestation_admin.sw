@@ -6,7 +6,7 @@ abi AttestationAdmin {
 
     #[storage(read)]
     fn attester() -> Address;
-    
+
     #[storage(write)]
     fn set_attester(attester: Address);
 }

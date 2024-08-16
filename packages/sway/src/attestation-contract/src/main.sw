@@ -58,9 +58,10 @@ impl Attestation for Contract {
 impl AttestationAdmin for Contract {
     #[storage(read, write)]
     fn constructor(attester: Address) {
-        let storage_attester = Address::from(storage.attester.field_id());
+        let attester_address = storage.attester.read();
+
         require(
-            storage_attester == Address::from(b256::zero()),
+            attester_address == Address::from(b256::zero()),
             AttestationContractError::AttestationContractAlreadyInitialized,
         );
 
@@ -89,6 +90,7 @@ fn test_attestation() {
     };
 
     let attestation_key = attestation.attest(input);
+    log(attestation_key);
     let attestation_hash = attestation.verify(attestation_key);
 
     assert(attestation_hash.is_some());
