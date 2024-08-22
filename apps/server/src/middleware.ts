@@ -1,14 +1,17 @@
 import type { AttestationData } from '@/types';
-import { Signer, sha256 } from 'fuels';
-import type { NextApiRequest } from 'next';
-import { NextResponse } from 'next/server';
+import { Signer, hashMessage } from 'fuels';
+import type { NextApiResponse } from 'next';
+import { type NextRequest, NextResponse } from 'next/server';
 
-export function middleware(request: NextApiRequest) {
+export async function middleware(
+  request: NextRequest,
+  response: NextApiResponse,
+) {
   //@ts-ignore
   const authHeader = request.headers.get('authorization');
 
   if (!authHeader) {
-    return NextResponse.json(
+    throw NextResponse.json(
       { message: 'Token de autenticação não fornecido' },
       { status: 401 },
     );
@@ -17,25 +20,36 @@ export function middleware(request: NextApiRequest) {
   const token = authHeader.split(' ')[1];
 
   try {
-    const body: AttestationData =
-      typeof request.body === 'string'
-        ? JSON.parse(request.body)
-        : request.body;
-    const bodyHash = sha256(body.id + body.app + body.handle);
+    const body: AttestationData = await request.json();
+    const bodyHash = hashMessage(body.id + body.app + body.handle);
 
-    const signature = Signer.recoverPublicKey(bodyHash, token);
-    const recoveredAddress = Signer.recoverAddress(bodyHash, signature);
+    const recoveredAddress = Signer.recoverAddress(
+      hashMessage(bodyHash),
+      token,
+    );
+    console.log('Recovered Address:', recoveredAddress.toB256());
 
-    if (recoveredAddress.toB256() !== body.address) {
-      return NextResponse.json(
-        { message: 'Falha na autenticação' },
-        { status: 401 },
-      );
+    if (recoveredAddress.toB256() === body.address) {
+      return NextResponse.json({
+        status: 200,
+        verified: true,
+        message: 'Address match with token',
+      });
     }
 
-    return NextResponse.next();
+    return response.json({
+      status: 401,
+      verified: false,
+      message:
+        'Wallet address from token does not match with address from attestation',
+    });
   } catch (error) {
-    console.error('Erro ao autenticar:', error);
+    console.log('Error:', error);
+
     return NextResponse.json({ message: error }, { status: 400 });
   }
 }
+
+export const config = {
+  matcher: '/api/verify',
+};
