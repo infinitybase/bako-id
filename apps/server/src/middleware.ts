@@ -27,7 +27,6 @@ export async function middleware(
       hashMessage(bodyHash),
       token,
     );
-    console.log('Recovered Address:', recoveredAddress.toB256());
 
     if (recoveredAddress.toB256() === body.address) {
       return NextResponse.json({
@@ -44,8 +43,6 @@ export async function middleware(
         'Wallet address from token does not match with address from attestation',
     });
   } catch (error) {
-    console.log('Error:', error);
-
     return NextResponse.json({ message: error }, { status: 400 });
   }
 }
