@@ -1,6 +1,6 @@
 {
   "name": "@bako-id/sdk",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "SDK to interact with domains in Bako.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -15,7 +15,9 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "pnpm build:package",
     "build:contracts": "fuels build && fuels deploy",

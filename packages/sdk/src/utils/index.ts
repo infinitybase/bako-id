@@ -1,10 +1,11 @@
 import type { Provider } from 'fuels';
 
-export * from './wallet';
-export * from './errors';
+export * from './attestation';
 export * from './domain';
-export * from './tests';
+export * from './errors';
 export * from './provider';
+export * from './tests';
+export * from './wallet';
 
 export const getTxParams = (provider: Provider) => {
   const _gasConfig = provider.getGasConfig();

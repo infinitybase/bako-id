@@ -10,19 +10,15 @@
 */
 
 import type {
-  BigNumberish,
-  BN,
   Bytes,
-  BytesLike,
   Contract,
-  DecodedValue,
   FunctionFragment,
   Interface,
   InvokeFunction,
-  StdString,
+  StdString
 } from 'fuels';
 
-import type { Option, Enum, Vec } from "./common";
+import type { Enum, Option, Vec } from "./common";
 
 export type IdentityInput = Enum<{ Address: AddressInput, ContractId: ContractIdInput }>;
 export type IdentityOutput = Enum<{ Address: AddressOutput, ContractId: ContractIdOutput }>;
@@ -36,7 +32,7 @@ export type AddressOutput = AddressInput;
 export type ContractIdInput = { bits: string };
 export type ContractIdOutput = ContractIdInput;
 
-interface StorageContractAbiInterface extends Interface {
+export interface StorageContractAbiInterface extends Interface {
   functions: {
     change: FunctionFragment;
     constructor: FunctionFragment;
