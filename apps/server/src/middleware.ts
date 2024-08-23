@@ -29,11 +29,7 @@ export async function middleware(
     );
 
     if (recoveredAddress.toB256() === body.address) {
-      return NextResponse.json({
-        status: 200,
-        verified: true,
-        message: 'Address match with token',
-      });
+      return NextResponse.next();
     }
 
     return response.json({
@@ -48,5 +44,5 @@ export async function middleware(
 }
 
 export const config = {
-  matcher: '/api/verify',
+  matcher: '/api/attest',
 };
