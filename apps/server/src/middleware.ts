@@ -11,10 +11,7 @@ export async function middleware(
   const authHeader = request.headers.get('authorization');
 
   if (!authHeader) {
-    throw NextResponse.json(
-      { message: 'Token de autenticação não fornecido' },
-      { status: 401 },
-    );
+    throw NextResponse.json({ message: 'Token not provided' }, { status: 401 });
   }
 
   const token = authHeader.split(' ')[1];
@@ -34,7 +31,6 @@ export async function middleware(
 
     return response.json({
       status: 401,
-      verified: false,
       message:
         'Wallet address from token does not match with address from attestation',
     });
