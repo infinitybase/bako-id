@@ -10,29 +10,38 @@
 */
 
 import type {
-  BigNumberish,
-  BN,
-  Bytes,
-  BytesLike,
   Contract,
-  DecodedValue,
   FunctionFragment,
   Interface,
   InvokeFunction,
   StdString,
 } from 'fuels';
 
-import type { Option, Enum } from "./common";
+import type { Option } from './common';
 
-export enum AttestationContractErrorInput { AttesterNotSet = 'AttesterNotSet', AttesterMismatch = 'AttesterMismatch', OnlyAttester = 'OnlyAttester', AttestationContractAlreadyInitialized = 'AttestationContractAlreadyInitialized' };
-export enum AttestationContractErrorOutput { AttesterNotSet = 'AttesterNotSet', AttesterMismatch = 'AttesterMismatch', OnlyAttester = 'OnlyAttester', AttestationContractAlreadyInitialized = 'AttestationContractAlreadyInitialized' };
+export enum AttestationContractErrorInput {
+  AttesterNotSet = 'AttesterNotSet',
+  AttesterMismatch = 'AttesterMismatch',
+  OnlyAttester = 'OnlyAttester',
+  AttestationContractAlreadyInitialized = 'AttestationContractAlreadyInitialized',
+}
+export enum AttestationContractErrorOutput {
+  AttesterNotSet = 'AttesterNotSet',
+  AttesterMismatch = 'AttesterMismatch',
+  OnlyAttester = 'OnlyAttester',
+  AttestationContractAlreadyInitialized = 'AttestationContractAlreadyInitialized',
+}
 
 export type AddressInput = { bits: string };
 export type AddressOutput = AddressInput;
-export type AttestationInputInput = { id: StdString, app: StdString, handle: StdString };
+export type AttestationInputInput = {
+  id: StdString;
+  app: StdString;
+  handle: StdString;
+};
 export type AttestationInputOutput = AttestationInputInput;
 
-interface AttestationContractAbiInterface extends Interface {
+export interface AttestationContractAbiInterface extends Interface {
   functions: {
     attest: FunctionFragment;
     verify: FunctionFragment;

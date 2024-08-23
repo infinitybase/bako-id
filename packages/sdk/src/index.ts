@@ -2,6 +2,7 @@ export { config } from './config';
 export {
   Metadata,
   UserMetadataContract,
+  attest,
   editResolver,
   getAll,
   getGracePeriod,
@@ -12,5 +13,6 @@ export {
   setPrimaryHandle,
   simulateHandleCost,
   tokenInfo,
+  verify,
 } from './methods';
 export { domainPrices, isValidDomain } from './utils';
