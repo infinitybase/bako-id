@@ -48,7 +48,7 @@ pub struct RegisterInput {
     pub name: String,
     pub resolver: b256,
     pub period: u16,
-    pub attestation_key: b256,
+    pub attestation_key: Option<b256>,
 }
 pub struct EditResolverInput {
     pub name: String,

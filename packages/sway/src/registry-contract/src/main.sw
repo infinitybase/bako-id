@@ -13,6 +13,7 @@ use libraries::{
         set_permission,
         with_permission,
     },
+    abis::{ Attestation }
 };
 
 use events::{HandleMintedEvent, NewResolverEvent,};
@@ -96,7 +97,7 @@ impl RegistryContract for Contract {
             },
             get_storage_id(),
         );
-
+    
         let asset_id = _mint_bako_nft(
             storage
                 .total_assets,
@@ -106,14 +107,39 @@ impl RegistryContract for Contract {
                 .metadata,
             name,
         );
-
+        
+        match input.attestation_key {
+            Some(attestation_key) => {
+                let attestation_id = storage.attestation_id.read().unwrap();
+                let attestation_contract = abi(Attestation, attestation_id.into());
+    
+                let attestation_hash = attestation_contract.verify(attestation_key);
+    
+                match attestation_hash {
+                    Some(attestation_hash) => {
+                        storage.metadata.insert(
+                            asset_id,
+                            String::from_ascii_str("attestation_hash"),
+                            Metadata::B256(attestation_hash),
+                        );
+                    }
+                    None => {}
+                }
+                
+            }
+            None => {}  
+            
+                
+        };
+    
         log(HandleMintedEvent {
             domain_hash: sha256(name),
             owner: msg_sender().unwrap(),
             resolver: input.resolver,
             asset: asset_id,
         });
-
+    
+    
         return asset_id;
     }
 

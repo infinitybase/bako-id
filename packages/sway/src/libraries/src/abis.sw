@@ -1,10 +1,6 @@
 library;
 
-use std::{
-    hash::{Hash, sha256},
-    string::String,
-    bytes::Bytes,
-};
+use std::{bytes::Bytes, hash::{Hash, sha256}, string::String,};
 
 abi StorageContract {
     #[storage(read, write)]
@@ -39,4 +35,32 @@ abi StorageContract {
 
     #[storage(read)]
     fn get_all(owner: b256) -> Vec<Bytes>;
+}
+
+abi AttestationAdmin {
+    #[storage(read, write)]
+    fn constructor(attester: Address);
+
+    #[storage(read)]
+    fn attester() -> Address;
+
+    #[storage(write)]
+    fn set_attester(attester: Address);
+}
+
+pub type AttestationKey = b256;
+pub type AttestationHash = b256;
+
+pub struct AttestationInput {
+    pub id: String,
+    pub app: String,
+    pub handle: String,
+}
+
+abi Attestation {
+    #[storage(read, write)]
+    fn attest(input: AttestationInput) -> AttestationKey;
+
+    #[storage(read)]
+    fn verify(attestation_key: AttestationKey) -> Option<AttestationHash>;
 }
