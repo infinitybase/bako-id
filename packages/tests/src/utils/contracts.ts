@@ -41,10 +41,19 @@ const initializeStorage =
   };
 
 const initializeRegistry =
-  (owner: string, storageId: string, contractAbi: RegistryContractAbi) =>
+  (
+    owner: string,
+    storageId: string,
+    attestationId: string,
+    contractAbi: RegistryContractAbi,
+  ) =>
   async () => {
     const callFn = await contractAbi.functions
-      .constructor({ bits: owner }, { bits: storageId })
+      .constructor(
+        { bits: owner },
+        { bits: storageId },
+        { bits: attestationId },
+      )
       .txParams(txParams)
       .call();
 
@@ -96,12 +105,15 @@ const register =
     account: string,
     period: number,
     calculateAmount = true,
+    attestationKey?: string,
   ) => {
     const amount = domainPrices(domain, period);
+    //@ts-ignore
     const callBuilder = contractAbi.functions.register(
       domain,
       account ?? contractAbi.account.address.toB256(),
       period,
+      attestationKey,
     );
 
     if (calculateAmount) {
@@ -168,6 +180,7 @@ export async function setupContractsAndDeploy(wallet: WalletUnlocked) {
       initializeRegistry: initializeRegistry(
         wallet.address.toB256(),
         storage.id.toB256(),
+        attestation.id.toB256(),
         registry,
       ),
       register: register(registry, storage),
@@ -220,6 +233,7 @@ export async function setupContracts(wallet: WalletUnlocked) {
       initializeRegistry: initializeRegistry(
         wallet.address.toB256(),
         storage.id.toB256(),
+        attestation.id.toB256(),
         registry,
       ),
       register: register(registry, storage),

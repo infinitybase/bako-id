@@ -68,9 +68,9 @@ interface RegistryContractAbiInterface extends Interface {
 export class RegistryContractAbi extends Contract {
   interface: RegistryContractAbiInterface;
   functions: {
-    constructor: InvokeFunction<[owner: AddressInput, storage_id: ContractIdInput], void>;
+    constructor: InvokeFunction<[owner: AddressInput, storage_id: ContractIdInput, attestation_id: ContractIdInput], void>;
     edit_resolver: InvokeFunction<[name: StdString, resolver: string], void>;
-    register: InvokeFunction<[name: StdString, resolver: string, period: BigNumberish], AssetIdOutput>;
+    register: InvokeFunction<[name: StdString, resolver: string, period: BigNumberish, attestation_key: Option<string>], AssetIdOutput>;
     set_primary_handle: InvokeFunction<[name: StdString], void>;
     decimals: InvokeFunction<[asset: AssetIdInput], Option<number>>;
     name: InvokeFunction<[asset: AssetIdInput], Option<StdString>>;

@@ -1,7 +1,10 @@
 [[package]]
 name = "attestation-contract"
 source = "member"
-dependencies = ["std"]
+dependencies = [
+    "libraries",
+    "std",
+]
 
 [[package]]
 name = "core"
