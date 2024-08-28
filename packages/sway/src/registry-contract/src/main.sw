@@ -86,14 +86,13 @@ impl RegistryContract for Contract {
     }
 
     #[storage(read, write), payable]
-    fn register(input: RegisterInput) -> AssetId {
+    fn register(name: String, resolver: b256, period: u16, attestation_key: Option<b256>) -> AssetId {
         // TODO: Add reantry guard
         let name = _register(
             RegisterInput {
-                name: input.name,
-                resolver: input.resolver,
-                period: input.period,
-                attestation_key: input.attestation_key,
+                name,
+                resolver,
+                period,
             },
             get_storage_id(),
         );
@@ -108,7 +107,7 @@ impl RegistryContract for Contract {
             name,
         );
         
-        match input.attestation_key {
+        match attestation_key {
             Some(attestation_key) => {
                 let attestation_id = storage.attestation_id.read().unwrap();
                 let attestation_contract = abi(Attestation, attestation_id.into());
@@ -135,7 +134,7 @@ impl RegistryContract for Contract {
         log(HandleMintedEvent {
             domain_hash: sha256(name),
             owner: msg_sender().unwrap(),
-            resolver: input.resolver,
+            resolver,
             asset: asset_id,
         });
     

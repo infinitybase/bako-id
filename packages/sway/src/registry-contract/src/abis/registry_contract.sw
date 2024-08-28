@@ -37,7 +37,7 @@ abi RegistryContract {
         attestation_id: ContractId,
     );
     #[storage(read, write), payable]
-    fn register(input: RegisterInput) -> AssetId;
+    fn register(name: String, resolver: b256, period: u16, attestation_key: Option<b256>) -> AssetId;
 
     #[storage(read, write)]
     fn edit_resolver(name: String, resolver: b256);
@@ -48,7 +48,6 @@ pub struct RegisterInput {
     pub name: String,
     pub resolver: b256,
     pub period: u16,
-    pub attestation_key: Option<b256>,
 }
 pub struct EditResolverInput {
     pub name: String,
