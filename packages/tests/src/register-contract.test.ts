@@ -2,8 +2,8 @@ import {
   Address,
   Provider,
   TransactionStatus,
-  bn,
   type WalletUnlocked,
+  bn,
 } from 'fuels';
 import {
   WALLET_PRIVATE_KEYS,
@@ -39,6 +39,7 @@ describe('[METHODS] Registry Contract', () => {
 
     try {
       await registry.functions
+        //@ts-ignore
         .register(domain, wallet.address.toB256(), 1)
         .addContracts([storage])
         .txParams(txParams)
@@ -477,5 +478,48 @@ describe('[METHODS] Registry Contract', () => {
       expectRequireRevertError(error);
       expectContainLogError(error, 'InvalidDomain');
     }
+  });
+
+  it('should be able to register and get the nft metadata', async () => {
+    const { registry, storage, attestation } = contracts;
+
+    await tryExecute(storage.initializeStorage());
+    await tryExecute(registry.initializeRegistry());
+
+    const handle = randomName();
+    const address = Address.fromRandom().toB256();
+
+    const input = {
+      id: '0x1234567890',
+      handle,
+      app: 'farcaster',
+    };
+
+    const { waitForResult: attestationResult } = await attestation.functions
+      .attest(input)
+      .txParams(txParams)
+      .call();
+
+    const { value: attestationKey } = await attestationResult();
+
+    const { value: attestationHash } = await attestation.functions
+      .verify(attestationKey)
+      .get();
+
+    const { value: registerValue } = await registry.register(
+      handle,
+      address,
+      1,
+      true,
+      attestationHash,
+    );
+
+    const { waitForResult } = await registry.functions
+      .metadata(registerValue, 'attestation_hash')
+      .call();
+
+    const { value } = await waitForResult();
+
+    expect(value.B256).toBe(attestationHash);
   });
 });

@@ -383,6 +383,11 @@ const _abi = {
           "name": "storage_id",
           "type": 13,
           "typeArguments": null
+        },
+        {
+          "name": "attestation_id",
+          "type": 13,
+          "typeArguments": null
         }
       ],
       "name": "constructor",
@@ -446,6 +451,17 @@ const _abi = {
           "name": "period",
           "type": 19,
           "typeArguments": null
+        },
+        {
+          "name": "attestation_key",
+          "type": 5,
+          "typeArguments": [
+            {
+              "name": "",
+              "type": 1,
+              "typeArguments": null
+            }
+          ]
         }
       ],
       "name": "register",
@@ -763,6 +779,14 @@ const _storageSlots: StorageSlot[] = [
   },
   {
     "key": "93b67ee4f0f76b71456fb4385c86aec15689e1ce5f6f6ac63b71716afa052998",
+    "value": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  {
+    "key": "9d8662bfd1905b95896155cdc01f1c2fbf915353760c0db25bb631a448658a71",
+    "value": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  {
+    "key": "9d8662bfd1905b95896155cdc01f1c2fbf915353760c0db25bb631a448658a72",
     "value": "0000000000000000000000000000000000000000000000000000000000000000"
   },
   {
