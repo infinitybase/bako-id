@@ -107,29 +107,21 @@ impl RegistryContract for Contract {
             name,
         );
         
-        match attestation_key {
-            Some(attestation_key) => {
-                let attestation_id = storage.attestation_id.read().unwrap();
-                let attestation_contract = abi(Attestation, attestation_id.into());
-    
-                let attestation_hash = attestation_contract.verify(attestation_key);
-    
-                match attestation_hash {
-                    Some(attestation_hash) => {
-                        storage.metadata.insert(
-                            asset_id,
-                            String::from_ascii_str("attestation_hash"),
-                            Metadata::B256(attestation_hash),
-                        );
-                    }
-                    None => {}
-                }
-                
+        if(attestation_key.is_some()) {
+            let attestation_id = storage.attestation_id.read().unwrap();
+            let attestation_contract = abi(Attestation, attestation_id.into());
+
+            let attestation_hash = attestation_contract.verify(attestation_key.unwrap());
+
+            if (attestation_hash.is_some()) {
+                storage.metadata.insert(
+                    asset_id,
+                    String::from_ascii_str("attestation_hash"),
+                    Metadata::B256(attestation_hash.unwrap()),
+                );
             }
-            None => {}  
-            
-                
-        };
+        }  
+        
     
         log(HandleMintedEvent {
             domain_hash: sha256(name),
