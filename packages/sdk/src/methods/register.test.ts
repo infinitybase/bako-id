@@ -1,4 +1,4 @@
-import { Provider, Wallet, type WalletUnlocked } from 'fuels';
+import { Provider, WalletUnlocked } from 'fuels';
 import { register, resolver, resolverName } from '../index';
 import { createFakeWallet } from '../test';
 import {
@@ -11,7 +11,7 @@ import {
 } from '../utils';
 import { editResolver, setPrimaryHandle, simulateHandleCost } from './register';
 
-const { PROVIDER_URL, TEST_WALLET } = process.env;
+const { PROVIDER_URL } = process.env;
 
 describe('Test Registry', () => {
   let wallet: WalletUnlocked;
@@ -20,8 +20,9 @@ describe('Test Registry', () => {
 
   beforeAll(async () => {
     provider = await Provider.create(PROVIDER_URL!);
-    wallet = Wallet.fromPrivateKey(TEST_WALLET!, provider);
-    fakeWallet = await createFakeWallet(provider, wallet);
+
+    wallet = await createFakeWallet(provider, '1.2');
+    fakeWallet = await createFakeWallet(provider, '0.1');
   });
 
   it.each(['bako@', '#bako', 'bako name', 'bakONamE'])(
@@ -35,7 +36,7 @@ describe('Test Registry', () => {
       });
 
       await expect(invalidSuffix).rejects.toBeInstanceOf(InvalidDomainError);
-    },
+    }
   );
 
   it('should register domain with special characters', async () => {
@@ -73,8 +74,9 @@ describe('Test Registry', () => {
   });
 
   it('should error when register domain without balance', async () => {
+    const wallet = WalletUnlocked.generate({ provider });
     const registerResult = register({
-      account: fakeWallet,
+      account: wallet,
       resolver: wallet.address.toB256(),
       domain: `do${randomName(1)}`,
       period: 1,
@@ -148,7 +150,7 @@ describe('Test Registry', () => {
       period: 1,
     });
 
-    const editFakeWallet = await createFakeWallet(provider, wallet, '100');
+    const editFakeWallet = await createFakeWallet(provider, '0.01');
 
     const edit = editResolver({
       account: editFakeWallet,

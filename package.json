@@ -3,14 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "packageManager": "pnpm@9.4.0",
   "scripts": {
     "build": "turbo run build",
     "build:doc": "turbo run docs:build",
-    "test:packages": "turbo run test --filter='./packages/*'"
+    "test": "turbo run test --filter='./packages/*'"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.6.4",
-    "turbo": "1.8.8"
+    "turbo": "2.0.14"
   },
   "keywords": [],
   "author": "",

@@ -1,9 +1,10 @@
-import { Address, Provider, Wallet, type WalletUnlocked } from 'fuels';
+import { Address, Provider, type WalletUnlocked } from 'fuels';
 import { register, resolver } from '../index';
+import { createFakeWallet } from '../test';
 import { randomName } from '../utils';
 import { owner, resolverName } from './resolver';
 
-const { PROVIDER_URL, PRIVATE_KEY } = process.env;
+const { PROVIDER_URL } = process.env;
 
 describe('Test resolver', () => {
   let wallet: WalletUnlocked;
@@ -13,7 +14,7 @@ describe('Test resolver', () => {
 
   beforeAll(async () => {
     provider = await Provider.create(PROVIDER_URL!);
-    wallet = Wallet.fromPrivateKey(PRIVATE_KEY!, provider);
+    wallet = await createFakeWallet(provider, '1.1');
   });
 
   it('should get undefined value with not found registered', async () => {
@@ -79,19 +80,19 @@ describe('Test resolver', () => {
     await expect(
       resolverName(resolver, {
         provider,
-      }),
+      })
     ).resolves.toBe(name);
 
     await expect(
       resolverName(resolver, {
         providerURL: provider.url,
-      }),
+      })
     ).resolves.toBe(name);
 
     await expect(
       resolverName(resolver, {
         account: wallet,
-      }),
+      })
     ).resolves.toBe(name);
 
     // await expect(resolverName(resolver)).resolves.toBe(name);

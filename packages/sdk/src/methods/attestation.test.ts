@@ -1,7 +1,8 @@
 import { Address, Provider, Wallet, type WalletUnlocked, bn } from 'fuels';
+import { createFakeWallet } from '../test';
 import { attest, verify } from './attestation';
 
-const { PROVIDER_URL, ATTESTER_WALLET, PRIVATE_KEY, TEST_WALLET } = process.env;
+const { PROVIDER_URL, ATTESTER_WALLET, PRIVATE_KEY } = process.env;
 
 describe('Test Attestation', () => {
   let attester: WalletUnlocked;
@@ -13,13 +14,9 @@ describe('Test Attestation', () => {
 
     const mainWallet = Wallet.fromPrivateKey(PRIVATE_KEY!, provider);
     attester = Wallet.fromPrivateKey(ATTESTER_WALLET!, provider);
-    wallet = Wallet.fromPrivateKey(TEST_WALLET!, provider);
-
+    wallet = await createFakeWallet(provider, '0.1');
     await mainWallet
       .transfer(attester.address, bn(10_000_000))
-      .then((a) => a.waitForResult());
-    await mainWallet
-      .transfer(wallet.address, bn(10_000_000))
       .then((a) => a.waitForResult());
   });
 

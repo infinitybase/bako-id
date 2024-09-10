@@ -1,16 +1,16 @@
 import {
   Address,
   Provider,
-  Wallet,
+  type WalletUnlocked,
   getMintedAssetId,
   sha256,
-  type WalletUnlocked,
 } from 'fuels';
 import { config, register } from '../index';
+import { createFakeWallet } from '../test';
 import { domainToBytes, randomName } from '../utils';
 import { tokenInfo } from './token';
 
-const { PROVIDER_URL, PRIVATE_KEY } = process.env;
+const { PROVIDER_URL } = process.env;
 
 describe('Test token', () => {
   let wallet: WalletUnlocked;
@@ -18,7 +18,7 @@ describe('Test token', () => {
 
   beforeAll(async () => {
     provider = await Provider.create(PROVIDER_URL!);
-    wallet = Wallet.fromPrivateKey(PRIVATE_KEY!, provider);
+    wallet = await createFakeWallet(provider, '1.1');
   });
 
   it('should get token infos', async () => {
@@ -38,7 +38,7 @@ describe('Test token', () => {
     expect(token?.image).toBe(`https://assets.bako.id/${name}`);
     expect(token?.symbol).toBe('BNFT');
     expect(token?.assetId).toBe(
-      getMintedAssetId(config.REGISTRY_CONTRACT_ID, domainHash),
+      getMintedAssetId(config.REGISTRY_CONTRACT_ID, domainHash)
     );
     expect(token?.subId).toBe(domainHash);
     expect(token?.contractId).toBe(config.REGISTRY_CONTRACT_ID);

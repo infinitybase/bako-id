@@ -53,7 +53,7 @@ describe('Test metadata', () => {
 
   it('should error on save handle with account is not owner', async () => {
     const domain = randomName();
-    const fakeWallet = await createFakeWallet(provider, wallet, '0.01');
+    const fakeWallet = await createFakeWallet(provider, '0.01');
 
     expect.assertions(1);
 

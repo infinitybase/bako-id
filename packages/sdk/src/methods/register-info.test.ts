@@ -1,9 +1,9 @@
-import { Provider, Wallet, type WalletUnlocked } from 'fuels';
+import { Provider, type WalletUnlocked } from 'fuels';
 import { getAll, getGracePeriod, register } from '../index';
 import { createFakeWallet } from '../test';
 import { randomName } from '../utils';
 
-const { PROVIDER_URL, TEST_WALLET } = process.env;
+const { PROVIDER_URL } = process.env;
 
 describe('Test Registry', () => {
   let wallet: WalletUnlocked;
@@ -11,9 +11,7 @@ describe('Test Registry', () => {
 
   beforeAll(async () => {
     provider = await Provider.create(PROVIDER_URL!);
-
-    const mainWallet = Wallet.fromPrivateKey(TEST_WALLET!, provider);
-    wallet = await createFakeWallet(provider, mainWallet, '1.1');
+    wallet = await createFakeWallet(provider, '1.1');
   });
 
   it('should get all domains by owner address', async () => {

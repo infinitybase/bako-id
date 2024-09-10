@@ -1,4 +1,4 @@
 dist
 .env
 .env.prod
-src/types/sway/**/*.ts
+src/types/sway/contracts
