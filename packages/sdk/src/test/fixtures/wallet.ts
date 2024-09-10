@@ -6,6 +6,8 @@ export async function createFakeWallet(
   amount = '0.000000001'
 ) {
   const fakeWallet = Wallet.generate({ provider });
-  await mainWallet.transfer(fakeWallet.address, bn.parseUnits(amount));
+  await mainWallet
+    .transfer(fakeWallet.address, bn.parseUnits(amount))
+    .then((a) => a.waitForResult());
   return fakeWallet;
 }

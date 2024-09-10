@@ -2,7 +2,7 @@ import type { FuelError } from '@fuel-ts/errors';
 import type { Account, Provider } from 'fuels';
 import type { Option } from 'src/types/sway/contracts/common';
 import { config } from '../config';
-import { AttestationContractAbi__factory } from '../types';
+import { AttestationContract } from '../types';
 import { getContractError, getProviderFromParams, getTxParams } from '../utils';
 
 type AttestationKey = string;
@@ -10,20 +10,6 @@ type AttestationHash = string;
 
 type AttestationApps = 'farcaster';
 
-/**
- * Represents the data required to attest an attestation.
- *
- * @property {string} id - The id of the attestation.
- * @property {AttestationApps} app - The app for which the attestation is being made.
- * @property {string} handle - The handle of the attestation.
- * @example
- * const data = {
- *  id: '0x123',
- *  app: 'farcaster',
- *  handle: 'my_handle',
- * };
- *
- */
 type AttestationData = {
   id: string;
   app: AttestationApps;
@@ -51,17 +37,14 @@ type AttestParams = {
  *   attester: wallet,
  * });
  */
-
 export async function attest(params: AttestParams): Promise<AttestationHash> {
   const { data, attester } = params;
 
   // Connect to the attestation contract
-  const attestation = AttestationContractAbi__factory.connect(
+  const attestation = new AttestationContract(
     config.ATTESTATION_CONTRACT_ID,
-    attester,
+    attester
   );
-
-  const txParams = getTxParams(attester.provider);
 
   try {
     const attestFn = await attestation.functions
@@ -70,7 +53,6 @@ export async function attest(params: AttestParams): Promise<AttestationHash> {
         app: data.app,
         handle: data.handle,
       })
-      .txParams(txParams)
       .call();
 
     const { value: attestationHash } = await attestFn.waitForResult();
@@ -101,7 +83,7 @@ type VerifyAttestOptions = {
  */
 export async function verify(
   key: AttestationKey,
-  options: VerifyAttestOptions,
+  options: VerifyAttestOptions
 ): Promise<Option<AttestationHash>> {
   const { account } = options;
 
@@ -110,9 +92,9 @@ export async function verify(
     account,
   });
 
-  const attestation = AttestationContractAbi__factory.connect(
+  const attestation = new AttestationContract(
     config.ATTESTATION_CONTRACT_ID,
-    provider,
+    provider
   );
 
   const txParams = getTxParams(provider);
@@ -125,7 +107,6 @@ export async function verify(
 
     return attestationHash;
   } catch (error) {
-    console.log(error);
     throw getContractError(<FuelError>error);
   }
 }

@@ -1,9 +1,6 @@
 import type { Account } from 'fuels';
 import { config } from '../../config';
-import {
-  type MetadataContractAbi,
-  MetadataContractAbi__factory,
-} from '../../types';
+import { MetadataContract } from '../../types';
 import { NotOwnerError } from '../../utils';
 import { owner } from '../resolver';
 import { type Metadata, decodeMetadata } from './utils';
@@ -13,16 +10,13 @@ const txParams = {
   gasLimit: 1_000_000,
 };
 
-const getContract = (account: Account) =>
-  MetadataContractAbi__factory.connect(config.METADATA_CONTRACT_ID, account);
-
 export class UserMetadataContract {
-  private readonly contract: MetadataContractAbi;
+  private readonly contract: MetadataContract;
   private readonly handleName: string;
   private readonly account: Account;
 
   protected constructor(account: Account, handleName: string) {
-    this.contract = getContract(account);
+    this.contract = new MetadataContract(config.METADATA_CONTRACT_ID, account);
     this.handleName = handleName;
     this.account = account;
   }

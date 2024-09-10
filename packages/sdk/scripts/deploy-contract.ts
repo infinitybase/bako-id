@@ -1,26 +1,44 @@
 import { type ContractConfig, connectContracts } from '../src/setup';
 import { getTxParams } from '../src/utils';
 
-export const deployContracts = async (config: ContractConfig) => {
-  const { storageId, registryId, account, metadataId, resolverId } = config;
+type DeployContractConfig = Omit<Required<ContractConfig>, 'provider'> & {
+  attester?: string;
+};
 
-  const provider = config.provider || config.account?.provider;
-  if (!provider) {
-    throw new Error('Provider is required to deploy contracts.');
-  }
-
-  const { storage, registry, metadata, resolver } = connectContracts({
+export const deployContracts = async (config: DeployContractConfig) => {
+  const {
     account,
+    attester,
     storageId,
     registryId,
     metadataId,
     resolverId,
-  });
+    attestationId,
+  } = config;
+
+  const provider = config.account?.provider;
+  if (!provider) {
+    throw new Error('Provider is required to deploy contracts.');
+  }
+
+  const { storage, registry, metadata, resolver, attestation } =
+    connectContracts({
+      account,
+      storageId,
+      registryId,
+      metadataId,
+      resolverId,
+      attestationId,
+    });
   const txParams = getTxParams(provider);
 
   try {
     const registryFn = await registry.functions
-      .constructor({ bits: account!.address.toB256() }, { bits: storageId })
+      .constructor(
+        { bits: account!.address.toB256() },
+        { bits: storageId },
+        { bits: attestationId },
+      )
       .txParams(txParams)
       .call();
 
@@ -32,7 +50,7 @@ export const deployContracts = async (config: ContractConfig) => {
 
   try {
     const storageFn = await storage.functions
-      .constructor({ bits: account!.address.toB256() }, { bits: registryId! })
+      .constructor({ bits: account!.address.toB256() }, { bits: registryId })
       .txParams(txParams)
       .call();
 
@@ -68,5 +86,19 @@ export const deployContracts = async (config: ContractConfig) => {
   } catch (_e) {
     console.log(_e);
     throw new Error('[DEPLOY] Error on deploy Resolver Contract.');
+  }
+
+  try {
+    if (!attestation || !attester) return;
+
+    const resolverFn = await attestation.functions
+      .constructor({ bits: attester })
+      .txParams(txParams)
+      .call();
+
+    await resolverFn.waitForResult();
+  } catch (_e) {
+    console.log(_e);
+    throw new Error('[DEPLOY] Error on deploy Attestation Contract.');
   }
 };

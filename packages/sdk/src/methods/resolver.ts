@@ -1,6 +1,6 @@
 import { Address, type Provider } from 'fuels';
 import { config } from '../config';
-import { ResolverContractAbi__factory } from '../types';
+import { ResolverContract } from '../types';
 import type { Option } from '../types/sway/contracts/common';
 import {
   type ProviderParams,
@@ -9,7 +9,7 @@ import {
 } from '../utils';
 
 const getContract = (account: Provider) =>
-  ResolverContractAbi__factory.connect(config.RESOLVER_CONTRACT_ID, account);
+  new ResolverContract(config.RESOLVER_CONTRACT_ID, account);
 
 /**
  * Resolves the domain using the specified domain and parameters.

@@ -28,6 +28,7 @@ const updataStorageRegistry = async () => {
     .constructor(
       { bits: mainWallet.address.toB256() },
       { bits: storage.id.toB256() },
+      { bits: config.ATTESTATION_CONTRACT_ID },
     )
     .txParams(txParams)
     .call();

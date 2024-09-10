@@ -44,7 +44,7 @@ type SimulateHandleCostParams = {
 async function checkAccountBalance(
   account: Account,
   domain: string,
-  period?: number,
+  period?: number
 ) {
   const amount = domainPrices(domain, period);
   const accountBalance = await account.getBalance();
@@ -147,10 +147,10 @@ export async function simulateHandleCost(params: SimulateHandleCostParams) {
       forward: { amount, assetId: provider.getBaseAssetId() },
     })
     .txParams(txParams)
-    .getTransactionRequest();
+    .fundWithRequiredCoins();
 
   const { gasUsed, minFee } =
-    await registry.account!.provider.getTransactionCost(transactionRequest);
+    await registry.account!.getTransactionCost(transactionRequest);
 
   return {
     fee: gasUsed.add(minFee),

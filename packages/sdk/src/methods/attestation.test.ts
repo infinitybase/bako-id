@@ -1,23 +1,32 @@
-import { Address, Provider, Wallet, type WalletUnlocked } from 'fuels';
-import { createFakeWallet } from '../test';
+import { Address, Provider, Wallet, type WalletUnlocked, bn } from 'fuels';
 import { attest, verify } from './attestation';
 
-const { PROVIDER_URL, TEST_WALLET } = process.env;
+const { PROVIDER_URL, ATTESTER_WALLET, PRIVATE_KEY, TEST_WALLET } = process.env;
+
 describe('Test Attestation', () => {
-  let wallet: WalletUnlocked;
+  let attester: WalletUnlocked;
   let provider: Provider;
+  let wallet: WalletUnlocked;
 
   beforeAll(async () => {
     provider = await Provider.create(PROVIDER_URL!);
 
-    const mainWallet = Wallet.fromPrivateKey(TEST_WALLET!, provider);
-    wallet = await createFakeWallet(provider, mainWallet, '1.1');
+    const mainWallet = Wallet.fromPrivateKey(PRIVATE_KEY!, provider);
+    attester = Wallet.fromPrivateKey(ATTESTER_WALLET!, provider);
+    wallet = Wallet.fromPrivateKey(TEST_WALLET!, provider);
+
+    await mainWallet
+      .transfer(attester.address, bn(10_000_000))
+      .then((a) => a.waitForResult());
+    await mainWallet
+      .transfer(wallet.address, bn(10_000_000))
+      .then((a) => a.waitForResult());
   });
 
   it('should attest an attestation', async () => {
     const attestationHash = await attest({
       data: {
-        id: '0x123',
+        id: '0x322',
         app: 'farcaster',
         handle: 'my_handle',
       },
@@ -27,6 +36,8 @@ describe('Test Attestation', () => {
     expect(attestationHash).toBeDefined();
   });
 
+  it('should error on attesting with a non-attester', async () => {});
+
   it('should verify an attestation by attestation key and ', async () => {
     const attestation = await attest({
       data: {
@@ -34,15 +45,13 @@ describe('Test Attestation', () => {
         app: 'farcaster',
         handle: 'my_handle',
       },
-      attester: wallet,
+      attester,
     });
 
     const attestationHash = await verify(attestation, {
       account: wallet,
     });
 
-    console.log(attestation);
-    console.log(attestationHash);
     expect(attestationHash).toBeDefined();
   });
 
