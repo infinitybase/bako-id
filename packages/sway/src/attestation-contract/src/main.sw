@@ -35,6 +35,7 @@ impl AttestationHash {
 impl Attestation for Contract {
     #[storage(read, write)]
     fn attest(input: AttestationInput) -> AttestationKey {
+        only_attester();
         let attestation_hash = AttestationHash::hash(input);
         let attestation_key = attestation_hash;
         storage
@@ -42,6 +43,7 @@ impl Attestation for Contract {
             .insert(attestation_key, attestation_hash);
         return attestation_key;
     }
+
     #[storage(read)]
     fn verify(attestation_key: AttestationKey) -> Option<AttestationHash> {
         let attestation_hash = storage.attestations.get(attestation_key).try_read();

@@ -1,15 +1,11 @@
-import {
-  Address,
-  Provider,
-  TransactionStatus,
-  type WalletUnlocked,
-} from 'fuels';
+import { Address, Provider, TransactionStatus, WalletUnlocked } from 'fuels';
 import {
   TestAttestationContract,
   WALLET_PRIVATE_KEYS,
   createWallet,
   expectContainLogError,
   expectRequireRevertError,
+  fundWallet,
   txParams,
 } from './utils';
 
@@ -56,10 +52,14 @@ describe('[METHODS] Attestation Contract', () => {
   });
 
   it('should be able to set attester address only by the attester', async () => {
-    const newAddress = Address.fromRandom().toB256();
+    const newAttester = Address.fromRandom().toB256();
+    const attestation = await TestAttestationContract.startup({
+      attester: wallet,
+      owner: wallet,
+    });
 
     const callFn = await attestation.functions
-      .set_attester({ bits: newAddress })
+      .set_attester({ bits: newAttester })
       .txParams(txParams)
       .call();
 
@@ -70,14 +70,17 @@ describe('[METHODS] Attestation Contract', () => {
     } = await attestation.functions.attester().get();
 
     expect(transactionResult.status).toBe(TransactionStatus.success);
-    expect(attesterAddress).toBe(newAddress);
+    expect(attesterAddress).toBe(newAttester);
   });
 
   it('should throw error trying to set attester address by non-attester', async () => {
-    const newAddress = Address.fromRandom().toB256();
+    const fakeAttester = WalletUnlocked.generate({ provider });
+    await fundWallet(fakeAttester);
+
     try {
+      attestation.account = fakeAttester;
       const callFn = await attestation.functions
-        .set_attester({ bits: newAddress })
+        .set_attester({ bits: fakeAttester.address.toB256() })
         .txParams(txParams)
         .call();
       const { transactionResult } = await callFn.waitForResult();
@@ -85,6 +88,8 @@ describe('[METHODS] Attestation Contract', () => {
     } catch (error) {
       expectRequireRevertError(error);
       expectContainLogError(error, 'OnlyAttester');
+    } finally {
+      attestation.account = wallet;
     }
   });
 
