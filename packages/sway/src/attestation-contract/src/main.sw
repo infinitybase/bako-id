@@ -2,16 +2,19 @@ contract;
 
 use libraries::abis::*;
 use std::{bytes::Bytes, hash::*, string::*,};
+
 enum AttestationContractError {
     AttesterNotSet: (),
     AttesterMismatch: (),
     OnlyAttester: (),
     AttestationContractAlreadyInitialized: (),
 }
+
 storage {
     attester: Address = Address::from(b256::zero()),
     attestations: StorageMap<AttestationKey, AttestationHash> = StorageMap {},
 }
+
 #[storage(read)]
 fn only_attester() {
     let attester = storage.attester.read();
@@ -21,12 +24,14 @@ fn only_attester() {
         AttestationContractError::OnlyAttester,
     );
 }
+
 impl AttestationHash {
     fn hash(input: AttestationInput) -> Self {
         let hash = sha256((input.id, input.app, input.handle));
         return hash;
     }
 }
+
 impl Attestation for Contract {
     #[storage(read, write)]
     fn attest(input: AttestationInput) -> AttestationKey {
@@ -63,6 +68,7 @@ impl AttestationAdmin for Contract {
         storage.attester.write(attester);
     }
 }
+
 #[test]
 fn test_attestation() {
     let attestation = abi(Attestation, b256::zero());

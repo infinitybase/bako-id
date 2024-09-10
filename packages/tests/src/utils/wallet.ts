@@ -40,11 +40,12 @@ export async function fundWallet(wallet: Account) {
     WALLET_PRIVATE_KEYS.MAIN,
     wallet.provider
   );
-  await genesisWallet.transfer(
+  const transactionResponse = await genesisWallet.transfer(
     wallet.address,
     bn(10000000),
     wallet.provider.getBaseAssetId()
   );
+  await transactionResponse.waitForResult();
 }
 
 export function randomName(size = 10) {

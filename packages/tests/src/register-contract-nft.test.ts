@@ -1,29 +1,35 @@
-import { Provider, type WalletUnlocked } from 'fuels';
-import { createWallet, setupContractsAndDeploy, tryExecute } from './utils';
+import { Provider, type WalletUnlocked, ZeroBytes32 } from 'fuels';
+import {
+  TestRegistryContract,
+  TestStorageContract,
+  createWallet,
+} from './utils';
 
 describe('[NFT] Registry Contract', () => {
   let wallet: WalletUnlocked;
   let provider: Provider;
 
-  let contracts: Awaited<ReturnType<typeof setupContractsAndDeploy>>;
+  let storage: TestStorageContract;
+  let registry: TestRegistryContract;
 
   beforeAll(async () => {
     provider = await Provider.create('http://localhost:4000/v1/graphql');
     wallet = createWallet(provider);
-    contracts = await setupContractsAndDeploy(wallet);
+    storage = await TestStorageContract.deploy(wallet);
+    registry = await TestRegistryContract.startup({
+      owner: wallet,
+      storageId: storage.id.toB256(),
+      attestationId: ZeroBytes32,
+    });
+    await storage.initialize(wallet, registry.id.toB256());
   });
 
   it('should get SCR20 methods', async () => {
-    const { registry, storage } = contracts;
-
-    await tryExecute(storage.initializeStorage());
-    await tryExecute(registry.initializeRegistry());
-
-    const { value: assetId } = await registry.register(
-      '@my_handle',
-      wallet.address.toB256(),
-      1,
-    );
+    const { value: assetId } = await registry.register({
+      domain: '@my_handle',
+      period: 1,
+      storageAbi: storage,
+    });
 
     const { value: assetName } = await registry.functions.name(assetId).get();
     const { value: assetSymbol } = await registry.functions
@@ -47,18 +53,13 @@ describe('[NFT] Registry Contract', () => {
   });
 
   it('should get asset image', async () => {
-    const { registry, storage } = contracts;
-
-    await tryExecute(storage.initializeStorage());
-    await tryExecute(registry.initializeRegistry());
-
     const domain = '@myhandle';
 
-    const { value: assetId } = await registry.register(
+    const { value: assetId } = await registry.register({
       domain,
-      wallet.address.toB256(),
-      1,
-    );
+      period: 1,
+      storageAbi: storage,
+    });
 
     const { value: assetImage } = await registry.functions
       .metadata(assetId, 'image:png')

@@ -1,29 +1,32 @@
 {
-  "encoding": "1",
-  "types": [
+  "programType": "contract",
+  "specVersion": "1",
+  "encodingVersion": "1",
+  "concreteTypes": [
     {
-      "typeId": 0,
       "type": "()",
-      "components": [],
-      "typeParameters": null
+      "concreteTypeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
     },
     {
-      "typeId": 1,
+      "type": "struct std::contract_id::ContractId",
+      "concreteTypeId": "29c10735d33b5159f0c71ee1dbd17b36a3e69e41f00fab0d42e1bd9f428d8a54",
+      "metadataTypeId": 1
+    }
+  ],
+  "metadataTypes": [
+    {
       "type": "b256",
-      "components": null,
-      "typeParameters": null
+      "metadataTypeId": 0
     },
     {
-      "typeId": 2,
-      "type": "struct ContractId",
+      "type": "struct std::contract_id::ContractId",
+      "metadataTypeId": 1,
       "components": [
         {
           "name": "bits",
-          "type": 1,
-          "typeArguments": null
+          "typeId": 0
         }
-      ],
-      "typeParameters": null
+      ]
     }
   ],
   "functions": [
@@ -31,32 +34,22 @@
       "inputs": [
         {
           "name": "storage_id",
-          "type": 2,
-          "typeArguments": null
+          "concreteTypeId": "29c10735d33b5159f0c71ee1dbd17b36a3e69e41f00fab0d42e1bd9f428d8a54"
         }
       ],
       "name": "test_get",
-      "output": {
-        "name": "",
-        "type": 0,
-        "typeArguments": null
-      },
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
       "attributes": null
     },
     {
       "inputs": [
         {
           "name": "storage_id",
-          "type": 2,
-          "typeArguments": null
+          "concreteTypeId": "29c10735d33b5159f0c71ee1dbd17b36a3e69e41f00fab0d42e1bd9f428d8a54"
         }
       ],
       "name": "test_set",
-      "output": {
-        "name": "",
-        "type": 0,
-        "typeArguments": null
-      },
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
       "attributes": null
     }
   ],

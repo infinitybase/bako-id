@@ -1,11 +1,18 @@
-import { Provider, TransactionStatus, type WalletUnlocked } from 'fuels';
 import {
+  Provider,
+  TransactionStatus,
+  type WalletUnlocked,
+  ZeroBytes32,
+} from 'fuels';
+import {
+  TestMetadataContract,
+  TestRegistryContract,
+  TestStorageContract,
   WALLET_PRIVATE_KEYS,
   createWallet,
   expectContainLogError,
   expectRequireRevertError,
   randomName,
-  setupContractsAndDeploy,
   tryExecute,
   txParams,
 } from './utils';
@@ -30,21 +37,31 @@ describe('Metadata contract', () => {
   let wallet: WalletUnlocked;
   let provider: Provider;
 
-  let contracts: Awaited<ReturnType<typeof setupContractsAndDeploy>>;
+  let storage: TestStorageContract;
+  let registry: TestRegistryContract;
+  let metadata: TestMetadataContract;
 
   beforeAll(async () => {
     provider = await Provider.create('http://localhost:4000/v1/graphql');
     wallet = createWallet(provider);
-    contracts = await setupContractsAndDeploy(wallet);
 
-    await tryExecute(contracts.registry.initializeRegistry());
-    await tryExecute(contracts.storage.initializeStorage());
+    storage = await TestStorageContract.deploy(wallet);
+    registry = await TestRegistryContract.startup({
+      owner: wallet,
+      storageId: storage.id.toB256(),
+      attestationId: ZeroBytes32,
+    });
+    metadata = await TestMetadataContract.startup({
+      owner: wallet,
+      storageId: storage.id.toB256(),
+    });
+    await storage.initialize(wallet, registry.id.toB256());
   });
 
   it('should error on call method without started metadata contract', async () => {
-    const { metadata, storage } = contracts;
-
     expect.assertions(2);
+
+    const metadata = await TestMetadataContract.deploy(wallet);
 
     try {
       await metadata.functions
@@ -63,13 +80,14 @@ describe('Metadata contract', () => {
   });
 
   it('should register a metadata for domain', async () => {
-    const { metadata, registry } = contracts;
     const { github, user } = metadataConfig;
     const handleName = user.handle();
 
-    await tryExecute(metadata.initializeMetadata());
-
-    await registry.register(handleName, wallet.address.toB256(), 1);
+    await registry.register({
+      domain: handleName,
+      period: 1,
+      storageAbi: storage,
+    });
 
     const saveFn = await metadata.functions
       .save(handleName, github.key, github.value)
@@ -82,14 +100,18 @@ describe('Metadata contract', () => {
   });
 
   it('should error to register a metadata with other address of owner', async () => {
-    const { metadata, registry } = contracts;
     const { github, user } = metadataConfig;
     const handleName = user.handle();
 
     const fakeWallet = createWallet(provider, WALLET_PRIVATE_KEYS.FAKE);
 
-    await tryExecute(metadata.initializeMetadata());
-    await tryExecute(registry.register(handleName, wallet.address.toB256(), 1));
+    await tryExecute(
+      registry.register({
+        period: 1,
+        domain: handleName,
+        storageAbi: storage,
+      })
+    );
 
     expect.assertions(2);
 
@@ -107,7 +129,6 @@ describe('Metadata contract', () => {
   });
 
   it('should get metadata by key', async () => {
-    const { metadata, registry } = contracts;
     const { github, user } = metadataConfig;
     const handleName = user.handle();
 
@@ -122,8 +143,13 @@ describe('Metadata contract', () => {
 
     metadata.account = wallet;
 
-    await tryExecute(metadata.initializeMetadata());
-    await tryExecute(registry.register(handleName, wallet.address.toB256(), 1));
+    await tryExecute(
+      registry.register({
+        period: 1,
+        domain: handleName,
+        storageAbi: storage,
+      })
+    );
 
     const emptyMetadata = await getGithubMetadata();
     expect(emptyMetadata).toBe('');
@@ -138,7 +164,6 @@ describe('Metadata contract', () => {
   });
 
   it('should update metadata value', async () => {
-    const { metadata, registry } = contracts;
     const { github, user } = metadataConfig;
     const handleName = user.handle();
 
@@ -153,8 +178,13 @@ describe('Metadata contract', () => {
 
     metadata.account = wallet;
 
-    await tryExecute(metadata.initializeMetadata());
-    await tryExecute(registry.register(handleName, wallet.address.toB256(), 1));
+    await tryExecute(
+      registry.register({
+        period: 1,
+        domain: handleName,
+        storageAbi: storage,
+      })
+    );
 
     await metadata.functions
       .save(handleName, github.key, github.value)
@@ -171,14 +201,18 @@ describe('Metadata contract', () => {
   });
 
   it('should update metadata values', async () => {
-    const { metadata, registry } = contracts;
     const { github, linkedin, user } = metadataConfig;
     const handleName = user.handle();
 
     metadata.account = wallet;
 
-    await tryExecute(metadata.initializeMetadata());
-    await tryExecute(registry.register(handleName, wallet.address.toB256(), 1));
+    await tryExecute(
+      registry.register({
+        period: 1,
+        domain: handleName,
+        storageAbi: storage,
+      })
+    );
 
     const { waitForResult } = await metadata
       .multiCall([
@@ -192,25 +226,29 @@ describe('Metadata contract', () => {
   });
 
   it('should get all metadata', async () => {
-    const { metadata, registry } = contracts;
     const { github, linkedin, user } = metadataConfig;
 
     const handleName = user.handle();
 
     metadata.account = wallet;
 
-    await tryExecute(metadata.initializeMetadata());
-    await tryExecute(registry.register(handleName, wallet.address.toB256(), 1));
+    await tryExecute(
+      registry.register({
+        period: 1,
+        domain: handleName,
+        storageAbi: storage,
+      })
+    );
 
-    await metadata.functions
-      .save(handleName, github.key, github.value)
+    const callFn = await metadata
+      .multiCall([
+        metadata.functions.save(handleName, github.key, github.value),
+        metadata.functions.save(handleName, linkedin.key, linkedin.value),
+      ])
       .txParams(txParams)
       .call();
 
-    await metadata.functions
-      .save(handleName, linkedin.key, linkedin.value)
-      .txParams(txParams)
-      .call();
+    await callFn.waitForResult();
 
     const { value: metadataBytes } = await metadata.functions
       .get_all(handleName)
@@ -220,32 +258,35 @@ describe('Metadata contract', () => {
   });
 
   it('should save all metadatas', async () => {
-    const { metadata, registry, storage } = contracts;
     const { github, linkedin, user } = metadataConfig;
 
     const handleName = user.handle();
 
     metadata.account = wallet;
 
-    await tryExecute(metadata.initializeMetadata());
-    await tryExecute(registry.register(handleName, wallet.address.toB256(), 1));
+    await tryExecute(
+      registry.register({
+        period: 1,
+        domain: handleName,
+        storageAbi: storage,
+      })
+    );
 
     const metadatas = [
       { key: github.key, value: github.value },
       { key: linkedin.key, value: linkedin.value },
     ];
 
-    try {
-      await metadata
-        .multiCall(
-          metadatas.map(({ key, value }) =>
-            metadata.functions.save(handleName, key, value),
-          ),
+    const callFn = await metadata
+      .multiCall(
+        metadatas.map(({ key, value }) =>
+          metadata.functions.save(handleName, key, value)
         )
-        .addContracts([storage])
-        .call();
-    } catch (error) {
-      console.log('Error', { ...error });
-    }
+      )
+      .addContracts([storage])
+      .call();
+
+    const { transactionResult } = await callFn.waitForResult();
+    expect(transactionResult.status).toBe(TransactionStatus.success);
   });
 });

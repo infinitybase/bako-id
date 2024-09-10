@@ -1,39 +1,48 @@
-import { Provider, TransactionStatus, type WalletUnlocked, bn } from 'fuels';
 import {
+  Provider,
+  TransactionStatus,
+  type WalletUnlocked,
+  ZeroBytes32,
+  bn,
+} from 'fuels';
+import {
+  TestRegistryContract,
+  TestStorageContract,
   createWallet,
   domainPrices,
   expectContainLogError,
   expectRequireRevertError,
   randomName,
-  setupContractsAndDeploy,
 } from './utils';
 
 describe('[PRICES] Registry Contract', () => {
   let wallet: WalletUnlocked;
   let provider: Provider;
 
-  let contracts: Awaited<ReturnType<typeof setupContractsAndDeploy>>;
+  let storage: TestStorageContract;
+  let registry: TestRegistryContract;
 
   beforeAll(async () => {
     provider = await Provider.create('http://localhost:4000/v1/graphql');
     wallet = createWallet(provider);
-    contracts = await setupContractsAndDeploy(wallet);
-
-    await contracts.registry.initializeRegistry();
-    await contracts.storage.initializeStorage();
+    storage = await TestStorageContract.deploy(wallet);
+    registry = await TestRegistryContract.startup({
+      owner: wallet,
+      storageId: storage.id.toB256(),
+      attestationId: ZeroBytes32,
+    });
+    await storage.initialize(wallet, registry.id.toB256());
   });
 
   it('should error register with invalid amount', async () => {
     try {
-      const { registry } = contracts;
-
       const domain = randomName();
-      const { transactionResult } = await registry.register(
+      const { transactionResult } = await registry.register({
         domain,
-        wallet.address.toB256(),
-        1,
-        false
-      );
+        period: 1,
+        storageAbi: storage,
+        calculateAmount: false,
+      });
 
       expect(transactionResult.status).toBe(TransactionStatus.failure);
     } catch (e) {
@@ -45,15 +54,13 @@ describe('[PRICES] Registry Contract', () => {
   it.each([3, 4, 10])(
     'should register domain with %d chars',
     async (domainLength) => {
-      const { registry } = contracts;
-
       const domain = randomName(domainLength);
 
-      const { transactionResult } = await registry.register(
+      const { transactionResult } = await registry.register({
         domain,
-        wallet.address.toB256(),
-        1
-      );
+        period: 1,
+        storageAbi: storage,
+      });
 
       expect(transactionResult.status).toBe(TransactionStatus.success);
     }
