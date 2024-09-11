@@ -59,6 +59,7 @@ export async function attest(params: AttestParams): Promise<AttestationHash> {
 
     return attestationHash;
   } catch (error) {
+    console.log(error);
     throw getContractError(<FuelError>error);
   }
 }

@@ -27,7 +27,7 @@ describe('Test Attestation', () => {
         app: 'farcaster',
         handle: 'my_handle',
       },
-      attester: wallet,
+      attester,
     });
 
     expect(attestationHash).toBeDefined();

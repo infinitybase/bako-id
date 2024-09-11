@@ -1,6 +1,6 @@
 {
   "name": "@bako-id/sdk",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "SDK to interact with domains in Bako.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

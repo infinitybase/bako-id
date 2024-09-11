@@ -9,10 +9,11 @@ const { PROVIDER_URL, PRIVATE_KEY, ATTESTER_WALLET } = process.env;
 const initializeContracts = async () => {
   const provider = await Provider.create(PROVIDER_URL!);
   const mainWallet = Wallet.fromPrivateKey(PRIVATE_KEY!, provider);
+  const attesterWallet = Wallet.fromPrivateKey(ATTESTER_WALLET!, provider);
 
   await deployContracts({
     account: mainWallet,
-    attester: ATTESTER_WALLET!,
+    attester: attesterWallet.address.toB256(),
     storageId: config.STORAGE_CONTRACT_ID!,
     registryId: config.REGISTRY_CONTRACT_ID,
     metadataId: config.METADATA_CONTRACT_ID,
