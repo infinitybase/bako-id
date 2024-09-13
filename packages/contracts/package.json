@@ -1,0 +1,32 @@
+{
+  "name": "@bako-id/contracts",
+  "version": "1.0.0",
+  "description": "",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
+    "build": "tsup",
+    "prebuild": "pnpm fuels build",
+    "postinstall": "pnpm build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fuels": "0.94.5"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "jest": "^29.6.4",
+    "ts-jest": "^29.1.1"
+  }
+}

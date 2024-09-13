@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "name": "@shared/tsup",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@types/lodash.mergewith": "^4.6.9",
+    "lodash.mergewith": "^4.6.2"
+  }
+}

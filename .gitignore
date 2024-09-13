@@ -2,3 +2,6 @@
 .idea
 .DS_Store
 .turbo
+.env
+.env.local
+dist

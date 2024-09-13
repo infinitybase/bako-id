@@ -6,8 +6,8 @@ const { PROVIDER_URL, ATTESTER_WALLET, PRIVATE_KEY } = process.env;
 
 describe('Test Attestation', () => {
   let attester: WalletUnlocked;
-  let provider: Provider;
   let wallet: WalletUnlocked;
+  let provider: Provider;
 
   beforeAll(async () => {
     provider = await Provider.create(PROVIDER_URL!);
@@ -15,6 +15,7 @@ describe('Test Attestation', () => {
     const mainWallet = Wallet.fromPrivateKey(PRIVATE_KEY!, provider);
     attester = Wallet.fromPrivateKey(ATTESTER_WALLET!, provider);
     wallet = await createFakeWallet(provider, '0.1');
+
     await mainWallet
       .transfer(attester.address, bn(10_000_000))
       .then((a) => a.waitForResult());
