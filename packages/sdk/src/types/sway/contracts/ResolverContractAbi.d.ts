@@ -22,21 +22,15 @@ import type {
   StdString,
 } from 'fuels';
 
-import type { Option, Enum } from './common';
+import type { Option, Enum } from "./common";
 
-export enum ResolverContractErrorInput {
-  AlreadyInitialized = 'AlreadyInitialized',
-  StorageNotInitialized = 'StorageNotInitialized',
-}
-export enum ResolverContractErrorOutput {
-  AlreadyInitialized = 'AlreadyInitialized',
-  StorageNotInitialized = 'StorageNotInitialized',
-}
+export enum ResolverContractErrorInput { AlreadyInitialized = 'AlreadyInitialized', StorageNotInitialized = 'StorageNotInitialized' };
+export enum ResolverContractErrorOutput { AlreadyInitialized = 'AlreadyInitialized', StorageNotInitialized = 'StorageNotInitialized' };
 
 export type ContractIdInput = { bits: string };
 export type ContractIdOutput = ContractIdInput;
 
-export interface ResolverContractAbiInterface extends Interface {
+interface ResolverContractAbiInterface extends Interface {
   functions: {
     constructor: FunctionFragment;
     owner: FunctionFragment;

@@ -1,5 +1,7 @@
 import { type Contract, type WalletUnlocked, bn } from 'fuels';
 import {
+  type AttestationContractAbi,
+  AttestationContractAbi__factory,
   type MetadataContractAbi,
   MetadataContractAbi__factory,
   type RegistryContractAbi,
@@ -11,12 +13,14 @@ import {
   TestContractAbi__factory,
 } from '../types';
 import {
+  attestationContract,
   metadataContract,
   registryContract,
   resolverContract,
   storageContract,
   testContract,
 } from '../types/contract-ids.json';
+import attestationHex from '../types/contracts/AttestationContractAbi.hex';
 import metadataHex from '../types/contracts/MetadataContractAbi.hex';
 import registryHex from '../types/contracts/RegistryContractAbi.hex';
 import resolverHex from '../types/contracts/ResolverContractAbi.hex';
@@ -73,19 +77,31 @@ const initializeResolver =
     return { txRegistry: transactionResult };
   };
 
+const initializeAttestation =
+  (storageId: string, contractAbi: AttestationContractAbi) => async () => {
+    const callFn = await contractAbi.functions
+      .constructor({ bits: storageId })
+      .txParams(txParams)
+      .call();
+
+    const { transactionResult } = await callFn.waitForResult();
+
+    return { txRegistry: transactionResult };
+  };
+
 const register =
   (contractAbi: RegistryContractAbi, storageAbi: StorageContractAbi) =>
   async (
     domain: string,
     account: string,
     period: number,
-    calculateAmount = true
+    calculateAmount = true,
   ) => {
     const amount = domainPrices(domain, period);
     const callBuilder = contractAbi.functions.register(
       domain,
       account ?? contractAbi.account.address.toB256(),
-      period
+      period,
     );
 
     if (calculateAmount) {
@@ -114,6 +130,7 @@ type Contracts = [
   DeployedContract<RegistryContractAbi>,
   DeployedContract<MetadataContractAbi>,
   DeployedContract<ResolverContractAbi>,
+  DeployedContract<AttestationContractAbi>,
 ];
 export async function setupContractsAndDeploy(wallet: WalletUnlocked) {
   const contractsSetup = [
@@ -121,14 +138,19 @@ export async function setupContractsAndDeploy(wallet: WalletUnlocked) {
     await RegistryContractAbi__factory.deployContract(registryHex, wallet),
     await MetadataContractAbi__factory.deployContract(metadataHex, wallet),
     await ResolverContractAbi__factory.deployContract(resolverHex, wallet),
+    await AttestationContractAbi__factory.deployContract(
+      attestationHex,
+      wallet,
+    ),
   ];
 
-  const [storage, registry, metadata, resolver] = (await Promise.all(
-    contractsSetup.map(async (contract) => {
-      const result = await contract.waitForResult();
-      return result.contract;
-    })
-  )) as Contracts;
+  const [storage, registry, metadata, resolver, attestation] =
+    (await Promise.all(
+      contractsSetup.map(async (contract) => {
+        const result = await contract.waitForResult();
+        return result.contract;
+      }),
+    )) as Contracts;
 
   const connect = (wallet: WalletUnlocked) =>
     StorageContractAbi__factory.connect(storage.id, wallet);
@@ -138,7 +160,7 @@ export async function setupContractsAndDeploy(wallet: WalletUnlocked) {
       initializeStorage: initializeStorage(
         wallet.address.toB256(),
         registry.id.toB256(),
-        storage
+        storage,
       ),
       connect,
     }),
@@ -146,7 +168,7 @@ export async function setupContractsAndDeploy(wallet: WalletUnlocked) {
       initializeRegistry: initializeRegistry(
         wallet.address.toB256(),
         storage.id.toB256(),
-        registry
+        registry,
       ),
       register: register(registry, storage),
     }),
@@ -156,6 +178,12 @@ export async function setupContractsAndDeploy(wallet: WalletUnlocked) {
     resolver: Object.assign(resolver, {
       initializeResolver: initializeResolver(storage.id.toB256(), resolver),
     }),
+    attestation: Object.assign(attestation, {
+      initializeAttestation: initializeAttestation(
+        storage.id.toB256(),
+        attestation,
+      ),
+    }),
   };
 }
 
@@ -163,24 +191,28 @@ export async function setupContracts(wallet: WalletUnlocked) {
   const storage = StorageContractAbi__factory.connect(storageContract, wallet);
   const registry = RegistryContractAbi__factory.connect(
     registryContract,
-    wallet
+    wallet,
   );
   const metadata = MetadataContractAbi__factory.connect(
     metadataContract,
-    wallet
+    wallet,
   );
   const resolver = ResolverContractAbi__factory.connect(
     resolverContract,
-    wallet
+    wallet,
   );
   const testCaller = TestContractAbi__factory.connect(testContract, wallet);
+  const attestation = AttestationContractAbi__factory.connect(
+    attestationContract,
+    wallet,
+  );
 
   return {
     storage: Object.assign(storage, {
       initializeStorage: initializeStorage(
         wallet.address.toB256(),
         registry.id.toB256(),
-        storage
+        storage,
       ),
       connect: StorageContractAbi__factory.connect,
     }),
@@ -188,7 +220,7 @@ export async function setupContracts(wallet: WalletUnlocked) {
       initializeRegistry: initializeRegistry(
         wallet.address.toB256(),
         storage.id.toB256(),
-        registry
+        registry,
       ),
       register: register(registry, storage),
     }),
@@ -197,6 +229,12 @@ export async function setupContracts(wallet: WalletUnlocked) {
     }),
     metadata,
     testCaller,
+    attestation: Object.assign(attestation, {
+      initializeAttestation: initializeAttestation(
+        storage.id.toB256(),
+        attestation,
+      ),
+    }),
   };
 }
 

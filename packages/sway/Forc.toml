@@ -4,4 +4,5 @@ members = [
     "./src/storage-contract",
     "./src/registry-contract",
     "./src/resolver-contract",
+    "./src/attestation-contract",
 ]

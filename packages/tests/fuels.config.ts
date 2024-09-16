@@ -6,6 +6,7 @@ export default createConfig({
     '../sway/src/metadata-contract',
     '../sway/src/storage-contract',
     '../sway/src/resolver-contract',
+    '../sway/src/attestation-contract',
     './src/sway/test-contract',
   ],
   forcBuildFlags: ['--release'],
