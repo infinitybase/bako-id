@@ -1,5 +1,5 @@
 import { createRoute } from '@tanstack/react-router';
-import { NotConnected } from '../components/auth/notConnected.tsx';
+import { NotConnected } from '../components';
 import { rootRoute } from '../hooks/__root.ts';
 import { Buy } from '../modules/buy/page.tsx';
 import { LearnMore } from '../modules/home/components/learn-more/page.tsx';
