@@ -24,7 +24,7 @@
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.11",
     "framer-motion": "^11.3.4",
-    "fuels": "0.94.5",
+    "fuels": "0.96.1",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

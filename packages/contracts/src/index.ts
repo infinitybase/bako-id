@@ -1,1 +1,1 @@
-export * from './sway/index';
+export * from './artifacts';

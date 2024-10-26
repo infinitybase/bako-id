@@ -1,7 +1,8 @@
 {
   "name": "@bako-id/contracts",
   "version": "1.0.0",
-  "description": "",
+  "description": "Bako ID contracts.",
+  "private": true,
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
@@ -22,7 +23,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fuels": "0.94.5"
+    "fuels": "0.96.1"
   },
   "devDependencies": {
     "@types/jest": "^29.5.11",

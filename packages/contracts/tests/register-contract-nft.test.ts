@@ -29,7 +29,7 @@ describe('[NFT] Registry Contract', () => {
     await storage.initialize(deployer, registry.id.toB256());
     await registry.initialize({
       owner: deployer,
-      storageId: storage.id.toB256(),
+      managerId: storage.id.toB256(),
       attestationId: ZeroBytes32,
     });
   });
