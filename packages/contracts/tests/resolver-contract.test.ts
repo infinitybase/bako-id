@@ -1,3 +1,4 @@
+import { bn } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
 import {
   Manager,
@@ -7,7 +8,12 @@ import {
   Resolver,
   ResolverFactory,
 } from '../src';
-import { expectRequireRevertError, randomName, txParams } from './utils';
+import {
+  domainPrices,
+  expectRequireRevertError,
+  randomName,
+  txParams,
+} from './utils';
 
 describe('[METHODS] Resolver Contract', () => {
   let node: Awaited<ReturnType<typeof launchTestNode>>;
@@ -44,6 +50,11 @@ describe('[METHODS] Resolver Contract', () => {
       .constructor({ bits: manager.id.toB256() })
       .call();
     await resolverConstructor.waitForResult();
+
+    const managerConstructor = await manager.functions
+      .constructor({ ContractId: { bits: registry.id.toB256() } })
+      .call();
+    await managerConstructor.waitForResult();
   });
 
   afterAll(() => {
@@ -95,14 +106,25 @@ describe('[METHODS] Resolver Contract', () => {
   });
 
   it('should get owner, resolver and name', async () => {
-    const [owner] = node.wallets;
+    const { provider, wallets } = node;
+    const [owner] = wallets;
     const name = randomName();
     const b256Address = owner.address.toB256();
 
+    const price = domainPrices(name);
+
     const { waitForResult: waitForRegister } = await registry.functions
-      .register(name, {
-        Address: { bits: owner.address.toB256() },
+      .register(
+        name,
+        {
+          Address: { bits: owner.address.toB256() },
+        },
+        bn(1)
+      )
+      .callParams({
+        forward: { assetId: provider.getBaseAssetId(), amount: price },
       })
+      .addContracts([manager])
       .call();
     await waitForRegister();
 
