@@ -5,12 +5,15 @@ use standards::src7::{Metadata};
 
 abi Constructor {
     #[storage(read, write)]
-    fn constructor(manager_id: ContractId, metadata_id: ContractId);
+    fn constructor(manager_id: ContractId);
 }
 
 abi AddressResolver {
     #[storage(read)]
     fn addr(name: String) -> Option<Identity>;
+
+    #[storage(read)]
+    fn owner(name: String) -> Option<Identity>;
 }
 
 abi NameResolver {

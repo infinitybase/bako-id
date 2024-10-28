@@ -1,53 +1,49 @@
-import { ZeroBytes32 } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
 import {
-  RegistryContractFactory,
-  ResolverContractFactory,
-  StorageContractFactory,
+  Manager,
+  ManagerFactory,
+  Registry,
+  RegistryFactory,
+  Resolver,
+  ResolverFactory,
 } from '../src';
-import {
-  TestRegistryContract,
-  TestResolverContract,
-  TestStorageContract,
-  expectContainLogError,
-  expectRequireRevertError,
-  randomName,
-  txParams,
-} from './utils';
+import { expectRequireRevertError, randomName, txParams } from './utils';
 
 describe('[METHODS] Resolver Contract', () => {
   let node: Awaited<ReturnType<typeof launchTestNode>>;
 
-  let storage: TestStorageContract;
-  let registry: TestRegistryContract;
-  let resolver: TestResolverContract;
+  let manager: Manager;
+  let registry: Registry;
+  let resolver: Resolver;
 
   beforeAll(async () => {
     node = await launchTestNode({
       walletsConfig: { count: 2 },
       contractsConfigs: [
-        { factory: StorageContractFactory },
-        { factory: RegistryContractFactory },
-        { factory: ResolverContractFactory },
+        { factory: ManagerFactory },
+        { factory: RegistryFactory },
+        { factory: ResolverFactory },
       ],
     });
 
     const {
-      contracts: [storageAbi, registryAbi, resolverAbi],
+      contracts: [managerAbi, registryAbi, resolverAbi],
       wallets: [deployer],
     } = node;
 
-    storage = new TestStorageContract(storageAbi.id, deployer);
-    registry = new TestRegistryContract(registryAbi.id, deployer);
-    resolver = new TestResolverContract(resolverAbi.id, deployer);
+    manager = new Manager(managerAbi.id, deployer);
+    registry = new Registry(registryAbi.id, deployer);
+    resolver = new Resolver(resolverAbi.id, deployer);
 
-    await storage.initialize(deployer, registry.id.toB256());
-    await registry.initialize({
-      owner: deployer,
-      managerId: storage.id.toB256(),
-      attestationId: ZeroBytes32,
-    });
-    await resolver.initialize({ storageId: storage.id.toB256() });
+    const registryContructor = await registry.functions
+      .constructor({ bits: manager.id.toB256() })
+      .call();
+    await registryContructor.waitForResult();
+
+    const resolverConstructor = await resolver.functions
+      .constructor({ bits: manager.id.toB256() })
+      .call();
+    await resolverConstructor.waitForResult();
   });
 
   afterAll(() => {
@@ -58,16 +54,16 @@ describe('[METHODS] Resolver Contract', () => {
     const [owner] = node.wallets;
     const domain = randomName();
 
-    const resolver = await TestResolverContract.deploy(owner);
-    const storage = await TestStorageContract.deploy(owner);
+    const { waitForResult: waitForResolver } =
+      await ResolverFactory.deploy(owner);
+    const { contract: resolver } = await waitForResolver();
 
-    expect.assertions(2);
+    expect.assertions(1);
 
     try {
-      await resolver.functions.resolver(domain).addContracts([storage]).call();
+      await resolver.functions.addr(domain).addContracts([manager]).call();
     } catch (error) {
       expectRequireRevertError(error);
-      expectContainLogError(error, 'StorageNotInitialized');
     }
   });
 
@@ -75,65 +71,60 @@ describe('[METHODS] Resolver Contract', () => {
     const [owner] = node.wallets;
     const domain = randomName();
 
-    const storage = await TestStorageContract.deploy(owner);
-    const resolver = await TestResolverContract.startup({
-      owner,
-      storageId: storage.id.toB256(),
-    });
-
     const { value: resolverAddress } = await resolver.functions
-      .resolver(domain)
-      .addContracts([storage])
+      .addr(domain)
+      .addContracts([manager])
       .txParams(txParams)
       .get();
     expect(resolverAddress).toBeUndefined();
 
     const { value: ownerAddress } = await resolver.functions
       .owner(domain)
-      .addContracts([storage])
+      .addContracts([manager])
       .txParams(txParams)
       .get();
     expect(ownerAddress).toBeUndefined();
 
+    const addressInput = { bits: owner.address.toB256() };
     const { value: resolverName } = await resolver.functions
-      .name(owner.address.toB256())
-      .addContracts([storage])
+      .name({ Address: addressInput })
+      .addContracts([manager])
       .txParams(txParams)
       .get();
-    expect(resolverName).toBe('');
+    expect(resolverName).toBeUndefined();
   });
 
   it('should get owner, resolver and name', async () => {
     const [owner] = node.wallets;
-    const domain = randomName();
+    const name = randomName();
     const b256Address = owner.address.toB256();
 
-    await registry.register({
-      domain,
-      period: 1,
-      address: b256Address,
-      storageAbi: storage,
-    });
+    const { waitForResult: waitForRegister } = await registry.functions
+      .register(name, {
+        Address: { bits: owner.address.toB256() },
+      })
+      .call();
+    await waitForRegister();
 
     const { value: resolverAddress } = await resolver.functions
-      .resolver(domain)
-      .addContracts([storage])
+      .addr(name)
+      .addContracts([manager])
       .txParams(txParams)
       .get();
-    expect(resolverAddress).toBe(b256Address);
+    expect(resolverAddress?.Address?.bits).toBe(b256Address);
 
     const { value: ownerAddress } = await resolver.functions
-      .owner(domain)
-      .addContracts([storage])
+      .owner(name)
+      .addContracts([manager])
       .txParams(txParams)
       .get();
-    expect(ownerAddress).toBe(b256Address);
+    expect(ownerAddress?.Address?.bits).toBe(b256Address);
 
     const { value: resolverName } = await resolver.functions
-      .name(b256Address)
-      .addContracts([storage])
+      .name({ Address: { bits: b256Address } })
+      .addContracts([manager])
       .txParams(txParams)
       .get();
-    expect(resolverName).toBe(domain);
+    expect(resolverName).toBe(name);
   });
 });
