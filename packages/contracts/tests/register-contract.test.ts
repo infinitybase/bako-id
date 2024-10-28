@@ -1,13 +1,6 @@
 import { TransactionStatus } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
-import {
-  Manager,
-  ManagerFactory,
-  Registry,
-  RegistryFactory,
-  Resolver,
-  ResolverFactory,
-} from '../src';
+import { Manager, ManagerFactory, Registry, RegistryFactory } from '../src';
 import { expectRequireRevertError, randomName, txParams } from './utils';
 
 describe('[METHODS] Registry Contract', () => {
@@ -15,7 +8,6 @@ describe('[METHODS] Registry Contract', () => {
 
   let manager: Manager;
   let registry: Registry;
-  let resolver: Resolver;
 
   beforeAll(async () => {
     node = await launchTestNode({
@@ -23,26 +15,18 @@ describe('[METHODS] Registry Contract', () => {
       contractsConfigs: [
         { factory: ManagerFactory },
         { factory: RegistryFactory },
-        { factory: ResolverFactory },
       ],
     });
 
     const {
-      contracts: [managerAbi, registryAbi, resolverAbi],
+      contracts: [managerAbi, registryAbi],
       wallets: [deployer],
     } = node;
 
     manager = new Manager(managerAbi.id, deployer);
     registry = new Registry(registryAbi.id, deployer);
-    resolver = new Resolver(resolverAbi.id, deployer);
 
     await registry.functions.constructor({ bits: manager.id.toB256() }).call();
-    await resolver.functions
-      .constructor(
-        { bits: manager.id.toB256() },
-        { bits: registry.id.toB256() }
-      )
-      .call();
   });
 
   afterAll(() => {
