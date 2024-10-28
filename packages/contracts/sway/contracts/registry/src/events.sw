@@ -17,7 +17,4 @@ pub struct NewNameEvent {
 
     /// the nft id
     pub asset_id: AssetId,
-
-    /// the ttl
-    pub ttl: u64,
 }

@@ -1,7 +1,7 @@
-import { getMintedAssetId, sha256, toUtf8Bytes } from 'fuels';
+import { bn, getMintedAssetId, sha256, toUtf8Bytes } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
 import { Manager, ManagerFactory, Registry, RegistryFactory } from '../src';
-import { randomName } from './utils';
+import { domainPrices, randomName } from './utils';
 
 describe('[NFT] Registry Contract', () => {
   let node: Awaited<ReturnType<typeof launchTestNode>>;
@@ -30,6 +30,11 @@ describe('[NFT] Registry Contract', () => {
       .constructor({ bits: manager.id.toB256() })
       .call();
     await waitForResult();
+
+    const { waitForResult: waitForManager } = await manager.functions
+      .constructor({ ContractId: { bits: registry.id.toB256() } })
+      .call();
+    await waitForManager();
   });
 
   afterAll(() => {
@@ -37,14 +42,24 @@ describe('[NFT] Registry Contract', () => {
   });
 
   it('should get SCR20 methods', async () => {
-    const [deployer] = node.wallets;
+    const { wallets, provider } = node;
+    const [deployer] = wallets;
 
     const name = randomName();
+    const price = domainPrices(name);
 
     const { waitForResult: waitForRegister } = await registry.functions
-      .register(name, {
-        Address: { bits: deployer.address.toB256() },
+      .register(
+        name,
+        {
+          Address: { bits: deployer.address.toB256() },
+        },
+        bn(1)
+      )
+      .callParams({
+        forward: { assetId: provider.getBaseAssetId(), amount: price },
       })
+      .addContracts([manager])
       .call();
 
     await waitForRegister();
@@ -83,13 +98,23 @@ describe('[NFT] Registry Contract', () => {
   });
 
   it('should get asset image', async () => {
-    const [deployer] = node.wallets;
+    const { wallets, provider } = node;
+    const [deployer] = wallets;
     const name = randomName();
+    const price = domainPrices(name);
 
     const { waitForResult: waitForRegister } = await registry.functions
-      .register(name, {
-        Address: { bits: deployer.address.toB256() },
+      .register(
+        name,
+        {
+          Address: { bits: deployer.address.toB256() },
+        },
+        bn(1)
+      )
+      .callParams({
+        forward: { assetId: provider.getBaseAssetId(), amount: price },
       })
+      .addContracts([manager])
       .call();
     await waitForRegister();
 

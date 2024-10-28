@@ -35,6 +35,11 @@ describe('[PRICES] Registry Contract', () => {
       .constructor({ bits: manager.id.toB256() })
       .call();
     await waitForResult();
+
+    const managerCall = await manager.functions
+      .constructor({ ContractId: { bits: registry.id.toB256() } })
+      .call();
+    await managerCall.waitForResult();
   });
 
   afterAll(() => {
@@ -43,18 +48,32 @@ describe('[PRICES] Registry Contract', () => {
 
   it('should error register with invalid amount', async () => {
     try {
-      const [owner] = node.wallets;
+      const { wallets, provider } = node;
+      const [owner] = wallets;
       const name = randomName();
+      const price = domainPrices(name);
 
       const { waitForResult: waitForRegister } = await registry.functions
-        .register(name, {
-          Address: { bits: owner.address.toB256() },
+        .register(
+          name,
+          {
+            Address: { bits: owner.address.toB256() },
+          },
+          bn(1)
+        )
+        .callParams({
+          forward: {
+            assetId: provider.getBaseAssetId(),
+            amount: price.sub(10),
+          },
         })
+        .addContracts([manager])
         .call();
       const { transactionResult } = await waitForRegister();
 
       expect(transactionResult.status).toBe(TransactionStatus.failure);
     } catch (e) {
+      console.log(e);
       expectRequireRevertError(e);
       expectContainLogError(e, 'InvalidAmount');
     }
@@ -63,13 +82,24 @@ describe('[PRICES] Registry Contract', () => {
   it.each([3, 4, 10])(
     'should register domain with %d chars',
     async (domainLength) => {
-      const [owner] = node.wallets;
+      const { wallets, provider } = node;
+      const [owner] = wallets;
       const name = randomName(domainLength);
 
+      const price = domainPrices(name);
+
       const { waitForResult: waitForRegister } = await registry.functions
-        .register(name, {
-          Address: { bits: owner.address.toB256() },
+        .register(
+          name,
+          {
+            Address: { bits: owner.address.toB256() },
+          },
+          bn(1)
+        )
+        .callParams({
+          forward: { assetId: provider.getBaseAssetId(), amount: price },
         })
+        .addContracts([manager])
         .call();
       const { transactionResult } = await waitForRegister();
 

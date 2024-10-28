@@ -1,22 +1,53 @@
 contract;
 
+use std::string::String;
 use std::hash::{sha256, Hash};
 use std::storage::storage_string::*;
-use std::string::String;
 use lib::abis::manager::{RecordData, Manager, ManagerInfo};
 
 storage {
     records_data: StorageMap<b256, RecordData> = StorageMap {},
     records_name: StorageMap<b256, StorageString> = StorageMap {},
     records_resolver: StorageMap<Identity, b256> = StorageMap {},
+    owner: Identity = Identity::Address(Address::zero()),
+}
+
+enum ManagerError {
+    OnlyOwner: (),
+    RecordNotFound: (),
+    RecordAlreadyExists: (),
+    ContractNotInitialized: (),
+    ContractAlreadyInitialized: (),
+}
+
+#[storage(read)]
+fn only_owner(name: String) {
+    let sender = msg_sender().unwrap();
+    let contract_owner = storage.owner.read();
+
+    require(
+        contract_owner != Identity::Address(Address::zero()), 
+        ManagerError::ContractNotInitialized
+    );
+
+    let is_record_owner = match storage.records_data.get(sha256(name)).try_read() {
+        Some(data) => data.owner == sender,
+        None => false,
+    };
+    let is_contract_owner = storage.owner.read() == sender;
+    require(
+        is_record_owner || is_contract_owner, 
+        ManagerError::OnlyOwner
+    );
 }
 
 impl Manager for Contract {
     #[storage(read, write)]
-    fn register(name: String, data: RecordData) {
+    fn set_record(name: String, data: RecordData) {
+        only_owner(name);
         let name_hash = sha256(name);
         let record_data = storage.records_data.get(name_hash).try_read();
-        require(record_data.is_none(), "Record already exists");
+        require(record_data.is_none(), ManagerError::RecordAlreadyExists);
 
         storage.records_data.insert(name_hash, data);
         storage.records_name.insert(name_hash, StorageString {});
@@ -26,9 +57,10 @@ impl Manager for Contract {
 
     #[storage(read, write)]
     fn set_resolver(name: String, resolver: Identity) {
+        only_owner(name);
         let name_hash = sha256(name);
         let record_data = storage.records_data.get(name_hash).try_read();
-        require(record_data.is_some(), "Record not found");
+        require(record_data.is_some(), ManagerError::RecordNotFound);
 
         let mut records_data = record_data.unwrap();
         records_data.resolver = resolver;
@@ -73,7 +105,10 @@ impl ManagerInfo for Contract {
         let record_data = storage.records_data.get(name_hash).try_read();
         
         match record_data {
-            Some(data) => Some(data.ttl),
+            Some(data) => {
+                let year_in_seconds: u64 = 365 * 24 * 3600;
+                Some(data.timestamp * (data.period.as_u64() * year_in_seconds)) 
+            },
             None => None,
         }
     }
@@ -87,5 +122,22 @@ impl ManagerInfo for Contract {
         }
 
         storage.records_name.get(name_hash.unwrap()).read_slice()
+    }
+}
+
+abi Constructor {
+    #[storage(read, write)]
+    fn constructor(owner: Identity);
+}
+
+impl Constructor for Contract {
+    #[storage(read, write)]
+    fn constructor(owner: Identity) {
+        let current_owner = storage.owner.read();
+        require(
+            current_owner == Identity::Address(Address::zero()), 
+            ManagerError::ContractAlreadyInitialized
+        );
+        storage.owner.write(owner);
     }
 }

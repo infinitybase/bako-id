@@ -3,8 +3,8 @@ library;
 use std::string::String;
 
 abi Registry {
-    #[storage(write, read)]
-    fn register(name: String, resolver: Identity);
+    #[storage(write, read), payable]
+    fn register(name: String, resolver: Identity, period: u16);
 
     // renew
     // transfer

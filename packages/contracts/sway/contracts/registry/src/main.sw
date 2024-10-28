@@ -2,22 +2,26 @@ contract;
 
 mod events;
 mod abis;
+mod lib;
 
 use std::storage::*;
 use std::string::String;
 use std::block::timestamp;
 use std::hash::{Hash, sha256};
 use std::storage::storage_string::{*, StorageString};
+use std::call_frames::msg_asset_id;
+use std::context::msg_amount;
 use standards::src20::{SRC20};
 use standards::src7::{SRC7, Metadata};
 use sway_libs::asset::supply::_mint;
 use sway_libs::asset::metadata::*;
 use sway_libs::asset::base::{_total_assets,_total_supply};
-use lib::abis::manager::{Manager, RecordData};
+use lib::abis::manager::{Manager, ManagerInfo, RecordData};
 use lib::validations::{assert_name_validity};
 use lib::string::{concat_string};
 use events::{NewNameEvent};
 use abis::{Registry, Constructor};
+use lib::{domain_price};
 
 configurable {
     /// The decimals of the asset minted by this contract.
@@ -38,7 +42,7 @@ storage {
 #[storage(read)]
 fn get_manager_id() -> ContractId {
     let manager_id = storage.manager_id.read();
-    require(manager_id != ContractId::zero(), "Manager ID not set.");
+    require(manager_id != ContractId::zero(), RegistryContractError::ContractNotInitialized);
     manager_id
 }
 
@@ -74,26 +78,50 @@ fn mint_token(name: String, receiver: Identity) -> AssetId {
     asset_id
 }
 
+enum RegistryContractError {
+    IncorrectAssetId: (),
+    InvalidAmount: (),
+    AlreadyMinted: (),
+    AlreadyInitialized: (),
+    ContractNotBeZero: (),
+    ContractNotInitialized: (),
+}
+
 impl Registry for Contract {
-    #[storage(write, read)]
-    fn register(name: String, resolver: Identity) {
+    #[storage(write, read), payable]
+    fn register(name: String, resolver: Identity, period: u16) {
+        require(
+            msg_asset_id() == AssetId::base(),
+            RegistryContractError::IncorrectAssetId,
+        );     
+
         let name = assert_name_validity(name);
-        let owner = msg_sender().unwrap();
         let manager_id = get_manager_id();
+        let manager = abi(ManagerInfo, manager_id.into());
+
+        require(
+            manager.get_record(name).is_none(),
+            RegistryContractError::AlreadyMinted,
+        );
+
+        let owner = msg_sender().unwrap();
         let name_hash = sha256(name);
 
-        let asset_id = mint_token(name, owner);
+        require(
+            msg_amount() == domain_price(name, period),
+            RegistryContractError::InvalidAmount,
+        );
 
-        let ttl = timestamp() + 31536000;
+        let asset_id = mint_token(name, owner);
         let manager = abi(Manager, manager_id.into());
-        manager.register(name, RecordData {
-            ttl,
+        manager.set_record(name, RecordData {
             owner,
+            period,
             resolver,
+            timestamp: timestamp(),
         });
 
         log(NewNameEvent {
-            ttl,
             name,
             owner,
             resolver,
@@ -106,10 +134,10 @@ impl Registry for Contract {
 impl Constructor for Contract {
     #[storage(read, write)]
     fn constructor(manager_id: ContractId) {
-        require(manager_id != ContractId::zero(), "Manager ID cannot be zero.");
+        require(manager_id != ContractId::zero(), RegistryContractError::ContractNotBeZero);
 
         let contract_id = storage.manager_id.read();
-        require(contract_id == ContractId::zero(), "Manager ID already set.");
+        require(contract_id == ContractId::zero(), RegistryContractError::AlreadyInitialized);
 
         storage.manager_id.write(manager_id);
     }

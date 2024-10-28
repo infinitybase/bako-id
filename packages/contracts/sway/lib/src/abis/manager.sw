@@ -3,14 +3,15 @@ library;
 use std::string::String;
 
 pub struct RecordData {
-    pub ttl: u64,
     pub owner: Identity,
     pub resolver: Identity,
+    pub period: u16,
+    pub timestamp: u64,
 }
 
 abi Manager {
     #[storage(read, write)]
-    fn register(name: String, data: RecordData);
+    fn set_record(name: String, data: RecordData);
 
     #[storage(read, write)]
     fn set_resolver(name: String, resolver: Identity);
