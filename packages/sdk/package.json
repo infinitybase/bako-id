@@ -10,23 +10,18 @@
   },
   "exports": {
     ".": {
-      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
-    "pretest": "fuels build",
     "build": "pnpm build:package",
     "build:contracts": "fuels build && fuels deploy",
     "build:package": "tsup",
-    "test": "jest --verbose --runInBand",
-    "test:watch": "jest --verbose --runInBand --watch",
-    "start:contracts": "ts-node scripts/initialize-contracts.ts",
-    "update:storage": "ts-node scripts/update-registry.ts"
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
+    "test:watch": "jest --verbose --runInBand --watch"
   },
   "keywords": [],
   "author": "",

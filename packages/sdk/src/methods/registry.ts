@@ -8,20 +8,21 @@ import {
 } from 'fuels';
 import {
   type Enum,
+  type Identity,
   NotFoundBalanceError,
   assertValidDomain,
   domainPrices,
 } from '../utils';
 
-type Identity = {
-  ContractId: { bits: string };
-  Address: { bits: string };
-};
-
 export type RegisterPayload = {
   domain: string;
   period: number;
   resolver: string;
+};
+
+export type SimulatePayload = {
+  domain: string;
+  period: number;
 };
 
 async function checkAccountBalance(
@@ -54,20 +55,10 @@ export class RegistryContract {
     const { domain, period, resolver } = params;
 
     const domainName = assertValidDomain(domain);
-
-    let resolverInput: Enum<Identity>;
-    const type = await this.provider.getAddressType(resolver);
-    if (type === 'Contract') {
-      resolverInput = { ContractId: { bits: resolver } };
-    } else if (type === 'Account') {
-      resolverInput = { Address: { bits: resolver } };
-    } else {
-      throw new Error('Invalid resolver type');
-    }
-
+    const resolverInput = await this.getIdentity(resolver);
     const amount = await checkAccountBalance(this.account, domainName, period);
     const registerCall = await this.contract.functions
-      .register(domain, resolverInput, period)
+      .register(domainName, resolverInput, period)
       .callParams({
         forward: { amount, assetId: this.provider.getBaseAssetId() },
       })
@@ -86,5 +77,42 @@ export class RegistryContract {
         sha256(toUtf8Bytes(domainName))
       ),
     };
+  }
+
+  async simulate(params: SimulatePayload) {
+    const { domain, period } = params;
+
+    const domainName = assertValidDomain(domain);
+    const amount = domainPrices(domain, period);
+    const resolverInput = await this.getIdentity(this.account.address.toB256());
+
+    const transactionRequest = await this.contract.functions
+      .register(domainName, resolverInput, period)
+      .callParams({
+        forward: { amount, assetId: this.provider.getBaseAssetId() },
+      })
+      .getTransactionRequest();
+
+    const { gasUsed, minFee } =
+      await this.account.getTransactionCost(transactionRequest);
+
+    return {
+      fee: gasUsed.add(minFee),
+      price: amount,
+      transactionRequest,
+    };
+  }
+
+  private async getIdentity(resolver: string) {
+    let resolverInput: Enum<Identity>;
+    const type = await this.provider.getAddressType(resolver);
+    if (type === 'Contract') {
+      resolverInput = { ContractId: { bits: resolver } };
+    } else if (type === 'Account') {
+      resolverInput = { Address: { bits: resolver } };
+    } else {
+      throw new Error('Invalid resolver type');
+    }
+    return resolverInput;
   }
 }

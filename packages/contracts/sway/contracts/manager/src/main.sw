@@ -52,7 +52,10 @@ impl Manager for Contract {
         storage.records_data.insert(name_hash, data);
         storage.records_name.insert(name_hash, StorageString {});
         storage.records_name.get(name_hash).write_slice(name);
-        storage.records_resolver.insert(data.resolver, name_hash);
+
+        if (storage.records_resolver.get(data.resolver).try_read().is_none()) {
+            storage.records_resolver.insert(data.resolver, name_hash);
+        }
     }
 
     #[storage(read, write)]

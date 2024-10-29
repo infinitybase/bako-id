@@ -1,108 +1,156 @@
-import { Address, Provider, type WalletUnlocked } from 'fuels';
-import { register, resolver } from '../index';
-import { createFakeWallet } from '../test';
+import {
+  ManagerFactory,
+  RegistryFactory,
+  ResolverFactory,
+} from '@bako-id/contracts';
+import { type Account, ZeroBytes32, getRandomB256 } from 'fuels';
+import { launchTestNode } from 'fuels/test-utils';
 import { randomName } from '../utils';
-import { owner, resolverName } from './resolver';
-
-const { PROVIDER_URL } = process.env;
+import { RegistryContract } from './registry';
+import { ResolverContract } from './resolver';
 
 describe('Test resolver', () => {
-  let wallet: WalletUnlocked;
-  let provider: Provider;
-
-  const domain = 'bako_id_not_found';
+  let node: Awaited<ReturnType<typeof launchTestNode>>;
 
   beforeAll(async () => {
-    provider = await Provider.create(PROVIDER_URL!);
-    wallet = await createFakeWallet(provider, '1.1');
-  });
-
-  it('should get undefined value with not found registered', async () => {
-    const result = await resolver(domain, {
-      provider,
+    node = await launchTestNode({
+      contractsConfigs: [
+        { factory: ResolverFactory },
+        { factory: RegistryFactory },
+        { factory: ManagerFactory },
+      ],
     });
 
-    expect(result).toBeUndefined();
+    const { contracts } = node;
+    const [resolver, registry, manager] = contracts;
+
+    const managerCall = await manager.functions
+      .constructor({ ContractId: { bits: registry.id.toB256() } })
+      .call();
+    await managerCall.waitForResult();
+
+    const registerCall = await registry.functions
+      .constructor({ bits: manager.id.toB256() })
+      .call();
+    await registerCall.waitForResult();
+
+    const resolverCall = await resolver.functions
+      .constructor({ bits: manager.id.toB256() })
+      .call();
+    await resolverCall.waitForResult();
   });
 
-  it('should get undefined value with not found registered', async () => {
-    const result = await resolver(domain, {
-      account: wallet,
-    });
-
-    expect(result).toBeUndefined();
+  afterAll(() => {
+    node.cleanup();
   });
 
-  it('should get undefined value with not found registered', async () => {
-    const result = await resolver(domain, {
-      providerURL: PROVIDER_URL,
-    });
-
-    expect(result).toBeUndefined();
-  });
-
-  it('should get resolver, owner and name', async () => {
-    const name = randomName();
-    const resolverAddress = Address.fromRandom().toB256();
-
-    await register({
-      domain: name,
-      account: wallet,
+  const register = async (options: {
+    contractId?: string;
+    accountResolver?: string;
+    account?: Account;
+    domain: string;
+  }) => {
+    const { account, contractId, domain, accountResolver } = options;
+    const {
+      contracts: [, registry],
+      wallets: [wallet],
+    } = node;
+    const owner = account ?? wallet;
+    const resolverAddress =
+      accountResolver ?? contractId ?? owner.address.toB256();
+    const contract = new RegistryContract(registry.id.toB256(), owner);
+    await contract.register({
+      domain,
+      period: 1,
       resolver: resolverAddress,
     });
+    return {
+      resolverAddress,
+      ownerAddress: owner.address.toB256(),
+    };
+  };
 
-    const resolverAddressResult = await resolver(name, {
-      providerURL: PROVIDER_URL,
-    });
-    expect(resolverAddressResult).toBe(resolverAddress);
+  it('should resolve a domain correctly', async () => {
+    const {
+      contracts: [resolverAbi],
+      wallets: [wallet],
+    } = node;
+    const contract = new ResolverContract(resolverAbi.id.toB256(), wallet);
 
-    const ownerAddressResult = await owner(name, {
-      providerURL: PROVIDER_URL,
-    });
-    expect(ownerAddressResult).toBe(wallet.address.toB256());
+    const domain = randomName();
+    const { resolverAddress, ownerAddress } = await register({ domain });
 
-    const resolverNameResult = await resolverName(resolverAddress, {
-      providerURL: PROVIDER_URL,
-    });
-    expect(resolverNameResult).toBe(name);
+    const resolver = await contract.addr(domain);
+    expect(resolver?.Address?.bits).toBe(resolverAddress);
+
+    const owner = await contract.owner(domain);
+    expect(owner?.Address?.bits).toBe(ownerAddress);
+
+    const name = await contract.name(resolverAddress);
+    expect(name).toBe(domain);
   });
 
-  it('should get name of resolver address', async () => {
-    const name = randomName();
-    const resolver = Address.fromRandom().toB256();
+  it('should not resolve a domain when not registered', async () => {
+    const {
+      contracts: [resolverAbi],
+      wallets: [wallet],
+    } = node;
+    const contract = new ResolverContract(resolverAbi.id.toB256(), wallet);
 
-    await register({
-      domain: name,
-      account: wallet,
-      resolver,
+    const address = await contract.addr('not-registered');
+    expect(address).toBeUndefined();
+
+    const owner = await contract.owner('not-registered');
+    expect(owner).toBeUndefined();
+
+    const name = await contract.name(ZeroBytes32);
+    expect(name).toBeUndefined();
+  });
+
+  it('should resolve a domain registered to a contract', async () => {
+    const {
+      contracts: [resolverAbi],
+      wallets: [wallet],
+    } = node;
+
+    const contractId = resolverAbi.id.toB256();
+    const contract = new ResolverContract(contractId, wallet);
+
+    const domain = 'bako_resolver';
+    const { resolverAddress, ownerAddress } = await register({
+      domain,
+      contractId,
     });
 
-    await expect(
-      resolverName(resolver, {
-        provider,
-      })
-    ).resolves.toBe(name);
+    const resolver = await contract.addr(domain);
+    expect(resolver?.ContractId?.bits).toBe(resolverAddress);
 
-    await expect(
-      resolverName(resolver, {
-        providerURL: provider.url,
-      })
-    ).resolves.toBe(name);
+    const owner = await contract.owner(domain);
+    expect(owner?.Address?.bits).toBe(ownerAddress);
 
-    await expect(
-      resolverName(resolver, {
-        account: wallet,
-      })
-    ).resolves.toBe(name);
+    const name = await contract.name(resolverAddress);
+    expect(name).toBe(domain);
+  });
 
-    // await expect(resolverName(resolver)).resolves.toBe(name);
-  }, 10000);
+  it('should should resolve the first domain registered', async () => {
+    const {
+      contracts: [resolverAbi],
+      wallets: [wallet],
+    } = node;
 
-  it('should return null on search by resolver without a domain', async () => {
-    const resolver = Address.fromRandom().toB256();
+    const constractId = resolverAbi.id.toB256();
+    const contract = new ResolverContract(constractId, wallet);
 
-    const result = await resolverName(resolver);
+    const [firstDomain, secondDomain] = ['first', 'second'];
 
-    expect(result).toBeNull();
+    const accountResolver = getRandomB256();
+    const { resolverAddress } = await register({
+      domain: firstDomain,
+      accountResolver,
+    });
+    await register({ domain: secondDomain, accountResolver });
+
+    const name = await contract.name(resolverAddress);
+    expect(name).toBe(firstDomain);
   });
 });

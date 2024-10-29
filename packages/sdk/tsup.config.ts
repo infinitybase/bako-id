@@ -1,19 +1,7 @@
-import dotenv from 'dotenv';
-import { defineConfig } from 'tsup';
+import { extendConfig } from '@shared/tsup';
 
-dotenv.config();
-
-export default defineConfig({
-  sourcemap: true,
-  shims: true,
-  treeshake: true,
-  env: {
-    STORAGE_ID: process.env.STORAGE_ID!,
-    PROVIDER_URL: process.env.PROVIDER_URL!,
-  },
-  format: ['cjs', 'esm'],
-  minify: true,
-  entry: ['./src/index.ts'],
+export default extendConfig({
   dts: true,
-  replaceNodeEnv: true,
+  entry: ['src/index.ts'],
+  external: ['@bako-id/contracts'],
 });

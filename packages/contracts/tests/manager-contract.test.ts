@@ -1,4 +1,4 @@
-import { bn } from 'fuels';
+import { bn, getRandomB256 } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
 import {
   Manager,
@@ -154,7 +154,7 @@ describe('[METHODS] Resolver Contract', () => {
 
     const recordInput = {
       owner: { Address: { bits: owner.address.toB256() } },
-      resolver: { Address: { bits: owner.address.toB256() } },
+      resolver: { Address: { bits: getRandomB256() } },
       period: bn(1),
       timestamp: bn(1),
     };
@@ -176,7 +176,9 @@ describe('[METHODS] Resolver Contract', () => {
 
     expect(name).toBe(domain);
     expect(ownerAddress?.Address?.bits).toBe(owner.address.toB256());
-    expect(resolverAddress?.Address?.bits).toBe(owner.address.toB256());
+    expect(resolverAddress?.Address?.bits).toBe(
+      recordInput.resolver.Address.bits
+    );
     expect(ttl).toBeDefined();
   });
 });
