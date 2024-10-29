@@ -9,3 +9,4 @@ lib = { path = "../../lib" }
 
 [proxy]
 enabled = true
+address = "0x324a2d168efd2e999156812c8edf51df68c110dd5afa4bd5fd83219f2382e3d2"

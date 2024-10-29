@@ -73,7 +73,6 @@ describe('[PRICES] Registry Contract', () => {
 
       expect(transactionResult.status).toBe(TransactionStatus.failure);
     } catch (e) {
-      console.log(e);
       expectRequireRevertError(e);
       expectContainLogError(e, 'InvalidAmount');
     }

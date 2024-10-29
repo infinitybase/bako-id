@@ -1,5 +1,11 @@
 import type { FuelError } from '@fuel-ts/errors';
-import type { Account, Provider } from 'fuels';
+import {
+  type Account,
+  type Provider,
+  getMintedAssetId,
+  sha256,
+  toUtf8Bytes,
+} from 'fuels';
 import { config } from '../config';
 import { getRegistryContract } from '../setup';
 import {
@@ -89,27 +95,26 @@ export async function register(params: RegisterDomainParams) {
   // const amount = await domainPrices(domain, period);
 
   const registerFn = await registry.functions
-    .register(domainName, resolver, period ?? 1)
+    .register(domainName, { Address: { bits: resolver } }, period ?? 1)
     .callParams({
       forward: { amount, assetId: registry.provider.getBaseAssetId() },
     })
     .txParams(txParams)
     .call();
 
-  const {
-    transactionResult,
-    transactionResponse,
-    gasUsed,
-    transactionId,
-    value,
-  } = await registerFn.waitForResult();
+  const { transactionResult, transactionResponse, gasUsed, transactionId } =
+    await registerFn.waitForResult();
 
   return {
     gasUsed,
     transactionId,
     transactionResult,
     transactionResponse,
-    assetId: value.bits,
+    // assetId: value.bits,
+    assetId: getMintedAssetId(
+      registry.id.toB256(),
+      sha256(toUtf8Bytes(domain))
+    ),
   };
 }
 
@@ -142,7 +147,13 @@ export async function simulateHandleCost(params: SimulateHandleCostParams) {
   const fakeAccount = getFakeAccount(provider);
 
   const transactionRequest = await registry.functions
-    .register(domainName, fakeAccount.address.toB256(), period ?? 1)
+    .register(
+      domainName,
+      {
+        Address: { bits: fakeAccount.address.toB256() },
+      },
+      period ?? 1
+    )
     .callParams({
       forward: { amount, assetId: provider.getBaseAssetId() },
     })
@@ -188,6 +199,7 @@ export async function editResolver(params: EditResolverParams) {
 
   try {
     const editFn = await registry.functions
+      // @ts-ignore
       .edit_resolver(domain, resolver)
       .txParams(txParams)
       .call();
@@ -226,6 +238,7 @@ export const setPrimaryHandle = async (params: SetPrimaryHandleParams) => {
 
   try {
     const setPrimaryFn = await registry.functions
+      // @ts-ignore
       .set_primary_handle(domain)
       .txParams(txParams)
       .call();
