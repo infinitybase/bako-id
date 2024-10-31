@@ -9,7 +9,7 @@ export const useHome = () => {
   const navigate = useNavigate();
   const { isConnected } = useIsConnected();
   const [domain, setDomain] = useState('');
-  const { resolveDomain } = useDomain(domain);
+  const { resolveDomain } = useDomain();
   const [available, setAvailable] = useState<boolean | null>(null);
   const [domainIsAvailable, setDomainIsAvailable] = useState<boolean | null>(
     null
