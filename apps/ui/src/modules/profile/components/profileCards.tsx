@@ -1,4 +1,3 @@
-import { UserMetadataContract } from '@bako-id/sdk';
 import { Flex, Stack } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
 import { useQuery } from '@tanstack/react-query';
@@ -62,16 +61,17 @@ export const ProfileCards = ({
       queryFn: async () => {
         if (!wallet) return;
 
-        const userMetadata = UserMetadataContract.initialize(
-          wallet,
-          domainName,
-        );
+        // const userMetadata = UserMetadataContract.initialize(
+        //   wallet,
+        //   domainName,
+        // );
 
-        return userMetadata.getAll();
+        // return userMetadata.getAll();
+
+        return [];
       },
       enabled: !!wallet && !!domainName,
     });
-
 
     return (
       <Suspense>

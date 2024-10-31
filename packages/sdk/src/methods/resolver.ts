@@ -1,4 +1,4 @@
-import { Resolver } from '@bako-id/contracts';
+import { Resolver, getContractId } from '@bako-id/contracts';
 import type { Account, Provider } from 'fuels';
 import { type Enum, type Identity, assertValidDomain } from '../utils';
 
@@ -9,6 +9,17 @@ export class ResolverContract {
   constructor(id: string, accountOrProvider: Account | Provider) {
     this.contract = new Resolver(id, accountOrProvider);
     this.provider = this.contract.provider;
+  }
+
+  static create(account: Account | Provider) {
+    let provider: Provider;
+    if ('provider' in account) {
+      provider = account.provider;
+    } else {
+      provider = account;
+    }
+    const contractId = getContractId(provider.url, 'resolver');
+    return new ResolverContract(contractId, account);
   }
 
   async addr(domain: string) {

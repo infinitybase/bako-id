@@ -1,17 +1,16 @@
 import { Box, Button, Icon, Text } from '@chakra-ui/react';
-import { DrawerConnector } from '..';
-import { useFuelConnect } from '../../hooks';
+import { useConnectUI } from '@fuels/react';
 import { useScreenSize } from '../../hooks/useScreenSize';
 import { WalletIcon } from '../icons/wallet';
 
 export const Connect = () => {
-  const { connectors, isConnectError } = useFuelConnect();
   const { isMobile } = useScreenSize();
+  const { connect, isConnecting, isError: isConnectError } = useConnectUI();
 
   return (
     <>
       <Button
-        onClick={connectors.drawer.onOpen}
+        onClick={connect}
         alignItems="center"
         w="full"
         display="flex"
@@ -22,7 +21,7 @@ export const Connect = () => {
         _hover={{ bgColor: 'button.600' }}
         className="transition-all-05"
       >
-        {!connectors.isConnecting && !isConnectError ? (
+        {!isConnecting && !isConnectError ? (
           <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
             {!isMobile && (
               <Icon
@@ -48,12 +47,12 @@ export const Connect = () => {
           <Text>Connecting...</Text>
         )}
       </Button>
-      <DrawerConnector
-        isOpen={connectors.drawer.isOpen}
-        onClose={connectors.drawer.onClose}
-        onSelect={connectors.select}
-        connectors={connectors.item}
-      />
+      {/*<DrawerConnector*/}
+      {/*  isOpen={connectors.drawer.isOpen}*/}
+      {/*  onClose={connectors.drawer.onClose}*/}
+      {/*  onSelect={connectors.select}*/}
+      {/*  connectors={connectors.item}*/}
+      {/*/>*/}
     </>
   );
 };

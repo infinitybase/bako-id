@@ -1,4 +1,4 @@
-import { Registry } from '@bako-id/contracts';
+import { Registry, getContractId } from '@bako-id/contracts';
 import {
   type Account,
   type Provider,
@@ -51,6 +51,11 @@ export class RegistryContract {
     this.provider = account.provider;
   }
 
+  static create(account: Account) {
+    const contractId = getContractId(account.provider.url, 'registry');
+    return new RegistryContract(contractId, account);
+  }
+
   async register(params: RegisterPayload) {
     const { domain, period, resolver } = params;
 
@@ -100,6 +105,23 @@ export class RegistryContract {
       fee: gasUsed.add(minFee),
       price: amount,
       transactionRequest,
+    };
+  }
+
+  async token(domain: string) {
+    const domainName = assertValidDomain(domain);
+    const subId = sha256(toUtf8Bytes(domainName));
+    const assetId = getMintedAssetId(this.contract.id.toB256(), subId);
+
+    const { value: image } = await this.contract.functions
+      .metadata({ bits: assetId }, 'image:png')
+      .get();
+
+    return {
+      subId,
+      assetId,
+      image: image?.String,
+      contractId: this.contract.id.toB256(),
     };
   }
 

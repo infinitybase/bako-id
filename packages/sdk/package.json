@@ -17,9 +17,7 @@
   },
   "files": ["dist"],
   "scripts": {
-    "build": "pnpm build:package",
-    "build:contracts": "fuels build && fuels deploy",
-    "build:package": "tsup",
+    "build": "tsup",
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
     "test:watch": "jest --verbose --runInBand --watch"
   },
