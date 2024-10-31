@@ -1,12 +1,11 @@
-import type { Metadata } from '@bako-id/sdk';
 import {
   Box,
   Icon,
   InputGroup,
   InputLeftAddon,
+  type InputProps,
   InputRightAddon,
   Text,
-  type InputProps,
 } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
 import {
@@ -21,13 +20,12 @@ import {
 import { AddIcon } from '../icons/addIcon';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
 
-//@ts-expect-error error
 interface CustomInputProps extends InputProps {
   value?: string;
   isVerified?: boolean;
   rightAddon: boolean;
   rightAddonName: string | ReactNode;
-  variant: Metadata;
+  variant: { key: string; value: string };
 }
 
 const VerifiedAccountInput = (props: CustomInputProps) => {

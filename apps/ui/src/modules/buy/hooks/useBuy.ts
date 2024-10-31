@@ -44,7 +44,7 @@ export const useBuy = () => {
   const handleConfirmDomain = async () => {
     const isValid = isValidDomain(domain);
     if (!isValid) return;
-    const info = await resolveDomain.mutateAsync();
+    const info = await resolveDomain.mutateAsync(domain);
     return info;
   };
 

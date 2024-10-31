@@ -1,4 +1,3 @@
-import type { Metadata } from '@bako-id/sdk';
 import { Box, Divider, Text, VStack } from '@chakra-ui/react';
 import { TextValue } from '..';
 import { Dialog } from '../dialog';
@@ -17,7 +16,7 @@ interface ITranscationDetailsModal {
   onClose: () => void;
   onConfirm: () => void;
   domain: string;
-  updates: Metadata[];
+  updates: { key: string; value: string }[];
 }
 
 export const TransactionDomainDetailsModal = ({

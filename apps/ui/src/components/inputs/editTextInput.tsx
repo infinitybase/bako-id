@@ -1,4 +1,3 @@
-import type { Metadata } from '@bako-id/sdk';
 import {
   Box,
   Flex,
@@ -8,9 +7,9 @@ import {
   FormLabel,
   Input,
   InputGroup,
+  type InputProps,
   InputRightElement,
   Text,
-  type InputProps,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -21,7 +20,7 @@ import { TrashIcon } from '../icons/trashIcon';
 interface IEditTextValueInput extends InputProps {
   title: string;
   modalType: string;
-  onMetadataChange: (metadata: Metadata) => void;
+  onMetadataChange: (metadata: { key: string; value: string }) => void;
   onClose: () => void;
 }
 
