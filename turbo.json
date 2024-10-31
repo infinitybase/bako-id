@@ -1,8 +1,9 @@
 {
   "$schema": "https://turborepo.org/schema.json",
   "tasks": {
+    "prebuild": {},
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["prebuild", "^build"],
       "outputs": ["dist/**"],
       "outputLogs": "new-only"
     },
