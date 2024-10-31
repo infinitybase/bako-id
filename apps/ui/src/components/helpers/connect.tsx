@@ -5,7 +5,19 @@ import { WalletIcon } from '../icons/wallet';
 
 export const Connect = () => {
   const { isMobile } = useScreenSize();
-  const { connect, isConnecting, isError: isConnectError } = useConnectUI();
+  const { connect, isConnected, isConnecting } = useConnectUI();
+
+  // if (isConnecting) {
+  //   return (
+  //     <Skeleton height="2.5rem" w="7rem" rounded={8}>
+  //       <Text>Connecting...</Text>
+  //     </Skeleton>
+  //   );
+  // }
+
+  if (isConnected) {
+    return null;
+  }
 
   return (
     <>
@@ -13,6 +25,7 @@ export const Connect = () => {
         onClick={connect}
         alignItems="center"
         w="full"
+        disabled={isConnecting}
         display="flex"
         gap={2}
         bgColor={{ base: 'transparent', md: 'button.500' }}
@@ -21,7 +34,8 @@ export const Connect = () => {
         _hover={{ bgColor: 'button.600' }}
         className="transition-all-05"
       >
-        {!isConnecting && !isConnectError ? (
+        {isConnecting && <Text>Connecting...</Text>}
+        {!isConnecting && !isConnected && (
           <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
             {!isMobile && (
               <Icon
@@ -43,8 +57,6 @@ export const Connect = () => {
               />
             )}
           </Box>
-        ) : (
-          <Text>Connecting...</Text>
         )}
       </Button>
       {/*<DrawerConnector*/}

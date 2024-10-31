@@ -1,10 +1,9 @@
 import { RegistryContract } from '@bako-id/sdk';
-import { useAccount, useWallet } from '@fuels/react';
+import { useWallet } from '@fuels/react';
 import { useMemo } from 'react';
 
 export const useRegistryContract = () => {
-  const { account } = useAccount();
-  const { wallet } = useWallet({ account });
+  const { wallet } = useWallet();
 
   const contract = useMemo(() => {
     console.log('wallet', wallet);

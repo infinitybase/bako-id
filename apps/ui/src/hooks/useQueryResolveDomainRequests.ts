@@ -4,7 +4,7 @@ import { useResolverContract } from './sdk';
 const useQueryResolveDomainRequests = (domain: string) => {
   const resolverContract = useResolverContract();
   return useQuery({
-    queryKey: ['resolveDomain'],
+    queryKey: ['resolveDomain', domain],
     queryFn: async () => resolverContract?.addr(domain),
     enabled: !!domain && !!resolverContract,
   });
