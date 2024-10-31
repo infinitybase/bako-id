@@ -1,15 +1,13 @@
+import dotenv from 'dotenv';
 import { createConfig } from 'fuels';
 
+dotenv.config();
+
 export default createConfig({
-  contracts: [
-    './sway/src/registry-contract',
-    './sway/src/metadata-contract',
-    './sway/src/storage-contract',
-    './sway/src/resolver-contract',
-    './sway/src/attestation-contract',
-    './tests/fixtures/test-contract',
-  ],
+  workspace: './sway',
   forcBuildFlags: ['--release'],
   autoStartFuelCore: false,
-  output: './src/sway',
+  output: './src/artifacts',
+  privateKey: process.env.PRIVATE_KEY,
+  providerUrl: process.env.PROVIDER_URL,
 });

@@ -10,41 +10,38 @@
   },
   "exports": {
     ".": {
-      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     }
   },
   "files": ["dist"],
   "scripts": {
-    "pretest": "fuels build",
-    "build": "pnpm build:package",
-    "build:contracts": "fuels build && fuels deploy",
-    "build:package": "tsup",
-    "test": "jest --verbose --runInBand",
-    "test:watch": "jest --verbose --runInBand --watch",
-    "start:contracts": "ts-node scripts/initialize-contracts.ts",
-    "update:storage": "ts-node scripts/update-registry.ts"
+    "build": "tsup",
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
+    "test:watch": "jest --verbose --runInBand --watch"
   },
   "keywords": [],
   "author": "",
   "license": "Apache-2.0",
   "peerDependencies": {
-    "fuels": "^0.94.5"
+    "fuels": "0.96.1"
   },
   "devDependencies": {
     "@fuels/ts-config": "^0.15.1",
     "@types/jest": "^29.5.11",
     "@types/node": "^20.11.17",
     "dotenv": "^16.4.1",
-    "fuels": "0.94.5",
+    "fuels": "0.96.1",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
-    "tsup": "^8.0.1"
+    "tsup": "^8.0.1",
+    "@shared/tsup": "workspace:*"
   },
   "dependencies": {
     "@fuel-ts/errors": "^0.90.0",
     "jest": "^29.6.4",
-    "tai64": "^1.0.0"
+    "tai64": "^1.0.0",
+    "@bako-id/contracts": "workspace:*"
   }
 }

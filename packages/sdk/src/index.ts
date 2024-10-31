@@ -1,17 +1,8 @@
+export { contractsId, getContractId } from '@bako-id/contracts';
 export {
-  Metadata,
-  UserMetadataContract,
-  attest,
-  editResolver,
-  getAll,
-  getGracePeriod,
-  owner,
-  register,
-  resolver,
-  resolverName,
-  setPrimaryHandle,
-  simulateHandleCost,
-  tokenInfo,
-  verify,
+  ResolverContract,
+  RegistryContract,
+  RegisterPayload,
+  SimulatePayload,
 } from './methods';
 export { domainPrices, isValidDomain } from './utils';

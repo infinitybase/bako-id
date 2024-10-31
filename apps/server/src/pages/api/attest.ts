@@ -1,4 +1,4 @@
-import { attest } from '@bako-id/sdk';
+// import { attest } from '@bako-id/sdk';
 import { Provider, Wallet } from 'fuels';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -8,7 +8,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { method, body } = req;
+  // const { method, body } = req;
+  const { method } = req;
 
   if (method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
@@ -16,19 +17,20 @@ export default async function handler(
 
   try {
     const provider = await Provider.create(PROVIDER_URL!);
-    const attester = Wallet.fromPrivateKey(API_PRIVATE_KEY!, provider);
+    const _attester = Wallet.fromPrivateKey(API_PRIVATE_KEY!, provider);
 
-    const attestationHash = await attest({
-      attester,
-      data: {
-        id: body.id,
-        app: body.app,
-        handle: body.handle,
-      },
-    });
+    // const attestationHash = await attest({
+    //   attester,
+    //   data: {
+    //     id: body.id,
+    //     app: body.app,
+    //     handle: body.handle,
+    //   },
+    // });
 
     return res.json({
-      data: attestationHash,
+      // data: attestationHash,
+      data: '',
     });
   } catch (error) {
     return res.json({

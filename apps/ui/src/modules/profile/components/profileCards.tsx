@@ -1,13 +1,8 @@
-import { UserMetadataContract } from '@bako-id/sdk';
 import { Flex, Stack } from '@chakra-ui/react';
-import { useWallet } from '@fuels/react';
-import { useQuery } from '@tanstack/react-query';
-import { useParams } from '@tanstack/react-router';
 import { Suspense } from 'react';
-import { AccountsCard } from '../../../components/card/accountsCard';
-import { AddressesCard } from '../../../components/card/addressesCard';
-import { OwnershipCard } from '../../../components/card/ownershipCard';
-import { ProfileCard } from '../../../components/card/profileCard';
+import { AddressesCard } from '../../../components/card/addressesCard.tsx';
+import { OwnershipCard } from '../../../components/card/ownershipCard.tsx';
+import { ProfileCard } from '../../../components/card/profileCard.tsx';
 import { ProfileCardSkeleton } from '../../../components/skeletons';
 import { AccountsCardSkeleton } from '../../../components/skeletons/accountsCardSkeleton';
 import { AddressCardSkeleton } from '../../../components/skeletons/addressCardSkeleton';
@@ -54,24 +49,25 @@ export const ProfileCards = ({
   );
 
   const LoadedData = () => {
-    const { domain: domainName } = useParams({ strict: false });
-    const { wallet } = useWallet();
-
-    const { data: metadata } = useQuery({
-      queryKey: ['getAllMetadatas'],
-      queryFn: async () => {
-        if (!wallet) return;
-
-        const userMetadata = UserMetadataContract.initialize(
-          wallet,
-          domainName,
-        );
-
-        return userMetadata.getAll();
-      },
-      enabled: !!wallet && !!domainName,
-    });
-
+    // const { domain: domainName } = useParams({ strict: false });
+    // const { wallet } = useWallet();
+    //
+    // const { data: metadata } = useQuery({
+    //   queryKey: ['getAllMetadatas'],
+    //   queryFn: async () => {
+    //     if (!wallet) return;
+    //
+    //     // const userMetadata = UserMetadataContract.initialize(
+    //     //   wallet,
+    //     //   domainName,
+    //     // );
+    //
+    //     // return userMetadata.getAll();
+    //
+    //     return [];
+    //   },
+    //   enabled: !!wallet && !!domainName,
+    // });
 
     return (
       <Suspense>
@@ -86,7 +82,8 @@ export const ProfileCards = ({
             <ProfileCard
               domainName={domainParam}
               domain={domain ?? ''}
-              metadata={metadata}
+              owner={owner ?? ''}
+              metadata={[]}
             />
 
             <Stack
@@ -100,7 +97,7 @@ export const ProfileCards = ({
               <AddressesCard domain={domain ?? ''} />
             </Stack>
           </Flex>
-          <AccountsCard metadata={metadata} />
+          {/*<AccountsCard metadata={[]} />*/}
         </Stack>
       </Suspense>
     );

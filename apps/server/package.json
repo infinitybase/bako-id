@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@bako-id/sdk": "workspace:*",
-    "fuels": "0.94.5",
+    "fuels": "0.96.1",
     "jest": "^29.6.4",
     "next": "14.2.5"
   },

@@ -1,80 +1,50 @@
-import { Address, type Provider } from 'fuels';
-import { config } from '../config';
-import { ResolverContract } from '../types';
-import type { Option } from '../types/sway/contracts/common';
-import {
-  type ProviderParams,
-  assertValidDomain,
-  getProviderFromParams,
-} from '../utils';
+import { Resolver, getContractId } from '@bako-id/contracts';
+import type { Account, Provider } from 'fuels';
+import { type Enum, type Identity, assertValidDomain } from '../utils';
 
-const getContract = (account: Provider) =>
-  new ResolverContract(config.RESOLVER_CONTRACT_ID, account);
+export class ResolverContract {
+  private contract: Resolver;
+  private provider: Provider;
 
-/**
- * Resolves the domain using the specified domain and parameters.
- *
- * @param {string} domain - The domain to be resolved.
- * @param {ResolveDomainParams} params - The parameters for resolving the domain.
- * @returns {Option<String>} The resolved domain information or null if it is not found.
- */
-export async function resolver(
-  domain: string,
-  params?: ProviderParams
-): Promise<Option<string>> {
-  const domainName = assertValidDomain(domain);
-  const provider = await getProviderFromParams(params);
-  const resolverContractAbi = getContract(provider);
+  constructor(id: string, accountOrProvider: Account | Provider) {
+    this.contract = new Resolver(id, accountOrProvider);
+    this.provider = this.contract.provider;
+  }
 
-  const { value } = await resolverContractAbi.functions
-    .resolver(domainName)
-    .get();
+  static create(account: Account | Provider) {
+    let provider: Provider;
+    if ('provider' in account) {
+      provider = account.provider;
+    } else {
+      provider = account;
+    }
+    const contractId = getContractId(provider.url, 'resolver');
+    return new ResolverContract(contractId, account);
+  }
 
-  return value;
-}
+  async addr(domain: string) {
+    const domainName = assertValidDomain(domain);
+    const { value } = await this.contract.functions.addr(domainName).get();
+    return value;
+  }
 
-/**
- * Get owner of domain using the specified domain and parameters.
- *
- * @param {string} domain - The domain to be resolved.
- * @param {ResolveDomainParams} params - The parameters for resolving the domain.
- * @returns {Option<String>} The resolved domain information or null if it is not found.
- */
-export async function owner(
-  domain: string,
-  params?: ProviderParams
-): Promise<Option<string>> {
-  const domainName = assertValidDomain(domain);
-  const provider = await getProviderFromParams(params);
-  const resolverContractAbi = getContract(provider);
+  async owner(domain: string) {
+    const domainName = assertValidDomain(domain);
+    const { value } = await this.contract.functions.owner(domainName).get();
+    return value;
+  }
 
-  const { value } = await resolverContractAbi.functions.owner(domainName).get();
-
-  return value;
-}
-
-/**
- * Resolves the reverse name associated with a given resolver address.
- *
- * @param {string | Address} resolver - The resolver address to resolve.
- * @param {ResolverProviderParams} [params] - The parameters for the reverse resolver.
- * @returns {Promise<string | null>} - The resolved reverse name, or null if not found.
- */
-export async function resolverName(
-  resolver: Address | string,
-  params?: ProviderParams
-): Promise<string | null> {
-  const resolverAddress =
-    typeof resolver === 'string'
-      ? Address.fromAddressOrString(resolver)
-      : resolver;
-
-  const provider = await getProviderFromParams(params);
-  const resolverContractAbi = getContract(provider);
-
-  const { value } = await resolverContractAbi.functions
-    .name(resolverAddress.toB256())
-    .get();
-
-  return value || null;
+  async name(addr: string) {
+    let resolverInput: Enum<Identity>;
+    const type = await this.provider.getAddressType(addr);
+    if (type === 'Contract') {
+      resolverInput = { ContractId: { bits: addr } };
+    } else if (type === 'Account') {
+      resolverInput = { Address: { bits: addr } };
+    } else {
+      throw new Error('Invalid resolver type');
+    }
+    const { value } = await this.contract.functions.name(resolverInput).get();
+    return value;
+  }
 }
