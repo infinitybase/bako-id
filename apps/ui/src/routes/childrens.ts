@@ -1,12 +1,12 @@
 import { createRoute } from '@tanstack/react-router';
 import { NotConnected } from '../components';
+import { rootRoute } from '../hooks/__root.ts';
 import { Buy } from '../modules/buy/page.tsx';
 import { LearnMore } from '../modules/home/components/learn-more/page.tsx';
 import { Home } from '../modules/home/page.tsx';
 import { MyHandles } from '../modules/myHandles/page.tsx';
 import { More } from '../modules/profile/components/more/page.tsx';
 import { Profile } from '../modules/profile/page.tsx';
-import { rootRoute } from './__root.ts';
 
 export const homeRoute = createRoute({
   getParentRoute: () => rootRoute,

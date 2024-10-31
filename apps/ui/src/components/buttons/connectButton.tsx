@@ -1,16 +1,15 @@
 import { Box, Button, Icon, Text } from '@chakra-ui/react';
-import { useConnectUI } from '@fuels/react';
+import { DrawerConnector } from '..';
+import { useFuelConnect } from '../../hooks';
 import { WalletIcon } from '../icons/wallet';
 
 export const ConnectButton = () => {
-  const { connect, isConnected, isConnecting } = useConnectUI();
-
-  if (isConnected) return null;
+  const { connectors } = useFuelConnect();
 
   return (
     <>
       <Button
-        onClick={connect}
+        onClick={connectors.drawer.onOpen}
         alignItems="center"
         w="full"
         display="flex"
@@ -20,7 +19,7 @@ export const ConnectButton = () => {
         _hover={{ bgColor: 'button.600' }}
         className="transition-all-05"
       >
-        {!isConnecting ? (
+        {!connectors.isConnecting ? (
           <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
             <Icon
               as={WalletIcon}
@@ -36,6 +35,12 @@ export const ConnectButton = () => {
           <Text color="background.500">Connecting...</Text>
         )}
       </Button>
+      <DrawerConnector
+        isOpen={connectors.drawer.isOpen}
+        onClose={connectors.drawer.onClose}
+        onSelect={connectors.select}
+        connectors={connectors.item}
+      />
     </>
   );
 };

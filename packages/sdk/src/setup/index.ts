@@ -1,4 +1,3 @@
-import { Registry, contractsId } from '@bako-id/contracts';
 import type { Account, Provider } from 'fuels';
 import {
   AttestationContract,
@@ -7,7 +6,7 @@ import {
   ResolverContract,
   StorageContract,
 } from '../types';
-import { getFakeAccount } from '../utils';
+import { getFakeAccount, getTxParams } from '../utils';
 
 export interface ContractConfig {
   storageId: string;
@@ -44,25 +43,26 @@ const connectContracts = (config: ContractConfig) => {
 };
 
 const getRegistryContract = async (config: ContractConfig) => {
-  // const provider = config.provider || config.account?.provider;
-  if (!config.account) {
+  const provider = config.provider || config.account?.provider;
+  if (!provider) {
     throw new Error('Provider is required to connect getRegistryContract.');
   }
 
-  // const fakeAccount = getFakeAccount(provider);
-  // const storage = new StorageContract(config.storageId, fakeAccount);
-  // const { value: registryId } = await storage.functions
-  //   .get_implementation()
-  //   .txParams(getTxParams(provider))
-  //   .get();
-  //
-  // if (!registryId) {
-  //   throw new Error('Registry Contract not found.');
-  // }
+  const fakeAccount = getFakeAccount(provider);
+  const storage = new StorageContract(config.storageId, fakeAccount);
+  const { value: registryId } = await storage.functions
+    .get_implementation()
+    .txParams(getTxParams(provider))
+    .get();
 
-  const registry = new Registry(contractsId.testnet.registry, config.account);
+  if (!registryId) {
+    throw new Error('Registry Contract not found.');
+  }
+
+  const registry = new RegistryContract(registryId.bits, fakeAccount);
 
   return {
+    storage,
     registry,
   };
 };

@@ -1,4 +1,6 @@
-import { type UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { editResolver } from '@bako-id/sdk';
+
+import { useMutation, type UseMutationOptions } from '@tanstack/react-query';
 import type { EditResolverParams, RegisterDomainResponse } from '../types';
 
 const useEditResolverRequests = (
@@ -6,14 +8,11 @@ const useEditResolverRequests = (
     RegisterDomainResponse,
     unknown,
     EditResolverParams
-  >
+  >,
 ) => {
-  // TODO: Refactor
   return useMutation({
     mutationKey: ['editResolver'],
-    mutationFn: async (_params: EditResolverParams) => {
-      return {} as unknown as RegisterDomainResponse;
-    },
+    mutationFn: editResolver,
     retryDelay: 1000,
     ...options,
   });

@@ -1,4 +1,5 @@
-import { type UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { register } from '@bako-id/sdk';
+import { useMutation, type UseMutationOptions } from '@tanstack/react-query';
 import type { RegisterDomainPayload, RegisterDomainResponse } from '../types';
 
 const useRegisterDomainRequests = (
@@ -6,13 +7,11 @@ const useRegisterDomainRequests = (
     RegisterDomainResponse,
     unknown,
     RegisterDomainPayload
-  >
+  >,
 ) => {
   return useMutation({
     mutationKey: ['registerDomain'],
-    mutationFn: async (_payload: RegisterDomainPayload) => {
-      return null as unknown as RegisterDomainResponse;
-    },
+    mutationFn: register,
     ...options,
   });
 };

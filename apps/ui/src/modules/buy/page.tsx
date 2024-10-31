@@ -6,18 +6,18 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useWallet } from '@fuels/react';
 import { BuyComponents } from '../../components';
 import { BuyOrConnectButton } from '../../components/buttons';
 import { GoBack } from '../../components/helpers';
 import { BuyError } from '../../components/helpers/buyError';
+import { useFuelConnect } from '../../hooks';
 import { useScreenSize } from '../../hooks/useScreenSize';
 import type { Domains } from '../../types';
 import { Purchased } from '../purchased/page';
 import { useBuy } from './hooks/useBuy';
 
 export const Buy = () => {
-  const { wallet } = useWallet();
+  const { wallet } = useFuelConnect();
   const buy = useBuy();
 
   const {
@@ -35,7 +35,7 @@ export const Buy = () => {
 
   const { isMobile } = useScreenSize();
 
-  if (registerDomain.isSuccess && registerDomain.data) {
+  if (registerDomain.isSuccess || registerDomain.data) {
     return (
       <Purchased
         domain={domain}

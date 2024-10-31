@@ -1,13 +1,12 @@
+import type { Metadata } from '@bako-id/sdk';
 import { Dialog } from '../dialog';
 import { EditTextValueInput } from '../inputs/editTextInput';
 
 interface EditProfileFieldsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  updates: { key: string; value: string }[];
-  setUpdates: React.Dispatch<
-    React.SetStateAction<{ key: string; value: string }[]>
-  >;
+  updates: Metadata[];
+  setUpdates: React.Dispatch<React.SetStateAction<Metadata[]>>;
   type: string;
   title: string;
   validated: boolean | null;
@@ -22,7 +21,7 @@ export const EditProfileFieldsModal = ({
   title,
   validated,
 }: EditProfileFieldsModalProps) => {
-  const handleSave = async (metadata: { key: string; value: string }) => {
+  const handleSave = async (metadata: Metadata) => {
     setUpdates((prevUpdates) => {
       const index = prevUpdates.findIndex((m) => m.key === metadata.key);
       if (index !== -1) {

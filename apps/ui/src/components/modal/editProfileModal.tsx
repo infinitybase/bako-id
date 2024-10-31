@@ -1,8 +1,8 @@
-// import {
-//   UserMetadataContract,
-//   setPrimaryHandle,
-//   type Metadata,
-// } from '@bako-id/sdk';
+import {
+  UserMetadataContract,
+  setPrimaryHandle,
+  type Metadata,
+} from '@bako-id/sdk';
 import {
   Button,
   CloseButton,
@@ -34,11 +34,6 @@ import { useCustomToast } from '../toast';
 import { EditProfileFieldsModal } from './editProfileFieldsModal';
 import { EditProfilePicModal } from './editProfilePicModal';
 import { TransactionsDetailsModal } from './transactionDetails';
-
-interface Metadata {
-  key: string;
-  value: string;
-}
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -89,6 +84,7 @@ const TabsTypes = [
 
 const ModalTitle = ({
   onClose,
+  wallet,
 }: Pick<EditProfileModalProps, 'onClose'> & { wallet: Account }) => {
   const modalTitle = useDisclosure();
   const { domain } = useParams({ strict: false });
@@ -99,12 +95,11 @@ const ModalTitle = ({
 
   const setPrimaryHandleMutation = useMutation({
     mutationKey: ['setPrimaryHandle'],
-    mutationFn: async () => {
-      // await setPrimaryHandle({
-      //   account: wallet,
-      //   domain: handle?.name ?? domain,
-      // })
-    },
+    mutationFn: async () =>
+      await setPrimaryHandle({
+        account: wallet,
+        domain: handle?.name ?? domain,
+      }),
     onSuccess: () => {
       successToast({
         title: 'Primary Handle Set',
@@ -438,9 +433,9 @@ export const EditProfileModal = ({
     queryFn: async () => {
       if (!wallet) return;
 
-      // const userMetadata = UserMetadataContract.initialize(wallet, domain);
-      //
-      // return userMetadata.getAll();
+      const userMetadata = UserMetadataContract.initialize(wallet, domain);
+
+      return userMetadata.getAll();
     },
   });
 
@@ -449,9 +444,9 @@ export const EditProfileModal = ({
     mutationFn: async () => {
       if (!wallet) return;
 
-      // const userMetadata = UserMetadataContract.initialize(wallet, domain);
-      //
-      // return userMetadata.batchSaveMetadata(updates);
+      const userMetadata = UserMetadataContract.initialize(wallet, domain);
+
+      return userMetadata.batchSaveMetadata(updates);
     },
     onSuccess: () => {
       successToast({

@@ -1,24 +1,47 @@
 import {
   Box,
+  Button,
   Center,
   Flex,
   Icon,
   Image,
+  Skeleton,
   useMediaQuery,
 } from '@chakra-ui/react';
-import { useAccount, useWallet } from '@fuels/react';
+import { useIsConnected } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
+import { useFuelConnect } from '../../hooks';
 import { formatAddress } from '../../utils/formatter';
 import { Connect } from '../helpers';
+import { FileIcon } from '../icons/fileIcon';
 import { QuestionIcon } from '../icons/question';
 import { Info } from '../user';
 
 export const Header = () => {
+  const { wallet } = useFuelConnect();
+  const { isFetching } = useIsConnected();
   const [isMobile] = useMediaQuery('(max-width: 48em)');
   const navigate = useNavigate();
 
-  const { account: accountAddress } = useAccount();
-  const { wallet } = useWallet({ account: accountAddress });
+  const account = () => {
+    if (isFetching && wallet === undefined) {
+      return <Skeleton height="2.5rem" w="7rem" rounded={8} />;
+    }
+    if (wallet) {
+      return (
+        <Info
+          name={formatAddress(wallet.address.toB256())!}
+          account={wallet.address}
+        />
+      );
+    }
+    if (!isFetching && wallet === null)
+      return (
+        <Box>
+          <Connect />
+        </Box>
+      );
+  };
 
   const goHome = () => {
     navigate({ to: '/' }).then();
@@ -47,33 +70,24 @@ export const Header = () => {
 
       <Flex w="fit-content" align="center" justify="flex-end" gap={2}>
         <Flex w="full" gap={2}>
-          {/*{!isMobile && wallet !== null && (*/}
-          {/*  <Button*/}
-          {/*    w="fit-content"*/}
-          {/*    bgColor="transparent"*/}
-          {/*    _hover={{*/}
-          {/*      bgColor: 'transparent',*/}
-          {/*      color: 'button.500',*/}
-          {/*    }}*/}
-          {/*    color="grey.100"*/}
-          {/*    fontWeight="normal"*/}
-          {/*    fontSize="sm"*/}
-          {/*    rightIcon={<FileIcon w={4} h={4} />}*/}
-          {/*    onClick={() => navigate({ to: '/my-handles' })}*/}
-          {/*  >*/}
-          {/*    My Handles*/}
-          {/*  </Button>*/}
-          {/*)}*/}
-          {wallet ? (
-            <Info
-              name={formatAddress(wallet.address.toB256())!}
-              account={wallet.address}
-            />
-          ) : (
-            <Box>
-              <Connect />
-            </Box>
+          {!isMobile && wallet !== null && (
+            <Button
+              w="fit-content"
+              bgColor="transparent"
+              _hover={{
+                bgColor: 'transparent',
+                color: 'button.500',
+              }}
+              color="grey.100"
+              fontWeight="normal"
+              fontSize="sm"
+              rightIcon={<FileIcon w={4} h={4} />}
+              onClick={() => navigate({ to: '/my-handles' })}
+            >
+              My Handles
+            </Button>
           )}
+          {account()}
         </Flex>
         {!isMobile && (
           <Box w="fit-content">

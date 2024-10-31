@@ -1,7 +1,9 @@
-import { TransactionStatus, bn } from 'fuels';
+import { TransactionStatus, ZeroBytes32, bn } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
-import { Manager, ManagerFactory, Registry, RegistryFactory } from '../src';
+import { RegistryContractFactory, StorageContractFactory } from '../src';
 import {
+  TestRegistryContract,
+  TestStorageContract,
   domainPrices,
   expectContainLogError,
   expectRequireRevertError,
@@ -11,35 +13,32 @@ import {
 describe('[PRICES] Registry Contract', () => {
   let node: Awaited<ReturnType<typeof launchTestNode>>;
 
-  let manager: Manager;
-  let registry: Registry;
+  let storage: TestStorageContract;
+  let registry: TestRegistryContract;
 
   beforeAll(async () => {
     node = await launchTestNode({
       walletsConfig: { count: 2 },
       contractsConfigs: [
-        { factory: ManagerFactory },
-        { factory: RegistryFactory },
+        { factory: StorageContractFactory },
+        { factory: RegistryContractFactory },
       ],
     });
 
     const {
-      contracts: [managerAbi, registryAbi],
+      contracts: [storageAbi, registryAbi],
       wallets: [deployer],
     } = node;
 
-    manager = new Manager(managerAbi.id, deployer);
-    registry = new Registry(registryAbi.id, deployer);
+    storage = new TestStorageContract(storageAbi.id, deployer);
+    registry = new TestRegistryContract(registryAbi.id, deployer);
 
-    const { waitForResult } = await registry.functions
-      .constructor({ bits: manager.id.toB256() })
-      .call();
-    await waitForResult();
-
-    const managerCall = await manager.functions
-      .constructor({ ContractId: { bits: registry.id.toB256() } })
-      .call();
-    await managerCall.waitForResult();
+    await storage.initialize(deployer, registry.id.toB256());
+    await registry.initialize({
+      owner: deployer,
+      storageId: storage.id.toB256(),
+      attestationId: ZeroBytes32,
+    });
   });
 
   afterAll(() => {
@@ -48,28 +47,13 @@ describe('[PRICES] Registry Contract', () => {
 
   it('should error register with invalid amount', async () => {
     try {
-      const { wallets, provider } = node;
-      const [owner] = wallets;
-      const name = randomName();
-      const price = domainPrices(name);
-
-      const { waitForResult: waitForRegister } = await registry.functions
-        .register(
-          name,
-          {
-            Address: { bits: owner.address.toB256() },
-          },
-          bn(1)
-        )
-        .callParams({
-          forward: {
-            assetId: provider.getBaseAssetId(),
-            amount: price.sub(10),
-          },
-        })
-        .addContracts([manager])
-        .call();
-      const { transactionResult } = await waitForRegister();
+      const domain = randomName();
+      const { transactionResult } = await registry.register({
+        domain,
+        period: 1,
+        storageAbi: storage,
+        calculateAmount: false,
+      });
 
       expect(transactionResult.status).toBe(TransactionStatus.failure);
     } catch (e) {
@@ -81,26 +65,13 @@ describe('[PRICES] Registry Contract', () => {
   it.each([3, 4, 10])(
     'should register domain with %d chars',
     async (domainLength) => {
-      const { wallets, provider } = node;
-      const [owner] = wallets;
-      const name = randomName(domainLength);
+      const domain = randomName(domainLength);
 
-      const price = domainPrices(name);
-
-      const { waitForResult: waitForRegister } = await registry.functions
-        .register(
-          name,
-          {
-            Address: { bits: owner.address.toB256() },
-          },
-          bn(1)
-        )
-        .callParams({
-          forward: { assetId: provider.getBaseAssetId(), amount: price },
-        })
-        .addContracts([manager])
-        .call();
-      const { transactionResult } = await waitForRegister();
+      const { transactionResult } = await registry.register({
+        domain,
+        period: 1,
+        storageAbi: storage,
+      });
 
       expect(transactionResult.status).toBe(TransactionStatus.success);
     }

@@ -1,12 +1,16 @@
-import { useMutation } from '@tanstack/react-query';
-import { useResolverContract } from './sdk';
+import { resolver } from '@bako-id/sdk';
+import { useMutation, type UseMutationOptions } from '@tanstack/react-query';
+import type { ResolverDomainPayload, ResolverReturn } from '../types';
 
-const useResolveDomainRequests = (domain: string) => {
-  const resolverContract = useResolverContract();
+const useResolveDomainRequests = (
+  domain: string,
+  options?: UseMutationOptions<ResolverReturn, unknown, ResolverDomainPayload>,
+) => {
   return useMutation({
     mutationKey: ['resolveDomain'],
-    mutationFn: async (name?: string) => resolverContract?.addr(name ?? domain),
+    mutationFn: () => resolver(domain),
     retryDelay: 1000,
+    ...options,
   });
 };
 

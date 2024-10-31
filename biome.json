@@ -29,7 +29,7 @@
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
-      "trailingCommas": "es5"
+      "trailingComma": "es5"
     }
   },
   "json": {

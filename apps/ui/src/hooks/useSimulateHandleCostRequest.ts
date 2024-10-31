@@ -1,16 +1,22 @@
-import { useQuery } from '@tanstack/react-query';
-import { useRegistryContract } from './sdk';
+import { simulateHandleCost } from '@bako-id/sdk';
 
-const useSimulateHandleCostRequest = (domain: string, period: number) => {
-  const registryContract = useRegistryContract();
+import { useQuery, type UseMutationOptions } from '@tanstack/react-query';
+import type { RegisterDomainPayload } from '../types';
+
+const useSimulateHandleCostRequest = (
+  domain: string,
+  period: number,
+  options?: UseMutationOptions<unknown, unknown, RegisterDomainPayload>,
+) => {
   return useQuery({
     queryKey: ['simulateHandleCost', period],
     queryFn: async () =>
-      registryContract?.simulate({
+      await simulateHandleCost({
         domain,
         period,
       }),
-    enabled: !!domain && !!period && !!registryContract,
+    enabled: !!domain && !!period,
+    ...options,
   });
 };
 

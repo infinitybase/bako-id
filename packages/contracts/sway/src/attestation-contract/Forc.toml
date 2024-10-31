@@ -1,0 +1,8 @@
+[project]
+authors = ["Jon Ventura"]
+entry = "main.sw"
+license = "Apache-2.0"
+name = "attestation-contract"
+
+[dependencies]
+libraries = { path = "../libraries" }

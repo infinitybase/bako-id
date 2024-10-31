@@ -1,14 +1,14 @@
-import { type UseQueryOptions, useQuery } from '@tanstack/react-query';
+import { getAll } from '@bako-id/sdk';
+import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
 import type { Handle } from '../types';
 
 const useGetAllDomainRequests = (
   owner: string,
-  options?: UseQueryOptions<Handle[], unknown>
+  options?: UseQueryOptions<Handle[], unknown>,
 ) => {
-  // TODO: Refactor, get domains from indexer
   return useQuery({
     queryKey: ['getAllDomains'],
-    queryFn: async () => [],
+    queryFn: () => getAll(owner),
     enabled: !!owner,
     ...options,
   });

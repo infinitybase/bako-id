@@ -13,7 +13,6 @@ export const domainPrices = (domain: string, period = 1) => {
     default: bn.parseUnits('0.0002'),
   };
 
-  // @ts-ignore
   const price: BN = prices[domainSize] || prices.default;
 
   return price.mul(period);

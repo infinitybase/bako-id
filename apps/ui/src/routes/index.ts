@@ -1,5 +1,5 @@
 import { createRouter } from '@tanstack/react-router';
-import { rootRoute } from './__root';
+import { rootRoute } from '../hooks/__root.ts';
 import {
   buyRoute,
   connectRoute,
