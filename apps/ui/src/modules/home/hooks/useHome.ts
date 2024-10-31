@@ -1,5 +1,5 @@
 import { isValidDomain } from '@bako-id/sdk';
-import { useFuel } from '@fuels/react';
+import { useIsConnected } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
 import { debounce } from 'lodash';
 import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
@@ -7,40 +7,23 @@ import { useDomain } from '../../../hooks';
 
 export const useHome = () => {
   const navigate = useNavigate();
-  const {
-    fuel: { isConnected: WalletConnected, connect },
-  } = useFuel();
+  const { isConnected } = useIsConnected();
   const [domain, setDomain] = useState('');
   const { resolveDomain } = useDomain(domain);
   const [available, setAvailable] = useState<boolean | null>(null);
-  const [isConnected, setIsConnected] = useState<boolean | null>(null);
   const [domainIsAvailable, setDomainIsAvailable] = useState<boolean | null>(
     null
   );
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    const checkConnection = async () => {
-      await WalletConnected().then((result) => {
-        setIsConnected(result);
-      });
-    };
-    checkConnection();
-  }, [WalletConnected, connect]);
-
   const debounceSearch = useCallback(
     debounce((value: string) => {
-      resolveDomain
-        .mutateAsync({
-          domain: value,
-        })
-        .then((info) => {
-          if (!info) {
-            setAvailable(true);
-            return;
-          }
-          setAvailable(false);
-        });
+      resolveDomain.mutateAsync(value).then((info) => {
+        if (!info) {
+          setAvailable(true);
+          return;
+        }
+        setAvailable(false);
+      });
     }, 500),
     []
   );

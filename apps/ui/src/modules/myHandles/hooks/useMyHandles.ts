@@ -1,8 +1,8 @@
-import { useFuelConnect } from '../../../hooks';
+import { useWallet } from '@fuels/react';
 import { useGetAllDomainRequests } from '../../../hooks/useGetAllDomainsRequests';
 
 export const useMyHandles = () => {
-  const { wallet } = useFuelConnect();
+  const { wallet } = useWallet();
   const getAllDomains = useGetAllDomainRequests(wallet?.address.toB256() ?? '');
 
   return {

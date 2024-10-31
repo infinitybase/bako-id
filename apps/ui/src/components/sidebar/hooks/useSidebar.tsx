@@ -1,13 +1,18 @@
 import { useWallet } from '@fuels/react';
+import { useParams } from '@tanstack/react-router';
 import { useMemo } from 'react';
-import { useProfile } from '../../../modules/profile/hooks/useProfile';
+import { useResolveOwnerRequests } from '../../../hooks/useResolveOwnerRequests.ts';
 
 export const useSidebar = () => {
+  const { domain: domainParam } = useParams({ strict: false });
+
   const { wallet } = useWallet();
-  const { owner } = useProfile();
+  const { data: owner } = useResolveOwnerRequests(domainParam);
 
   const isMyDomain = useMemo(() => {
-    return wallet?.address.toB256() === owner;
+    if (!owner) return false;
+    const address = owner?.Address?.bits ?? owner?.Address?.bits;
+    return wallet?.address.toB256() === address;
   }, [owner, wallet]);
 
   return {

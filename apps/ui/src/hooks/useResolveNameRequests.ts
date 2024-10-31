@@ -1,16 +1,11 @@
-import { resolverName } from '@bako-id/sdk';
-import { useMutation, type UseMutationOptions } from '@tanstack/react-query';
-import type { Address } from 'fuels';
-import type { ResolverDomainPayload } from '../types';
+import { useMutation } from '@tanstack/react-query';
+import { useResolverContract } from './sdk';
 
-const useResolveNameRequests = (
-  address: string | Address,
-  options?: UseMutationOptions<string | null, unknown, ResolverDomainPayload>,
-) => {
+const useResolveNameRequests = (address: string) => {
+  const resolverContract = useResolverContract();
   return useMutation({
     mutationKey: ['resolveDomainName'],
-    mutationFn: () => resolverName(address),
-    ...options,
+    mutationFn: async () => resolverContract?.name(address),
   });
 };
 

@@ -1,20 +1,19 @@
-import { getGracePeriod } from '@bako-id/sdk';
-import { useQuery, type UseMutationOptions } from '@tanstack/react-query';
+import { type UseMutationOptions, useQuery } from '@tanstack/react-query';
 import type { GracePeriodResponse, ProviderParams } from '../types';
 
 const useGetGracePeriodRequest = (
   owner: string,
-  params?: ProviderParams,
-  options?: UseMutationOptions<GracePeriodResponse, unknown, ProviderParams>,
+  _params?: ProviderParams,
+  options?: UseMutationOptions<GracePeriodResponse, unknown, ProviderParams>
 ) => {
+  // TODO: Refactor
   return useQuery({
     queryKey: ['registerDomain'],
-    queryFn: () =>
-      getGracePeriod(owner, {
-        account: params?.account,
-        provider: params?.provider,
-        providerURL: params?.providerURL,
-      }),
+    queryFn: () => ({
+      timestamp: new Date(),
+      period: new Date(),
+      gracePeriod: new Date(),
+    }),
     ...options,
     enabled: !!owner,
   });

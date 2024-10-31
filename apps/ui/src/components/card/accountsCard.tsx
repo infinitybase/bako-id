@@ -1,11 +1,11 @@
-import type { Metadata } from '@bako-id/sdk';
 import { Flex, Heading, Icon, VStack } from '@chakra-ui/react';
 import { Card } from '..';
 import { CopyIcon } from '../icons/copyIcon';
 import { VerifiedAccountInput } from '../inputs/verifiedAccount';
 
 interface AccountsCardProps {
-  metadata: Metadata[] | undefined;
+  // metadata: Metadata[] | undefined;
+  metadata: { key: string; value: string }[] | undefined;
 }
 
 export const AccountsCard = ({ metadata }: AccountsCardProps) => {

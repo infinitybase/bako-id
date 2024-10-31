@@ -4,7 +4,6 @@ import { useResolveOwnerRequests } from '../../../hooks/useResolveOwnerRequests'
 
 export const useProfile = () => {
   const { domain: domainParam } = useParams({ strict: false });
-
   const resolveDomain = useQueryResolveDomainRequests(domainParam);
   const resolveOwner = useResolveOwnerRequests(domainParam);
 

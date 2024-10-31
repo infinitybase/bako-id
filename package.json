@@ -3,16 +3,30 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "packageManager": "pnpm@9.4.0",
   "scripts": {
     "build": "turbo run build",
     "build:doc": "turbo run docs:build",
-    "test:packages": "turbo run test --filter='./packages/*'"
+    "test": "turbo run test --filter='./packages/*'"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.6.4",
-    "turbo": "1.8.8"
+    "@shared/tsup": "workspace:*",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^22.2.0",
+    "@types/node-fetch": "^2.6.11",
+    "@types/web": "^0.0.159",
+    "dotenv": "~16.4.5",
+    "jest": "^29.6.4",
+    "ts-jest": "^29.1.1",
+    "tsup": "^6.7.0",
+    "turbo": "2.0.14",
+    "typescript": "~5.4.5"
   },
   "keywords": [],
   "author": "",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "dependencies": {
+    "dotenv-cli": "^7.4.2"
+  }
 }

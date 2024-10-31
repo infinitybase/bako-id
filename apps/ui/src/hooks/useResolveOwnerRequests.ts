@@ -1,20 +1,12 @@
-import { owner } from '@bako-id/sdk';
-import { useQuery, type UseMutationOptions } from '@tanstack/react-query';
-import type { ResolverDomainPayload, ResolverReturn } from '../types';
+import { useQuery } from '@tanstack/react-query';
+import { useResolverContract } from './sdk';
 
-const useResolveOwnerRequests = (
-  domain: string,
-  options?: UseMutationOptions<
-    ResolverReturn | null,
-    unknown,
-    ResolverDomainPayload
-  >,
-) => {
+const useResolveOwnerRequests = (domain: string) => {
+  const resolverContract = useResolverContract();
   return useQuery({
-    queryKey: ['resolveOwner'],
-    queryFn: () => owner(domain),
+    queryKey: ['resolveOwner', domain],
+    queryFn: async () => resolverContract?.owner(domain),
     enabled: !!domain,
-    ...options,
   });
 };
 

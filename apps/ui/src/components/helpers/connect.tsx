@@ -1,19 +1,31 @@
 import { Box, Button, Icon, Text } from '@chakra-ui/react';
-import { DrawerConnector } from '..';
-import { useFuelConnect } from '../../hooks';
+import { useConnectUI } from '@fuels/react';
 import { useScreenSize } from '../../hooks/useScreenSize';
 import { WalletIcon } from '../icons/wallet';
 
 export const Connect = () => {
-  const { connectors, isConnectError } = useFuelConnect();
   const { isMobile } = useScreenSize();
+  const { connect, isConnected, isConnecting } = useConnectUI();
+
+  // if (isConnecting) {
+  //   return (
+  //     <Skeleton height="2.5rem" w="7rem" rounded={8}>
+  //       <Text>Connecting...</Text>
+  //     </Skeleton>
+  //   );
+  // }
+
+  if (isConnected) {
+    return null;
+  }
 
   return (
     <>
       <Button
-        onClick={connectors.drawer.onOpen}
+        onClick={connect}
         alignItems="center"
         w="full"
+        disabled={isConnecting}
         display="flex"
         gap={2}
         bgColor={{ base: 'transparent', md: 'button.500' }}
@@ -22,7 +34,8 @@ export const Connect = () => {
         _hover={{ bgColor: 'button.600' }}
         className="transition-all-05"
       >
-        {!connectors.isConnecting && !isConnectError ? (
+        {isConnecting && <Text>Connecting...</Text>}
+        {!isConnecting && !isConnected && (
           <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
             {!isMobile && (
               <Icon
@@ -44,16 +57,14 @@ export const Connect = () => {
               />
             )}
           </Box>
-        ) : (
-          <Text>Connecting...</Text>
         )}
       </Button>
-      <DrawerConnector
-        isOpen={connectors.drawer.isOpen}
-        onClose={connectors.drawer.onClose}
-        onSelect={connectors.select}
-        connectors={connectors.item}
-      />
+      {/*<DrawerConnector*/}
+      {/*  isOpen={connectors.drawer.isOpen}*/}
+      {/*  onClose={connectors.drawer.onClose}*/}
+      {/*  onSelect={connectors.select}*/}
+      {/*  connectors={connectors.item}*/}
+      {/*/>*/}
     </>
   );
 };

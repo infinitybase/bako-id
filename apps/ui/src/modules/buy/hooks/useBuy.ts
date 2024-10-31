@@ -1,9 +1,9 @@
 import { isValidDomain } from '@bako-id/sdk';
 import { useEffect, useState } from 'react';
-import { useDomain, useFuelConnect } from '../../../hooks';
+import { useDomain } from '../../../hooks';
 import type { Domains } from '../../../types';
 
-import { useBalance } from '@fuels/react';
+import { useBalance, useWallet } from '@fuels/react';
 import { useParams } from '@tanstack/react-router';
 import { useCustomToast } from '../../../components/toast';
 import { useCheckoutPrice } from '../../../hooks/useCheckoutPrice';
@@ -16,11 +16,11 @@ export enum Coin {
 export const useBuy = () => {
   const { successToast } = useCustomToast();
   const { domain } = useParams({ strict: false });
-  const { wallet } = useFuelConnect();
+  const { wallet } = useWallet();
   const { balance: walletBalance, isLoading: isLoadingBalance } = useBalance({
-    address: wallet?.address.toAddress(),
+    account: wallet?.address.toAddress(),
   });
-  const { registerDomain, resolveDomain } = useDomain();
+  const { registerDomain, resolveDomain } = useDomain(domain);
   const [selectedCoin, setSelectedCoin] = useState<Coin>(Coin.ETH);
   const [signInLoad, setSignInLoad] = useState<boolean>(false);
 
@@ -44,12 +44,7 @@ export const useBuy = () => {
   const handleConfirmDomain = async () => {
     const isValid = isValidDomain(domain);
     if (!isValid) return;
-
-    const info = await resolveDomain.mutateAsync({
-      domain,
-      providerURL: wallet!.provider.url,
-    });
-
+    const info = await resolveDomain.mutateAsync(domain);
     return info;
   };
 
@@ -60,7 +55,6 @@ export const useBuy = () => {
 
     registerDomain.mutate(
       {
-        account: wallet,
         resolver: wallet.address.toB256(),
         domain: domain,
         period: domains[0].period,

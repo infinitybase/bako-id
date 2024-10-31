@@ -18,6 +18,9 @@
         "noUnusedVariables": "error",
         "noUnusedImports": "error"
       },
+      "complexity": {
+        "noStaticOnlyClass": "off"
+      },
       "style": {
         "noNonNullAssertion": "off"
       }
@@ -26,7 +29,7 @@
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
-      "trailingComma": "es5"
+      "trailingCommas": "es5"
     }
   },
   "json": {

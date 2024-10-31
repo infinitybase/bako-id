@@ -73,17 +73,15 @@ const errors: Record<string, ErrorType> = {
   Default: Error,
 } as const;
 
-const getError = (error: string) =>
-  error in errors ? errors[error] : errors.Default;
-
 export const getContractError = (error: FuelError) => {
-  if (!error.metadata.logs) return new errors.Default();
+  if (!error.metadata.logs) return error;
 
   const errorTypes = Object.keys(errors);
   const errorValue = errorTypes.find((errorType) =>
-    (error.metadata.logs as unknown[]).includes(errorType),
+    (error.metadata.logs as unknown[]).includes(errorType)
   );
 
-  const ErrorClass = getError(errorValue || '');
+  const ErrorClass =
+    !!errorValue && errorValue in errors ? errors[errorValue] : errors.Default;
   return new ErrorClass();
 };

@@ -10,6 +10,8 @@ const Profile = () => {
   const { isMobile } = useScreenSize();
   const drawer = useDisclosure();
 
+  console.log({ owner });
+
   return (
     <>
       <ProfileDrawer isOpen={drawer.isOpen} onClose={() => drawer.onClose()} />
@@ -58,10 +60,10 @@ const Profile = () => {
             gap={12}
           >
             <ProfileCards
-              domain={domain ?? ''}
+              domain={domain?.Address?.bits ?? domain?.ContractId?.bits ?? ''}
               domainParam={domainParam}
               isLoading={isLoadingDomain}
-              owner={owner ?? ''}
+              owner={owner?.Address?.bits ?? owner?.ContractId?.bits ?? ''}
             />
           </Box>
         </Center>
