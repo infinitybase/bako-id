@@ -1,15 +1,14 @@
 import { ResolverContract } from '@bako-id/sdk';
-import { useWallet } from '@fuels/react';
+import { useProvider } from '@fuels/react';
 import { useMemo } from 'react';
 
 export const useResolverContract = () => {
-  const { wallet } = useWallet();
+  const { provider } = useProvider();
 
   const contract = useMemo(() => {
-    console.log(wallet);
-    if (!wallet) return null;
-    return ResolverContract.create(wallet);
-  }, [wallet]);
+    if (!provider) return null;
+    return ResolverContract.create(provider);
+  }, [provider]);
 
   return contract;
 };
