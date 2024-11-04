@@ -13,12 +13,6 @@
       "module": "commonjs"
     }
   },
-  "include": [
-    "**/*.ts"
-  ],
-  "exclude": [
-    "**/*.test.ts",
-    "dist",
-    "node_modules/**/*"
-  ]
+  "include": ["**/*.ts", "../../apps/server/src/s3.ts"],
+  "exclude": ["**/*.test.ts", "dist", "node_modules/**/*"]
 }

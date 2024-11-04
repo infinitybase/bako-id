@@ -2,6 +2,7 @@ import { Registry, getContractId } from '@bako-id/contracts';
 import {
   type Account,
   type Provider,
+  TransactionStatus,
   getMintedAssetId,
   sha256,
   toUtf8Bytes,
@@ -13,6 +14,7 @@ import {
   assertValidDomain,
   domainPrices,
 } from '../utils';
+import { OffChainSync } from './offChainSync';
 
 export type RegisterPayload = {
   domain: string;
@@ -28,7 +30,7 @@ export type SimulatePayload = {
 async function checkAccountBalance(
   account: Account,
   domain: string,
-  period?: number
+  period?: number,
 ) {
   const amount = domainPrices(domain, period);
   const accountBalance = await account.getBalance();
@@ -72,6 +74,10 @@ export class RegistryContract {
     const { transactionResult, transactionResponse, gasUsed, transactionId } =
       await registerCall.waitForResult();
 
+    if (transactionResult.status === TransactionStatus.success) {
+      await OffChainSync.setNew(params, this.provider, transactionId);
+    }
+
     return {
       gasUsed,
       transactionId,
@@ -79,7 +85,7 @@ export class RegistryContract {
       transactionResponse,
       assetId: getMintedAssetId(
         this.contract.id.toB256(),
-        sha256(toUtf8Bytes(domainName))
+        sha256(toUtf8Bytes(domainName)),
       ),
     };
   }
