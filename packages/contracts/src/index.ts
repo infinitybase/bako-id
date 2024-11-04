@@ -24,6 +24,8 @@ export const contractsId = {
 type NetworkKeys = keyof typeof contractsId;
 type ContractKeys<N extends NetworkKeys> = keyof (typeof contractsId)[N];
 
+const DEFAULT_NETWORK: NetworkKeys = 'testnet';
+
 const resolveNetwork = (provider: string) => {
   if (provider.includes('testnet')) {
     return 'testnet';
@@ -37,7 +39,7 @@ const resolveNetwork = (provider: string) => {
     return 'local';
   }
 
-  throw new Error('Network not supported');
+  return DEFAULT_NETWORK;
 };
 
 export const getContractId = <N extends NetworkKeys>(
