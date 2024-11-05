@@ -6,5 +6,6 @@ export {
   SimulatePayload,
   OffChainSync,
   OffChainData,
+  IDRecord,
 } from './methods';
 export { domainPrices, isValidDomain } from './utils';
