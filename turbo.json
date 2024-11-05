@@ -1,11 +1,14 @@
 {
   "$schema": "https://turborepo.org/schema.json",
   "tasks": {
-    "prebuild": {},
+    "prebuild": {
+      "outputs": ["dist/**"],
+      "cache": false
+    },
     "build": {
       "dependsOn": ["prebuild", "^build"],
-      "outputs": ["dist/**"],
-      "outputLogs": "new-only"
+      "outputs": ["dist/**", ".next/**"],
+      "cache": false
     },
     "docs:build": {
       "dependsOn": ["^docs:build"],
