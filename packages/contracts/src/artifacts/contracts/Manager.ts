@@ -6,8 +6,8 @@
 
 /*
   Fuels version: 0.96.1
-  Forc version: 0.66.4
-  Fuel-Core version: 0.40.0
+  Forc version: 0.63.6
+  Fuel-Core version: 0.35.0
 */
 
 import { Contract, Interface } from "fuels";
