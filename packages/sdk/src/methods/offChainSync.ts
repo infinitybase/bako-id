@@ -1,10 +1,8 @@
-import dotenv from 'dotenv';
 import type { Provider } from 'fuels';
 import type { RegisterPayload } from './registry';
 
-dotenv.config();
-
 const { API_URL } = process.env;
+
 export const OFF_CHAIN_DATA_URL = 'https://bako-id.s3.us-east-1.amazonaws.com';
 export const RESOLVER_FILENAME = 'resolver.json';
 
@@ -63,7 +61,7 @@ export class OffChainSync {
   static async setNew(
     params: RegisterPayload,
     provider: Provider,
-    tx_id: string,
+    tx_id: string
   ): Promise<void> {
     await fetch(`${API_URL}/api/register`, {
       method: 'POST',
@@ -86,7 +84,7 @@ export class OffChainSync {
    */
   private static async getJsonFile(chainId: number): Promise<OffChainData> {
     return await fetch(
-      `${OFF_CHAIN_DATA_URL}/${chainId}/${RESOLVER_FILENAME}`,
+      `${OFF_CHAIN_DATA_URL}/${chainId}/${RESOLVER_FILENAME}`
     ).then((res) => res.json());
   }
 

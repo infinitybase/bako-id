@@ -7,7 +7,10 @@
   "scripts": {
     "build": "turbo run build",
     "build:doc": "turbo run docs:build",
-    "test": "turbo run test --filter='./packages/*'"
+    "test": "turbo run test --filter='./packages/*'",
+    "node:up": "make -C ./docker up",
+    "node:down": "make -C ./docker down",
+    "node:clean": "make -C ./docker clean"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.6.4",
