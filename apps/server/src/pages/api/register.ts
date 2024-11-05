@@ -27,14 +27,13 @@ export default async function handler(
 
   //valdations
   const isValidDomain =
-    r?.mintedAssets &&
-    r.mintedAssets.find((a) => a.subId === hashMessage(params.domain));
+    r?.mintedAssets?.find((a) => a.subId === hashMessage(params.domain));
 
   if (!isValidDomain) {
     throw new Error('Invalid minted name');
   }
 
-  let resolverData: Record<string, any> = await getJsonFile(resovlerFileName);
+  const resolverData: Record<string, any> = await getJsonFile(resovlerFileName);
 
   const newData = {
     resolversName: {

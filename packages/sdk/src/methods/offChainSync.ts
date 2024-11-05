@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
-import { Provider } from 'fuels';
-import { RegisterPayload } from './registry';
+import type { Provider } from 'fuels';
+import type { RegisterPayload } from './registry';
 
 dotenv.config();
 
@@ -46,38 +46,38 @@ export class OffChainSync {
   }
 
   /**
-   * funcao statica que cria uma instancia do offchain
+   * Static function that creates a new instance of OffChainSync
    *
-   * @param {Provider}
+   * @param {Provider} provider
    *
    * @returns {Promise<OffChainSync>}
    *
    */
-  static async create(provider: Provider) {
+  static async create(provider: Provider): Promise<OffChainSync> {
     const resolvers = await OffChainSync.getJsonFile(provider.getChainId());
     return new OffChainSync(resolvers, provider);
   }
 
   private static async getJsonFile(chainId: number): Promise<OffChainData> {
     return await fetch(
-      `https://bako-id.s3.us-east-1.amazonaws.com/${chainId}/resolver.json`,
+      `https://bako-id.s3.us-east-1.amazonaws.com/${chainId}/resolver.json`
     ).then((res) => res.json());
   }
 
   /**
-   * funcao statica que sincroniza o offchain com o onchain
+   * Static function that sets a new register payload
    *
-   * @param {Omit<RegisterPayload>}
-   * @param {Provider}
-   * @param {tx_id}
+   * @param {Omit<RegisterPayload>} params
+   * @param {Provider} provider
+   * @param {string} tx_id
    *
-   * @returns {Promise<RegisterPayload>}
+   * @returns {Promise<void>}
    *
    */
   static async setNew(
     params: RegisterPayload,
     provider: Provider,
-    tx_id: string,
+    tx_id: string
   ): Promise<void> {
     await fetch(`${API_URL}/api/register`, {
       method: 'POST',
