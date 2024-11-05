@@ -4,7 +4,7 @@
   "private": true,
   "packageManager": "pnpm@9.4.0",
   "engines": {
-    "node": ">=22.6.0"
+    "node": "20.x"
   },
   "scripts": {
     "dev": "next dev",
@@ -17,7 +17,7 @@
     "aws-sdk": "^2.1691.0",
     "fuels": "0.96.1",
     "jest": "^29.6.4",
-    "next": "14.2.10"
+    "next": "15.0.2"
   },
   "devDependencies": {
     "@types/jest": "^29.5.11",
