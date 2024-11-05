@@ -1,5 +1,5 @@
 import { ManagerFactory, RegistryFactory } from '@bako-id/contracts';
-import { getRandomB256, hashMessage, WalletUnlocked } from 'fuels';
+import { WalletUnlocked, getRandomB256, hashMessage } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
 import { RegistryContract } from '../index';
 import { InvalidDomainError, NotFoundBalanceError, randomName } from '../utils';
@@ -48,7 +48,7 @@ describe('Test Registry', () => {
         resolver: wallet.address.toB256(),
       });
       await expect(invalidSuffix).rejects.toBeInstanceOf(InvalidDomainError);
-    },
+    }
   );
 
   it('should register domain', async () => {
@@ -88,42 +88,41 @@ describe('Test Registry', () => {
     } = node;
     const contract = new RegistryContract(registry.id.toB256(), wallet);
 
-    let sync = await OffChainSync.create(wallet.provider);
-    const domain_1 = `bako_${randomName(3)}`;
-    const domain_2 = `bako_${randomName(3)}`;
+    const sync = await OffChainSync.create(wallet.provider);
+    const domain1 = `bako_${randomName(3)}`;
+    const domain2 = `bako_${randomName(3)}`;
     const resolver = getRandomB256();
-    const result_1 = await contract.register({
-      domain: domain_1,
+    const result1 = await contract.register({
+      domain: domain1,
       period: 1,
       resolver,
     });
 
-    const mintedToken_1 = result_1.transactionResult.mintedAssets[0];
+    const mintedToken_1 = result1.transactionResult.mintedAssets[0];
 
     await sync.syncData();
 
     expect(mintedToken_1).toBeDefined();
     expect(sync.getRecords(resolver).length).toBe(1);
-    expect(sync.getDomain(resolver)).toBe(domain_1);
-    expect(sync.getResolver(domain_1)).toBe(resolver);
-    expect(mintedToken_1.subId).toBe(hashMessage(domain_1));
+    expect(sync.getDomain(resolver)).toBe(domain1);
+    expect(sync.getResolver(domain1)).toBe(resolver);
+    expect(mintedToken_1.subId).toBe(hashMessage(domain1));
 
-    const result_2 = await contract.register({
-      domain: domain_2,
+    const result2 = await contract.register({
+      domain: domain2,
       period: 1,
       resolver,
     });
 
     await sync.syncData();
 
-    const mintedToken_2 = result_2.transactionResult.mintedAssets[0];
+    const mintedToken_2 = result2.transactionResult.mintedAssets[0];
 
     expect(mintedToken_2).toBeDefined();
-    // just retorn the first domain registered
-    expect(sync.getDomain(resolver)).toBe(domain_1);
+    expect(sync.getDomain(resolver)).toBe(domain1);
     expect(sync.getRecords(resolver).length).toBe(2);
-    expect(sync.getResolver(domain_2)).toBe(resolver);
-    expect(mintedToken_2.subId).toBe(hashMessage(domain_2));
+    expect(sync.getResolver(domain2)).toBe(resolver);
+    expect(mintedToken_2.subId).toBe(hashMessage(domain2));
   });
 
   it('should register domain with special characters', async () => {

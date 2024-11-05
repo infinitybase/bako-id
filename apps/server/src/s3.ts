@@ -1,6 +1,6 @@
 import AWS from 'aws-sdk';
 import dotenv from 'dotenv';
-import { OffChainData } from '@bako-id/sdk';
+import type { OffChainData } from '@bako-id/sdk';
 
 dotenv.config();
 
