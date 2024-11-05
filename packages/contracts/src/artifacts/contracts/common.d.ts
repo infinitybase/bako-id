@@ -6,8 +6,8 @@
 
 /*
   Fuels version: 0.96.1
-  Forc version: 0.63.6
-  Fuel-Core version: 0.35.0
+  Forc version: 0.66.2
+  Fuel-Core version: 0.40.0
 */
 
 /**
@@ -30,4 +30,4 @@ export type Vec<T> = T[];
  * Mimics Sway Result enum type.
  * Ok represents the success case, while Err represents the error case.
  */
-export type Result<T, E> = Enum<{Ok: T, Err: E}>;
+export type Result<T, E> = Enum<{ Ok: T; Err: E }>;
