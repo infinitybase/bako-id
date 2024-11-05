@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { getJsonFile, putJsonFile } from '@/s3';
-import { hashMessage, Provider, TransactionResponse } from 'fuels';
+import { Provider, TransactionResponse, hashMessage } from 'fuels';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(
@@ -20,7 +20,6 @@ export default async function handler(
 
   const { params, provider, tx_id } = req.body;
 
-  //prepare info
   const _provider = await Provider.create(provider);
 
   const resovlerFileName = `${_provider.getChainId()}/${FILENAME}`;

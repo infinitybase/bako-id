@@ -16,7 +16,6 @@ export const useResolverContract = () => {
   });
 
   const contract = useMemo(() => {
-    console.log('provider', providerQuery.data);
     if (!providerQuery.data) return null;
     return ResolverContract.create(providerQuery.data);
   }, [providerQuery.data]);
