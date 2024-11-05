@@ -2,10 +2,10 @@
   "$schema": "https://turborepo.org/schema.json",
   "tasks": {
     "prebuild": {
-      "cache": false
+      "cache": true
     },
     "build": {
-      "dependsOn": ["prebuild", "^build"],
+      "dependsOn": ["^prebuild", "^build"],
       "outputs": ["dist/**", ".next/**"],
       "cache": false
     },
