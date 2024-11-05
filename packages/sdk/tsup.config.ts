@@ -10,4 +10,11 @@ export default extendConfig({
   env: {
     API_URL: process.env.API_URL!,
   },
+  esbuildOptions: (options) => {
+    options.define = {
+      'process.env': JSON.stringify({
+        API_URL: process.env.API_URL,
+      }),
+    };
+  },
 });
