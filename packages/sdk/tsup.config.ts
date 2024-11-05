@@ -15,6 +15,7 @@ export default extendConfig({
       API_URL: process.env.API_URL,
     });
     console.log('[SDK] Building with env:', env);
+    console.log('[SDK] process.env:', process.env);
     options.define = {
       'process.env': env,
     };
