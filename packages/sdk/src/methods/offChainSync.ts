@@ -5,6 +5,13 @@ import { RegisterPayload } from './registry';
 dotenv.config();
 
 const { API_URL } = process.env;
+export const OFF_CHAIN_DATA_URL = 'https://bako-id.s3.us-east-1.amazonaws.com';
+export const RESOLVER_FILENAME = 'resolver.json';
+
+export enum Networks {
+  MAINNET = 9889,
+  TESTNET = 0,
+}
 
 export type IDRecord = {
   name: string;
@@ -41,8 +48,17 @@ export class OffChainSync {
     return this.list?.records?.[resolver] || [];
   }
 
-  async syncData() {
+  async syncData(): Promise<void> {
     this.list = await OffChainSync.getJsonFile(this.provider.getChainId());
+    return;
+  }
+
+  async selectNetwork(provider: Provider): Promise<void> {
+    OffChainSync.validNetwork(provider);
+    if (this.provider.url !== provider.url) {
+      this.provider = provider;
+    }
+    return await this.syncData();
   }
 
   /**
@@ -53,15 +69,23 @@ export class OffChainSync {
    * @returns {Promise<OffChainSync>}
    *
    */
-  static async create(provider: Provider) {
+  static async create(provider: Provider): Promise<OffChainSync> {
+    OffChainSync.validNetwork(provider);
     const resolvers = await OffChainSync.getJsonFile(provider.getChainId());
     return new OffChainSync(resolvers, provider);
   }
 
   private static async getJsonFile(chainId: number): Promise<OffChainData> {
     return await fetch(
-      `https://bako-id.s3.us-east-1.amazonaws.com/${chainId}/resolver.json`,
+      `${OFF_CHAIN_DATA_URL}/${chainId}/${RESOLVER_FILENAME}`,
     ).then((res) => res.json());
+  }
+
+  private static validNetwork(provider: Provider): void {
+    if (!Object.values(Networks).includes(provider.getChainId()))
+      throw new Error('Invalid network');
+
+    return;
   }
 
   /**
