@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
-import { Provider } from 'fuels';
-import { RegisterPayload } from './registry';
+import type { Provider } from 'fuels';
+import type { RegisterPayload } from './registry';
 
 dotenv.config();
 
