@@ -1,13 +1,17 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { getJsonFile, putJsonFile } from '@/s3';
-import { hashMessage, Provider, TransactionResponse } from 'fuels';
+import { Provider, TransactionResponse, hashMessage } from 'fuels';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   const { method } = req;
+
+  if (method === 'OPTIONS') {
+    return res.status(200).send({});
+  }
 
   if (method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
@@ -16,7 +20,6 @@ export default async function handler(
 
   const { params, provider, tx_id } = req.body;
 
-  //prepare info
   const _provider = await Provider.create(provider);
 
   const resovlerFileName = `${_provider.getChainId()}/${FILENAME}`;
@@ -26,8 +29,9 @@ export default async function handler(
   const r = await t.waitForResult();
 
   //valdations
-  const isValidDomain =
-    r?.mintedAssets?.find((a) => a.subId === hashMessage(params.domain));
+  const isValidDomain = r?.mintedAssets?.find(
+    (a) => a.subId === hashMessage(params.domain)
+  );
 
   if (!isValidDomain) {
     throw new Error('Invalid minted name');

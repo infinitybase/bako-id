@@ -10,7 +10,7 @@
   Fuel-Core version: 0.40.0
 */
 
-import { Contract, Interface } from "fuels";
+import { Contract, Interface } from 'fuels';
 import type {
   Provider,
   Account,
@@ -25,10 +25,16 @@ import type {
   StrSlice,
 } from 'fuels';
 
-import type { Option, Enum } from "./common";
+import type { Option, Enum } from './common';
 
-export type IdentityInput = Enum<{ Address: AddressInput, ContractId: ContractIdInput }>;
-export type IdentityOutput = Enum<{ Address: AddressOutput, ContractId: ContractIdOutput }>;
+export type IdentityInput = Enum<{
+  Address: AddressInput;
+  ContractId: ContractIdInput;
+}>;
+export type IdentityOutput = Enum<{
+  Address: AddressOutput;
+  ContractId: ContractIdOutput;
+}>;
 
 export type AddressInput = { bits: string };
 export type AddressOutput = AddressInput;
@@ -36,247 +42,253 @@ export type ContractIdInput = { bits: string };
 export type ContractIdOutput = ContractIdInput;
 
 const abi = {
-  "programType": "contract",
-  "specVersion": "1",
-  "encodingVersion": "1",
-  "concreteTypes": [
+  programType: 'contract',
+  specVersion: '1',
+  encodingVersion: '1',
+  concreteTypes: [
     {
-      "type": "()",
-      "concreteTypeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+      type: '()',
+      concreteTypeId:
+        '2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d',
     },
     {
-      "type": "enum std::identity::Identity",
-      "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335",
-      "metadataTypeId": 1
+      type: 'enum std::identity::Identity',
+      concreteTypeId:
+        'ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335',
+      metadataTypeId: 1,
     },
     {
-      "type": "enum std::option::Option<enum std::identity::Identity>",
-      "concreteTypeId": "253aea1197e8005518365bd24c8bc31f73a434fac0f7350e57696edfdd4850c2",
-      "metadataTypeId": 2,
-      "typeArguments": [
-        "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
-      ]
+      type: 'enum std::option::Option<enum std::identity::Identity>',
+      concreteTypeId:
+        '253aea1197e8005518365bd24c8bc31f73a434fac0f7350e57696edfdd4850c2',
+      metadataTypeId: 2,
+      typeArguments: [
+        'ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335',
+      ],
     },
     {
-      "type": "enum std::option::Option<struct std::string::String>",
-      "concreteTypeId": "7c06d929390a9aeeb8ffccf8173ac0d101a9976d99dda01cce74541a81e75ac0",
-      "metadataTypeId": 2,
-      "typeArguments": [
-        "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c"
-      ]
+      type: 'enum std::option::Option<struct std::string::String>',
+      concreteTypeId:
+        '7c06d929390a9aeeb8ffccf8173ac0d101a9976d99dda01cce74541a81e75ac0',
+      metadataTypeId: 2,
+      typeArguments: [
+        '9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c',
+      ],
     },
     {
-      "type": "str",
-      "concreteTypeId": "8c25cb3686462e9a86d2883c5688a22fe738b0bbc85f458d2d2b5f3f667c6d5a"
+      type: 'str',
+      concreteTypeId:
+        '8c25cb3686462e9a86d2883c5688a22fe738b0bbc85f458d2d2b5f3f667c6d5a',
     },
     {
-      "type": "struct std::contract_id::ContractId",
-      "concreteTypeId": "29c10735d33b5159f0c71ee1dbd17b36a3e69e41f00fab0d42e1bd9f428d8a54",
-      "metadataTypeId": 8
+      type: 'struct std::contract_id::ContractId',
+      concreteTypeId:
+        '29c10735d33b5159f0c71ee1dbd17b36a3e69e41f00fab0d42e1bd9f428d8a54',
+      metadataTypeId: 8,
     },
     {
-      "type": "struct std::string::String",
-      "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c",
-      "metadataTypeId": 9
-    }
+      type: 'struct std::string::String',
+      concreteTypeId:
+        '9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c',
+      metadataTypeId: 9,
+    },
   ],
-  "metadataTypes": [
+  metadataTypes: [
     {
-      "type": "b256",
-      "metadataTypeId": 0
+      type: 'b256',
+      metadataTypeId: 0,
     },
     {
-      "type": "enum std::identity::Identity",
-      "metadataTypeId": 1,
-      "components": [
+      type: 'enum std::identity::Identity',
+      metadataTypeId: 1,
+      components: [
         {
-          "name": "Address",
-          "typeId": 5
+          name: 'Address',
+          typeId: 5,
         },
         {
-          "name": "ContractId",
-          "typeId": 8
-        }
-      ]
+          name: 'ContractId',
+          typeId: 8,
+        },
+      ],
     },
     {
-      "type": "enum std::option::Option",
-      "metadataTypeId": 2,
-      "components": [
+      type: 'enum std::option::Option',
+      metadataTypeId: 2,
+      components: [
         {
-          "name": "None",
-          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+          name: 'None',
+          typeId:
+            '2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d',
         },
         {
-          "name": "Some",
-          "typeId": 3
-        }
+          name: 'Some',
+          typeId: 3,
+        },
       ],
-      "typeParameters": [
-        3
-      ]
+      typeParameters: [3],
     },
     {
-      "type": "generic T",
-      "metadataTypeId": 3
+      type: 'generic T',
+      metadataTypeId: 3,
     },
     {
-      "type": "raw untyped ptr",
-      "metadataTypeId": 4
+      type: 'raw untyped ptr',
+      metadataTypeId: 4,
     },
     {
-      "type": "struct std::address::Address",
-      "metadataTypeId": 5,
-      "components": [
+      type: 'struct std::address::Address',
+      metadataTypeId: 5,
+      components: [
         {
-          "name": "bits",
-          "typeId": 0
-        }
-      ]
+          name: 'bits',
+          typeId: 0,
+        },
+      ],
     },
     {
-      "type": "struct std::bytes::Bytes",
-      "metadataTypeId": 6,
-      "components": [
+      type: 'struct std::bytes::Bytes',
+      metadataTypeId: 6,
+      components: [
         {
-          "name": "buf",
-          "typeId": 7
+          name: 'buf',
+          typeId: 7,
         },
         {
-          "name": "len",
-          "typeId": 10
-        }
-      ]
+          name: 'len',
+          typeId: 10,
+        },
+      ],
     },
     {
-      "type": "struct std::bytes::RawBytes",
-      "metadataTypeId": 7,
-      "components": [
+      type: 'struct std::bytes::RawBytes',
+      metadataTypeId: 7,
+      components: [
         {
-          "name": "ptr",
-          "typeId": 4
+          name: 'ptr',
+          typeId: 4,
         },
         {
-          "name": "cap",
-          "typeId": 10
-        }
-      ]
+          name: 'cap',
+          typeId: 10,
+        },
+      ],
     },
     {
-      "type": "struct std::contract_id::ContractId",
-      "metadataTypeId": 8,
-      "components": [
+      type: 'struct std::contract_id::ContractId',
+      metadataTypeId: 8,
+      components: [
         {
-          "name": "bits",
-          "typeId": 0
-        }
-      ]
+          name: 'bits',
+          typeId: 0,
+        },
+      ],
     },
     {
-      "type": "struct std::string::String",
-      "metadataTypeId": 9,
-      "components": [
+      type: 'struct std::string::String',
+      metadataTypeId: 9,
+      components: [
         {
-          "name": "bytes",
-          "typeId": 6
-        }
-      ]
+          name: 'bytes',
+          typeId: 6,
+        },
+      ],
     },
     {
-      "type": "u64",
-      "metadataTypeId": 10
-    }
+      type: 'u64',
+      metadataTypeId: 10,
+    },
   ],
-  "functions": [
+  functions: [
     {
-      "inputs": [
+      inputs: [
         {
-          "name": "manager_id",
-          "concreteTypeId": "29c10735d33b5159f0c71ee1dbd17b36a3e69e41f00fab0d42e1bd9f428d8a54"
-        }
+          name: 'manager_id',
+          concreteTypeId:
+            '29c10735d33b5159f0c71ee1dbd17b36a3e69e41f00fab0d42e1bd9f428d8a54',
+        },
       ],
-      "name": "constructor",
-      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
-      "attributes": [
+      name: 'constructor',
+      output:
+        '2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d',
+      attributes: [
         {
-          "name": "storage",
-          "arguments": [
-            "read",
-            "write"
-          ]
-        }
-      ]
+          name: 'storage',
+          arguments: ['read', 'write'],
+        },
+      ],
     },
     {
-      "inputs": [
+      inputs: [
         {
-          "name": "name",
-          "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c"
-        }
+          name: 'name',
+          concreteTypeId:
+            '9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c',
+        },
       ],
-      "name": "addr",
-      "output": "253aea1197e8005518365bd24c8bc31f73a434fac0f7350e57696edfdd4850c2",
-      "attributes": [
+      name: 'addr',
+      output:
+        '253aea1197e8005518365bd24c8bc31f73a434fac0f7350e57696edfdd4850c2',
+      attributes: [
         {
-          "name": "storage",
-          "arguments": [
-            "read"
-          ]
-        }
-      ]
+          name: 'storage',
+          arguments: ['read'],
+        },
+      ],
     },
     {
-      "inputs": [
+      inputs: [
         {
-          "name": "name",
-          "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c"
-        }
+          name: 'name',
+          concreteTypeId:
+            '9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c',
+        },
       ],
-      "name": "owner",
-      "output": "253aea1197e8005518365bd24c8bc31f73a434fac0f7350e57696edfdd4850c2",
-      "attributes": [
+      name: 'owner',
+      output:
+        '253aea1197e8005518365bd24c8bc31f73a434fac0f7350e57696edfdd4850c2',
+      attributes: [
         {
-          "name": "storage",
-          "arguments": [
-            "read"
-          ]
-        }
-      ]
+          name: 'storage',
+          arguments: ['read'],
+        },
+      ],
     },
     {
-      "inputs": [
+      inputs: [
         {
-          "name": "addr",
-          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
-        }
+          name: 'addr',
+          concreteTypeId:
+            'ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335',
+        },
       ],
-      "name": "name",
-      "output": "7c06d929390a9aeeb8ffccf8173ac0d101a9976d99dda01cce74541a81e75ac0",
-      "attributes": [
+      name: 'name',
+      output:
+        '7c06d929390a9aeeb8ffccf8173ac0d101a9976d99dda01cce74541a81e75ac0',
+      attributes: [
         {
-          "name": "storage",
-          "arguments": [
-            "read"
-          ]
-        }
-      ]
-    }
+          name: 'storage',
+          arguments: ['read'],
+        },
+      ],
+    },
   ],
-  "loggedTypes": [
+  loggedTypes: [
     {
-      "logId": "10098701174489624218",
-      "concreteTypeId": "8c25cb3686462e9a86d2883c5688a22fe738b0bbc85f458d2d2b5f3f667c6d5a"
-    }
+      logId: '10098701174489624218',
+      concreteTypeId:
+        '8c25cb3686462e9a86d2883c5688a22fe738b0bbc85f458d2d2b5f3f667c6d5a',
+    },
   ],
-  "messagesTypes": [],
-  "configurables": []
+  messagesTypes: [],
+  configurables: [],
 };
 
 const storageSlots: StorageSlot[] = [
   {
-    "key": "e1a8f7a09ac9a2ed6301cda0a0c44ba28d5361e2617ea7a369d53fd6ffa141b1",
-    "value": "0000000000000000000000000000000000000000000000000000000000000000"
-  }
+    key: 'e1a8f7a09ac9a2ed6301cda0a0c44ba28d5361e2617ea7a369d53fd6ffa141b1',
+    value: '0000000000000000000000000000000000000000000000000000000000000000',
+  },
 ];
 
 export class ResolverInterface extends Interface {

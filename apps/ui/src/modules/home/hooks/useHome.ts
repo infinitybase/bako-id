@@ -12,7 +12,7 @@ export const useHome = () => {
   const { resolveDomain } = useDomain();
   const [available, setAvailable] = useState<boolean | null>(null);
   const [domainIsAvailable, setDomainIsAvailable] = useState<boolean | null>(
-    null
+    null,
   );
 
   const debounceSearch = useCallback(
@@ -25,7 +25,7 @@ export const useHome = () => {
         setAvailable(false);
       });
     }, 500),
-    []
+    [],
   );
 
   const handleChangeDomain = (e: ChangeEvent<HTMLInputElement>) => {
