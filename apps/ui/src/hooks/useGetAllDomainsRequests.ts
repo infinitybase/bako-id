@@ -1,16 +1,23 @@
-import { type UseQueryOptions, useQuery } from '@tanstack/react-query';
-import type { Handle } from '../types';
+import { useQuery } from '@tanstack/react-query';
 
-const useGetAllDomainRequests = (
-  owner: string,
-  options?: UseQueryOptions<Handle[], unknown>
-) => {
+import { OffChainSync } from '@bako-id/sdk';
+import { useWallet } from '@fuels/react';
+import { ZeroBytes32 } from 'fuels';
+
+const useGetAllDomainRequests = () => {
   // TODO: Refactor, get domains from indexer
+  const { wallet } = useWallet();
+
   return useQuery({
-    queryKey: ['getAllDomains'],
-    queryFn: async () => [],
-    enabled: !!owner,
-    ...options,
+    queryKey: ['getAllDomains', wallet?.address.toB256() ?? ZeroBytes32],
+    queryFn: async () => {
+      const sync = await OffChainSync.create(wallet!.provider);
+      const walletAddress = wallet!.address.toB256();
+      const records = sync.getRecords(walletAddress);
+
+      return records;
+    },
+    enabled: !!wallet,
   });
 };
 

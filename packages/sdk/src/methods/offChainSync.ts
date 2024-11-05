@@ -123,8 +123,8 @@ export class OffChainSync {
    * @param {string} resolver - The resolver key.
    * @returns {IDRecord[]} An array of ID records.
    */
-  getRecords(resolver: string): IDRecord[] {
-    return this.list?.records?.[resolver] || [];
+  getRecords(owner: string): IDRecord[] {
+    return this.list?.records?.[owner] || [];
   }
 
   /**

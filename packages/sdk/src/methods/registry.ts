@@ -30,7 +30,7 @@ export type SimulatePayload = {
 async function checkAccountBalance(
   account: Account,
   domain: string,
-  period?: number,
+  period?: number
 ) {
   const amount = domainPrices(domain, period);
   const accountBalance = await account.getBalance();
@@ -75,7 +75,11 @@ export class RegistryContract {
       await registerCall.waitForResult();
 
     if (transactionResult.status === TransactionStatus.success) {
-      await OffChainSync.setNew(params, this.provider, transactionId);
+      await OffChainSync.setNew(
+        { domain: domainName, resolver, period },
+        this.provider,
+        transactionId
+      );
     }
 
     return {
@@ -85,7 +89,7 @@ export class RegistryContract {
       transactionResponse,
       assetId: getMintedAssetId(
         this.contract.id.toB256(),
-        sha256(toUtf8Bytes(domainName)),
+        sha256(toUtf8Bytes(domainName))
       ),
     };
   }

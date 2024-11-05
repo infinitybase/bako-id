@@ -9,6 +9,10 @@ export default async function handler(
 ) {
   const { method } = req;
 
+  if (method === 'OPTIONS') {
+    return res.status(200).send({});
+  }
+
   if (method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
