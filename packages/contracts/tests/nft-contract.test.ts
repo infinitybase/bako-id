@@ -60,7 +60,6 @@ describe('[METHODS] NFT Contract', () => {
       const { transactionResult } = await waitForResult();
       expect(transactionResult.status).toBe(TransactionStatus.failure);
     } catch (error) {
-      console.log(error);
       expectRequireRevertError(error);
       expectContainLogError(error, 'NotOwner');
     } finally {
