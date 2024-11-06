@@ -4,11 +4,15 @@ import { Card, TextValue } from '..';
 import { ExplorerTypes } from '../../types';
 import { formatAddress } from '../../utils/formatter';
 import { Explorer } from '../helpers/explorer';
+import { CopyText } from '../helpers/copy';
+import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
+import { format } from 'date-fns';
 
 interface IOwnershipCard {
   owner: string | null;
 }
 export const OwnershipCard = ({ owner }: IOwnershipCard) => {
+  const { data } = useGetGracePeriod(owner ?? '');
   // const { domain } = useParams({ strict: false });
   // const { data } = useGetGracePeriod(domain.replace('@', ''));
   // const { isMyDomain } = useSidebar();
@@ -49,6 +53,15 @@ export const OwnershipCard = ({ owner }: IOwnershipCard) => {
           }
           content={owner ? formatAddress(Address.fromB256(owner).toB256()) : ''}
         />
+        {data?.period && (
+          <TextValue
+            leftAction={'expiry'}
+            rightAction={
+              <CopyText value={Address.fromB256(owner ?? '').toB256()} />
+            }
+            content={format(data?.period, 'PP')}
+          />
+        )}
         {/*<TextValue*/}
         {/*  leftAction={'expiry'}*/}
         {/*  textAlign="right"*/}
