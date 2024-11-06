@@ -184,9 +184,6 @@ describe('[NFT] Registry Contract', () => {
       .set_metadata_info(name, metadataKey, {
         String: metadataValue,
       })
-      .callParams({
-        forward: { assetId: provider.getBaseAssetId(), amount: price },
-      })
       .addContracts([manager, nft])
       .call();
 
@@ -234,9 +231,6 @@ describe('[NFT] Registry Contract', () => {
       .set_metadata_info(name, metadataKey, {
         String: metadataValue,
       })
-      .callParams({
-        forward: { assetId: provider.getBaseAssetId(), amount: price },
-      })
       .addContracts([manager, nft])
       .call();
 
@@ -248,9 +242,6 @@ describe('[NFT] Registry Contract', () => {
     await registry.functions
       .set_metadata_info(name, metadataKey, {
         String: metadataValueAux,
-      })
-      .callParams({
-        forward: { assetId: provider.getBaseAssetId(), amount: price },
       })
       .addContracts([manager, nft])
       .call();
@@ -301,9 +292,6 @@ describe('[NFT] Registry Contract', () => {
       .set_metadata_info(name, metadataKey, {
         String: metadataValue,
       })
-      .callParams({
-        forward: { assetId: provider.getBaseAssetId(), amount: price },
-      })
       .addContracts([manager, nft])
       .call();
 
@@ -347,9 +335,6 @@ describe('[NFT] Registry Contract', () => {
     await registry.functions
       .set_metadata_info(name, metadataKey, {
         String: metadataValue,
-      })
-      .callParams({
-        forward: { assetId: provider.getBaseAssetId(), amount: price },
       })
       .addContracts([manager, nft])
       .call();
