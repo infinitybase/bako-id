@@ -8,7 +8,7 @@ export default extendConfig({
   dts: true,
   entry: ['src/index.ts'],
   esbuildOptions: (options) => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+    const apiUrl = process.env.API_URL || '';
     console.log('[SDK] Building with API_URL:', apiUrl);
 
     options.define = {
