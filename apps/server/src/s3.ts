@@ -1,21 +1,14 @@
 import type { OffChainData } from '@bako-id/sdk';
 import AWS from 'aws-sdk';
 
-const { AWS_REGION, AWS_KEY_ID, AWS_ACCESS_KEY } = process.env;
+const { AWS_REGION, AWS_KEY_ID, AWS_SECRET_ACCESS_KEY } = process.env;
 
 const BUCKET_NAME = process.env.BUCKET_NAME ?? 'bako-id';
-
-console.log({
-  AWS_REGION,
-  AWS_KEY_ID,
-  AWS_ACCESS_KEY,
-  BUCKET_NAME,
-});
 
 AWS.config.update({
   region: AWS_REGION,
   accessKeyId: AWS_KEY_ID,
-  secretAccessKey: AWS_ACCESS_KEY,
+  secretAccessKey: AWS_SECRET_ACCESS_KEY,
 });
 
 const resulverEmpty: OffChainData = {
