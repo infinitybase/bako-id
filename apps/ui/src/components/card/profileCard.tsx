@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Flex,
   Icon,
@@ -18,6 +19,8 @@ import {
   ExploreIcon,
   FarcasterBadgeIcon,
 } from '../icons';
+import { MetadataKeys } from '../../utils/metadataKeys';
+import { EditProfileModal } from '../modal/editProfileModal';
 
 interface Metadata {
   key: string;
@@ -31,19 +34,25 @@ interface IProfileCard {
   owner: string;
 }
 
-export const ProfileCard = ({ domain, domainName, owner }: IProfileCard) => {
+export const ProfileCard = ({
+  domain,
+  domainName,
+  owner,
+  metadata,
+}: IProfileCard) => {
   const action = useDisclosure();
   const { account } = useAccount();
   const [isLowerThanMobile] = useMediaQuery('(max-width: 25em)');
 
   const isOwner = useMemo(() => {
-    return owner === account;
+    // TODO: Confirm if its not a problem to compare strings with toLowerCase
+    return owner.toLowerCase() === account?.toLowerCase();
   }, [owner, account]);
 
-  // const nickname = metadata?.find(
-  //   (m) => m.key === ContactMetadataKeys.Nickname
-  // );
-  // const shortBio = metadata?.find((m) => m.key === ContactMetadataKeys.Bio);
+  const nickname = metadata?.find(
+    (m) => m.key === MetadataKeys.CONTACT_NICKNAME,
+  );
+  const shortBio = metadata?.find((m) => m.key === MetadataKeys.CONTACT_BIO);
 
   // const handle = handles?.find((handle) => handle.name === domainName);
 
@@ -70,11 +79,11 @@ export const ProfileCard = ({ domain, domainName, owner }: IProfileCard) => {
               {domainName?.startsWith('@') ? domainName : `@${domainName}`}
             </Text>
 
-            {/*{nickname?.value && (*/}
-            {/*  <Text fontSize={['sm', 'md']} color="grey.200" ml={0.5}>*/}
-            {/*    {nickname.value}*/}
-            {/*  </Text>*/}
-            {/*)}*/}
+            {nickname?.value && (
+              <Text fontSize={['sm', 'md']} color="grey.200" ml={0.5}>
+                {nickname.value}
+              </Text>
+            )}
 
             <Flex gap={1} ml={0}>
               <FarcasterBadgeIcon w={8} h={8} />
@@ -125,7 +134,7 @@ export const ProfileCard = ({ domain, domainName, owner }: IProfileCard) => {
               onClick={() =>
                 window.open(
                   `${import.meta.env.VITE_EXPLORER_URL}${domain}${ExplorerTypes.ASSETS}`,
-                  '_blank'
+                  '_blank',
                 )
               }
             >
@@ -135,21 +144,21 @@ export const ProfileCard = ({ domain, domainName, owner }: IProfileCard) => {
         </Flex>
       </Flex>
 
-      {/*{shortBio?.value && (*/}
-      {/*  <Flex>*/}
-      {/*    <Box>*/}
-      {/*      <Text fontSize={['sm', 'sm']} fontWeight="400" color="grey.100">*/}
-      {/*        {shortBio?.value}*/}
-      {/*        /!* Robust security. Uncompromising performance. Built like no other,*/}
-      {/*        Bako Safe is the next evolution in Multisig wallets. Stateless.*/}
-      {/*        Future-proof. Our stateless design allows for the creation of*/}
-      {/*        unlimited vaults at no cost (without sponsorships), and the very*/}
-      {/*        low transaction fees of Fuel Network. *!/*/}
-      {/*      </Text>*/}
-      {/*    </Box>*/}
-      {/*  </Flex>*/}
-      {/*)}*/}
-      {/*<EditProfileModal isOpen={action.isOpen} onClose={action.onClose} />*/}
+      {shortBio?.value && (
+        <Flex>
+          <Box>
+            <Text fontSize={['sm', 'sm']} fontWeight="400" color="grey.100">
+              {shortBio?.value}
+            </Text>
+          </Box>
+        </Flex>
+      )}
+
+      <EditProfileModal
+        isOpen={action.isOpen}
+        onClose={action.onClose}
+        metadata={metadata}
+      />
     </Card>
   );
 };

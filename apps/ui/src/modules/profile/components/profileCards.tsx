@@ -7,6 +7,8 @@ import { ProfileCardSkeleton } from '../../../components/skeletons';
 import { AccountsCardSkeleton } from '../../../components/skeletons/accountsCardSkeleton';
 import { AddressCardSkeleton } from '../../../components/skeletons/addressCardSkeleton';
 import { OwnershipCardSkeleton } from '../../../components/skeletons/ownershipCardSkeleton';
+import { MetadataKeys } from '../../../utils/metadataKeys.ts';
+import { AccountsCard } from '../../../components/card/accountsCard.tsx';
 
 type ProfileCardsProps = {
   domainParam: string;
@@ -69,6 +71,22 @@ export const ProfileCards = ({
     //   enabled: !!wallet && !!domainName,
     // });
 
+    const metadataMock = [
+      {
+        key: MetadataKeys.CONTACT_NICKNAME,
+        value: 'mynickname',
+      },
+      {
+        key: MetadataKeys.CONTACT_BIO,
+        value:
+          'Robust security. Uncompromising performance. Built like no other, Bako Safe is the next evolution in Multisig wallets. Stateless. Future-proof. Our stateless design allows for the creation of unlimited vaults at no cost (without sponsorships), and the very low transaction fees of Fuel Network. ',
+      },
+      {
+        key: MetadataKeys.SOCIAL_X,
+        value: 'twitterhandle',
+      },
+    ];
+
     return (
       <Suspense>
         <Stack
@@ -83,7 +101,7 @@ export const ProfileCards = ({
               domainName={domainParam}
               domain={domain ?? ''}
               owner={owner ?? ''}
-              metadata={[]}
+              metadata={metadataMock}
             />
 
             <Stack
@@ -97,7 +115,7 @@ export const ProfileCards = ({
               <AddressesCard domain={domain ?? ''} />
             </Stack>
           </Flex>
-          {/*<AccountsCard metadata={[]} />*/}
+          <AccountsCard metadata={metadataMock} />
         </Stack>
       </Suspense>
     );

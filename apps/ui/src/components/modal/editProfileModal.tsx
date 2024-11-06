@@ -19,7 +19,7 @@ import {
 } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
 
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import type { Account } from 'fuels';
 import React, { useMemo, useState, type ReactNode } from 'react';
@@ -40,6 +40,7 @@ interface Metadata {
 interface EditProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
+  metadata: Metadata[] | undefined;
 }
 
 export interface IMetadata {
@@ -417,6 +418,7 @@ const ModalFiltersTabs = ({
 export const EditProfileModal = ({
   isOpen,
   onClose,
+  metadata,
 }: EditProfileModalProps) => {
   const { domain } = useParams({ strict: false });
   const { wallet } = useWallet();
@@ -430,16 +432,17 @@ export const EditProfileModal = ({
     setFilter(newFilter);
   };
 
-  const { data: metadata, refetch: refetchMetadatas } = useQuery({
-    queryKey: ['getAllMetadatas'],
-    queryFn: async () => {
-      if (!wallet) return;
+  // TODO: Check if this is needed
+  // const { data, refetch: refetchMetadatas } = useQuery({
+  //   queryKey: ['getAllMetadatas'],
+  //   queryFn: async () => {
+  //     if (!wallet) return;
 
-      // const userMetadata = UserMetadataContract.initialize(wallet, domain);
-      //
-      // return userMetadata.getAll();
-    },
-  });
+  //     // const userMetadata = UserMetadataContract.initialize(wallet, domain);
+  //     //
+  //     // return userMetadata.getAll();
+  //   },
+  // });
 
   const handleSave = useMutation({
     mutationKey: ['saveBatchMetadatas'],
@@ -455,7 +458,7 @@ export const EditProfileModal = ({
         title: 'Profile Updated',
         description: 'You have successfully updated your profile',
       });
-      refetchMetadatas();
+      // refetchMetadatas();
       transactionDetails.onClose();
     },
     onError: (error) => {

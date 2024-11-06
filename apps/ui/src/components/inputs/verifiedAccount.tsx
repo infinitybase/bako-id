@@ -30,11 +30,12 @@ interface CustomInputProps extends InputProps {
 
 const VerifiedAccountInput = (props: CustomInputProps) => {
   const { isMyDomain } = useSidebar();
+
   const { value, variant, isVerified, rightAddon, rightAddonName, ...rest } =
     props;
 
   const variants = {
-    twitter: {
+    x: {
       name: 'X',
       value: props.value,
       icon: TwitterIcon,
