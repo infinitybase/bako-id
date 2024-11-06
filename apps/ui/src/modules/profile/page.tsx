@@ -10,8 +10,6 @@ const Profile = () => {
   const { isMobile } = useScreenSize();
   const drawer = useDisclosure();
 
-  console.log({ owner });
-
   return (
     <>
       <ProfileDrawer isOpen={drawer.isOpen} onClose={() => drawer.onClose()} />
