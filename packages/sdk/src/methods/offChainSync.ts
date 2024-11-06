@@ -63,7 +63,7 @@ export class OffChainSync {
     provider: Provider,
     tx_id: string
   ): Promise<void> {
-    const apiUrl = API_URL || 'https://bako-id-server.vercel.app';
+    const apiUrl = API_URL || 'https://api.bako.id';
     await fetch(`${apiUrl}/api/register`, {
       method: 'POST',
       headers: {
