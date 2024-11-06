@@ -1,12 +1,16 @@
-import AWS from 'aws-sdk';
-import dotenv from 'dotenv';
 import type { OffChainData } from '@bako-id/sdk';
-
-dotenv.config();
+import AWS from 'aws-sdk';
 
 const { AWS_REGION, AWS_KEY_ID, AWS_ACCESS_KEY } = process.env;
 
 const BUCKET_NAME = process.env.BUCKET_NAME ?? 'bako-id';
+
+console.log({
+  AWS_REGION,
+  AWS_KEY_ID,
+  AWS_ACCESS_KEY,
+  BUCKET_NAME,
+});
 
 AWS.config.update({
   region: AWS_REGION,
@@ -42,7 +46,7 @@ export const getJsonFile = async (filename: string): Promise<OffChainData> => {
 
 export const putJsonFile = async (
   filename: string,
-  jsonContent: OffChainData,
+  jsonContent: OffChainData
 ) => {
   await s3
     .putObject({
