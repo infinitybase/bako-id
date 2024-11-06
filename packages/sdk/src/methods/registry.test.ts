@@ -118,7 +118,7 @@ describe('Test Registry', () => {
     expect(sync.getRecords(resolver).length).toBe(1);
   });
 
-  it.only('should set metadata to domain', async () => {
+  it('should set metadata to domain', async () => {
     const {
       contracts: [registry],
       wallets: [wallet],
