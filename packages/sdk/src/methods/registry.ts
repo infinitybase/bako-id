@@ -1,12 +1,14 @@
 import { Manager, Nft, Registry, getContractId } from '@bako-id/contracts';
 import {
   type Account,
+  type FunctionInvocationScope,
   type Provider,
   TransactionStatus,
   getMintedAssetId,
   sha256,
   toUtf8Bytes,
 } from 'fuels';
+
 import {
   type Enum,
   type Identity,
@@ -15,6 +17,7 @@ import {
   domainPrices,
 } from '../utils';
 import { OffChainSync } from './offChainSync';
+import { MetadataKeys } from './types';
 
 export type RegisterPayload = {
   domain: string;
@@ -30,7 +33,7 @@ export type SimulatePayload = {
 async function checkAccountBalance(
   account: Account,
   domain: string,
-  period?: number
+  period?: number,
 ) {
   const amount = domainPrices(domain, period);
   const accountBalance = await account.getBalance();
@@ -55,11 +58,11 @@ export class RegistryContract {
     this.contract = new Registry(id, account);
     this.nftContract = new Nft(
       getContractId(account.provider.url, 'nft'),
-      account
+      account,
     );
     this.managerContract = new Manager(
       getContractId(account.provider.url, 'manager'),
-      account
+      account,
     );
   }
 
@@ -89,7 +92,7 @@ export class RegistryContract {
       await OffChainSync.setNew(
         { domain: domainName, resolver, period },
         this.provider,
-        transactionId
+        transactionId,
       );
     }
 
@@ -100,7 +103,7 @@ export class RegistryContract {
       transactionResponse,
       assetId: getMintedAssetId(
         this.contract.id.toB256(),
-        sha256(toUtf8Bytes(domainName))
+        sha256(toUtf8Bytes(domainName)),
       ),
     };
   }
@@ -160,4 +163,72 @@ export class RegistryContract {
     }
     return resolverInput;
   }
+
+  async setMetadata(
+    domain: string,
+    metadata: Partial<Record<MetadataKeys, string>>,
+  ) {
+    const domainName = assertValidDomain(domain);
+    const _domain = await this.managerContract.functions
+      .get_record(domainName)
+      .get();
+    if (!_domain.value) {
+      throw new Error('Domain not found');
+    }
+
+    const contractCall: FunctionInvocationScope<any>[] = [];
+
+    Object.entries(metadata).map(([key, value]) => {
+      contractCall.push(
+        this.contract.functions
+          .set_metadata_info(domainName, key, {
+            String: value,
+          })
+          .addContracts([this.managerContract, this.nftContract]),
+      );
+    });
+
+    const multiCall = await this.contract.multiCall(contractCall).call();
+    const resultado = await multiCall.waitForResult();
+    return resultado.transactionResult.status === TransactionStatus.success;
+  }
+
+  async getMetadata(domain: string) {
+    const domainName = assertValidDomain(domain);
+    const _domain = await this.managerContract.functions
+      .get_record(domainName)
+      .get();
+    if (!_domain.value) {
+      throw new Error('Domain not found');
+    }
+
+    // get the minted asset id
+    const mintedAssetId = {
+      bits: getMintedAssetId(
+        this.nftContract.id.toB256(),
+        sha256(toUtf8Bytes(domain)),
+      ),
+    };
+
+    const contractCall: FunctionInvocationScope<any>[] = [];
+
+    Object.entries(MetadataKeys).map(([_, value]) => {
+      contractCall.push(
+        this.nftContract.functions.metadata(mintedAssetId, `${value}`),
+      );
+    });
+
+    const multiCall = await this.contract.multiCall(contractCall).call();
+    const result = await multiCall.waitForResult();
+    
+    return Object.values(MetadataKeys).reduce(
+      (acc, key, index) => {
+        const entry = result.value[index];
+        if (entry !== undefined) {
+          acc[key] = entry.String; 
+        }
+        return acc;
+      },
+      {} as Record<MetadataKeys, string | undefined>,
+    );
 }

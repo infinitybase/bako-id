@@ -16,6 +16,7 @@ import { launchTestNode } from 'fuels/test-utils';
 import { RegistryContract } from '../index';
 import { InvalidDomainError, NotFoundBalanceError, randomName } from '../utils';
 import { OffChainSync } from './offChainSync';
+import { MetadataKeys } from './types';
 
 jest.mock('@bako-id/contracts', () => ({
   ...jest.requireActual('@bako-id/contracts'),
@@ -84,7 +85,7 @@ describe('Test Registry', () => {
         resolver: wallet.address.toB256(),
       });
       await expect(invalidSuffix).rejects.toBeInstanceOf(InvalidDomainError);
-    }
+    },
   );
 
   it('should register domain', async () => {
@@ -115,6 +116,36 @@ describe('Test Registry', () => {
     expect(sync.getDomain(resolver)).toBe(domain);
     expect(sync.getResolver(domain)).toBe(resolver);
     expect(sync.getRecords(resolver).length).toBe(1);
+  });
+
+  it.only('should set metadata to domain', async () => {
+    const {
+      contracts: [registry],
+      wallets: [wallet],
+    } = node;
+    const metadata = {
+      [MetadataKeys.CONTACT_EMAIL]: 'random@gmail.com',
+      [MetadataKeys.CONTACT_NICKNAME]: 'random',
+      [MetadataKeys.CONTACT_PHONE]: '123456789',
+      [MetadataKeys.LINK_BLOG]: 'https://random.com',
+    };
+
+    const contract = new RegistryContract(registry.id.toB256(), wallet);
+
+    const resolver = wallet.address.toB256();
+    const domain = `bako_${randomName(3)}`;
+
+    await contract.register({
+      domain,
+      period: 1,
+      resolver,
+    });
+
+    const metadataSet = await contract.setMetadata(domain, metadata);
+    const metadatasResult = await contract.getMetadata(domain);
+
+    expect(metadataSet).toBe(true);
+    expect(metadatasResult).toEqual(metadata);
   });
 
   it('should register two domain with the same address', async () => {
