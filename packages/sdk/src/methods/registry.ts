@@ -1,4 +1,4 @@
-import { Registry, getContractId } from '@bako-id/contracts';
+import { Manager, Nft, Registry, getContractId } from '@bako-id/contracts';
 import {
   type Account,
   type Provider,
@@ -44,13 +44,23 @@ async function checkAccountBalance(
 
 export class RegistryContract {
   private contract: Registry;
+  private nftContract: Nft;
+  private managerContract: Manager;
   private account: Account;
   private provider: Provider;
 
   constructor(id: string, account: Account) {
-    this.contract = new Registry(id, account);
     this.account = account;
     this.provider = account.provider;
+    this.contract = new Registry(id, account);
+    this.nftContract = new Nft(
+      getContractId(account.provider.url, 'nft'),
+      account
+    );
+    this.managerContract = new Manager(
+      getContractId(account.provider.url, 'manager'),
+      account
+    );
   }
 
   static create(account: Account) {
@@ -66,6 +76,7 @@ export class RegistryContract {
     const amount = await checkAccountBalance(this.account, domainName, period);
     const registerCall = await this.contract.functions
       .register(domainName, resolverInput, period)
+      .addContracts([this.managerContract, this.nftContract])
       .callParams({
         forward: { amount, assetId: this.provider.getBaseAssetId() },
       })
@@ -122,8 +133,10 @@ export class RegistryContract {
     const domainName = assertValidDomain(domain);
     const subId = sha256(toUtf8Bytes(domainName));
     const assetId = getMintedAssetId(this.contract.id.toB256(), subId);
+    const nftId = getContractId(this.provider.url, 'nft');
+    const nftContract = new Nft(nftId, this.provider);
 
-    const { value: image } = await this.contract.functions
+    const { value: image } = await nftContract.functions
       .metadata({ bits: assetId }, 'image:png')
       .get();
 

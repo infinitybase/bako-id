@@ -12,5 +12,5 @@ abi Registry {
 
 abi Constructor {
     #[storage(read, write)]
-    fn constructor(manager_id: ContractId);
+    fn constructor(manager_id: ContractId, token_id: ContractId);
 }

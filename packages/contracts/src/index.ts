@@ -5,9 +5,10 @@ export const contractsId = {
     manager:
       '0x324a2d168efd2e999156812c8edf51df68c110dd5afa4bd5fd83219f2382e3d2',
     registry:
-      '0xa5bafba6b74323b212e192cfcb0e023be89bc479c90086a076c14c4ae3d88537',
+      '0x0721d973cd659fe4e5a8eaa8c7041e3706b888c5c880561c18a57a649437e1ac',
     resolver:
-      '0x83b9f8b31082e8bb79bc511a0a93f74d721b0bb40c19e49732c5877e9c75a833',
+      '0xb9851f60b3bea9c1e0dd583a88cb29aecc490a4397f454fa39ea88150dad1850',
+    nft: '0xcad4793367082d5d6330c8c6d7939e181867668cf4fe81c0eb57c3e7e9f3b3ee',
   },
   mainnet: {
     manager:
@@ -16,11 +17,13 @@ export const contractsId = {
       '0xa92340a64bbad2fa902cf6d247c0ba874a51156e9d41c8311c8f25b25cb10c2f',
     resolver:
       '0x3459d07b9ec69f11d029d4a7609c53b11d0bce3132759f1cbd00a9182b1cad85',
+    nft: '',
   },
   local: {
     manager: '',
     registry: '',
     resolver: '',
+    nft: '',
   },
 };
 

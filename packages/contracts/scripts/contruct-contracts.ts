@@ -1,6 +1,6 @@
 import { Provider, Wallet } from 'fuels';
 import dotenv from 'dotenv';
-import { getContractId, Manager, Registry, Resolver } from '../src';
+import { getContractId, Manager, Nft, Registry, Resolver } from '../src';
 
 dotenv.config({
   path: '../.env',
@@ -30,10 +30,26 @@ const main = async () => {
   const managerId = getContractId(provider.url, 'manager');
   const resolverId = getContractId(provider.url, 'resolver');
   const registryId = getContractId(provider.url, 'registry');
+  const nftId = getContractId(provider.url, 'nft');
 
   const manager = new Manager(managerId, wallet);
   const resolver = new Resolver(resolverId, wallet);
   const registry = new Registry(registryId, wallet);
+  const nft = new Nft(nftId, wallet);
+
+  try {
+    const nftConstruct = await nft.functions
+      .constructor({ ContractId: { bits: registryId } })
+      .call();
+    await nftConstruct.waitForResult();
+    console.log('NFT construct success!');
+  } catch (e) {
+    if (e instanceof Error && /CannotReinitialized/.test(e.message)) {
+      console.error('NFT Contract is already initialized.');
+    } else {
+      console.error('NFT construct failed', e);
+    }
+  }
 
   try {
     const managerConstruct = await manager.functions
@@ -65,7 +81,7 @@ const main = async () => {
 
   try {
     const registryConstruct = await registry.functions
-      .constructor({ bits: managerId })
+      .constructor({ bits: managerId }, { bits: nftId })
       .call();
     await registryConstruct.waitForResult();
     console.log('Registry construct success!');
