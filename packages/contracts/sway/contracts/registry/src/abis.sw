@@ -1,10 +1,14 @@
 library;
 
 use std::string::String;
+use standards::src7::{Metadata};
 
 abi Registry {
     #[storage(write, read), payable]
     fn register(name: String, resolver: Identity, period: u16);
+
+    #[storage(write, read), payable]
+    fn set_metadata_info(name: String, key: String, value: Metadata);
 
     // renew
     // transfer
