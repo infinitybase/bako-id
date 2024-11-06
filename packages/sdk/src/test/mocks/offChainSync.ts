@@ -16,7 +16,6 @@ export class OffChainSyncMock {
   }
 
   static async create(provider: Provider): Promise<OffChainSyncMock> {
-    console.log('AQUI');
     const resolvers = await OffChainSyncMock.getJsonFile(provider.getChainId());
     return new OffChainSyncMock(resolvers, provider);
   }
