@@ -1,5 +1,6 @@
 import {
   ManagerFactory,
+  NftFactory,
   RegistryFactory,
   ResolverFactory,
 } from '@bako-id/contracts';
@@ -18,11 +19,17 @@ describe('Test resolver', () => {
         { factory: ResolverFactory },
         { factory: RegistryFactory },
         { factory: ManagerFactory },
+        { factory: NftFactory },
       ],
     });
 
     const { contracts } = node;
-    const [resolver, registry, manager] = contracts;
+    const [resolver, registry, manager, nft] = contracts;
+
+    const nftCall = await nft.functions
+      .constructor({ ContractId: { bits: registry.id.toB256() } })
+      .call();
+    await nftCall.waitForResult();
 
     const managerCall = await manager.functions
       .constructor({ ContractId: { bits: registry.id.toB256() } })
@@ -30,7 +37,7 @@ describe('Test resolver', () => {
     await managerCall.waitForResult();
 
     const registerCall = await registry.functions
-      .constructor({ bits: manager.id.toB256() })
+      .constructor({ bits: manager.id.toB256() }, { bits: nft.id.toB256() })
       .call();
     await registerCall.waitForResult();
 

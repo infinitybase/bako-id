@@ -16,3 +16,5 @@ export { Registry } from './Registry';
 export { RegistryFactory } from './RegistryFactory';
 export { Resolver } from './Resolver';
 export { ResolverFactory } from './ResolverFactory';
+export { Nft } from './Nft';
+export { NftFactory } from './NftFactory';

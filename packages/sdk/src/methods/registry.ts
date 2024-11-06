@@ -1,4 +1,4 @@
-import { Registry, getContractId } from '@bako-id/contracts';
+import { Nft, Registry, getContractId } from '@bako-id/contracts';
 import {
   type Account,
   type Provider,
@@ -66,6 +66,7 @@ export class RegistryContract {
     const amount = await checkAccountBalance(this.account, domainName, period);
     const registerCall = await this.contract.functions
       .register(domainName, resolverInput, period)
+      .addContracts([])
       .callParams({
         forward: { amount, assetId: this.provider.getBaseAssetId() },
       })
@@ -122,8 +123,10 @@ export class RegistryContract {
     const domainName = assertValidDomain(domain);
     const subId = sha256(toUtf8Bytes(domainName));
     const assetId = getMintedAssetId(this.contract.id.toB256(), subId);
+    const nftId = getContractId(this.provider.url, 'nft');
+    const nftContract = new Nft(nftId, this.provider);
 
-    const { value: image } = await this.contract.functions
+    const { value: image } = await nftContract.functions
       .metadata({ bits: assetId }, 'image:png')
       .get();
 
