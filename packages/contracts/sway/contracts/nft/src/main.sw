@@ -13,7 +13,7 @@ use standards::src3::SRC3;
 use standards::src5::{SRC5, State};
 use sway_libs::asset::supply::{_burn, _mint};
 use sway_libs::asset::metadata::*;
-use sway_libs::asset::base::{_total_assets,_total_supply, SetAssetAttributes};
+use sway_libs::asset::base::{_total_assets,_total_supply, _set_name, _name, SetAssetAttributes};
 use sway_libs::ownership::{_owner, initialize_ownership, only_owner};
 
 pub enum MintError {
@@ -29,8 +29,6 @@ pub enum SetError {
 configurable {
     /// The decimals of the asset minted by this contract.
     DECIMALS: u8 = 0u8,
-    /// The name of the asset minted by this contract.
-    NAME: str[7] = __to_str_array("Bako ID"),
     /// The symbol of the asset minted by this contract.
     SYMBOL: str[3] = __to_str_array("BID"),
 }
@@ -38,6 +36,7 @@ configurable {
 storage {
     total_assets: u64 = 0,
     total_supply: StorageMap<AssetId, u64> = StorageMap {},
+    name: StorageMap<AssetId, StorageString> = StorageMap {},
     metadata: StorageMetadata = StorageMetadata {},
 }
 
@@ -66,10 +65,7 @@ impl SRC20 for Contract {
 
     #[storage(read)]
     fn name(asset: AssetId) -> Option<String> {
-        match storage.total_supply.get(asset).try_read() {
-            Some(_) => Some(String::from_ascii_str(from_str_array(NAME))),
-            None => None,
-        }
+        _name(storage.name, asset)
     }
 
     #[storage(read)]
@@ -139,6 +135,33 @@ impl SRC5 for Contract {
         _owner()
     }
 }
+
+impl SetAssetAttributes for Contract {
+    #[storage(write)]
+    fn set_name(asset: AssetId, name: String) {
+        only_owner();
+        require(
+            storage
+                .name
+                .get(asset)
+                .read_slice()
+                .is_none(),
+            SetError::ValueAlreadySet,
+        );
+        _set_name(storage.name, asset, name);
+    }
+
+    #[storage(write)]
+    fn set_symbol(asset: AssetId, symbol: String) {
+        require(false, SetError::ValueAlreadySet);
+    }
+
+    #[storage(write)]
+    fn set_decimals(_asset: AssetId, _decimals: u8) {
+        require(false, SetError::ValueAlreadySet);
+    }
+}
+
 
 impl SetAssetMetadata for Contract {
     #[storage(read, write)]

@@ -2,12 +2,13 @@
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
     "prebuild": {
+      "outputs": ["dist/**"],
       "cache": true
     },
     "build": {
       "dependsOn": ["^prebuild", "^build"],
       "outputs": ["dist/**", ".next/**"],
-      "cache": false
+      "cache": true
     },
     "docs:build": {
       "dependsOn": ["^docs:build"],
@@ -18,8 +19,9 @@
       "outputLogs": "errors-only"
     },
     "test": {
-      "dependsOn": ["^test", "pretest"],
-      "outputLogs": "new-only"
+      "dependsOn": ["^build", "^test", "pretest"],
+      "outputLogs": "new-only",
+      "cache": false
     }
   }
 }

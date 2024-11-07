@@ -85,7 +85,7 @@ describe('Test Registry', () => {
         resolver: wallet.address.toB256(),
       });
       await expect(invalidSuffix).rejects.toBeInstanceOf(InvalidDomainError);
-    },
+    }
   );
 
   it('should register domain', async () => {
@@ -116,6 +116,10 @@ describe('Test Registry', () => {
     expect(sync.getDomain(resolver)).toBe(domain);
     expect(sync.getResolver(domain)).toBe(resolver);
     expect(sync.getRecords(resolver).length).toBe(1);
+
+    const { image } = await contract.token(domain);
+    expect(image).toBeDefined();
+    expect(image).toBe(`https://assets.bako.id/${domain}`);
   });
 
   it('should set metadata to domain', async () => {
