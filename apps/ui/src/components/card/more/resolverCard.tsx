@@ -6,7 +6,6 @@ import {
   Heading,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Address } from 'fuels';
 import { Card } from '..';
 
 import { useWallet } from '@fuels/react';
@@ -67,9 +66,7 @@ export const ResolverCard = () => {
           <CardBody mt={4}>
             <TextValue
               leftAction="address"
-              content={Address.fromB256(
-                domain?.Address?.bits ?? domain?.ContractId?.bits ?? '',
-              ).toB256()}
+              content={domain?.Address?.bits ?? domain?.ContractId?.bits ?? ''}
               rightAction={
                 <Explorer
                   id={domain?.Address?.bits ?? domain?.ContractId?.bits ?? ''}
@@ -86,9 +83,7 @@ export const ResolverCard = () => {
           isOpen={action.isOpen}
           onClose={() => action.onClose()}
           domain={`${domainParam}`}
-          resolver={Address.fromB256(
-            domain?.Address?.bits ?? domain?.ContractId?.bits ?? '',
-          ).toB256()}
+          resolver={domain?.Address?.bits ?? domain?.ContractId?.bits ?? ''}
           onConfirm={(resolver) => handleChangeResolver(resolver)}
         />
       </Suspense>
