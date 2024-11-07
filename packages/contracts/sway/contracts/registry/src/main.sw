@@ -37,7 +37,7 @@ fn get_manager_id() -> ContractId {
 fn mint_token(name: String, receiver: Identity) -> AssetId {
     let sub_id = sha256(name);
     let token_id = storage.token_id.read();
-    let asset_id = AssetId::new(ContractId::this(), sub_id);
+    let asset_id = AssetId::new(token_id, sub_id);
     let src3_contract = abi(SRC3, token_id.into());
     src3_contract.mint(receiver, Some(sub_id), 1);
 
@@ -63,6 +63,8 @@ enum RegistryContractError {
     AlreadyInitialized: (),
     ContractNotBeZero: (),
     ContractNotInitialized: (),
+    NotOwner: (),
+    NotFoundName: (),
 }
 
 impl Registry for Contract {
@@ -106,6 +108,48 @@ impl Registry for Contract {
             asset_id,
             name_hash,
         });
+    }
+
+
+    // valide se quem tá chamando é owner do registo
+    // valide se o registro existe -> nft_id
+    // valide se é uma chave que pode ser aceita
+    
+    #[storage(write, read), payable]
+    fn set_metadata_info(name: String, key: String, value: Metadata) {
+        log(name);
+        let sub_id = sha256(name);
+        let manager_id = get_manager_id();
+        let token_id = storage.token_id.read();
+        let asset_id = AssetId::new(token_id, sub_id);
+
+        let nft_contract = abi(SetAssetMetadata, token_id.into());
+        let manager_contract = abi(ManagerInfo, manager_id.into());
+        let register = manager_contract.get_record(name);
+        log(register);
+        log(register.is_some());
+
+        require(
+            register.is_some(),
+            RegistryContractError::NotFoundName,
+        );
+
+        require(
+            register.unwrap().owner == msg_sender().unwrap(),
+            RegistryContractError::NotOwner,
+        );
+
+        log(asset_id);
+        log(key);
+        log(value);
+        
+        
+        nft_contract.set_metadata(
+                asset_id, 
+                key, 
+                value
+        );
+        
     }
 }
 

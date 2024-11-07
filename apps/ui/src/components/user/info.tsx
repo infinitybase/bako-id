@@ -70,14 +70,14 @@ export const Info = ({
             _hover={{}}
             _focusVisible={{}}
             _active={{}}
+            pl={0}
           >
             <Box
               display="flex"
               gap={3}
               pl={2}
               alignItems="center"
-              justifyContent="flex-end"
-              w={['12.5rem', '13.5rem']}
+              justifyContent="space-between"
               border="1px solid"
               borderColor="stroke.500"
               borderRadius="xl"
@@ -95,6 +95,7 @@ export const Info = ({
             w="full"
             display="flex"
             p={2}
+            mr={4}
             flexDirection="column"
             borderColor="stroke.500"
           >

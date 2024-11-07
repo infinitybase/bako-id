@@ -3,12 +3,12 @@ export * from './artifacts';
 export const contractsId = {
   testnet: {
     manager:
-      '0x324a2d168efd2e999156812c8edf51df68c110dd5afa4bd5fd83219f2382e3d2',
+      '0x19f62931f5ac9898b4001d3bca336536e3f76297004d144a5f9638665c9bf8ff',
     registry:
-      '0x0721d973cd659fe4e5a8eaa8c7041e3706b888c5c880561c18a57a649437e1ac',
+      '0x468b3f6eebea52e5ecae7e8a297276c15c303ff65e485a5bd851a6a7fa9483a1',
     resolver:
-      '0xb9851f60b3bea9c1e0dd583a88cb29aecc490a4397f454fa39ea88150dad1850',
-    nft: '0xcad4793367082d5d6330c8c6d7939e181867668cf4fe81c0eb57c3e7e9f3b3ee',
+      '0xdd72f78a46a9bc1fd11c0c9d18eb65d26dd9837eb85d0f3f101ac319dfd710da',
+    nft: '0xda25f68065ce8259285a9147dc7acedefd17ff196376daffacbcdd21b73e5039',
   },
   mainnet: {
     manager:

@@ -9,9 +9,9 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { FarcasterIcon } from '..';
+// import { FarcasterIcon } from '..';
 import { BakoSafeBanner } from '../buttons/bakoSafeBanner';
-import { SidebarBanner } from '../buttons/sidebarBanner';
+// import { SidebarBanner } from '../buttons/sidebarBanner';
 import { SidebarButton } from '../buttons/sidebarButton';
 import { BakoSafeLogo } from '../icons/bakoSafeLogo';
 import { UserIcon } from '../icons/userIcon';
@@ -86,12 +86,12 @@ const ProfileSidebar = (props: ProfileSidebarProps) => {
               icon={TwitterBannerIcon}
             /> */}
 
-            <SidebarBanner
+            {/* <SidebarBanner
               text="Click here to verify your Farcaster account and get benefits"
               icon={FarcasterIcon}
               bgColor="#7F5FC7"
               iconColor="white"
-            />
+            /> */}
           </Flex>
         )}
 

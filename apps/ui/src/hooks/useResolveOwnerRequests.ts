@@ -6,7 +6,7 @@ const useResolveOwnerRequests = (domain: string) => {
   return useQuery({
     queryKey: ['resolveOwner', domain],
     queryFn: async () => resolverContract?.owner(domain),
-    enabled: !!domain,
+    enabled: !!domain && !!resolverContract,
   });
 };
 

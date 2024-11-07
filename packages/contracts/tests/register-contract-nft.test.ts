@@ -1,4 +1,10 @@
-import { bn, getMintedAssetId, sha256, toUtf8Bytes } from 'fuels';
+import {
+  bn,
+  getMintedAssetId,
+  getRandomB256,
+  sha256,
+  toUtf8Bytes,
+} from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
 import {
   Manager,
@@ -69,7 +75,7 @@ describe('[NFT] Registry Contract', () => {
         {
           Address: { bits: deployer.address.toB256() },
         },
-        bn(1)
+        bn(1),
       )
       .callParams({
         forward: { assetId: provider.getBaseAssetId(), amount: price },
@@ -81,7 +87,7 @@ describe('[NFT] Registry Contract', () => {
 
     const assetId = getMintedAssetId(
       nft.id.toB256(),
-      sha256(toUtf8Bytes(name))
+      sha256(toUtf8Bytes(name)),
     );
 
     const mintedNFT = await deployer.getBalance(assetId);
@@ -120,7 +126,7 @@ describe('[NFT] Registry Contract', () => {
         {
           Address: { bits: deployer.address.toB256() },
         },
-        bn(1)
+        bn(1),
       )
       .callParams({
         forward: { assetId: provider.getBaseAssetId(), amount: price },
@@ -130,8 +136,8 @@ describe('[NFT] Registry Contract', () => {
     await waitForRegister();
 
     const assetId = getMintedAssetId(
-      registry.id.toB256(),
-      sha256(toUtf8Bytes(name))
+      nft.id.toB256(),
+      sha256(toUtf8Bytes(name)),
     );
     const assetIdInput = { bits: assetId };
     const { value: assetImage } = await nft.functions
@@ -139,5 +145,206 @@ describe('[NFT] Registry Contract', () => {
       .get();
 
     expect(assetImage?.String).toBe(`https://assets.bako.id/${name}`);
+  });
+
+  it('should set new info on metadata', async () => {
+    const { wallets, provider } = node;
+    const [deployer] = wallets;
+    const name = randomName();
+    const price = domainPrices(name);
+    const metadataKey = 'nome:teste';
+    const metadataValue = randomName();
+
+    // generate a new name
+    const { waitForResult: waitForRegister } = await registry.functions
+      .register(
+        name,
+        {
+          Address: { bits: deployer.address.toB256() },
+        },
+        bn(1),
+      )
+      .callParams({
+        forward: { assetId: provider.getBaseAssetId(), amount: price },
+      })
+      .addContracts([manager, nft])
+      .call();
+
+    await waitForRegister();
+
+    await manager.functions.get_record(name).get();
+
+    // get the minted asset id
+    const mintedAssetId = {
+      bits: getMintedAssetId(nft.id.toB256(), sha256(toUtf8Bytes(name))),
+    };
+
+    // set the metadata info
+    const setTx = await registry.functions
+      .set_metadata_info(name, metadataKey, {
+        String: metadataValue,
+      })
+      .addContracts([manager, nft])
+      .call();
+
+    await setTx.waitForResult();
+
+    const result = await nft.functions
+      .metadata(mintedAssetId, metadataKey)
+      .get();
+
+    expect(result.value?.String).toBe(metadataValue);
+  });
+
+  it('should edit info on metadata', async () => {
+    const { wallets, provider } = node;
+    const [deployer] = wallets;
+    const name = randomName();
+    const price = domainPrices(name);
+    const metadataKey = 'nome:teste';
+    const metadataValue = randomName();
+    const metadataValueAux = randomName();
+
+    // generate a new name
+    const { waitForResult: waitForRegister } = await registry.functions
+      .register(
+        name,
+        {
+          Address: { bits: deployer.address.toB256() },
+        },
+        bn(1),
+      )
+      .callParams({
+        forward: { assetId: provider.getBaseAssetId(), amount: price },
+      })
+      .addContracts([manager, nft])
+      .call();
+    await waitForRegister();
+
+    // get the minted asset id
+    const mintedAssetId = {
+      bits: getMintedAssetId(nft.id.toB256(), sha256(toUtf8Bytes(name))),
+    };
+
+    // set the metadata info
+    await registry.functions
+      .set_metadata_info(name, metadataKey, {
+        String: metadataValue,
+      })
+      .addContracts([manager, nft])
+      .call();
+
+    const firstResult = await nft.functions
+      .metadata(mintedAssetId, `${metadataKey}`)
+      .call();
+
+    // set the metadata info again
+    await registry.functions
+      .set_metadata_info(name, metadataKey, {
+        String: metadataValueAux,
+      })
+      .addContracts([manager, nft])
+      .call();
+
+    const secondResult = await nft.functions
+      .metadata(mintedAssetId, `${metadataKey}`)
+      .call();
+
+    const r1st = await firstResult.waitForResult();
+    const r2nd = await secondResult.waitForResult();
+
+    expect(r1st.value?.String).toBe(metadataValue);
+    expect(r2nd.value?.String).toBe(metadataValueAux);
+    expect(r1st.value?.String).not.toBe(r2nd.value?.String);
+  });
+
+  it('should return undefined for unset key', async () => {
+    const { wallets, provider } = node;
+    const [deployer] = wallets;
+    const name = randomName();
+    const price = domainPrices(name);
+    const metadataKey = 'nome:teste';
+    const metadataValue = randomName();
+
+    // generate a new name
+    const { waitForResult: waitForRegister } = await registry.functions
+      .register(
+        name,
+        {
+          Address: { bits: deployer.address.toB256() },
+        },
+        bn(1),
+      )
+      .callParams({
+        forward: { assetId: provider.getBaseAssetId(), amount: price },
+      })
+      .addContracts([manager, nft])
+      .call();
+    await waitForRegister();
+
+    // get the minted asset id
+    const mintedAssetId = {
+      bits: getMintedAssetId(nft.id.toB256(), sha256(toUtf8Bytes(name))),
+    };
+
+    // set the metadata info
+    await registry.functions
+      .set_metadata_info(name, metadataKey, {
+        String: metadataValue,
+      })
+      .addContracts([manager, nft])
+      .call();
+
+    const result = await nft.functions
+      .metadata(mintedAssetId, `${metadataKey}inválid`)
+      .call();
+
+    const r = await result.waitForResult();
+
+    expect(r.value?.String).toBeUndefined();
+  });
+
+  it('should set a metadata key on not existent mintedAsset', async () => {
+    const { wallets, provider } = node;
+    const [deployer] = wallets;
+    const name = randomName();
+    const price = domainPrices(name);
+    const metadataKey = 'nome:teste';
+    const metadataValue = randomName();
+    const random = {
+      bits: getRandomB256(),
+    };
+
+    // generate a new name
+    const { waitForResult: waitForRegister } = await registry.functions
+      .register(
+        name,
+        {
+          Address: { bits: deployer.address.toB256() },
+        },
+        bn(1),
+      )
+      .callParams({
+        forward: { assetId: provider.getBaseAssetId(), amount: price },
+      })
+      .addContracts([manager, nft])
+      .call();
+    await waitForRegister();
+
+    // set the metadata info
+    await registry.functions
+      .set_metadata_info(name, metadataKey, {
+        String: metadataValue,
+      })
+      .addContracts([manager, nft])
+      .call();
+
+    const result = await nft.functions
+      .metadata(random, `${metadataKey}`)
+      .call();
+
+    const r = await result.waitForResult();
+
+    expect(r.value?.String).toBeUndefined();
   });
 });

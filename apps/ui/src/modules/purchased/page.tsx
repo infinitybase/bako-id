@@ -15,7 +15,7 @@ import type { TransactionResult } from 'fuels';
 import { TwitterShareButton } from 'react-share';
 import {
   CheckoutCard,
-  FarcasterIcon,
+  // FarcasterIcon,
   GoBack,
   TwitterIcon,
 } from '../../components';
@@ -116,21 +116,29 @@ export const Purchased = ({
           my={['1rem', '.8rem']}
           gap={4}
         >
-          <Button
+          {/* <Button
             variant="primary"
             leftIcon={<FarcasterIcon w={4} h={4} />}
             // onClick={() => setFormStep(LIST_DOMAINS)}
           >
             Share on Farcaster
-          </Button>
+          </Button> */}
 
-          <Button leftIcon={<TwitterIcon w={4} h={4} />} variant="primary">
+          <Button variant="primary" px={1}>
             <TwitterShareButton
+              style={{
+                width: '100%',
+                height: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
               url="http://localhost:5173/"
               title="Create your web3 domain!"
               hashtags={['web3', 'fueldomains']}
               related={[]}
             >
+              <TwitterIcon w={4} h={4} mr={2} />
               Share on X
             </TwitterShareButton>
           </Button>

@@ -24,6 +24,9 @@ export const OwnershipCard = ({ owner }: IOwnershipCard) => {
   const manager = '0w5t54h834fht...8et4';
 
   if (!data) return null;
+  // const { domain } = useParams({ strict: false });
+  // const { data } = useGetGracePeriod(domain.replace('@', ''));
+  // const { isMyDomain } = useSidebar();
 
   return (
     <Card
@@ -83,6 +86,23 @@ export const OwnershipCard = ({ owner }: IOwnershipCard) => {
           }
           content={format(data!.period, 'MMMM dd, yyyy')}
         />
+        {data?.period && (
+          <TextValue
+            leftAction={'expiry'}
+            rightAction={
+              <CopyText value={Address.fromB256(owner ?? '').toB256()} />
+            }
+            content={format(data?.period, 'PP')}
+          />
+        )}
+        {/*<TextValue*/}
+        {/*  leftAction={'expiry'}*/}
+        {/*  textAlign="right"*/}
+        {/*  rightAction={*/}
+        {/*    <CopyText value={format(data.period, 'MMMM dd, yyyy')} />*/}
+        {/*  }*/}
+        {/*  content={format(data.period, 'MMMM dd, yyyy')}*/}
+        {/*/>*/}
       </Flex>
     </Card>
   );
