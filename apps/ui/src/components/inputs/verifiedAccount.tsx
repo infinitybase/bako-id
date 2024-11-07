@@ -133,7 +133,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
               w={6}
               h={6}
             />
-            {currentVariant?.value && isVerifiedVariant && (
+            {/* {currentVariant?.value && isVerifiedVariant && (
               <Text
                 zIndex={1}
                 left="100%"
@@ -143,7 +143,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
               >
                 {isVerified ? 'Verified' : 'Not verified'}
               </Text>
-            )}
+            )} */}
           </InputLeftAddon>
 
           <Box

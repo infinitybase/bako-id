@@ -1,6 +1,6 @@
-import { Button, Flex, Heading } from '@chakra-ui/react';
+import { Flex, Heading } from '@chakra-ui/react';
 import { Address } from 'fuels';
-import { Card, DoubleArrowRightIcon, TextValue } from '..';
+import { Card, TextValue } from '..';
 import { ExplorerTypes } from '../../types';
 import { formatAddress } from '../../utils/formatter';
 import { Explorer } from '../helpers/explorer';
@@ -8,7 +8,6 @@ import { CopyText } from '../helpers/copy';
 import { format } from 'date-fns';
 import { useParams } from '@tanstack/react-router';
 import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
-import { useSidebar } from '../sidebar/hooks/useSidebar';
 
 interface IOwnershipCard {
   owner: string | null;
@@ -17,16 +16,7 @@ export const OwnershipCard = ({ owner }: IOwnershipCard) => {
   const { domain } = useParams({ strict: false });
   const { data } = useGetGracePeriod(domain.replace('@', ''));
 
-  const { isMyDomain } = useSidebar();
-
-  // TODO: Replace with real data
-  const parent = '@infinitybase.bakoglobal';
-  const manager = '0w5t54h834fht...8et4';
-
   if (!data) return null;
-  // const { domain } = useParams({ strict: false });
-  // const { data } = useGetGracePeriod(domain.replace('@', ''));
-  // const { isMyDomain } = useSidebar();
 
   return (
     <Card
@@ -40,7 +30,7 @@ export const OwnershipCard = ({ owner }: IOwnershipCard) => {
     >
       <Flex alignItems="center" justify="space-between">
         <Heading fontSize="lg">Ownership</Heading>
-        {isMyDomain && (
+        {/* {isMyDomain && (
           <Button
             variant="ghosted"
             isDisabled={!isMyDomain}
@@ -48,7 +38,7 @@ export const OwnershipCard = ({ owner }: IOwnershipCard) => {
           >
             Extend
           </Button>
-        )}
+        )} */}
       </Flex>
       <Flex
         direction="column"
@@ -63,7 +53,7 @@ export const OwnershipCard = ({ owner }: IOwnershipCard) => {
           }
           content={owner ? formatAddress(Address.fromB256(owner).toB256()) : ''}
         />
-        <TextValue
+        {/* <TextValue
           leftAction={'manager'}
           rightAction={
             <Explorer id={owner ?? ''} type={ExplorerTypes.ASSETS} />
@@ -77,7 +67,7 @@ export const OwnershipCard = ({ owner }: IOwnershipCard) => {
             <CopyText value={format(data!.period, 'MMMM dd, yyyy')} />
           }
           content={parent}
-        />
+        /> */}
         <TextValue
           leftAction={'expiry'}
           textAlign="right"
@@ -86,23 +76,6 @@ export const OwnershipCard = ({ owner }: IOwnershipCard) => {
           }
           content={format(data!.period, 'MMMM dd, yyyy')}
         />
-        {data?.period && (
-          <TextValue
-            leftAction={'expiry'}
-            rightAction={
-              <CopyText value={Address.fromB256(owner ?? '').toB256()} />
-            }
-            content={format(data?.period, 'PP')}
-          />
-        )}
-        {/*<TextValue*/}
-        {/*  leftAction={'expiry'}*/}
-        {/*  textAlign="right"*/}
-        {/*  rightAction={*/}
-        {/*    <CopyText value={format(data.period, 'MMMM dd, yyyy')} />*/}
-        {/*  }*/}
-        {/*  content={format(data.period, 'MMMM dd, yyyy')}*/}
-        {/*/>*/}
       </Flex>
     </Card>
   );

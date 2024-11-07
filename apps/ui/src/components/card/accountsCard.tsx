@@ -6,11 +6,11 @@ import { PlusSquareIcon } from '@chakra-ui/icons';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
 
 interface AccountsCardProps {
-  // metadata: Metadata[] | undefined;
-  metadata: { key: string; value: string }[] | undefined;
+  metadata: { key: string; value: string | undefined }[] | undefined;
+  addAction: () => void;
 }
 
-export const AccountsCard = ({ metadata }: AccountsCardProps) => {
+export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
   const { isMyDomain } = useSidebar();
 
   return (
@@ -25,7 +25,11 @@ export const AccountsCard = ({ metadata }: AccountsCardProps) => {
       <Flex alignItems="center" justify="space-between">
         <Heading fontSize="lg">Accounts</Heading>
         {isMyDomain && (
-          <Button variant="ghosted" rightIcon={<PlusSquareIcon />}>
+          <Button
+            variant="ghosted"
+            rightIcon={<PlusSquareIcon />}
+            onClick={addAction}
+          >
             Add
           </Button>
         )}

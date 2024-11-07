@@ -3,9 +3,11 @@ import { Suspense } from 'react';
 import { AddressesCard } from '../../../components/card/addressesCard.tsx';
 import { OwnershipCard } from '../../../components/card/ownershipCard.tsx';
 import { ProfileCard } from '../../../components/card/profileCard.tsx';
-import { MetadataKeys } from '../../../utils/metadataKeys.ts';
 import { AccountsCard } from '../../../components/card/accountsCard.tsx';
 import { ProfileCardLoadingSkeleton } from './profileCardLoadingSkeleton.tsx';
+
+import { EditMetadataModal } from '../../../components/modal/editProfileModal.tsx';
+import { useMetadata } from '../../../hooks/useMetadata.ts';
 
 type ProfileCardsProps = {
   domainParam: string;
@@ -20,67 +22,18 @@ export const ProfileCards = ({
   isLoading,
   owner,
 }: ProfileCardsProps) => {
-  // const { domain: domainName } = useParams({ strict: false });
-  // const { wallet } = useWallet();
-  //
-  // const { data: metadata } = useQuery({
-  //   queryKey: ['getAllMetadatas'],
-  //   queryFn: async () => {
-  //     if (!wallet) return;
-  //
-  //     // const userMetadata = UserMetadataContract.initialize(
-  //     //   wallet,
-  //     //   domainName,
-  //     // );
-  //
-  //     // return userMetadata.getAll();
-  //
-  //     return [];
-  //   },
-  //   enabled: !!wallet && !!domainName,
-  // });
-
-  // const LoadedData = () => {
-  // const { domain: domainName } = useParams({ strict: false });
-  // const { wallet } = useWallet();
-  //
-  // const { data: metadata } = useQuery({
-  //   queryKey: ['getAllMetadatas'],
-  //   queryFn: async () => {
-  //     if (!wallet) return;
-  //
-  //     // const userMetadata = UserMetadataContract.initialize(
-  //     //   wallet,
-  //     //   domainName,
-  //     // );
-  //
-  //     // return userMetadata.getAll();
-  //
-  //     return [];
-  //   },
-  //   enabled: !!wallet && !!domainName,
-  // });
-
-  const metadataMock = [
-    {
-      key: MetadataKeys.CONTACT_NICKNAME,
-      value: 'mynickname',
-    },
-    {
-      key: MetadataKeys.CONTACT_BIO,
-      value:
-        'Robust security. Uncompromising performance. Built like no other, Bako Safe is the next evolution in Multisig wallets. Stateless. Future-proof. Our stateless design allows for the creation of unlimited vaults at no cost (without sponsorships), and the very low transaction fees of Fuel Network. ',
-    },
-    {
-      key: MetadataKeys.SOCIAL_X,
-      value: 'twitterhandle',
-    },
-  ];
+  const { metadataModal, metadata } = useMetadata();
 
   return isLoading || !owner ? (
     <ProfileCardLoadingSkeleton />
   ) : (
     <Suspense>
+      <EditMetadataModal
+        isOpen={metadataModal.isOpen}
+        onClose={metadataModal.onClose}
+        metadata={metadata}
+      />
+
       <Stack
         display="flex"
         h="fit-content"
@@ -92,8 +45,8 @@ export const ProfileCards = ({
           <ProfileCard
             domainName={domainParam}
             domain={domain ?? ''}
-            owner={owner ?? ''}
-            metadata={metadataMock}
+            metadata={metadata}
+            editAction={metadataModal.onOpen}
           />
 
           <Stack
@@ -107,7 +60,7 @@ export const ProfileCards = ({
             <AddressesCard domain={domain ?? ''} />
           </Stack>
         </Flex>
-        <AccountsCard metadata={metadataMock} />
+        <AccountsCard metadata={metadata} addAction={metadataModal.onOpen} />
       </Stack>
     </Suspense>
   );

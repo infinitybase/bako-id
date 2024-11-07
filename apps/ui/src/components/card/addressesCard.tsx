@@ -1,4 +1,4 @@
-import { Button, Flex, Heading, Icon } from '@chakra-ui/react';
+import { Flex, Heading, Icon } from '@chakra-ui/react';
 import { Address } from 'fuels';
 import { Card, TextValue } from '..';
 import { formatAddress } from '../../utils/formatter';
@@ -6,16 +6,12 @@ import { CopyText } from '../helpers/copy';
 import { FuelIcon } from '../icons/fuelIcon';
 import { Explorer } from '../helpers/explorer';
 import { ExplorerTypes } from '../../types';
-import { useSidebar } from '../sidebar/hooks/useSidebar';
-import { PlusSquareIcon } from '@chakra-ui/icons';
 
 interface IAddressesCard {
   domain: string | null;
 }
 
 export const AddressesCard = ({ domain }: IAddressesCard) => {
-  const { isMyDomain } = useSidebar();
-
   if (!domain) return null;
 
   return (
@@ -30,11 +26,11 @@ export const AddressesCard = ({ domain }: IAddressesCard) => {
     >
       <Flex alignItems="center" justify="space-between">
         <Heading fontSize="lg">Addresses</Heading>
-        {isMyDomain && (
+        {/* {isMyDomain && (
           <Button variant="ghosted" rightIcon={<PlusSquareIcon />}>
             Add
           </Button>
-        )}
+        )} */}
       </Flex>
       <Flex direction="column" alignItems="center" justifyContent="center">
         <TextValue

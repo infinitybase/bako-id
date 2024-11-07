@@ -19,7 +19,6 @@ import {
 } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
 
-import { useMutation } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import type { Account } from 'fuels';
 import React, { useMemo, useState, type ReactNode } from 'react';
@@ -27,10 +26,11 @@ import { Metadatas } from '../../utils/metadatas';
 import { MetadataCard } from '../card/metadataCard';
 import { Dialog } from '../dialog';
 import { AvatarIcon } from '../icons';
-import { useCustomToast } from '../toast';
 import { EditProfileFieldsModal } from './editProfileFieldsModal';
 import { EditProfilePicModal } from './editProfilePicModal';
 import { TransactionsDetailsModal } from './transactionDetails';
+import { type MetadataKeyValue, useMetadata } from '../../hooks/useMetadata';
+import { set } from 'lodash';
 
 interface Metadata {
   key: string;
@@ -40,7 +40,7 @@ interface Metadata {
 interface EditProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
-  metadata: Metadata[] | undefined;
+  metadata: { key: string; value: string | undefined }[] | undefined;
 }
 
 export interface IMetadata {
@@ -53,7 +53,7 @@ export interface IMetadata {
 interface IModalFilterTabsProps {
   metadata: Metadata[];
   filters: FilterButtonTypes;
-  updates: Metadata[];
+  updates: MetadataKeyValue[];
   setUpdates: React.Dispatch<React.SetStateAction<Metadata[]>>;
 }
 
@@ -415,18 +415,22 @@ const ModalFiltersTabs = ({
   );
 };
 
-export const EditProfileModal = ({
+export const EditMetadataModal = ({
   isOpen,
   onClose,
-  metadata,
 }: EditProfileModalProps) => {
   const { domain } = useParams({ strict: false });
   const { wallet } = useWallet();
-  const transactionDetails = useDisclosure();
-  const { successToast, errorToast } = useCustomToast();
+  const {
+    handleSaveRequest,
+    metadata,
+    transactionModal,
+    updatedMetadata,
+    setUpdatedMetadata,
+  } = useMetadata();
+  // const transactionDetails = useDisclosure();
 
   const [filter, setFilter] = useState(FilterButtonTypes.ALL);
-  const [updates, setUpdates] = useState<Metadata[]>([]);
 
   const handleFilterClick = (newFilter: FilterButtonTypes) => {
     setFilter(newFilter);
@@ -444,33 +448,6 @@ export const EditProfileModal = ({
   //   },
   // });
 
-  const handleSave = useMutation({
-    mutationKey: ['saveBatchMetadatas'],
-    mutationFn: async () => {
-      if (!wallet) return;
-
-      // const userMetadata = UserMetadataContract.initialize(wallet, domain);
-      //
-      // return userMetadata.batchSaveMetadata(updates);
-    },
-    onSuccess: () => {
-      successToast({
-        title: 'Profile Updated',
-        description: 'You have successfully updated your profile',
-      });
-      // refetchMetadatas();
-      transactionDetails.onClose();
-    },
-    onError: (error) => {
-      console.error(error.message);
-      errorToast({
-        title: 'Profile Update Failed',
-        description:
-          'There was an error updating your profile, please try again',
-      });
-    },
-  });
-
   return (
     <>
       <Dialog.Modal
@@ -485,8 +462,8 @@ export const EditProfileModal = ({
         <Dialog.Body>
           <ModalFiltersTabs
             metadata={metadata ?? []}
-            updates={updates}
-            setUpdates={setUpdates}
+            updates={updatedMetadata}
+            setUpdates={setUpdatedMetadata}
             filters={filter}
           />
         </Dialog.Body>
@@ -495,17 +472,17 @@ export const EditProfileModal = ({
           <Dialog.SecondaryAction onClick={onClose}>
             Cancel
           </Dialog.SecondaryAction>
-          <Dialog.PrimaryAction onClick={transactionDetails.onOpen}>
+          <Dialog.PrimaryAction onClick={transactionModal.onOpen}>
             Save changes
           </Dialog.PrimaryAction>
         </Dialog.Actions>
       </Dialog.Modal>
       <TransactionsDetailsModal
         domain={domain}
-        isOpen={transactionDetails.isOpen}
-        onClose={transactionDetails.onClose}
-        updates={updates}
-        onConfirm={handleSave.mutate}
+        isOpen={transactionModal.isOpen}
+        onClose={transactionModal.onClose}
+        updates={updatedMetadata}
+        onConfirm={handleSaveRequest.mutate}
       />
     </>
   );

@@ -1,6 +1,7 @@
 import { Box, Divider, Text, VStack } from '@chakra-ui/react';
 import { TextValue } from '..';
 import { Dialog } from '../dialog';
+import { useMetadata } from '../../hooks/useMetadata';
 
 interface ITransactionDomainDetailsModal {
   isOpen: boolean;
@@ -78,6 +79,10 @@ export const TransactionsDetailsModal = ({
   onConfirm,
   updates,
 }: ITranscationDetailsModal) => {
+  const {
+    handleSaveRequest: { isPending },
+  } = useMetadata();
+
   return (
     <Dialog.Modal
       motionPreset="slideInBottom"
@@ -135,7 +140,13 @@ export const TransactionsDetailsModal = ({
         <Dialog.SecondaryAction onClick={onClose}>
           Cancel
         </Dialog.SecondaryAction>
-        <Dialog.PrimaryAction onClick={onConfirm}>Confirm</Dialog.PrimaryAction>
+        <Dialog.PrimaryAction
+          onClick={onConfirm}
+          disabled={isPending}
+          isLoading={isPending}
+        >
+          Confirm
+        </Dialog.PrimaryAction>
       </Dialog.Actions>
     </Dialog.Modal>
   );
