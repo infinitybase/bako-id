@@ -3,11 +3,12 @@ import {
   Card,
   CardBody,
   CardHeader,
+  Stack,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
-import { BuyComponents } from '../../components';
+import { BuyComponents, CustomAutocomplete } from '../../components';
 import { BuyOrConnectButton } from '../../components/buttons';
 import { GoBack } from '../../components/helpers';
 import { BuyError } from '../../components/helpers/buyError';
@@ -98,13 +99,21 @@ export const Buy = () => {
               ))}
             </BuyComponents.Domains>
           </VStack>
-          <VStack
-            h="full"
-            w="full"
-            alignItems="start"
-            mt={[12, 12, 6, 12]}
-            spacing={5}
-          >
+
+          <Stack mt={10} mb={1}>
+            <Box>
+              <Text color="section.200" fontWeight="bold">
+                Resolver
+              </Text>
+              <Text color="grey.subtitle" fontSize="xs">
+                The address is your connected account by default. You can modify
+                it manually pasting another address.
+              </Text>
+            </Box>
+
+            <CustomAutocomplete />
+          </Stack>
+          <VStack h="full" w="full" alignItems="start" spacing={5}>
             <Box>
               <Text color="section.200" fontWeight="bold">
                 Your purchase
