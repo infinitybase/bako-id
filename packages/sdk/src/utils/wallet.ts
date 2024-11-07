@@ -15,11 +15,10 @@ export class FakeAccount extends WalletLocked {
     request: T,
     coinQuantities: EstimatedTxParams
   ) {
-    request.fundWithFakeUtxos(
-      coinQuantities.requiredQuantities,
-      this.provider.getBaseAssetId()
+    const resources = this.generateFakeResources(
+      coinQuantities.requiredQuantities
     );
-
+    request.addResources(resources);
     return request;
   }
 }
