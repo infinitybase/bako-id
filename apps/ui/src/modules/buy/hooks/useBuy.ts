@@ -23,6 +23,7 @@ export const useBuy = () => {
   const { registerDomain, resolveDomain } = useDomain(domain);
   const [selectedCoin, setSelectedCoin] = useState<Coin>(Coin.ETH);
   const [signInLoad, setSignInLoad] = useState<boolean>(false);
+  const [signProgress, setSignProgress] = useState<number>(0);
 
   const [buyError, setBuyError] = useState<string | undefined>(undefined);
   const [domains, setDomains] = useState<Domains[]>([
@@ -48,19 +49,25 @@ export const useBuy = () => {
     return info;
   };
 
-  const handleBuyDomain = async () => {
+  const handleBuyDomain = async (resolverAddress: string) => {
+    setSignProgress(33);
     const isValid = isValidDomain(domain);
-    if (!isValid || !wallet || !walletBalance) return;
+    if (!isValid || !resolverAddress || !walletBalance) return;
     setSignInLoad(true);
+
+    setTimeout(() => {
+      setSignProgress(66);
+    }, 700);
 
     registerDomain.mutate(
       {
-        resolver: wallet.address.toB256(),
+        resolver: resolverAddress,
         domain: domain,
         period: domains[0].period,
       },
       {
         onSuccess: async () => {
+          setSignProgress(100);
           await handleConfirmDomain();
           successToast({
             title: 'Transaction success',
@@ -69,10 +76,11 @@ export const useBuy = () => {
           setSignInLoad(false);
         },
         onError: (error: unknown) => {
+          setSignProgress(0);
           setBuyError((error as Error).message);
           setSignInLoad(false);
         },
-      }
+      },
     );
   };
 
@@ -112,6 +120,7 @@ export const useBuy = () => {
     fee,
     domainPrice,
     loading,
+    signProgress,
   };
 };
 

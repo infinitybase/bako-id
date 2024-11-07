@@ -7,8 +7,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useWallet } from '@fuels/react';
-import { BuyComponents, CustomAutocomplete } from '../../components';
+import { BuyComponents, ResolverAutocomplete } from '../../components';
 import { BuyOrConnectButton } from '../../components/buttons';
 import { GoBack } from '../../components/helpers';
 import { BuyError } from '../../components/helpers/buyError';
@@ -16,9 +15,19 @@ import { useScreenSize } from '../../hooks/useScreenSize';
 import type { Domains } from '../../types';
 import { Purchased } from '../purchased/page';
 import { useBuy } from './hooks/useBuy';
+import { useResolverForm } from './hooks/useResolverForm';
 
 export const Buy = () => {
-  const { wallet } = useWallet();
+  const {
+    control,
+    errors,
+    handleResolverAddressChange,
+    isValid,
+    resolverAddress,
+    wallet,
+    isResolverValidatingFetching,
+  } = useResolverForm();
+
   const buy = useBuy();
 
   const {
@@ -32,11 +41,12 @@ export const Buy = () => {
     walletBalance,
     registerDomain,
     domain,
+    signProgress,
   } = buy;
 
   const { isMobile } = useScreenSize();
 
-  if (registerDomain.isSuccess && registerDomain.data) {
+  if (registerDomain.isSuccess && registerDomain.data && !signInLoad) {
     return (
       <Purchased
         domain={domain}
@@ -48,12 +58,14 @@ export const Buy = () => {
 
   const BuyButton = (
     <BuyOrConnectButton
-      handleBuyDomain={handleBuyDomain}
+      progress={signProgress}
+      handleBuyDomain={() => handleBuyDomain(resolverAddress)}
       isLoadingBalance={isLoadingBalance}
       signInLoad={signInLoad}
       totalPrice={totalPrice}
       wallet={!!wallet}
       walletBalance={walletBalance}
+      isDisabled={!!errors.resolver?.message || !isValid}
     />
   );
 
@@ -111,7 +123,14 @@ export const Buy = () => {
               </Text>
             </Box>
 
-            <CustomAutocomplete />
+            <ResolverAutocomplete
+              handleChange={handleResolverAddressChange}
+              inputValue={resolverAddress}
+              isValid={isValid ?? false}
+              errors={errors}
+              control={control}
+              isLoading={isResolverValidatingFetching}
+            />
           </Stack>
           <VStack h="full" w="full" alignItems="start" spacing={5}>
             <Box>
