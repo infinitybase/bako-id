@@ -1,4 +1,4 @@
-import { Skeleton, type ImageProps } from '@chakra-ui/react';
+import { Spinner, type ImageProps } from '@chakra-ui/react';
 import { useToken } from '../../hooks/useToken';
 import { TokenImage } from './tokenImage';
 
@@ -12,7 +12,7 @@ export function CheckoutCard(props: CheckoutCardProps) {
       {token?.image ? (
         <TokenImage src={token.image} {...props} />
       ) : (
-        <Skeleton w="40" h="40" {...props} />
+        <Spinner boxSize="100px" mx="auto" />
       )}
     </>
   );
