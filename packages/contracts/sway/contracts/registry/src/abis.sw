@@ -7,7 +7,7 @@ abi Registry {
     #[storage(write, read), payable]
     fn register(name: String, resolver: Identity, period: u16);
 
-    #[storage(write, read), payable]
+    #[storage(write, read)]
     fn set_metadata_info(name: String, key: String, value: Metadata);
 
     // renew

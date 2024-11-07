@@ -134,7 +134,7 @@ export class RegistryContract {
   async token(domain: string) {
     const domainName = assertValidDomain(domain);
     const subId = sha256(toUtf8Bytes(domainName));
-    const assetId = getMintedAssetId(this.contract.id.toB256(), subId);
+    const assetId = getMintedAssetId(this.nftContract.id.toB256(), subId);
     const nftId = getContractId(this.provider.url, 'nft');
     const nftContract = new Nft(nftId, this.provider);
 
