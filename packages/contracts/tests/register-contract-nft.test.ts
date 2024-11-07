@@ -75,7 +75,7 @@ describe('[NFT] Registry Contract', () => {
         {
           Address: { bits: deployer.address.toB256() },
         },
-        bn(1),
+        bn(1)
       )
       .callParams({
         forward: { assetId: provider.getBaseAssetId(), amount: price },
@@ -87,7 +87,7 @@ describe('[NFT] Registry Contract', () => {
 
     const assetId = getMintedAssetId(
       nft.id.toB256(),
-      sha256(toUtf8Bytes(name)),
+      sha256(toUtf8Bytes(name))
     );
 
     const mintedNFT = await deployer.getBalance(assetId);
@@ -107,7 +107,7 @@ describe('[NFT] Registry Contract', () => {
       .total_supply(assetIdInput)
       .get();
 
-    expect(assetName).toBe('Bako ID');
+    expect(assetName).toBe(`@${name}`);
     expect(assetSymbol).toBe('BID');
     expect(totalAssets.toString()).toBe('1');
     expect(totalSupply?.toString()).toBe('1');
@@ -126,7 +126,7 @@ describe('[NFT] Registry Contract', () => {
         {
           Address: { bits: deployer.address.toB256() },
         },
-        bn(1),
+        bn(1)
       )
       .callParams({
         forward: { assetId: provider.getBaseAssetId(), amount: price },
@@ -137,7 +137,7 @@ describe('[NFT] Registry Contract', () => {
 
     const assetId = getMintedAssetId(
       nft.id.toB256(),
-      sha256(toUtf8Bytes(name)),
+      sha256(toUtf8Bytes(name))
     );
     const assetIdInput = { bits: assetId };
     const { value: assetImage } = await nft.functions
@@ -162,7 +162,7 @@ describe('[NFT] Registry Contract', () => {
         {
           Address: { bits: deployer.address.toB256() },
         },
-        bn(1),
+        bn(1)
       )
       .callParams({
         forward: { assetId: provider.getBaseAssetId(), amount: price },
@@ -212,7 +212,7 @@ describe('[NFT] Registry Contract', () => {
         {
           Address: { bits: deployer.address.toB256() },
         },
-        bn(1),
+        bn(1)
       )
       .callParams({
         forward: { assetId: provider.getBaseAssetId(), amount: price },
@@ -273,7 +273,7 @@ describe('[NFT] Registry Contract', () => {
         {
           Address: { bits: deployer.address.toB256() },
         },
-        bn(1),
+        bn(1)
       )
       .callParams({
         forward: { assetId: provider.getBaseAssetId(), amount: price },
@@ -322,7 +322,7 @@ describe('[NFT] Registry Contract', () => {
         {
           Address: { bits: deployer.address.toB256() },
         },
-        bn(1),
+        bn(1)
       )
       .callParams({
         forward: { assetId: provider.getBaseAssetId(), amount: price },

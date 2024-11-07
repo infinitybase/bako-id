@@ -14,6 +14,7 @@ use std::context::msg_amount;
 use standards::src3::SRC3;
 use standards::src7::{Metadata};
 use sway_libs::asset::metadata::*;
+use sway_libs::asset::base::SetAssetAttributes;
 use lib::abis::manager::{Manager, ManagerInfo, RecordData};
 use lib::validations::{assert_name_validity};
 use lib::string::{concat_string};
@@ -52,6 +53,9 @@ fn mint_token(name: String, receiver: Identity) -> AssetId {
             )
         )
     );
+
+    let nft_contract = abi(SetAssetAttributes, token_id.into());
+    nft_contract.set_name(asset_id, concat_string(String::from_ascii_str("@"), name));
 
     asset_id
 }
@@ -109,26 +113,13 @@ impl Registry for Contract {
             name_hash,
         });
     }
-
-
-    // valide se quem tá chamando é owner do registo
-    // valide se o registro existe -> nft_id
-    // valide se é uma chave que pode ser aceita
     
-    #[storage(write, read), payable]
+    #[storage(write, read)]
     fn set_metadata_info(name: String, key: String, value: Metadata) {
-        log(name);
-        let sub_id = sha256(name);
         let manager_id = get_manager_id();
-        let token_id = storage.token_id.read();
-        let asset_id = AssetId::new(token_id, sub_id);
-
-        let nft_contract = abi(SetAssetMetadata, token_id.into());
         let manager_contract = abi(ManagerInfo, manager_id.into());
         let register = manager_contract.get_record(name);
-        log(register);
-        log(register.is_some());
-
+        
         require(
             register.is_some(),
             RegistryContractError::NotFoundName,
@@ -139,17 +130,11 @@ impl Registry for Contract {
             RegistryContractError::NotOwner,
         );
 
-        log(asset_id);
-        log(key);
-        log(value);
-        
-        
-        nft_contract.set_metadata(
-                asset_id, 
-                key, 
-                value
-        );
-        
+        let token_id = storage.token_id.read();
+        let asset_id = AssetId::new(token_id, sha256(name));
+
+        let nft_contract = abi(SetAssetMetadata, token_id.into());
+        nft_contract.set_metadata(asset_id, key, value);
     }
 }
 

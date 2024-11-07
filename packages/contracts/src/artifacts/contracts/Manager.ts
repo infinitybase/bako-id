@@ -6,7 +6,7 @@
 
 /*
   Fuels version: 0.96.1
-  Forc version: 0.66.4
+  Forc version: 0.66.2
   Fuel-Core version: 0.40.0
 */
 
