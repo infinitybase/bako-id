@@ -1,13 +1,27 @@
 import {
   ManagerFactory,
+  NftFactory,
   RegistryFactory,
   ResolverFactory,
+  getContractId,
 } from '@bako-id/contracts';
 import { type Account, ZeroBytes32, getRandomB256 } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
 import { randomName } from '../utils';
 import { RegistryContract } from './registry';
 import { ResolverContract } from './resolver';
+
+jest.mock('../methods/offChainSync', () => {
+  const { OffChainSyncMock } = require('../test/mocks/offChainSync');
+  return {
+    OffChainSync: OffChainSyncMock,
+  };
+});
+
+jest.mock('@bako-id/contracts', () => ({
+  ...jest.requireActual('@bako-id/contracts'),
+  getContractId: jest.fn(),
+}));
 
 describe('Test resolver', () => {
   let node: Awaited<ReturnType<typeof launchTestNode>>;
@@ -18,11 +32,30 @@ describe('Test resolver', () => {
         { factory: ResolverFactory },
         { factory: RegistryFactory },
         { factory: ManagerFactory },
+        { factory: NftFactory },
       ],
     });
 
     const { contracts } = node;
-    const [resolver, registry, manager] = contracts;
+    const [resolver, registry, manager, nft] = contracts;
+
+    (getContractId as jest.Mock).mockImplementation((_provider, contract) => {
+      if (contract === 'registry') {
+        return registry.id.toB256();
+      }
+      if (contract === 'manager') {
+        return manager.id.toB256();
+      }
+      if (contract === 'nft') {
+        return nft.id.toB256();
+      }
+      throw new Error('Invalid contract');
+    });
+
+    const nftCall = await nft.functions
+      .constructor({ ContractId: { bits: registry.id.toB256() } })
+      .call();
+    await nftCall.waitForResult();
 
     const managerCall = await manager.functions
       .constructor({ ContractId: { bits: registry.id.toB256() } })
@@ -30,7 +63,7 @@ describe('Test resolver', () => {
     await managerCall.waitForResult();
 
     const registerCall = await registry.functions
-      .constructor({ bits: manager.id.toB256() })
+      .constructor({ bits: manager.id.toB256() }, { bits: nft.id.toB256() })
       .call();
     await registerCall.waitForResult();
 

@@ -1,6 +1,13 @@
 import { TransactionStatus, bn } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
-import { Manager, ManagerFactory, Registry, RegistryFactory } from '../src';
+import {
+  Manager,
+  ManagerFactory,
+  Nft,
+  NftFactory,
+  Registry,
+  RegistryFactory,
+} from '../src';
 import {
   domainPrices,
   expectContainLogError,
@@ -14,6 +21,7 @@ describe('[METHODS] Registry Contract', () => {
 
   let manager: Manager;
   let registry: Registry;
+  let nft: Nft;
 
   beforeAll(async () => {
     node = await launchTestNode({
@@ -21,19 +29,26 @@ describe('[METHODS] Registry Contract', () => {
       contractsConfigs: [
         { factory: ManagerFactory },
         { factory: RegistryFactory },
+        { factory: NftFactory },
       ],
     });
 
     const {
-      contracts: [managerAbi, registryAbi],
+      contracts: [managerAbi, registryAbi, nftAbi],
       wallets: [deployer],
     } = node;
 
     manager = new Manager(managerAbi.id, deployer);
     registry = new Registry(registryAbi.id, deployer);
+    nft = new Nft(nftAbi.id, deployer);
+
+    const nftCall = await nft.functions
+      .constructor({ ContractId: { bits: registry.id.toB256() } })
+      .call();
+    await nftCall.waitForResult();
 
     const registerCall = await registry.functions
-      .constructor({ bits: manager.id.toB256() })
+      .constructor({ bits: manager.id.toB256() }, { bits: nftAbi.id.toB256() })
       .call();
     await registerCall.waitForResult();
 
@@ -83,7 +98,10 @@ describe('[METHODS] Registry Contract', () => {
   it('should error to initialize proxy contract when proxy already initialized', async () => {
     try {
       const { waitForResult } = await registry.functions
-        .constructor({ bits: manager.id.toB256() })
+        .constructor(
+          { bits: manager.id.toB256() },
+          { bits: manager.id.toB256() }
+        )
         .call();
       const { transactionResult } = await waitForResult();
       expect(transactionResult.status).toBe(TransactionStatus.failure);
@@ -103,7 +121,7 @@ describe('[METHODS] Registry Contract', () => {
     try {
       await registry.functions
         .register(domain, { Address: { bits: owner.address.toB256() } }, bn(1))
-        .addContracts([manager])
+        .addContracts([manager, nft])
         .callParams({
           forward: { assetId: provider.getBaseAssetId(), amount: price },
         })
@@ -111,7 +129,7 @@ describe('[METHODS] Registry Contract', () => {
 
       const { waitForResult } = await registry.functions
         .register(domain, { Address: { bits: owner.address.toB256() } }, bn(1))
-        .addContracts([manager])
+        .addContracts([manager, nft])
         .callParams({
           forward: { assetId: provider.getBaseAssetId(), amount: price },
         })

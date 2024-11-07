@@ -63,7 +63,8 @@ export class OffChainSync {
     provider: Provider,
     tx_id: string
   ): Promise<void> {
-    await fetch(`${API_URL}/api/register`, {
+    const apiUrl = API_URL || 'https://api.bako.id';
+    await fetch(`${apiUrl}/api/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -4,6 +4,8 @@ import { Card, TextValue } from '..';
 import { formatAddress } from '../../utils/formatter';
 import { CopyText } from '../helpers/copy';
 import { FuelIcon } from '../icons/fuelIcon';
+import { Explorer } from '../helpers/explorer';
+import { ExplorerTypes } from '../../types';
 
 interface IAddressesCard {
   domain: string | null;
@@ -36,6 +38,9 @@ export const AddressesCard = ({ domain }: IAddressesCard) => {
           leftAction={<Icon as={FuelIcon} />}
           rightAction={<CopyText value={Address.fromB256(domain).toB256()} />}
           content={formatAddress(Address.fromB256(domain).toB256())}
+          additionalIcon={
+            <Explorer id={domain ?? ''} type={ExplorerTypes.ASSETS} />
+          }
         />
       </Flex>
     </Card>

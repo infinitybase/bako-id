@@ -1,20 +1,18 @@
 import { extendConfig } from '@shared/tsup';
-import dotenv from 'dotenv';
 
-dotenv.config();
+if (process.env.NODE_ENV !== 'production') {
+  await import('dotenv/config');
+}
 
 export default extendConfig({
   dts: true,
   entry: ['src/index.ts'],
-  external: ['@bako-id/contracts'],
-  env: {
-    API_URL: process.env.API_URL!,
-  },
   esbuildOptions: (options) => {
+    const apiUrl = process.env.API_URL || '';
+    console.log('[SDK] Building with API_URL:', apiUrl);
+
     options.define = {
-      'process.env': JSON.stringify({
-        API_URL: process.env.API_URL,
-      }),
+      'process.env.API_URL': JSON.stringify(apiUrl),
     };
   },
 });

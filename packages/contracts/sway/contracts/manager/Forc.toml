@@ -9,6 +9,7 @@ lib = { path = "../../lib" }
 
 [proxy]
 enabled = true
+address = "0x19f62931f5ac9898b4001d3bca336536e3f76297004d144a5f9638665c9bf8ff"
 # Mainnet
 #address = "0x0d69e157eba419749d3e3427030b76151f2ed980cb4b1f16fff72b13dc56f2f2"
 

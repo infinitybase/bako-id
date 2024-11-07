@@ -3,47 +3,12 @@ name = "core"
 source = "path+from-root-7053AAA90CC5E690"
 
 [[package]]
-name = "lib"
-source = "path+from-root-1BA65F2DF03737B3"
-dependencies = [
-    "standards git+https://github.com/FuelLabs/sway-standards?tag=v0.6.1#792639cdf391565e6e6a02482ea8a46d9604a6f5",
-    "std",
-]
-
-[[package]]
-name = "manager"
-source = "member"
-dependencies = [
-    "lib",
-    "std",
-]
-
-[[package]]
 name = "nft"
 source = "member"
 dependencies = [
     "standards git+https://github.com/FuelLabs/sway-standards?tag=v0.6.1#792639cdf391565e6e6a02482ea8a46d9604a6f5",
     "std",
     "sway_libs",
-]
-
-[[package]]
-name = "registry"
-source = "member"
-dependencies = [
-    "lib",
-    "standards git+https://github.com/FuelLabs/sway-standards?tag=v0.6.1#792639cdf391565e6e6a02482ea8a46d9604a6f5",
-    "std",
-    "sway_libs",
-]
-
-[[package]]
-name = "resolver"
-source = "member"
-dependencies = [
-    "lib",
-    "standards git+https://github.com/FuelLabs/sway-standards?tag=v0.6.1#792639cdf391565e6e6a02482ea8a46d9604a6f5",
-    "std",
 ]
 
 [[package]]

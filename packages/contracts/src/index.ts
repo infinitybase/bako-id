@@ -3,11 +3,12 @@ export * from './artifacts';
 export const contractsId = {
   testnet: {
     manager:
-      '0x324a2d168efd2e999156812c8edf51df68c110dd5afa4bd5fd83219f2382e3d2',
+      '0x19f62931f5ac9898b4001d3bca336536e3f76297004d144a5f9638665c9bf8ff',
     registry:
-      '0xa5bafba6b74323b212e192cfcb0e023be89bc479c90086a076c14c4ae3d88537',
+      '0x468b3f6eebea52e5ecae7e8a297276c15c303ff65e485a5bd851a6a7fa9483a1',
     resolver:
-      '0x83b9f8b31082e8bb79bc511a0a93f74d721b0bb40c19e49732c5877e9c75a833',
+      '0xdd72f78a46a9bc1fd11c0c9d18eb65d26dd9837eb85d0f3f101ac319dfd710da',
+    nft: '0xda25f68065ce8259285a9147dc7acedefd17ff196376daffacbcdd21b73e5039',
   },
   mainnet: {
     manager:
@@ -16,11 +17,13 @@ export const contractsId = {
       '0xa92340a64bbad2fa902cf6d247c0ba874a51156e9d41c8311c8f25b25cb10c2f',
     resolver:
       '0x3459d07b9ec69f11d029d4a7609c53b11d0bce3132759f1cbd00a9182b1cad85',
+    nft: '',
   },
   local: {
     manager: '',
     registry: '',
     resolver: '',
+    nft: '',
   },
 };
 

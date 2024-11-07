@@ -1,17 +1,10 @@
-import {
-  Badge,
-  Flex,
-  HStack,
-  Icon,
-  Text,
-  type StackProps,
-} from '@chakra-ui/react';
+import type { IDRecord } from '@bako-id/sdk';
+import { Flex, HStack, Icon, type StackProps, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { AvatarIcon } from '../../../components';
-import type { Handle } from '../../../types';
 
 interface IHandleCard extends StackProps {
-  handle: Handle;
+  handle: IDRecord;
 }
 
 export const HandleCard = ({ handle, ...rest }: IHandleCard) => {
@@ -62,7 +55,7 @@ export const HandleCard = ({ handle, ...rest }: IHandleCard) => {
         </Flex>
       </Flex>
       <Flex gap={4} align="center">
-        {handle.isPrimary && <Badge variant="info">Primary</Badge>}
+        {/*{handle.isPrimary && <Badge variant="info">Primary</Badge>}*/}
         {/* <Button
                     variant="ghosted"
                     size="sm"
