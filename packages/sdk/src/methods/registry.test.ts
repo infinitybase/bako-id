@@ -241,6 +241,9 @@ describe('Test Registry', () => {
       period: 1,
       resolver: provider.getBaseAssetId(),
     });
+    await contract.setMetadata(domain, {
+      [MetadataKeys.CONTACT_BIO]: 'bio',
+    });
 
     const contractWithoutAccount = new RegistryContract(
       registry.id.toB256(),
@@ -257,6 +260,9 @@ describe('Test Registry', () => {
     const { image } = await contractWithoutAccount.token(domain);
     expect(image).toBeDefined();
     expect(image).toBe(`https://assets.bako.id/${domain}`);
+
+    const metadata = await contractWithoutAccount.getMetadata(domain);
+    expect(metadata[MetadataKeys.CONTACT_BIO]).toBe('bio');
 
     await expect(() =>
       contractWithoutAccount.register({

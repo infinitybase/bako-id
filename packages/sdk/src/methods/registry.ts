@@ -234,14 +234,13 @@ export class RegistryContract {
       ),
     };
 
-    const multiCall = await this.contract
+    const result = await this.contract
       .multiCall(
         Object.entries(MetadataKeys).map(([_, value]) =>
           this.nftContract.functions.metadata(mintedAssetId, value)
         )
       )
-      .call();
-    const result = await multiCall.waitForResult();
+      .get();
 
     return Object.values(MetadataKeys).reduce(
       (acc, key, index) => {
