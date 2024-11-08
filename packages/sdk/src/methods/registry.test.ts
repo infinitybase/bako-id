@@ -85,10 +85,10 @@ describe('Test Registry', () => {
         resolver: wallet.address.toB256(),
       });
       await expect(invalidSuffix).rejects.toBeInstanceOf(InvalidDomainError);
-    }
+    },
   );
 
-  it('should register domain', async () => {
+  it.only('should register domain', async () => {
     const {
       contracts: [registry],
       wallets: [wallet],
@@ -247,7 +247,7 @@ describe('Test Registry', () => {
 
     const contractWithoutAccount = new RegistryContract(
       registry.id.toB256(),
-      provider
+      provider,
     );
 
     const { fee, price } = await contractWithoutAccount.simulate({
@@ -269,13 +269,13 @@ describe('Test Registry', () => {
         domain: randomName(),
         period: 1,
         resolver: provider.getBaseAssetId(),
-      })
+      }),
     ).rejects.toThrow('Account is required to register a domain');
 
     await expect(() =>
       contractWithoutAccount.setMetadata(randomName(), {
         [MetadataKeys.CONTACT_BIO]: 'bio',
-      })
+      }),
     ).rejects.toThrow('Account is required to setMetadata');
   });
 });

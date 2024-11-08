@@ -16,7 +16,7 @@
     "dist"
   ],
   "scripts": {
-    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand --silent",
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
     "build": "tsup",
     "prebuild": "pnpm fuels build"
   },
