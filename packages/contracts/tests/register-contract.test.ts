@@ -100,7 +100,7 @@ describe('[METHODS] Registry Contract', () => {
       const { waitForResult } = await registry.functions
         .constructor(
           { bits: manager.id.toB256() },
-          { bits: manager.id.toB256() },
+          { bits: manager.id.toB256() }
         )
         .call();
       const { transactionResult } = await waitForResult();
@@ -111,7 +111,7 @@ describe('[METHODS] Registry Contract', () => {
     }
   });
 
-  it.only('should dont register domain when not available', async () => {
+  it('should dont register domain when not available', async () => {
     const { provider, wallets } = node;
     const [owner] = wallets;
     const domain = randomName();
@@ -134,7 +134,7 @@ describe('[METHODS] Registry Contract', () => {
         {
           [manager.id.toB256()]: manager.interface.jsonAbi,
           [nft.id.toB256()]: nft.interface.jsonAbi,
-        },
+        }
       );
 
       console.log(a);
@@ -183,6 +183,6 @@ describe('[METHODS] Registry Contract', () => {
       } catch (error) {
         expectErrors(error);
       }
-    },
+    }
   );
 });

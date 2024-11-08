@@ -35,6 +35,8 @@ export type AddressInput = { bits: string };
 export type AddressOutput = AddressInput;
 export type ContractIdInput = { bits: string };
 export type ContractIdOutput = ContractIdInput;
+export type ManagerLogEventInput = { fnname: StdString, name: StdString, owner: IdentityInput, resolver: IdentityInput, name_hash: string, timestamp: BigNumberish, period: BigNumberish };
+export type ManagerLogEventOutput = { fnname: StdString, name: StdString, owner: IdentityOutput, resolver: IdentityOutput, name_hash: string, timestamp: BN, period: number };
 export type RecordDataInput = { owner: IdentityInput, resolver: IdentityInput, period: BigNumberish, timestamp: BigNumberish };
 export type RecordDataOutput = { owner: IdentityOutput, resolver: IdentityOutput, period: number, timestamp: BN };
 
@@ -90,14 +92,19 @@ const abi = {
       ]
     },
     {
+      "type": "struct events::ManagerLogEvent",
+      "concreteTypeId": "9aafd728aad1a0d76d5874a850f257bf49c6d7b6979517e19b53496080e902e9",
+      "metadataTypeId": 6
+    },
+    {
       "type": "struct lib::abis::manager::RecordData",
       "concreteTypeId": "a06087fea05d71c273e06e235102af0ef06e08660df4f94ecbe49e7f96ab4635",
-      "metadataTypeId": 6
+      "metadataTypeId": 7
     },
     {
       "type": "struct std::string::String",
       "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c",
-      "metadataTypeId": 11
+      "metadataTypeId": 12
     },
     {
       "type": "u64",
@@ -141,11 +148,11 @@ const abi = {
       "components": [
         {
           "name": "Address",
-          "typeId": 7
+          "typeId": 8
         },
         {
           "name": "ContractId",
-          "typeId": 10
+          "typeId": 11
         }
       ]
     },
@@ -175,8 +182,42 @@ const abi = {
       "metadataTypeId": 5
     },
     {
-      "type": "struct lib::abis::manager::RecordData",
+      "type": "struct events::ManagerLogEvent",
       "metadataTypeId": 6,
+      "components": [
+        {
+          "name": "fnname",
+          "typeId": 12
+        },
+        {
+          "name": "name",
+          "typeId": 12
+        },
+        {
+          "name": "owner",
+          "typeId": 2
+        },
+        {
+          "name": "resolver",
+          "typeId": 2
+        },
+        {
+          "name": "name_hash",
+          "typeId": 0
+        },
+        {
+          "name": "timestamp",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "period",
+          "typeId": 13
+        }
+      ]
+    },
+    {
+      "type": "struct lib::abis::manager::RecordData",
+      "metadataTypeId": 7,
       "components": [
         {
           "name": "owner",
@@ -188,7 +229,7 @@ const abi = {
         },
         {
           "name": "period",
-          "typeId": 12
+          "typeId": 13
         },
         {
           "name": "timestamp",
@@ -198,7 +239,7 @@ const abi = {
     },
     {
       "type": "struct std::address::Address",
-      "metadataTypeId": 7,
+      "metadataTypeId": 8,
       "components": [
         {
           "name": "bits",
@@ -208,11 +249,11 @@ const abi = {
     },
     {
       "type": "struct std::bytes::Bytes",
-      "metadataTypeId": 8,
+      "metadataTypeId": 9,
       "components": [
         {
           "name": "buf",
-          "typeId": 9
+          "typeId": 10
         },
         {
           "name": "len",
@@ -222,7 +263,7 @@ const abi = {
     },
     {
       "type": "struct std::bytes::RawBytes",
-      "metadataTypeId": 9,
+      "metadataTypeId": 10,
       "components": [
         {
           "name": "ptr",
@@ -236,7 +277,7 @@ const abi = {
     },
     {
       "type": "struct std::contract_id::ContractId",
-      "metadataTypeId": 10,
+      "metadataTypeId": 11,
       "components": [
         {
           "name": "bits",
@@ -246,17 +287,17 @@ const abi = {
     },
     {
       "type": "struct std::string::String",
-      "metadataTypeId": 11,
+      "metadataTypeId": 12,
       "components": [
         {
           "name": "bytes",
-          "typeId": 8
+          "typeId": 9
         }
       ]
     },
     {
       "type": "u16",
-      "metadataTypeId": 12
+      "metadataTypeId": 13
     }
   ],
   "functions": [
@@ -420,6 +461,10 @@ const abi = {
     {
       "logId": "49857487806267683",
       "concreteTypeId": "00b1211efa160123969a7efe1d4597cdb9c6b6e4b311f933e55760a79e7c28fb"
+    },
+    {
+      "logId": "11146364172429795543",
+      "concreteTypeId": "9aafd728aad1a0d76d5874a850f257bf49c6d7b6979517e19b53496080e902e9"
     }
   ],
   "messagesTypes": [],
