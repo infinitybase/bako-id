@@ -284,17 +284,10 @@ const MetadataTabPanel = ({
                     ? false
                     : null;
 
+              const isEmpty = !userMetadata[metadata.key];
               const isUpdated = !!updates.find(
                 ({ key }) => key === metadata.key,
               );
-
-              const isEmpty = !userMetadata[metadata.key];
-
-              console.log('🚀 ~ .map ~ isUpdated:', {
-                isUpdated,
-                updates,
-                userMetadata,
-              });
 
               return (
                 <React.Fragment key={metadata.key}>
@@ -305,7 +298,6 @@ const MetadataTabPanel = ({
                     title={metadata.title}
                     isEmpty={isEmpty}
                     isUpdated={isUpdated}
-                    // verified={isVerified}
                     onClick={() => handleOpenModal(metadata)}
                   />
 
