@@ -4,10 +4,10 @@ import { Card } from '.';
 import { ExplorerTypes } from '../../types';
 import {
   AvatarIcon,
-  DisabledXBadgeIcon,
+  // DisabledXBadgeIcon,
   EditIcon,
   ExploreIcon,
-  FarcasterBadgeIcon,
+  // FarcasterBadgeIcon,
 } from '../icons';
 import { MetadataKeys } from '../../utils/metadataKeys';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
@@ -64,10 +64,10 @@ export const ProfileCard = ({
               </Text>
             )}
 
-            <Flex gap={1} ml={0}>
+            {/* <Flex gap={1} ml={0}>
               <FarcasterBadgeIcon w={8} h={8} />
               <DisabledXBadgeIcon w={8} h={8} />
-            </Flex>
+            </Flex> */}
           </Flex>
           <Flex flexDir="column" gap={2}>
             {/*{handle?.isPrimary && (*/}

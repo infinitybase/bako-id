@@ -448,7 +448,6 @@ export const EditMetadataModal = ({
     updatedMetadata,
     setUpdatedMetadata,
   } = useMetadata();
-  console.log('🚀 ~ updatedMetadata:', updatedMetadata);
 
   const [filter, setFilter] = useState(FilterButtonTypes.ALL);
 
