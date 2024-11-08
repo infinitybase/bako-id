@@ -29,7 +29,11 @@ import { AvatarIcon } from '../icons';
 import { EditProfileFieldsModal } from './editProfileFieldsModal';
 import { EditProfilePicModal } from './editProfilePicModal';
 import { TransactionsDetailsModal } from './transactionDetails';
-import { type MetadataKeyValue, useMetadata } from '../../hooks/useMetadata';
+import {
+  type MetadataKeyValue,
+  type MetadataResponse,
+  useMetadata,
+} from '../../hooks/useMetadata';
 
 interface Metadata {
   key: string;
@@ -39,7 +43,7 @@ interface Metadata {
 interface EditProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
-  metadata: { key: string; value: string | undefined }[] | undefined;
+  metadata: MetadataResponse;
 }
 
 export interface IMetadata {
@@ -52,8 +56,8 @@ export interface IMetadata {
 interface IModalFilterTabsProps {
   metadata: Metadata[];
   filters: FilterButtonTypes;
-  updates: MetadataKeyValue[];
-  setUpdates: React.Dispatch<React.SetStateAction<Metadata[]>>;
+  updates: Metadata[];
+  setUpdates: React.Dispatch<React.SetStateAction<MetadataKeyValue[]>>;
 }
 
 interface MetadataTabPanelProps {
@@ -61,7 +65,7 @@ interface MetadataTabPanelProps {
   metadatas: typeof Metadatas.Social;
   userMetadata: Record<string, IMetadata>;
   updates: Metadata[];
-  setUpdates: React.Dispatch<React.SetStateAction<Metadata[]>>;
+  setUpdates: React.Dispatch<React.SetStateAction<MetadataKeyValue[]>>;
   filters: FilterButtonTypes;
 }
 
@@ -279,6 +283,19 @@ const MetadataTabPanel = ({
                   : updates.some((update) => update.key === metadata.key)
                     ? false
                     : null;
+
+              const isUpdated = !!updates.find(
+                ({ key }) => key === metadata.key,
+              );
+
+              const isEmpty = !userMetadata[metadata.key];
+
+              console.log('🚀 ~ .map ~ isUpdated:', {
+                isUpdated,
+                updates,
+                userMetadata,
+              });
+
               return (
                 <React.Fragment key={metadata.key}>
                   <MetadataCard
@@ -286,7 +303,9 @@ const MetadataTabPanel = ({
                     keys={metadata.key}
                     icon={metadata.icon}
                     title={metadata.title}
-                    verified={isVerified}
+                    isEmpty={isEmpty}
+                    isUpdated={isUpdated}
+                    // verified={isVerified}
                     onClick={() => handleOpenModal(metadata)}
                   />
 
@@ -298,7 +317,9 @@ const MetadataTabPanel = ({
                       updates={updates}
                       setUpdates={setUpdates}
                       type={metadata.key}
-                      title={isVerified ? userMetadata[metadata.key].title : ''}
+                      title={
+                        isVerified ? userMetadata[metadata.key]?.title : ''
+                      }
                       validated={isVerified}
                     />
                   )}
@@ -427,25 +448,13 @@ export const EditMetadataModal = ({
     updatedMetadata,
     setUpdatedMetadata,
   } = useMetadata();
-  // const transactionDetails = useDisclosure();
+  console.log('🚀 ~ updatedMetadata:', updatedMetadata);
 
   const [filter, setFilter] = useState(FilterButtonTypes.ALL);
 
   const handleFilterClick = (newFilter: FilterButtonTypes) => {
     setFilter(newFilter);
   };
-
-  // TODO: Check if this is needed
-  // const { data, refetch: refetchMetadatas } = useQuery({
-  //   queryKey: ['getAllMetadatas'],
-  //   queryFn: async () => {
-  //     if (!wallet) return;
-
-  //     // const userMetadata = UserMetadataContract.initialize(wallet, domain);
-  //     //
-  //     // return userMetadata.getAll();
-  //   },
-  // });
 
   return (
     <>
@@ -460,7 +469,7 @@ export const EditMetadataModal = ({
         <ModalFiltersButtons changeFilter={handleFilterClick} filter={filter} />
         <Dialog.Body>
           <ModalFiltersTabs
-            metadata={metadata ?? []}
+            metadata={(metadata ?? []) as Metadata[]}
             updates={updatedMetadata}
             setUpdates={setUpdatedMetadata}
             filters={filter}

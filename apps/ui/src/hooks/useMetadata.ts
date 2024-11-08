@@ -13,10 +13,14 @@ export enum MetadataQueryKey {
   HANDLE_SAVE = 'handleSave',
 }
 
-export interface MetadataKeyValue {
+export type MetadataKeyValue = {
   key: MetadataKeys;
   value: string;
-}
+};
+
+export type MetadataResponse =
+  | { key: string; value: string | undefined }[]
+  | undefined;
 
 export const useMetadata = () => {
   const [updatedMetadata, setUpdatedMetadata] = useState<MetadataKeyValue[]>(
@@ -32,7 +36,6 @@ export const useMetadata = () => {
   const handleListRequest = useQuery({
     queryKey: [MetadataQueryKey.HANDLE_LIST, domain],
     queryFn: async () => {
-      // TODO: Limit to owners only?
       try {
         let registryContract: RegistryContract;
 
@@ -66,6 +69,7 @@ export const useMetadata = () => {
 
       const metadataPayload = {
         ...updatedMetadata.reduce(
+          // biome-ignore lint/performance/noAccumulatingSpread: <explanation>
           (acc, { key, value }) => ({ ...acc, [key]: value }),
           {},
         ),

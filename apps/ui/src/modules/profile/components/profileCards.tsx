@@ -22,7 +22,7 @@ export const ProfileCards = ({
   isLoading,
   owner,
 }: ProfileCardsProps) => {
-  const { metadataModal, metadata } = useMetadata();
+  const { metadataModal, metadata, setUpdatedMetadata } = useMetadata();
 
   return isLoading || !owner ? (
     <ProfileCardLoadingSkeleton />
@@ -30,7 +30,10 @@ export const ProfileCards = ({
     <Suspense>
       <EditMetadataModal
         isOpen={metadataModal.isOpen}
-        onClose={metadataModal.onClose}
+        onClose={() => {
+          metadataModal.onClose();
+          setUpdatedMetadata([]);
+        }}
         metadata={metadata}
       />
 

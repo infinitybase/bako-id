@@ -12,11 +12,13 @@ import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Dialog } from '../dialog';
 import { CloseIcon } from '../icons/closeIcon';
+import type { MetadataKeyValue } from '../../hooks/useMetadata';
+import type { MetadataKeys } from '../../utils/metadataKeys';
 
 interface IEditTextValueInput extends InputProps {
   title: string;
   modalType: string;
-  onMetadataChange: (metadata: { key: string; value: string }) => void;
+  onMetadataChange: (metadata: MetadataKeyValue) => void;
   onClose: () => void;
 }
 
@@ -45,7 +47,7 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
 
   const handleSave = () => {
     props.onMetadataChange({
-      key: props.modalType,
+      key: props.modalType as MetadataKeys,
       value: inputValue,
     });
     setInputValue('');

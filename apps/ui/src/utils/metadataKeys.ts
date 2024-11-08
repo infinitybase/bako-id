@@ -41,7 +41,6 @@ export enum MetadataKeys {
   CONTACT_MAILING = 'contact:mailing',
   CONTACT_PHONE = 'contact:phone',
   CONTACT_COMPANY = 'contact:company',
-  // TODO: Add to sdk
   CONTACT_WEBSITE = 'contact:website',
   CONTACT_LOCATION = 'contact:location',
 

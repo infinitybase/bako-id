@@ -4,8 +4,6 @@ import { Card, TextValue } from '..';
 import { ExplorerTypes } from '../../types';
 import { formatAddress } from '../../utils/formatter';
 import { Explorer } from '../helpers/explorer';
-import { CopyText } from '../helpers/copy';
-import { format } from 'date-fns';
 import { useParams } from '@tanstack/react-router';
 import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
 
@@ -68,14 +66,14 @@ export const OwnershipCard = ({ owner }: IOwnershipCard) => {
           }
           content={parent}
         /> */}
-        <TextValue
+        {/* <TextValue
           leftAction={'expiry'}
           textAlign="right"
           rightAction={
             <CopyText value={format(data!.period, 'MMMM dd, yyyy')} />
           }
           content={format(data!.period, 'MMMM dd, yyyy')}
-        />
+        /> */}
       </Flex>
     </Card>
   );
