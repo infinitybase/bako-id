@@ -1,21 +1,21 @@
-import { FuelGlobalProcessor, FuelNetwork } from '@sentio/sdk/fuel';
-import { getDecodedLogs, InputType } from 'fuels';
-import { registerAbi } from './abi/register.js';
-import { managerAbi, managerContractId } from './abi/manager.js';
-import { nftAbi, nftContractId } from './abi/nft.js';
+import { FuelNetwork } from '@sentio/sdk/fuel';
+// import { getDecodedLogs, InputType } from 'fuels';
+// import { registerAbi } from './abi/register.js';
+// import { managerAbi, managerContractId } from './abi/manager.js';
+// import { nftAbi, nftContractId } from './abi/nft.js';
 import { ManagerContractProcessor } from './types/fuel/ManagerContractProcessor.js';
 
-// const contractId =
-//   '0x622a2844f3304678fee0bb3dedf8eed476dac43c99ea41598ba3a990c568d8a9';
-const script =
-  '0x724028d8724428b05d451000724828b82d41148a72402980724429585d451000724829602d41148a24040000';
+const contractId =
+  '0xea29408a7982abef6251661545e4aba186517b7af4c84801e99589493d8dc2f8';
+// const script =
+//   '0x724028d8724428b05d451000724828b82d41148a72402980724429585d451000724829602d41148a24040000';
 
-const contract_list = [
-  '0x363dbc9fd3449328ab645cb5bf6cd3f6720b8c3382ba54510670014ae5dfa6f9',
-  '0x60e8f2a6f963ff233bf47696812e5332e199f183b1e3da2c9b79736e608247da',
-  '0x622a2844f3304678fee0bb3dedf8eed476dac43c99ea41598ba3a990c568d8a9',
-  '0xd55d84ab1b83c856472e166df72c88c40f0dd5391d3f9a1ffab0d19e9d3a2435',
-];
+// const contract_list = [
+//   '0x363dbc9fd3449328ab645cb5bf6cd3f6720b8c3382ba54510670014ae5dfa6f9',
+//   '0x60e8f2a6f963ff233bf47696812e5332e199f183b1e3da2c9b79736e608247da',
+//   '0x622a2844f3304678fee0bb3dedf8eed476dac43c99ea41598ba3a990c568d8a9',
+//   '0xd55d84ab1b83c856472e166df72c88c40f0dd5391d3f9a1ffab0d19e9d3a2435',
+// ];
 const startBlock = 15063670n;
 
 // RegisterContractProcessor.bind({
@@ -31,8 +31,10 @@ const startBlock = 15063670n;
 //   });
 ManagerContractProcessor.bind({
   startBlock,
-  address: managerContractId,
+  address: contractId,
   chainId: FuelNetwork.TEST_NET,
+}).onLogManagerLogEvent((event) => {
+  console.log('Manager log event:', event);
 });
 
 // FuelGlobalProcessor.bind({
