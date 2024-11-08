@@ -30,7 +30,6 @@ import { EditProfileFieldsModal } from './editProfileFieldsModal';
 import { EditProfilePicModal } from './editProfilePicModal';
 import { TransactionsDetailsModal } from './transactionDetails';
 import { type MetadataKeyValue, useMetadata } from '../../hooks/useMetadata';
-import { set } from 'lodash';
 
 interface Metadata {
   key: string;
@@ -472,7 +471,10 @@ export const EditMetadataModal = ({
           <Dialog.SecondaryAction onClick={onClose}>
             Cancel
           </Dialog.SecondaryAction>
-          <Dialog.PrimaryAction onClick={transactionModal.onOpen}>
+          <Dialog.PrimaryAction
+            onClick={transactionModal.onOpen}
+            disabled={updatedMetadata?.length === 0}
+          >
             Save changes
           </Dialog.PrimaryAction>
         </Dialog.Actions>
@@ -483,6 +485,7 @@ export const EditMetadataModal = ({
         onClose={transactionModal.onClose}
         updates={updatedMetadata}
         onConfirm={handleSaveRequest.mutate}
+        updateInProgress={handleSaveRequest.isPending}
       />
     </>
   );

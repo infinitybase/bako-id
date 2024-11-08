@@ -24,15 +24,15 @@ export const useMetadata = () => {
   );
   const { domain } = useParams({ strict: false });
   const { provider } = useProvider();
+  const { wallet } = useWallet();
   const metadataModal = useDisclosure();
   const transactionModal = useDisclosure();
-  const { wallet } = useWallet();
   const { successToast, errorToast } = useCustomToast();
 
   const handleListRequest = useQuery({
     queryKey: [MetadataQueryKey.HANDLE_LIST, domain],
     queryFn: async () => {
-      // TODO: Limit to owners only
+      // TODO: Limit to owners only?
       try {
         let registryContract: RegistryContract;
 
@@ -47,12 +47,10 @@ export const useMetadata = () => {
 
         const metadata = await registryContract.getMetadata(domain);
 
-        const result = Object.entries(metadata).map(([key, value]) => ({
+        return Object.entries(metadata).map(([key, value]) => ({
           key,
           value,
         }));
-
-        return result;
       } catch (e) {
         console.log(e);
         throw e;
@@ -73,12 +71,10 @@ export const useMetadata = () => {
         ),
       };
 
-      console.log('🚀 ~ payload ~ payload:', metadataPayload);
-
       const setContract = RegistryContract.create(wallet);
       await setContract
         .setMetadata(domain, metadataPayload)
-        .catch((e) => console.log('🚀 ~ setMetadata ~ e', e));
+        .catch((e) => console.log(e));
     },
     onSuccess: () => {
       successToast({

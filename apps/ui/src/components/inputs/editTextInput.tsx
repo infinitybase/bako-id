@@ -1,21 +1,17 @@
 import {
   Box,
-  Flex,
   FormControl,
   FormErrorMessage,
-  FormHelperText,
   FormLabel,
   Input,
   InputGroup,
   type InputProps,
   InputRightElement,
-  Text,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Dialog } from '../dialog';
 import { CloseIcon } from '../icons/closeIcon';
-import { TrashIcon } from '../icons/trashIcon';
 
 interface IEditTextValueInput extends InputProps {
   title: string;
@@ -129,7 +125,7 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
               </InputRightElement>
             )}
           </InputGroup>
-          <FormHelperText
+          {/* <FormHelperText
             position="absolute"
             bottom={2}
             w="full"
@@ -138,7 +134,7 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
             justifyContent="end"
           >
             <Flex
-              gap={1}
+              gap={1}w
               alignItems="center"
               color="section.200"
               _hover={{
@@ -152,7 +148,7 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
               </Text>
               <TrashIcon w={5} h={5} />
             </Flex>
-          </FormHelperText>
+          </FormHelperText> */}
           <Box h={9} w="full">
             {errors.title?.message && inputValue.length <= 3 && (
               <FormErrorMessage

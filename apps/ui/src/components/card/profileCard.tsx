@@ -12,11 +12,6 @@ import {
 import { MetadataKeys } from '../../utils/metadataKeys';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
 
-// interface Metadata {
-//   key: string;
-//   value: string;
-// }
-
 interface IProfileCard {
   domainName: string | null;
   domain: string;
@@ -30,7 +25,6 @@ export const ProfileCard = ({
   metadata,
   editAction,
 }: IProfileCard) => {
-  // const { account } = useAccount();
   const [isLowerThanMobile] = useMediaQuery('(max-width: 25em)');
   const { isMyDomain: isOwner } = useSidebar();
 
