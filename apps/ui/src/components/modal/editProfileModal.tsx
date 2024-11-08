@@ -16,6 +16,7 @@ import {
   Tabs,
   Text,
   useDisclosure,
+  useMediaQuery,
 } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
 
@@ -341,30 +342,34 @@ const ModalFiltersTabs = ({
     }, {});
   }, [metadata]);
 
+  const [maxH680] = useMediaQuery('(max-height: 680px)');
+  const [maxH860] = useMediaQuery('(max-height: 860px)');
+
+  const calculateHeight = () => {
+    if (maxH680) return 300;
+    if (maxH860) return 400;
+    return 420;
+  };
+
   return (
     <Tabs position="relative" borderColor="disabled.500">
       <TabList w="full" color="disabled.500">
         {TabsTypes.map((tab) => (
-          <Tab
-            key={tab.key}
-            _selected={{
-              color: 'section.200',
-            }}
-            w="full"
-          >
+          <Tab key={tab.key} _selected={{ color: 'section.200' }} w="full">
             {tab.name}
           </Tab>
         ))}
       </TabList>
+
       <TabIndicator
         mt="-1.5px"
         height="2px"
         bg="section.200"
         borderRadius="1px"
       />
+
       <TabPanels
-        h={[300, 300, 350, 520]}
-        maxH={[300, 300, 350, 520]}
+        h={calculateHeight()}
         overflowY="scroll"
         overflowX="hidden"
         css={{
@@ -458,6 +463,7 @@ export const EditMetadataModal = ({
         modalTitle={<ModalTitle onClose={onClose} wallet={wallet!} />}
       >
         <ModalFiltersButtons changeFilter={handleFilterClick} filter={filter} />
+
         <Dialog.Body>
           <ModalFiltersTabs
             metadata={(metadata ?? []) as Metadata[]}
@@ -479,6 +485,7 @@ export const EditMetadataModal = ({
           </Dialog.PrimaryAction>
         </Dialog.Actions>
       </Dialog.Modal>
+
       <TransactionsDetailsModal
         domain={domain}
         isOpen={transactionModal.isOpen}
