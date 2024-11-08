@@ -19,12 +19,15 @@ type ProfileCardsProps = {
 export const ProfileCards = ({
   domain,
   domainParam,
-  isLoading,
+  isLoading: loadingDomain,
   owner,
 }: ProfileCardsProps) => {
-  const { metadataModal, metadata, setUpdatedMetadata } = useMetadata();
+  const { metadataModal, metadata, setUpdatedMetadata, loadingMetadata } =
+    useMetadata();
 
-  return isLoading || !owner ? (
+  const loading = loadingDomain || loadingMetadata;
+
+  return loading || !owner ? (
     <ProfileCardLoadingSkeleton />
   ) : (
     <Suspense>
