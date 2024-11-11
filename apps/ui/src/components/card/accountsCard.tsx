@@ -1,15 +1,17 @@
-import { Flex, Heading, Icon, VStack } from '@chakra-ui/react';
+import { Button, Flex, Heading, Icon, VStack } from '@chakra-ui/react';
 import { Card } from '..';
 import { CopyIcon } from '../icons/copyIcon';
 import { VerifiedAccountInput } from '../inputs/verifiedAccount';
+import { PlusSquareIcon } from '@chakra-ui/icons';
+import { useSidebar } from '../sidebar/hooks/useSidebar';
 
 interface AccountsCardProps {
-  // metadata: Metadata[] | undefined;
-  metadata: { key: string; value: string }[] | undefined;
+  metadata: { key: string; value: string | undefined }[] | undefined;
+  addAction: () => void;
 }
 
-export const AccountsCard = ({ metadata }: AccountsCardProps) => {
-  // const { isMyDomain } = useSidebar();
+export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
+  const { isMyDomain } = useSidebar();
 
   return (
     <Card
@@ -22,21 +24,21 @@ export const AccountsCard = ({ metadata }: AccountsCardProps) => {
     >
       <Flex alignItems="center" justify="space-between">
         <Heading fontSize="lg">Accounts</Heading>
-        {/* {isMyDomain && (
-          <Button variant="ghosted" rightIcon={<PlusSquareIcon />}>
+        {isMyDomain && (
+          <Button
+            variant="ghosted"
+            rightIcon={<PlusSquareIcon />}
+            onClick={addAction}
+          >
             Add
           </Button>
-        )} */}
+        )}
       </Flex>
 
       <VStack spacing={5}>
         {metadata?.map((m) => {
           const keyAfterColon = m.key.split(':')[1];
-
-          const variant = {
-            key: keyAfterColon,
-            value: m.value,
-          };
+          const variant = { key: keyAfterColon, value: m.value };
 
           return (
             <VerifiedAccountInput
@@ -49,12 +51,6 @@ export const AccountsCard = ({ metadata }: AccountsCardProps) => {
             />
           );
         })}
-        {/* <VerifiedAccountInput
-          variant="twitter"
-          isVerified={false}
-          rightAddon
-          rightAddonName={<Icon as={CopyIcon} />}
-        /> */}
       </VStack>
     </Card>
   );

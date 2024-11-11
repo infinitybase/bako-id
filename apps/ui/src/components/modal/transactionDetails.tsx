@@ -17,6 +17,7 @@ interface ITranscationDetailsModal {
   onConfirm: () => void;
   domain: string;
   updates: { key: string; value: string }[];
+  updateInProgress: boolean;
 }
 
 export const TransactionDomainDetailsModal = ({
@@ -77,6 +78,7 @@ export const TransactionsDetailsModal = ({
   onClose,
   onConfirm,
   updates,
+  updateInProgress,
 }: ITranscationDetailsModal) => {
   return (
     <Dialog.Modal
@@ -135,7 +137,13 @@ export const TransactionsDetailsModal = ({
         <Dialog.SecondaryAction onClick={onClose}>
           Cancel
         </Dialog.SecondaryAction>
-        <Dialog.PrimaryAction onClick={onConfirm}>Confirm</Dialog.PrimaryAction>
+        <Dialog.PrimaryAction
+          onClick={onConfirm}
+          disabled={updateInProgress}
+          isLoading={updateInProgress}
+        >
+          Confirm
+        </Dialog.PrimaryAction>
       </Dialog.Actions>
     </Dialog.Modal>
   );

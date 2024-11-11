@@ -16,10 +16,10 @@ import {
   Tabs,
   Text,
   useDisclosure,
+  useMediaQuery,
 } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
 
-import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import type { Account } from 'fuels';
 import React, { useMemo, useState, type ReactNode } from 'react';
@@ -27,10 +27,14 @@ import { Metadatas } from '../../utils/metadatas';
 import { MetadataCard } from '../card/metadataCard';
 import { Dialog } from '../dialog';
 import { AvatarIcon } from '../icons';
-import { useCustomToast } from '../toast';
 import { EditProfileFieldsModal } from './editProfileFieldsModal';
 import { EditProfilePicModal } from './editProfilePicModal';
 import { TransactionsDetailsModal } from './transactionDetails';
+import {
+  type MetadataKeyValue,
+  type MetadataResponse,
+  useMetadata,
+} from '../../hooks/useMetadata';
 
 interface Metadata {
   key: string;
@@ -40,6 +44,7 @@ interface Metadata {
 interface EditProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
+  metadata: MetadataResponse;
 }
 
 export interface IMetadata {
@@ -53,7 +58,7 @@ interface IModalFilterTabsProps {
   metadata: Metadata[];
   filters: FilterButtonTypes;
   updates: Metadata[];
-  setUpdates: React.Dispatch<React.SetStateAction<Metadata[]>>;
+  setUpdates: React.Dispatch<React.SetStateAction<MetadataKeyValue[]>>;
 }
 
 interface MetadataTabPanelProps {
@@ -61,7 +66,7 @@ interface MetadataTabPanelProps {
   metadatas: typeof Metadatas.Social;
   userMetadata: Record<string, IMetadata>;
   updates: Metadata[];
-  setUpdates: React.Dispatch<React.SetStateAction<Metadata[]>>;
+  setUpdates: React.Dispatch<React.SetStateAction<MetadataKeyValue[]>>;
   filters: FilterButtonTypes;
 }
 
@@ -279,6 +284,12 @@ const MetadataTabPanel = ({
                   : updates.some((update) => update.key === metadata.key)
                     ? false
                     : null;
+
+              const isEmpty = !userMetadata[metadata.key];
+              const isUpdated = !!updates.find(
+                ({ key }) => key === metadata.key,
+              );
+
               return (
                 <React.Fragment key={metadata.key}>
                   <MetadataCard
@@ -286,7 +297,8 @@ const MetadataTabPanel = ({
                     keys={metadata.key}
                     icon={metadata.icon}
                     title={metadata.title}
-                    verified={isVerified}
+                    isEmpty={isEmpty}
+                    isUpdated={isUpdated}
                     onClick={() => handleOpenModal(metadata)}
                   />
 
@@ -298,7 +310,9 @@ const MetadataTabPanel = ({
                       updates={updates}
                       setUpdates={setUpdates}
                       type={metadata.key}
-                      title={isVerified ? userMetadata[metadata.key].title : ''}
+                      title={
+                        isVerified ? userMetadata[metadata.key]?.title : ''
+                      }
                       validated={isVerified}
                     />
                   )}
@@ -328,30 +342,34 @@ const ModalFiltersTabs = ({
     }, {});
   }, [metadata]);
 
+  const [maxH680] = useMediaQuery('(max-height: 680px)');
+  const [maxH860] = useMediaQuery('(max-height: 860px)');
+
+  const calculateHeight = () => {
+    if (maxH680) return 300;
+    if (maxH860) return 400;
+    return 420;
+  };
+
   return (
     <Tabs position="relative" borderColor="disabled.500">
       <TabList w="full" color="disabled.500">
         {TabsTypes.map((tab) => (
-          <Tab
-            key={tab.key}
-            _selected={{
-              color: 'section.200',
-            }}
-            w="full"
-          >
+          <Tab key={tab.key} _selected={{ color: 'section.200' }} w="full">
             {tab.name}
           </Tab>
         ))}
       </TabList>
+
       <TabIndicator
         mt="-1.5px"
         height="2px"
         bg="section.200"
         borderRadius="1px"
       />
+
       <TabPanels
-        h={[300, 300, 350, 520]}
-        maxH={[300, 300, 350, 520]}
+        h={calculateHeight()}
         overflowY="scroll"
         overflowX="hidden"
         css={{
@@ -414,59 +432,25 @@ const ModalFiltersTabs = ({
   );
 };
 
-export const EditProfileModal = ({
+export const EditMetadataModal = ({
   isOpen,
   onClose,
 }: EditProfileModalProps) => {
   const { domain } = useParams({ strict: false });
   const { wallet } = useWallet();
-  const transactionDetails = useDisclosure();
-  const { successToast, errorToast } = useCustomToast();
+  const {
+    handleSaveRequest,
+    metadata,
+    transactionModal,
+    updatedMetadata,
+    setUpdatedMetadata,
+  } = useMetadata();
 
   const [filter, setFilter] = useState(FilterButtonTypes.ALL);
-  const [updates, setUpdates] = useState<Metadata[]>([]);
 
   const handleFilterClick = (newFilter: FilterButtonTypes) => {
     setFilter(newFilter);
   };
-
-  const { data: metadata, refetch: refetchMetadatas } = useQuery({
-    queryKey: ['getAllMetadatas'],
-    queryFn: async () => {
-      if (!wallet) return;
-
-      // const userMetadata = UserMetadataContract.initialize(wallet, domain);
-      //
-      // return userMetadata.getAll();
-    },
-  });
-
-  const handleSave = useMutation({
-    mutationKey: ['saveBatchMetadatas'],
-    mutationFn: async () => {
-      if (!wallet) return;
-
-      // const userMetadata = UserMetadataContract.initialize(wallet, domain);
-      //
-      // return userMetadata.batchSaveMetadata(updates);
-    },
-    onSuccess: () => {
-      successToast({
-        title: 'Profile Updated',
-        description: 'You have successfully updated your profile',
-      });
-      refetchMetadatas();
-      transactionDetails.onClose();
-    },
-    onError: (error) => {
-      console.error(error.message);
-      errorToast({
-        title: 'Profile Update Failed',
-        description:
-          'There was an error updating your profile, please try again',
-      });
-    },
-  });
 
   return (
     <>
@@ -479,11 +463,12 @@ export const EditProfileModal = ({
         modalTitle={<ModalTitle onClose={onClose} wallet={wallet!} />}
       >
         <ModalFiltersButtons changeFilter={handleFilterClick} filter={filter} />
+
         <Dialog.Body>
           <ModalFiltersTabs
-            metadata={metadata ?? []}
-            updates={updates}
-            setUpdates={setUpdates}
+            metadata={(metadata ?? []) as Metadata[]}
+            updates={updatedMetadata}
+            setUpdates={setUpdatedMetadata}
             filters={filter}
           />
         </Dialog.Body>
@@ -492,17 +477,22 @@ export const EditProfileModal = ({
           <Dialog.SecondaryAction onClick={onClose}>
             Cancel
           </Dialog.SecondaryAction>
-          <Dialog.PrimaryAction onClick={transactionDetails.onOpen}>
+          <Dialog.PrimaryAction
+            onClick={transactionModal.onOpen}
+            disabled={updatedMetadata?.length === 0}
+          >
             Save changes
           </Dialog.PrimaryAction>
         </Dialog.Actions>
       </Dialog.Modal>
+
       <TransactionsDetailsModal
         domain={domain}
-        isOpen={transactionDetails.isOpen}
-        onClose={transactionDetails.onClose}
-        updates={updates}
-        onConfirm={handleSave.mutate}
+        isOpen={transactionModal.isOpen}
+        onClose={transactionModal.onClose}
+        updates={updatedMetadata}
+        onConfirm={handleSaveRequest.mutate}
+        updateInProgress={handleSaveRequest.isPending}
       />
     </>
   );
