@@ -1,49 +1,37 @@
-import {
-  Button,
-  Flex,
-  Icon,
-  Text,
-  useDisclosure,
-  useMediaQuery,
-} from '@chakra-ui/react';
+import { Box, Button, Flex, Icon, Text, useMediaQuery } from '@chakra-ui/react';
 
-import { useAccount } from '@fuels/react';
-import { useMemo } from 'react';
 import { Card } from '.';
 import { ExplorerTypes } from '../../types';
 import {
   AvatarIcon,
-  DisabledXBadgeIcon,
+  // DisabledXBadgeIcon,
   EditIcon,
   ExploreIcon,
-  FarcasterBadgeIcon,
+  // FarcasterBadgeIcon,
 } from '../icons';
-
-interface Metadata {
-  key: string;
-  value: string;
-}
+import { MetadataKeys } from '../../utils/metadataKeys';
+import { useSidebar } from '../sidebar/hooks/useSidebar';
 
 interface IProfileCard {
   domainName: string | null;
   domain: string;
-  metadata: Metadata[] | undefined;
-  owner: string;
+  metadata: { key: string; value: string | undefined }[] | undefined;
+  editAction: () => void;
 }
 
-export const ProfileCard = ({ domain, domainName, owner }: IProfileCard) => {
-  const action = useDisclosure();
-  const { account } = useAccount();
+export const ProfileCard = ({
+  domain,
+  domainName,
+  metadata,
+  editAction,
+}: IProfileCard) => {
   const [isLowerThanMobile] = useMediaQuery('(max-width: 25em)');
+  const { isMyDomain: isOwner } = useSidebar();
 
-  const isOwner = useMemo(() => {
-    return owner === account;
-  }, [owner, account]);
-
-  // const nickname = metadata?.find(
-  //   (m) => m.key === ContactMetadataKeys.Nickname
-  // );
-  // const shortBio = metadata?.find((m) => m.key === ContactMetadataKeys.Bio);
+  const nickname = metadata?.find(
+    (m) => m.key === MetadataKeys.CONTACT_NICKNAME,
+  );
+  const shortBio = metadata?.find((m) => m.key === MetadataKeys.CONTACT_BIO);
 
   // const handle = handles?.find((handle) => handle.name === domainName);
 
@@ -70,16 +58,16 @@ export const ProfileCard = ({ domain, domainName, owner }: IProfileCard) => {
               {domainName?.startsWith('@') ? domainName : `@${domainName}`}
             </Text>
 
-            {/*{nickname?.value && (*/}
-            {/*  <Text fontSize={['sm', 'md']} color="grey.200" ml={0.5}>*/}
-            {/*    {nickname.value}*/}
-            {/*  </Text>*/}
-            {/*)}*/}
+            {nickname?.value && (
+              <Text fontSize={['sm', 'md']} color="grey.200" ml={0.5}>
+                {nickname.value}
+              </Text>
+            )}
 
-            <Flex gap={1} ml={0}>
+            {/* <Flex gap={1} ml={0}>
               <FarcasterBadgeIcon w={8} h={8} />
               <DisabledXBadgeIcon w={8} h={8} />
-            </Flex>
+            </Flex> */}
           </Flex>
           <Flex flexDir="column" gap={2}>
             {/*{handle?.isPrimary && (*/}
@@ -108,7 +96,7 @@ export const ProfileCard = ({ domain, domainName, owner }: IProfileCard) => {
                 fontSize={['sm', 'sm']}
                 h={9}
                 rightIcon={<EditIcon w={5} h={5} />}
-                onClick={action.onOpen}
+                onClick={editAction}
               >
                 Edit Profile
               </Button>
@@ -125,7 +113,7 @@ export const ProfileCard = ({ domain, domainName, owner }: IProfileCard) => {
               onClick={() =>
                 window.open(
                   `${import.meta.env.VITE_EXPLORER_URL}${domain}${ExplorerTypes.ASSETS}`,
-                  '_blank'
+                  '_blank',
                 )
               }
             >
@@ -135,21 +123,15 @@ export const ProfileCard = ({ domain, domainName, owner }: IProfileCard) => {
         </Flex>
       </Flex>
 
-      {/*{shortBio?.value && (*/}
-      {/*  <Flex>*/}
-      {/*    <Box>*/}
-      {/*      <Text fontSize={['sm', 'sm']} fontWeight="400" color="grey.100">*/}
-      {/*        {shortBio?.value}*/}
-      {/*        /!* Robust security. Uncompromising performance. Built like no other,*/}
-      {/*        Bako Safe is the next evolution in Multisig wallets. Stateless.*/}
-      {/*        Future-proof. Our stateless design allows for the creation of*/}
-      {/*        unlimited vaults at no cost (without sponsorships), and the very*/}
-      {/*        low transaction fees of Fuel Network. *!/*/}
-      {/*      </Text>*/}
-      {/*    </Box>*/}
-      {/*  </Flex>*/}
-      {/*)}*/}
-      {/*<EditProfileModal isOpen={action.isOpen} onClose={action.onClose} />*/}
+      {shortBio?.value && (
+        <Flex>
+          <Box>
+            <Text fontSize={['sm', 'sm']} fontWeight="400" color="grey.100">
+              {shortBio?.value}
+            </Text>
+          </Box>
+        </Flex>
+      )}
     </Card>
   );
 };

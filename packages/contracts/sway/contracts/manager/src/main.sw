@@ -1,9 +1,15 @@
 contract;
 
+mod events;
+
 use std::string::String;
 use std::hash::{sha256, Hash};
 use std::storage::storage_string::*;
+use std::block::timestamp;
+
 use lib::abis::manager::{RecordData, Manager, ManagerInfo};
+use events::{ManagerLogEvent};
+
 
 storage {
     records_data: StorageMap<b256, RecordData> = StorageMap {},
@@ -56,6 +62,17 @@ impl Manager for Contract {
         if (storage.records_resolver.get(data.resolver).try_read().is_none()) {
             storage.records_resolver.insert(data.resolver, name_hash);
         }
+
+        log(ManagerLogEvent {
+            fnname: String::from_ascii_str("set_record"),
+            name,
+            owner: data.owner,
+            resolver: data.resolver,
+            name_hash,
+            timestamp: timestamp(),
+            period: data.period,
+        });
+
     }
 
     #[storage(read, write)]

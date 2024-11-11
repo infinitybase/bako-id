@@ -3,11 +3,11 @@ import {
   Card,
   CardBody,
   CardHeader,
+  Stack,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useWallet } from '@fuels/react';
-import { BuyComponents } from '../../components';
+import { BuyComponents, ResolverAutocomplete } from '../../components';
 import { BuyOrConnectButton } from '../../components/buttons';
 import { GoBack } from '../../components/helpers';
 import { BuyError } from '../../components/helpers/buyError';
@@ -17,9 +17,18 @@ import { Purchased } from '../purchased/page';
 import { useBuy } from './hooks/useBuy';
 import { TermsOfUseDialog } from '../../components/termsOfUseDialog';
 import { useState } from 'react';
+import { useResolverForm } from './hooks/useResolverForm';
 
 export const Buy = () => {
-  const { wallet } = useWallet();
+  const {
+    control,
+    errors,
+    handleResolverAddressChange,
+    isValid,
+    resolverAddress,
+    wallet,
+    isResolverValidatingFetching,
+  } = useResolverForm();
   const [agreed, setAgreed] = useState<boolean>(false);
   const [showTerms, setShowTerms] = useState<boolean>(false);
 
@@ -36,11 +45,12 @@ export const Buy = () => {
     walletBalance,
     registerDomain,
     domain,
+    signProgress,
   } = buy;
 
   const { isMobile } = useScreenSize();
 
-  if (registerDomain.isSuccess && registerDomain.data) {
+  if (registerDomain.isSuccess && registerDomain.data && !signInLoad) {
     return (
       <Purchased
         domain={domain}
@@ -52,12 +62,14 @@ export const Buy = () => {
 
   const BuyButton = (
     <BuyOrConnectButton
-      handleBuyDomain={() => !agreed && setShowTerms(true)}
+      progress={signProgress}
+      handleBuyDomain={() => () => !agreed && setShowTerms(true)}
       isLoadingBalance={isLoadingBalance}
       signInLoad={signInLoad}
       totalPrice={totalPrice}
       wallet={!!wallet}
       walletBalance={walletBalance}
+      isDisabled={!!errors.resolver?.message || !isValid}
     />
   );
 
@@ -77,7 +89,7 @@ export const Buy = () => {
         setAgreed={setAgreed}
         showTerms={showTerms}
         setShowTerms={setShowTerms}
-        handleConfirmAction={handleBuyDomain}
+        handleConfirmAction={() => handleBuyDomain(resolverAddress)}
       />
       {!isMobile && <GoBack />}
       <Card
@@ -110,13 +122,28 @@ export const Buy = () => {
               ))}
             </BuyComponents.Domains>
           </VStack>
-          <VStack
-            h="full"
-            w="full"
-            alignItems="start"
-            mt={[12, 12, 6, 12]}
-            spacing={5}
-          >
+
+          <Stack mt={10} mb={1}>
+            <Box>
+              <Text color="section.200" fontWeight="bold">
+                Resolver
+              </Text>
+              <Text color="grey.subtitle" fontSize="xs">
+                The address is your connected account by default. You can modify
+                it manually pasting another address.
+              </Text>
+            </Box>
+
+            <ResolverAutocomplete
+              handleChange={handleResolverAddressChange}
+              inputValue={resolverAddress}
+              isValid={isValid ?? false}
+              errors={errors}
+              control={control}
+              isLoading={isResolverValidatingFetching}
+            />
+          </Stack>
+          <VStack h="full" w="full" alignItems="start" spacing={5}>
             <Box>
               <Text color="section.200" fontWeight="bold">
                 Your purchase

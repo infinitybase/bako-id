@@ -12,9 +12,8 @@ interface IAddressesCard {
 }
 
 export const AddressesCard = ({ domain }: IAddressesCard) => {
-  // const { isMyDomain } = useSidebar();
-
   if (!domain) return null;
+
   return (
     <Card
       w="full"
