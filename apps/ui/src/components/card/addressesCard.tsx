@@ -6,17 +6,13 @@ import { CopyText } from '../helpers/copy';
 import { FuelIcon } from '../icons/fuelIcon';
 import { Explorer } from '../helpers/explorer';
 import { ExplorerTypes } from '../../types';
-import { useProvider } from '@fuels/react';
-import { getExplorer } from '../../utils/getExplorer';
 
 interface IAddressesCard {
   domain: string | null;
+  explorerUrl: string;
 }
 
-export const AddressesCard = ({ domain }: IAddressesCard) => {
-  const { provider } = useProvider();
-
-  const explorerUrl = getExplorer(provider?.getChainId());
+export const AddressesCard = ({ domain, explorerUrl }: IAddressesCard) => {
   if (!domain) return null;
 
   return (
@@ -46,7 +42,7 @@ export const AddressesCard = ({ domain }: IAddressesCard) => {
             <Explorer
               id={domain ?? ''}
               type={ExplorerTypes.ASSETS}
-              explorerUrl={`${explorerUrl}/account/`}
+              explorerUrl={explorerUrl}
             />
           }
         />

@@ -9,8 +9,9 @@ import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
 
 interface IOwnershipCard {
   owner: string | null;
+  explorerUrl: string;
 }
-export const OwnershipCard = ({ owner }: IOwnershipCard) => {
+export const OwnershipCard = ({ owner, explorerUrl }: IOwnershipCard) => {
   const { domain } = useParams({ strict: false });
   const { data } = useGetGracePeriod(domain.replace('@', ''));
 
@@ -47,7 +48,11 @@ export const OwnershipCard = ({ owner }: IOwnershipCard) => {
         <TextValue
           leftAction={'owner'}
           rightAction={
-            <Explorer id={owner ?? ''} type={ExplorerTypes.ASSETS} />
+            <Explorer
+              id={owner ?? ''}
+              type={ExplorerTypes.ASSETS}
+              explorerUrl={explorerUrl}
+            />
           }
           content={owner ? formatAddress(Address.fromB256(owner).toB256()) : ''}
         />
