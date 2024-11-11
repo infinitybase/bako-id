@@ -8,6 +8,7 @@ import { useState } from 'react';
 
 interface TokenImageProps extends ImageProps {
   src: string;
+  spinnerSize?: string;
 }
 
 export const TokenImage = ({ src, ...props }: TokenImageProps) => {
@@ -16,7 +17,12 @@ export const TokenImage = ({ src, ...props }: TokenImageProps) => {
   return (
     <Flex justifyContent="center" alignItems="center" position="relative">
       {isGeneratingImage && (
-        <Spinner boxSize="100px" mx="auto" position="absolute" />
+        <Spinner
+          boxSize={props.spinnerSize ?? '100px'}
+          mx="auto"
+          left={props.spinnerSize ? 12 : 'unset'}
+          position="absolute"
+        />
       )}
       <ChakraImage
         onLoad={() => setIsGeneratingImage(false)}
