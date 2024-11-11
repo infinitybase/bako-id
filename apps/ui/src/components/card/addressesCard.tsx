@@ -6,17 +6,17 @@ import { CopyText } from '../helpers/copy';
 import { FuelIcon } from '../icons/fuelIcon';
 import { Explorer } from '../helpers/explorer';
 import { ExplorerTypes } from '../../types';
-// import { useProvider } from '@fuels/react';
-// import { getExplorer } from '../../utils/getExplorer';
+import { useProvider } from '@fuels/react';
+import { getExplorer } from '../../utils/getExplorer';
 
 interface IAddressesCard {
   domain: string | null;
 }
 
 export const AddressesCard = ({ domain }: IAddressesCard) => {
-  // const { provider } = useProvider();
+  const { provider } = useProvider();
 
-  // const explorerUrl = getExplorer(provider?.getChainId());
+  const explorerUrl = getExplorer(provider?.getChainId());
   if (!domain) return null;
 
   return (
@@ -46,7 +46,7 @@ export const AddressesCard = ({ domain }: IAddressesCard) => {
             <Explorer
               id={domain ?? ''}
               type={ExplorerTypes.ASSETS}
-              // explorerUrl={explorerUrl}
+              explorerUrl={`${explorerUrl}/account/`}
             />
           }
         />

@@ -24,7 +24,6 @@ export const networkByChainId = Object.fromEntries(
 );
 
 export const getExplorer = (chainId?: number) => {
-  console.log('chainId', chainId);
   const defaultExplorer = availableNetworks[NetworkType.MAINNET].explorer;
 
   return networkByChainId[chainId!]?.explorer ?? defaultExplorer;

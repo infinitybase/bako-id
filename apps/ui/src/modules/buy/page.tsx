@@ -71,7 +71,12 @@ export const Buy = () => {
       totalPrice={totalPrice}
       wallet={!!wallet}
       walletBalance={walletBalance}
-      isDisabled={!!errors.resolver?.message || !isValid}
+      isDisabled={
+        !!errors.resolver?.message ||
+        !isValid ||
+        buy.loading ||
+        isLoadingBalance
+      }
     />
   );
 
