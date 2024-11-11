@@ -3,7 +3,6 @@ import { Button, Divider, Flex } from '@chakra-ui/react';
 import { BakoTooltip, CheckoutCard, TextValue } from '../..';
 
 import { CopyText } from '../../helpers/copy';
-import { useScreenSize } from '../../../hooks/useScreenSize';
 
 interface TokenCardProps {
   contractId: string;
@@ -12,8 +11,6 @@ interface TokenCardProps {
 }
 
 const TokenBody = ({ contractId, onOpen, subId }: TokenCardProps) => {
-  const { isMobile } = useScreenSize();
-  console.log('ismobil', isMobile);
   return (
     <>
       <Flex
