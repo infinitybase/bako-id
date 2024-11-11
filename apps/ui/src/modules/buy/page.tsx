@@ -15,6 +15,8 @@ import { useScreenSize } from '../../hooks/useScreenSize';
 import type { Domains } from '../../types';
 import { Purchased } from '../purchased/page';
 import { useBuy } from './hooks/useBuy';
+import { TermsOfUseDialog } from '../../components/termsOfUseDialog';
+import { useState } from 'react';
 import { useResolverForm } from './hooks/useResolverForm';
 
 export const Buy = () => {
@@ -27,6 +29,8 @@ export const Buy = () => {
     wallet,
     isResolverValidatingFetching,
   } = useResolverForm();
+  const [agreed, setAgreed] = useState<boolean>(false);
+  const [showTerms, setShowTerms] = useState<boolean>(false);
 
   const buy = useBuy();
 
@@ -59,7 +63,7 @@ export const Buy = () => {
   const BuyButton = (
     <BuyOrConnectButton
       progress={signProgress}
-      handleBuyDomain={() => handleBuyDomain(resolverAddress)}
+      handleBuyDomain={() => () => !agreed && setShowTerms(true)}
       isLoadingBalance={isLoadingBalance}
       signInLoad={signInLoad}
       totalPrice={totalPrice}
@@ -80,6 +84,13 @@ export const Buy = () => {
       mb={[0, 0, 'auto', 0]}
       flexDirection="column"
     >
+      <TermsOfUseDialog
+        agreed={agreed}
+        setAgreed={setAgreed}
+        showTerms={showTerms}
+        setShowTerms={setShowTerms}
+        handleConfirmAction={() => handleBuyDomain(resolverAddress)}
+      />
       {!isMobile && <GoBack />}
       <Card
         border="1px solid"
