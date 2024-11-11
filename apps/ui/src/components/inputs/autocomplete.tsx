@@ -34,8 +34,12 @@ type AutocompleteValue = {
 };
 
 export const Autocomplete = (props: IAutocomplete) => {
-  const { handleChangeDomain, domainIsAvailable, handleConfirmDomain } =
-    useHome();
+  const {
+    handleChangeDomain,
+    domainIsAvailable,
+    handleConfirmDomain,
+    isDisabled,
+  } = useHome();
   const [inputValue, setInputValue] = useState<string>('');
   const {
     control,
@@ -248,7 +252,9 @@ export const Autocomplete = (props: IAutocomplete) => {
           type="submit"
           variant="primary"
           isLoading={isSubmitting}
-          isDisabled={!!errors.handle?.message || domainIsAvailable === null}
+          isDisabled={
+            !!errors.handle?.message || domainIsAvailable === null || isDisabled
+          }
           _disabled={{
             cursor: 'not-allowed',
             bgColor: 'button.500',
