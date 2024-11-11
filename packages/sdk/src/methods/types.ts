@@ -22,6 +22,8 @@ export enum MetadataKeys {
   CONTACT_COMPANY = 'contact:company',
   CONTACT_NICKNAME = 'contact:nickname',
   CONTACT_BIO = 'contact:bio',
+  CONTACT_WEBSITE = 'contact:website',
+  CONTACT_LOCATION = 'contact:location',
 
   LINK_HOME = 'link:home',
   LINK_CONTACT = 'link:contact',

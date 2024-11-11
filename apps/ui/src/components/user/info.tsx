@@ -52,6 +52,11 @@ export const Info = ({
     document.body.style.overflow = 'auto';
   };
 
+  const handleLogout = async () => {
+    await disconnect();
+    navigate({ to: '/' });
+  };
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const icon = useMemo(() => {
     const path = localStorage.getItem(`@BAKO-ID/AVATAR/${account}`);
@@ -198,7 +203,7 @@ export const Info = ({
               color="grey.200"
               my={2}
               gap={2}
-              onClick={disconnect}
+              onClick={handleLogout}
               _hover={{
                 cursor: 'pointer',
                 color: 'button.500',

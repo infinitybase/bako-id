@@ -1,9 +1,10 @@
 import { Manager, Nft, Registry, getContractId } from '@bako-id/contracts';
 import {
-  type Account,
+  Account,
   type Provider,
   TransactionStatus,
   getMintedAssetId,
+  getRandomB256,
   sha256,
   toUtf8Bytes,
 } from 'fuels';
@@ -14,6 +15,7 @@ import {
   NotFoundBalanceError,
   assertValidDomain,
   domainPrices,
+  getFakeAccount,
 } from '../utils';
 import { OffChainSync } from './offChainSync';
 import { MetadataKeys } from './types';
@@ -48,30 +50,47 @@ export class RegistryContract {
   private contract: Registry;
   private nftContract: Nft;
   private managerContract: Manager;
-  private account: Account;
+  private account: Account | undefined;
   private provider: Provider;
 
-  constructor(id: string, account: Account) {
-    this.account = account;
-    this.provider = account.provider;
-    this.contract = new Registry(id, account);
+  constructor(id: string, accountOrProvider: Account | Provider) {
+    if ('address' in accountOrProvider && !!accountOrProvider.address) {
+      this.account = accountOrProvider;
+      this.provider = accountOrProvider.provider;
+    } else {
+      this.provider = accountOrProvider as Provider;
+    }
+
+    this.contract = new Registry(id, accountOrProvider);
     this.nftContract = new Nft(
-      getContractId(account.provider.url, 'nft'),
-      account
+      getContractId(this.provider.url, 'nft'),
+      accountOrProvider
     );
     this.managerContract = new Manager(
-      getContractId(account.provider.url, 'manager'),
-      account
+      getContractId(this.provider.url, 'manager'),
+      accountOrProvider
     );
   }
 
-  static create(account: Account) {
-    const contractId = getContractId(account.provider.url, 'registry');
-    return new RegistryContract(contractId, account);
+  static create(accountOrProvider: Account | Provider) {
+    let provider: Provider;
+
+    if (accountOrProvider instanceof Account) {
+      provider = accountOrProvider.provider;
+    } else {
+      provider = accountOrProvider;
+    }
+
+    const contractId = getContractId(provider.url, 'registry');
+    return new RegistryContract(contractId, accountOrProvider);
   }
 
   async register(params: RegisterPayload) {
     const { domain, period, resolver } = params;
+
+    if (!this.account) {
+      throw new Error('Account is required to register a domain');
+    }
 
     const domainName = assertValidDomain(domain);
     const resolverInput = await this.getIdentity(resolver);
@@ -110,11 +129,16 @@ export class RegistryContract {
   async simulate(params: SimulatePayload) {
     const { domain, period } = params;
 
+    const account = getFakeAccount(this.provider);
+    const contract = new Registry(this.contract.id.toB256(), account);
+
     const domainName = assertValidDomain(domain);
     const amount = domainPrices(domain, period);
-    const resolverInput = await this.getIdentity(this.account.address.toB256());
+    const resolverInput = {
+      Address: { bits: getRandomB256() },
+    };
 
-    const transactionRequest = await this.contract.functions
+    const transactionRequest = await contract.functions
       .register(domainName, resolverInput, period)
       .callParams({
         forward: { amount, assetId: this.provider.getBaseAssetId() },
@@ -122,7 +146,7 @@ export class RegistryContract {
       .getTransactionRequest();
 
     const { gasUsed, minFee } =
-      await this.account.getTransactionCost(transactionRequest);
+      await account.getTransactionCost(transactionRequest);
 
     return {
       fee: gasUsed.add(minFee),
@@ -167,6 +191,9 @@ export class RegistryContract {
     domain: string,
     metadata: Partial<Record<MetadataKeys, string>>
   ) {
+    if (!this.account) {
+      throw new Error('Account is required to setMetadata');
+    }
     const domainName = assertValidDomain(domain);
     const _domain = await this.managerContract.functions
       .get_record(domainName)
@@ -207,14 +234,13 @@ export class RegistryContract {
       ),
     };
 
-    const multiCall = await this.contract
+    const result = await this.contract
       .multiCall(
         Object.entries(MetadataKeys).map(([_, value]) =>
           this.nftContract.functions.metadata(mintedAssetId, value)
         )
       )
-      .call();
-    const result = await multiCall.waitForResult();
+      .get();
 
     return Object.values(MetadataKeys).reduce(
       (acc, key, index) => {

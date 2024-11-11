@@ -1,13 +1,15 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
 import { CheckBadge } from './checkBadge';
+import type { MetadataKeys } from '../../utils/metadataKeys';
 
 interface IMetadataCard {
-  keys: string;
+  keys: MetadataKeys;
   title: string;
   icon: ReactNode;
   onClick: () => void;
-  verified?: boolean | null;
+  isEmpty: boolean;
+  isUpdated: boolean;
 }
 
 export const MetadataCard = ({
@@ -15,7 +17,8 @@ export const MetadataCard = ({
   onClick,
   title,
   keys,
-  verified,
+  isEmpty,
+  isUpdated,
 }: IMetadataCard) => {
   return (
     <Box
@@ -25,30 +28,26 @@ export const MetadataCard = ({
       display="flex"
       flexDirection="row"
       onClick={onClick}
-      backgroundColor={verified === null ? 'input.600' : 'input.900'}
+      backgroundColor={isEmpty && !isUpdated ? 'input.600' : 'input.900'}
       alignItems="center"
       justifyContent="center"
       rounded="xl"
       position="relative"
       cursor="pointer"
-      _hover={{
-        transform: 'scale(1.05)',
-        transition: 'all 0.2s',
-      }}
+      _hover={{ transform: 'scale(1.05)', transition: 'all 0.2s' }}
       border="1.5px solid"
-      borderColor={verified !== null && !verified ? 'button.500' : 'input.600'}
+      borderColor={isUpdated ? 'button.500' : 'input.600'}
     >
-      {verified !== null && <CheckBadge verified={!!verified} />}
+      {(!isEmpty || isUpdated) && <CheckBadge isUpdated={isUpdated} />}
 
       <Flex
         flexDir="column"
         align="center"
         gap={2}
         justify="center"
-        color={verified === null ? 'section.200' : 'grey.400'}
+        color={isEmpty && !isUpdated ? 'section.200' : 'grey.400'}
       >
         {icon}
-
         <Text key={title}>{title}</Text>
       </Flex>
     </Box>

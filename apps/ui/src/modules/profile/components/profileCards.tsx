@@ -3,7 +3,11 @@ import { Suspense } from 'react';
 import { AddressesCard } from '../../../components/card/addressesCard.tsx';
 import { OwnershipCard } from '../../../components/card/ownershipCard.tsx';
 import { ProfileCard } from '../../../components/card/profileCard.tsx';
+import { AccountsCard } from '../../../components/card/accountsCard.tsx';
 import { ProfileCardLoadingSkeleton } from './profileCardLoadingSkeleton.tsx';
+
+import { EditMetadataModal } from '../../../components/modal/editProfileModal.tsx';
+import { useMetadata } from '../../../hooks/useMetadata.ts';
 
 type ProfileCardsProps = {
   domainParam: string;
@@ -15,33 +19,27 @@ type ProfileCardsProps = {
 export const ProfileCards = ({
   domain,
   domainParam,
-  isLoading,
+  isLoading: loadingDomain,
   owner,
 }: ProfileCardsProps) => {
-  // const { domain: domainName } = useParams({ strict: false });
-  // const { wallet } = useWallet();
-  //
-  // const { data: metadata } = useQuery({
-  //   queryKey: ['getAllMetadatas'],
-  //   queryFn: async () => {
-  //     if (!wallet) return;
-  //
-  //     // const userMetadata = UserMetadataContract.initialize(
-  //     //   wallet,
-  //     //   domainName,
-  //     // );
-  //
-  //     // return userMetadata.getAll();
-  //
-  //     return [];
-  //   },
-  //   enabled: !!wallet && !!domainName,
-  // });
+  const { metadataModal, metadata, setUpdatedMetadata, loadingMetadata } =
+    useMetadata();
 
-  return isLoading || !owner ? (
+  const loading = loadingDomain || loadingMetadata;
+
+  return loading || !owner ? (
     <ProfileCardLoadingSkeleton />
   ) : (
     <Suspense>
+      <EditMetadataModal
+        isOpen={metadataModal.isOpen}
+        onClose={() => {
+          metadataModal.onClose();
+          setUpdatedMetadata([]);
+        }}
+        metadata={metadata}
+      />
+
       <Stack
         display="flex"
         h="fit-content"
@@ -53,8 +51,8 @@ export const ProfileCards = ({
           <ProfileCard
             domainName={domainParam}
             domain={domain ?? ''}
-            owner={owner ?? ''}
-            metadata={[]}
+            metadata={metadata}
+            editAction={metadataModal.onOpen}
           />
 
           <Stack
@@ -68,7 +66,7 @@ export const ProfileCards = ({
             <AddressesCard domain={domain ?? ''} />
           </Stack>
         </Flex>
-        {/*<AccountsCard metadata={[]} />*/}
+        <AccountsCard metadata={metadata} addAction={metadataModal.onOpen} />
       </Stack>
     </Suspense>
   );

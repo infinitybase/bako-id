@@ -1,4 +1,4 @@
-import { TransactionStatus, bn } from 'fuels';
+import { TransactionStatus, bn, getDecodedLogs } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
 import {
   Manager,
@@ -119,13 +119,25 @@ describe('[METHODS] Registry Contract', () => {
     const price = domainPrices(domain);
 
     try {
-      await registry.functions
+      const res = await registry.functions
         .register(domain, { Address: { bits: owner.address.toB256() } }, bn(1))
         .addContracts([manager, nft])
         .callParams({
           forward: { assetId: provider.getBaseAssetId(), amount: price },
         })
         .call();
+
+      const response = await res.waitForResult();
+      const a = getDecodedLogs(
+        response.transactionResult.receipts,
+        registry.interface.jsonAbi,
+        {
+          [manager.id.toB256()]: manager.interface.jsonAbi,
+          [nft.id.toB256()]: nft.interface.jsonAbi,
+        }
+      );
+
+      console.log(a);
 
       const { waitForResult } = await registry.functions
         .register(domain, { Address: { bits: owner.address.toB256() } }, bn(1))

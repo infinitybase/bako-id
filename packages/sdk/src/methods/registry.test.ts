@@ -227,21 +227,55 @@ describe('Test Registry', () => {
     await expect(registerResult).rejects.toBeInstanceOf(NotFoundBalanceError);
   });
 
-  it('should simulate handle cost', async () => {
+  it('should execute methods correctly without an account', async () => {
     const {
       contracts: [registry],
       wallets: [wallet],
+      provider,
     } = node;
 
     const domain = randomName();
     const contract = new RegistryContract(registry.id.toB256(), wallet);
-
-    const { fee, price } = await contract.simulate({
+    await contract.register({
       domain,
       period: 1,
+      resolver: provider.getBaseAssetId(),
+    });
+    await contract.setMetadata(domain, {
+      [MetadataKeys.CONTACT_BIO]: 'bio',
     });
 
+    const contractWithoutAccount = new RegistryContract(
+      registry.id.toB256(),
+      provider
+    );
+
+    const { fee, price } = await contractWithoutAccount.simulate({
+      domain: randomName(),
+      period: 1,
+    });
     expect(fee).toBeDefined();
     expect(price).toBeDefined();
+
+    const { image } = await contractWithoutAccount.token(domain);
+    expect(image).toBeDefined();
+    expect(image).toBe(`https://assets.bako.id/${domain}`);
+
+    const metadata = await contractWithoutAccount.getMetadata(domain);
+    expect(metadata[MetadataKeys.CONTACT_BIO]).toBe('bio');
+
+    await expect(() =>
+      contractWithoutAccount.register({
+        domain: randomName(),
+        period: 1,
+        resolver: provider.getBaseAssetId(),
+      })
+    ).rejects.toThrow('Account is required to register a domain');
+
+    await expect(() =>
+      contractWithoutAccount.setMetadata(randomName(), {
+        [MetadataKeys.CONTACT_BIO]: 'bio',
+      })
+    ).rejects.toThrow('Account is required to setMetadata');
   });
 });
