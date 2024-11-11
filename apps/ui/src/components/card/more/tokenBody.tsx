@@ -39,7 +39,18 @@ const TokenBody = ({ contractId, onOpen, subId }: TokenCardProps) => {
           />
         </Flex>
 
-        <CheckoutCard w={['fit-content', '40', '40', '40']} />
+        <Flex
+          justifyItems="center"
+          alignItems="center"
+          w={['fit-content', '40', '40', '40']}
+          minW="150px"
+          minH={['335px', '40', '40', '40']}
+        >
+          <CheckoutCard
+            w={['fit-content', '40', '40', '40']}
+            spinnerSize="40px"
+          />
+        </Flex>
       </Flex>
       <Divider color="stroke.500" border="1px solid" w="full" my={[3, 8]} />
       <Flex w="full" justify="center" direction={['column', 'row']} gap={4}>
