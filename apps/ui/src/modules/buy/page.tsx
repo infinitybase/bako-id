@@ -63,7 +63,7 @@ export const Buy = () => {
   const BuyButton = (
     <BuyOrConnectButton
       progress={signProgress}
-      handleBuyDomain={() => () => !agreed && setShowTerms(true)}
+      handleBuyDomain={() => !agreed && setShowTerms(true)}
       isLoadingBalance={isLoadingBalance}
       signInLoad={signInLoad}
       totalPrice={totalPrice}
