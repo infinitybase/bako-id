@@ -6,10 +6,15 @@ name = "manager"
 
 [dependencies]
 lib = { path = "../../lib" }
+standards = { git = "https://github.com/FuelLabs/sway-standards", tag = "v0.6.1" }
+sway_libs = { git = "https://github.com/FuelLabs/sway-libs", tag = "v0.24.0" }
 
 [proxy]
 enabled = true
-address = "0xea29408a7982abef6251661545e4aba186517b7af4c84801e99589493d8dc2f8"
+address = "0x640eb8ea070eecf6baada9e15a82a6d44694509ecc6695b18600e6c2aa986ae9"
+
+# Testnet
+#address = "0x640eb8ea070eecf6baada9e15a82a6d44694509ecc6695b18600e6c2aa986ae9"
 
 # Mainnet
 #address = "0x0d69e157eba419749d3e3427030b76151f2ed980cb4b1f16fff72b13dc56f2f2"

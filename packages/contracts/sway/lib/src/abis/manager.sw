@@ -28,8 +28,5 @@ abi ManagerInfo {
     fn get_owner(name: String) -> Option<Identity>;
 
     #[storage(read)]
-    fn get_ttl(name: String) -> Option<u64>;
-
-    #[storage(read)]
     fn get_name(resolver: Identity) -> Option<String>;
 }
