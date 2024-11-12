@@ -17,7 +17,6 @@ import type { MetadataKeys } from '../../utils/metadataKeys';
 
 import validator from 'validator';
 import { Metadatas } from '../../utils/metadatas';
-
 interface IEditTextValueInput extends InputProps {
   title: string;
   modalType: string;
