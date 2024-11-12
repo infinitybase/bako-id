@@ -6,7 +6,7 @@
 
 /*
   Fuels version: 0.96.1
-  Forc version: 0.66.4
+  Forc version: 0.66.2
   Fuel-Core version: 0.40.0
 */
 
@@ -28,6 +28,8 @@ import type { Option, Enum } from "./common";
 
 export enum AccessErrorInput { NotOwner = 'NotOwner' };
 export enum AccessErrorOutput { NotOwner = 'NotOwner' };
+export enum AdminErrorInput { NotAdmin = 'NotAdmin' };
+export enum AdminErrorOutput { NotAdmin = 'NotAdmin' };
 export enum BurnErrorInput { NotEnoughCoins = 'NotEnoughCoins', ZeroAmount = 'ZeroAmount' };
 export enum BurnErrorOutput { NotEnoughCoins = 'NotEnoughCoins', ZeroAmount = 'ZeroAmount' };
 export type IdentityInput = Enum<{ Address: AddressInput, ContractId: ContractIdInput }>;
@@ -55,6 +57,8 @@ export type ContractIdInput = { bits: string };
 export type ContractIdOutput = ContractIdInput;
 export type OwnershipSetInput = { new_owner: IdentityInput };
 export type OwnershipSetOutput = { new_owner: IdentityOutput };
+export type OwnershipTransferredInput = { new_owner: IdentityInput, previous_owner: IdentityInput };
+export type OwnershipTransferredOutput = { new_owner: IdentityOutput, previous_owner: IdentityOutput };
 export type SetMetadataEventInput = { asset: AssetIdInput, metadata: Option<MetadataInput>, key: StdString, sender: IdentityInput };
 export type SetMetadataEventOutput = { asset: AssetIdOutput, metadata: Option<MetadataOutput>, key: StdString, sender: IdentityOutput };
 export type SetNameEventInput = { asset: AssetIdInput, name: Option<StdString>, sender: IdentityInput };
@@ -151,24 +155,29 @@ const abi = {
       ]
     },
     {
+      "type": "enum sway_libs::admin::errors::AdminError",
+      "concreteTypeId": "00b7a382efc43806d838a854db78cfb32171c259d5df893d1df8a4eba1906be4",
+      "metadataTypeId": 7
+    },
+    {
       "type": "enum sway_libs::asset::errors::BurnError",
       "concreteTypeId": "3acdc2adac8e0589c5864525e0edc9dc61a9571a4d09c3c57b58ea76d33f4b46",
-      "metadataTypeId": 7
+      "metadataTypeId": 8
     },
     {
       "type": "enum sway_libs::asset::errors::MintError",
       "concreteTypeId": "dff9dfec998a49b40f1c4b09567400f0e712aaf939c08f7d07bc5c63116e1084",
-      "metadataTypeId": 8
+      "metadataTypeId": 9
     },
     {
       "type": "enum sway_libs::asset::errors::SetMetadataError",
       "concreteTypeId": "c6c09c148c1a1341c7ab81697b3545cc695fa67668a169cddc59790a9a0b6b44",
-      "metadataTypeId": 9
+      "metadataTypeId": 10
     },
     {
       "type": "enum sway_libs::ownership::errors::InitializationError",
       "concreteTypeId": "1dfe7feadc1d9667a4351761230f948744068a090fe91b1bc6763a90ed5d3893",
-      "metadataTypeId": 10
+      "metadataTypeId": 11
     },
     {
       "type": "str[3]",
@@ -177,32 +186,37 @@ const abi = {
     {
       "type": "struct standards::src20::SetNameEvent",
       "concreteTypeId": "6ce295b0fb4c1c15e8ed1cfa4babda47d8a04940a5266a3229e12243a2e37c2c",
-      "metadataTypeId": 13
+      "metadataTypeId": 14
     },
     {
       "type": "struct standards::src20::TotalSupplyEvent",
       "concreteTypeId": "f255d5cc2114d1b6bc34bef4c28d4b60caccffd9a672ed16b79ea217e1c4a8a3",
-      "metadataTypeId": 14
+      "metadataTypeId": 15
     },
     {
       "type": "struct standards::src7::SetMetadataEvent",
       "concreteTypeId": "f1b1cc90b68559aa4bb5cc58201ebb5c5402ed3aa28927140761e8ff7dcd3ab8",
-      "metadataTypeId": 15
+      "metadataTypeId": 16
     },
     {
       "type": "struct std::asset_id::AssetId",
       "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974",
-      "metadataTypeId": 17
+      "metadataTypeId": 18
     },
     {
       "type": "struct std::string::String",
       "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c",
-      "metadataTypeId": 21
+      "metadataTypeId": 22
     },
     {
       "type": "struct sway_libs::ownership::events::OwnershipSet",
       "concreteTypeId": "e1ef35033ea9d2956f17c3292dea4a46ce7d61fdf37bbebe03b7b965073f43b5",
-      "metadataTypeId": 22
+      "metadataTypeId": 23
+    },
+    {
+      "type": "struct sway_libs::ownership::events::OwnershipTransferred",
+      "concreteTypeId": "b3fffbcb3158d7c010c31b194b60fb7857adb4ad61bdcf4b8b42958951d9f308",
+      "metadataTypeId": 24
     },
     {
       "type": "u64",
@@ -280,7 +294,7 @@ const abi = {
         },
         {
           "name": "Bytes",
-          "typeId": 18
+          "typeId": 19
         },
         {
           "name": "Int",
@@ -288,7 +302,7 @@ const abi = {
         },
         {
           "name": "String",
-          "typeId": 21
+          "typeId": 22
         }
       ]
     },
@@ -298,11 +312,11 @@ const abi = {
       "components": [
         {
           "name": "Address",
-          "typeId": 16
+          "typeId": 17
         },
         {
           "name": "ContractId",
-          "typeId": 20
+          "typeId": 21
         }
       ]
     },
@@ -316,16 +330,26 @@ const abi = {
         },
         {
           "name": "Some",
-          "typeId": 11
+          "typeId": 12
         }
       ],
       "typeParameters": [
-        11
+        12
+      ]
+    },
+    {
+      "type": "enum sway_libs::admin::errors::AdminError",
+      "metadataTypeId": 7,
+      "components": [
+        {
+          "name": "NotAdmin",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        }
       ]
     },
     {
       "type": "enum sway_libs::asset::errors::BurnError",
-      "metadataTypeId": 7,
+      "metadataTypeId": 8,
       "components": [
         {
           "name": "NotEnoughCoins",
@@ -339,7 +363,7 @@ const abi = {
     },
     {
       "type": "enum sway_libs::asset::errors::MintError",
-      "metadataTypeId": 8,
+      "metadataTypeId": 9,
       "components": [
         {
           "name": "ZeroAmount",
@@ -349,7 +373,7 @@ const abi = {
     },
     {
       "type": "enum sway_libs::asset::errors::SetMetadataError",
-      "metadataTypeId": 9,
+      "metadataTypeId": 10,
       "components": [
         {
           "name": "EmptyString",
@@ -363,7 +387,7 @@ const abi = {
     },
     {
       "type": "enum sway_libs::ownership::errors::InitializationError",
-      "metadataTypeId": 10,
+      "metadataTypeId": 11,
       "components": [
         {
           "name": "CannotReinitialized",
@@ -373,19 +397,19 @@ const abi = {
     },
     {
       "type": "generic T",
-      "metadataTypeId": 11
-    },
-    {
-      "type": "raw untyped ptr",
       "metadataTypeId": 12
     },
     {
+      "type": "raw untyped ptr",
+      "metadataTypeId": 13
+    },
+    {
       "type": "struct standards::src20::SetNameEvent",
-      "metadataTypeId": 13,
+      "metadataTypeId": 14,
       "components": [
         {
           "name": "asset",
-          "typeId": 17
+          "typeId": 18
         },
         {
           "name": "name",
@@ -393,7 +417,7 @@ const abi = {
           "typeArguments": [
             {
               "name": "",
-              "typeId": 21
+              "typeId": 22
             }
           ]
         },
@@ -405,11 +429,11 @@ const abi = {
     },
     {
       "type": "struct standards::src20::TotalSupplyEvent",
-      "metadataTypeId": 14,
+      "metadataTypeId": 15,
       "components": [
         {
           "name": "asset",
-          "typeId": 17
+          "typeId": 18
         },
         {
           "name": "supply",
@@ -423,11 +447,11 @@ const abi = {
     },
     {
       "type": "struct standards::src7::SetMetadataEvent",
-      "metadataTypeId": 15,
+      "metadataTypeId": 16,
       "components": [
         {
           "name": "asset",
-          "typeId": 17
+          "typeId": 18
         },
         {
           "name": "metadata",
@@ -441,7 +465,7 @@ const abi = {
         },
         {
           "name": "key",
-          "typeId": 21
+          "typeId": 22
         },
         {
           "name": "sender",
@@ -451,16 +475,6 @@ const abi = {
     },
     {
       "type": "struct std::address::Address",
-      "metadataTypeId": 16,
-      "components": [
-        {
-          "name": "bits",
-          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
-        }
-      ]
-    },
-    {
-      "type": "struct std::asset_id::AssetId",
       "metadataTypeId": 17,
       "components": [
         {
@@ -470,12 +484,22 @@ const abi = {
       ]
     },
     {
-      "type": "struct std::bytes::Bytes",
+      "type": "struct std::asset_id::AssetId",
       "metadataTypeId": 18,
       "components": [
         {
+          "name": "bits",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        }
+      ]
+    },
+    {
+      "type": "struct std::bytes::Bytes",
+      "metadataTypeId": 19,
+      "components": [
+        {
           "name": "buf",
-          "typeId": 19
+          "typeId": 20
         },
         {
           "name": "len",
@@ -485,11 +509,11 @@ const abi = {
     },
     {
       "type": "struct std::bytes::RawBytes",
-      "metadataTypeId": 19,
+      "metadataTypeId": 20,
       "components": [
         {
           "name": "ptr",
-          "typeId": 12
+          "typeId": 13
         },
         {
           "name": "cap",
@@ -499,7 +523,7 @@ const abi = {
     },
     {
       "type": "struct std::contract_id::ContractId",
-      "metadataTypeId": 20,
+      "metadataTypeId": 21,
       "components": [
         {
           "name": "bits",
@@ -509,20 +533,34 @@ const abi = {
     },
     {
       "type": "struct std::string::String",
-      "metadataTypeId": 21,
+      "metadataTypeId": 22,
       "components": [
         {
           "name": "bytes",
-          "typeId": 18
+          "typeId": 19
         }
       ]
     },
     {
       "type": "struct sway_libs::ownership::events::OwnershipSet",
-      "metadataTypeId": 22,
+      "metadataTypeId": 23,
       "components": [
         {
           "name": "new_owner",
+          "typeId": 5
+        }
+      ]
+    },
+    {
+      "type": "struct sway_libs::ownership::events::OwnershipTransferred",
+      "metadataTypeId": 24,
+      "components": [
+        {
+          "name": "new_owner",
+          "typeId": 5
+        },
+        {
+          "name": "previous_owner",
           "typeId": 5
         }
       ]
@@ -534,9 +572,70 @@ const abi = {
         {
           "name": "owner",
           "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        },
+        {
+          "name": "admin",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
         }
       ],
       "name": "constructor",
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read",
+            "write"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "admin",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        }
+      ],
+      "name": "add_admin",
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read",
+            "write"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "admin",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        }
+      ],
+      "name": "revoke_admin",
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read",
+            "write"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "new_owner",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        }
+      ],
+      "name": "transfer_ownership",
       "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
       "attributes": [
         {
@@ -830,6 +929,14 @@ const abi = {
       "concreteTypeId": "3f702ea3351c9c1ece2b84048006c8034a24cbc2bad2e740d0412b4172951d3d"
     },
     {
+      "logId": "12970362301975156672",
+      "concreteTypeId": "b3fffbcb3158d7c010c31b194b60fb7857adb4ad61bdcf4b8b42958951d9f308"
+    },
+    {
+      "logId": "51689703501740038",
+      "concreteTypeId": "00b7a382efc43806d838a854db78cfb32171c259d5df893d1df8a4eba1906be4"
+    },
+    {
       "logId": "4237256875605624201",
       "concreteTypeId": "3acdc2adac8e0589c5864525e0edc9dc61a9571a4d09c3c57b58ea76d33f4b46"
     },
@@ -867,12 +974,12 @@ const abi = {
     {
       "name": "DECIMALS",
       "concreteTypeId": "c89951a24c6ca28c13fd1cfdc646b2b656d69e61a92b91023be7eb58eb914b6b",
-      "offset": 41400
+      "offset": 46256
     },
     {
       "name": "SYMBOL",
       "concreteTypeId": "0a92c8e0f509a2d3a66f68dd50408ce45a1a2596803b0bc983a69b34bd40dad2",
-      "offset": 41408
+      "offset": 46264
     }
   ]
 };
@@ -891,6 +998,9 @@ export class NftInterface extends Interface {
 
   declare functions: {
     constructor: FunctionFragment;
+    add_admin: FunctionFragment;
+    revoke_admin: FunctionFragment;
+    transfer_ownership: FunctionFragment;
     decimals: FunctionFragment;
     name: FunctionFragment;
     symbol: FunctionFragment;
@@ -913,7 +1023,10 @@ export class Nft extends Contract {
 
   declare interface: NftInterface;
   declare functions: {
-    constructor: InvokeFunction<[owner: IdentityInput], void>;
+    constructor: InvokeFunction<[owner: IdentityInput, admin: IdentityInput], void>;
+    add_admin: InvokeFunction<[admin: IdentityInput], void>;
+    revoke_admin: InvokeFunction<[admin: IdentityInput], void>;
+    transfer_ownership: InvokeFunction<[new_owner: IdentityInput], void>;
     decimals: InvokeFunction<[asset: AssetIdInput], Option<number>>;
     name: InvokeFunction<[asset: AssetIdInput], Option<StdString>>;
     symbol: InvokeFunction<[asset: AssetIdInput], Option<StdString>>;

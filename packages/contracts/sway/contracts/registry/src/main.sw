@@ -10,16 +10,19 @@ use std::block::timestamp;
 use std::hash::{Hash, sha256};
 use std::storage::storage_string::{*, StorageString};
 use std::call_frames::msg_asset_id;
-use std::context::msg_amount;
+use std::context::{msg_amount, this_balance};
 use standards::src3::SRC3;
+use std::asset::transfer;
 use standards::src7::{Metadata};
 use sway_libs::asset::metadata::*;
 use sway_libs::asset::base::SetAssetAttributes;
+use sway_libs::ownership::*;
+use standards::src5::{SRC5, State};
 use lib::abis::manager::{Manager, ManagerInfo, RecordData};
 use lib::validations::{assert_name_validity};
 use lib::string::{concat_string};
 use events::{NewNameEvent};
-use abis::{Registry, Constructor};
+use abis::{Registry, Constructor, Ownership};
 use lib::{domain_price};
 
 storage {
@@ -140,7 +143,9 @@ impl Registry for Contract {
 
 impl Constructor for Contract {
     #[storage(read, write)]
-    fn constructor(manager_id: ContractId, token_id: ContractId) {
+    fn constructor(owner: Address, manager_id: ContractId, token_id: ContractId) {
+        initialize_ownership(Identity::Address(owner));
+
         require(manager_id != ContractId::zero(), RegistryContractError::ContractNotBeZero);
         require(token_id != ContractId::zero(), RegistryContractError::ContractNotBeZero);
 
@@ -152,5 +157,35 @@ impl Constructor for Contract {
 
         storage.manager_id.write(manager_id);
         storage.token_id.write(token_id);
+    }
+}
+
+impl Ownership for Contract {
+    #[storage(read, write)]
+    fn transfer_ownership(new_owner: Address) {
+        only_owner();
+        transfer_ownership(Identity::Address(new_owner));
+    }
+
+    #[storage(read)]
+    fn transfer_funds(amount: u64, asset_id: AssetId, recipien: Address) {
+        only_owner();
+        let total_balance = this_balance(asset_id);
+        require(
+            total_balance >= amount,
+            RegistryContractError::InvalidAmount
+        );
+        transfer(
+            Identity::Address(recipien),
+            AssetId::base(),
+            amount,
+        );
+    }
+}
+
+impl SRC5 for Contract {
+    #[storage(read)]
+    fn owner() -> State {
+        _owner()
     }
 }

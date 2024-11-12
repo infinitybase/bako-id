@@ -43,12 +43,19 @@ describe('[NFT] Registry Contract', () => {
     nft = new Nft(nftAbi.id, owner);
 
     const nftCall = await nft.functions
-      .constructor({ ContractId: { bits: registry.id.toB256() } })
+      .constructor(
+        { Address: { bits: owner.address.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
+      )
       .call();
     await nftCall.waitForResult();
 
     const { waitForResult } = await registry.functions
-      .constructor({ bits: manager.id.toB256() }, { bits: nftAbi.id.toB256() })
+      .constructor(
+        { bits: owner.address.toB256() },
+        { bits: manager.id.toB256() },
+        { bits: nftAbi.id.toB256() }
+      )
       .call();
     await waitForResult();
 
