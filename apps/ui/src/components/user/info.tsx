@@ -18,7 +18,7 @@ import type { AbstractAddress } from 'fuels';
 import { useMemo, useState } from 'react';
 import { BeginnersGuide } from '../icons/beginnersGuide.tsx';
 import { FileIcon } from '../icons/fileIcon.tsx';
-import { HowToSendCrypto } from '../icons/howToSendCrypto.tsx';
+// import { HowToSendCrypto } from '../icons/howToSendCrypto.tsx';
 import { LogoutIcon } from '../icons/logoutIcon.tsx';
 import { MiningCrypto } from '../icons/miningCrypto.tsx';
 import { MoreBako } from '../icons/moreBako.tsx';
@@ -266,6 +266,12 @@ export const Info = ({
                       cursor: 'pointer',
                       opacity: 0.8,
                     }}
+                    onClick={() =>
+                      window.open(
+                        'https://www.youtube.com/watch?v=hKBKRobGPfQ&list=PL_aP9ZFhLyyBS1hMgWpY-6JcKrNnxeVDt',
+                        '_blank',
+                      )
+                    }
                     as={BeginnersGuide}
                   />
                   <Box
@@ -276,9 +282,12 @@ export const Info = ({
                       cursor: 'pointer',
                       opacity: 0.8,
                     }}
+                    onClick={() =>
+                      window.open('https://www.bako.global/shields', '_blank')
+                    }
                     as={MiningCrypto}
                   />
-                  <Box
+                  {/* <Box
                     w="125px"
                     h="125px"
                     rounded="xl"
@@ -287,7 +296,7 @@ export const Info = ({
                       opacity: 0.8,
                     }}
                     as={HowToSendCrypto}
-                  />
+                  /> */}
                 </Flex>
               </Flex>
 
