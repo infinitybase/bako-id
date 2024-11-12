@@ -1,9 +1,12 @@
-import { Button, Flex, Heading, Icon, VStack } from '@chakra-ui/react';
+import { Button, Flex, Heading, VStack } from '@chakra-ui/react';
 import { Card } from '..';
-import { CopyIcon } from '../icons/copyIcon';
 import { VerifiedAccountInput } from '../inputs/verifiedAccount';
 import { PlusSquareIcon } from '@chakra-ui/icons';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
+import { getMetadataRedirects } from '../../utils/metadatas';
+import type { MetadataKeys } from '../../utils/metadataKeys';
+import { Explorer } from '../helpers/explorer';
+import { CopyText } from '../helpers/copy';
 
 interface AccountsCardProps {
   metadata: { key: string; value: string | undefined }[] | undefined;
@@ -12,6 +15,16 @@ interface AccountsCardProps {
 
 export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
   const { isMyDomain } = useSidebar();
+
+  const getInputIcon = (key: MetadataKeys, value: string) => {
+    const url = getMetadataRedirects(key, value);
+
+    if (url) {
+      return <Explorer redirectLink={url ?? ''} />;
+    }
+
+    return <CopyText value={value} />;
+  };
 
   return (
     <Card
@@ -47,7 +60,10 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
               variant={variant}
               isVerified
               rightAddon
-              rightAddonName={<Icon as={CopyIcon} />}
+              rightAddonName={getInputIcon(
+                m.key as MetadataKeys,
+                m.value ?? '',
+              )}
             />
           );
         })}

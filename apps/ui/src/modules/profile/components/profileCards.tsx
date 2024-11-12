@@ -29,6 +29,11 @@ export const ProfileCards = ({
 
   const loading = loadingDomain || loadingMetadata;
 
+  const handleOnSuccess = () => {
+    metadataModal.onClose();
+    setUpdatedMetadata([]);
+  };
+
   const { provider } = useProvider();
   const explorerUrl = getExplorer(provider?.getChainId());
 
@@ -43,6 +48,7 @@ export const ProfileCards = ({
           setUpdatedMetadata([]);
         }}
         metadata={metadata}
+        handleOnSuccess={handleOnSuccess}
       />
 
       <Stack

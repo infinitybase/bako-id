@@ -15,6 +15,8 @@ import { CloseIcon } from '../icons/closeIcon';
 import type { MetadataKeyValue } from '../../hooks/useMetadata';
 import type { MetadataKeys } from '../../utils/metadataKeys';
 
+import validator from 'validator';
+import { Metadatas } from '../../utils/metadatas';
 interface IEditTextValueInput extends InputProps {
   title: string;
   modalType: string;
@@ -33,10 +35,13 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
     props.modalType.split(':')[1].charAt(0).toUpperCase() +
     props.modalType.split(':')[1].slice(1);
 
+  const isWebsiteInput = selectedType === Metadatas.Website[0].title;
+
   const {
     control,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<EditTextValueInput>({
     mode: 'all',
     reValidateMode: 'onChange',
@@ -46,9 +51,24 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
   });
 
   const handleSave = () => {
+    let formattedInput = '';
+    if (isWebsiteInput) {
+      formattedInput = inputValue.startsWith('https://')
+        ? inputValue
+        : `https://${inputValue}`;
+
+      if (formattedInput !== inputValue) {
+        setInputValue(formattedInput);
+      }
+      if (!validator.isURL(formattedInput)) {
+        setError('title', { message: 'Invalid Website' });
+        return;
+      }
+    }
+
     props.onMetadataChange({
       key: props.modalType as MetadataKeys,
-      value: inputValue,
+      value: isWebsiteInput ? formattedInput : inputValue,
     });
     setInputValue('');
   };
@@ -152,7 +172,7 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
             </Flex>
           </FormHelperText> */}
           <Box h={9} w="full">
-            {errors.title?.message && inputValue.length <= 3 && (
+            {errors.title?.message && (
               <FormErrorMessage
                 w="full"
                 color="error.500"
