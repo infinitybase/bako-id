@@ -155,6 +155,25 @@ describe('[METHODS] Registry Contract', () => {
     }
   });
 
+  it('should register a domain successfully', async () => {
+    const { provider, wallets } = node;
+    const [owner] = wallets;
+    const domain = randomName(3);
+
+    const price = domainPrices(domain);
+
+    const registerCallFn = await registry.functions
+      .register(domain, { Address: { bits: owner.address.toB256() } }, bn(1))
+      .addContracts([manager, nft])
+      .callParams({
+        forward: { assetId: provider.getBaseAssetId(), amount: price },
+      })
+      .call();
+
+    const { transactionResult } = await registerCallFn.waitForResult();
+    expect(transactionResult.status).toBe(TransactionStatus.success);
+  });
+
   it.each(['@invalid-!@#%$!', 'my@asd.other', '@MYHanDLE'])(
     'should throw a error when try register %s',
     async (handle) => {

@@ -21,6 +21,7 @@ use lib::string::{concat_string};
 use events::{NewNameEvent};
 use abis::{Registry, Constructor};
 use lib::{domain_price};
+use sway_libs::reentrancy::reentrancy_guard;
 
 storage {
     manager_id: ContractId = ContractId::zero(),
@@ -74,6 +75,8 @@ enum RegistryContractError {
 impl Registry for Contract {
     #[storage(write, read), payable]
     fn register(name: String, resolver: Identity, period: u16) {
+        reentrancy_guard();
+        
         require(
             msg_asset_id() == AssetId::base(),
             RegistryContractError::IncorrectAssetId,
