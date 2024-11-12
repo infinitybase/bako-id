@@ -12,6 +12,19 @@ import {
 } from '../components/icons/';
 import { MetadataKeys } from './metadataKeys';
 
+export const getMetadataRedirects = (
+  key: keyof typeof MetadataKeys,
+  value: string,
+) => {
+  const metaDatas: Partial<Record<keyof typeof MetadataKeys, string>> = {
+    SOCIAL_X: `https://x.com/${value}`,
+    SOCIAL_GITHUB: `https://github.com/${value}`,
+    SOCIAL_TELEGRAM: `https://t.me/${value}`,
+  };
+
+  return metaDatas[key] || null;
+};
+
 export const Metadatas = {
   General: [
     {

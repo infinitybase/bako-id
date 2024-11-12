@@ -4,6 +4,9 @@ import { CopyIcon } from '../icons/copyIcon';
 import { VerifiedAccountInput } from '../inputs/verifiedAccount';
 import { PlusSquareIcon } from '@chakra-ui/icons';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
+import { Metadatas } from '../../utils/metadatas';
+import { MetadataKeys } from '../../utils/metadataKeys';
+import { Explorer } from '../helpers/explorer';
 
 interface AccountsCardProps {
   metadata: { key: string; value: string | undefined }[] | undefined;
@@ -12,6 +15,20 @@ interface AccountsCardProps {
 
 export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
   const { isMyDomain } = useSidebar();
+
+  // const metaDataKeys = Object.values(MetadataKeys).map(
+  //   (key) => key.split(':')[1],
+  // );
+
+  // const mustBeRedirected = (key: string) => {
+  //   const mustBeRedirectedKeys = ['website', 'x', 'github', 'telegram'];
+
+  //   if (mustBeRedirectedKeys.includes(key)) {
+  //     return <Explorer id={owner ?? ''} type={ExplorerTypes.ASSETS} />;
+  //   }
+
+  //   return <Icon as={CopyIcon} />;
+  // };
 
   return (
     <Card
@@ -39,6 +56,8 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
         {metadata?.map((m) => {
           const keyAfterColon = m.key.split(':')[1];
           const variant = { key: keyAfterColon, value: m.value };
+
+          console.log('variant', variant.key);
 
           return (
             <VerifiedAccountInput

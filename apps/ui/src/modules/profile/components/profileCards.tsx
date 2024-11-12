@@ -27,6 +27,11 @@ export const ProfileCards = ({
 
   const loading = loadingDomain || loadingMetadata;
 
+  const handleOnSuccess = () => {
+    metadataModal.onClose();
+    setUpdatedMetadata([]);
+  };
+
   return loading || !owner ? (
     <ProfileCardLoadingSkeleton />
   ) : (
@@ -38,6 +43,7 @@ export const ProfileCards = ({
           setUpdatedMetadata([]);
         }}
         metadata={metadata}
+        handleOnSuccess={handleOnSuccess}
       />
 
       <Stack
