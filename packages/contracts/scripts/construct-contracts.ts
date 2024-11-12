@@ -44,14 +44,25 @@ const main = async () => {
   const nft = new Nft(nftId, wallet);
 
   try {
-    const nftConstruct = await nft.functions
-      .constructor(
-        { Address: { bits: wallet.address.toB256() } },
-        { ContractId: { bits: registryId } },
-      )
-      .call();
-    await nftConstruct.waitForResult();
-    logger.success('NFT construct success!');
+    const { value: nftOwner } = await manager.functions.owner().get();
+
+    // @ts-ignore
+    if (nftOwner === 'Uninitialized') {
+      const nftConstruct = await nft.functions
+        .constructor(
+          { Address: { bits: wallet.address.toB256() } },
+          { ContractId: { bits: registryId } },
+        )
+        .call();
+      await nftConstruct.waitForResult();
+      logger.success('NFT construct success!');
+    } else if (nftOwner.Initialized) {
+      logger.warn('NFT Contract is already initialized.');
+    }
+
+    const addAdminCall = await nft.functions.add_admin({ ContractId: { bits: registryId } }).call();
+    await addAdminCall.waitForResult();
+    logger.success('NFT admin added to registry!');
   } catch (e) {
     if (e instanceof Error && /CannotReinitialized/.test(e.message)) {
       logger.warn('NFT Contract is already initialized.');
