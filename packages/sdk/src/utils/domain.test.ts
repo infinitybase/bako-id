@@ -1,4 +1,4 @@
-import { Address, bn } from 'fuels';
+import { bn } from 'fuels';
 import {
   assertValidDomain,
   domainPrices,
@@ -8,13 +8,6 @@ import {
 import { InvalidDomainError } from './errors';
 
 describe('Domain utils', () => {
-  test('address', () => {
-    const addressWithoutChecksum = Address.fromString(
-      '0x89297d82d33D5ec66d67c403C648e3eC6BEd126442Cd4D6bbe387D2D6975C7D3'
-    );
-    console.log(addressWithoutChecksum.toB256());
-  });
-
   test('Domain validations', () => {
     const validDomain = isValidDomain('@valid_domain');
     expect(validDomain).toBeTruthy();

@@ -6,7 +6,7 @@
 
 /*
   Fuels version: 0.96.1
-  Forc version: 0.66.2
+  Forc version: 0.66.4
   Fuel-Core version: 0.40.0
 */
 
@@ -32,8 +32,6 @@ export type MetadataInput = Enum<{ B256: [], Bytes: Bytes, Int: BigNumberish, St
 export type MetadataOutput = Enum<{ B256: [], Bytes: Bytes, Int: BN, String: StdString }>;
 export enum NameValidationErrorInput { InvalidLenght = 'InvalidLenght', InvalidChars = 'InvalidChars', IsEmpty = 'IsEmpty' };
 export enum NameValidationErrorOutput { InvalidLenght = 'InvalidLenght', InvalidChars = 'InvalidChars', IsEmpty = 'IsEmpty' };
-export enum ReentrancyErrorInput { NonReentrant = 'NonReentrant' };
-export enum ReentrancyErrorOutput { NonReentrant = 'NonReentrant' };
 export enum RegistryContractErrorInput { IncorrectAssetId = 'IncorrectAssetId', InvalidAmount = 'InvalidAmount', AlreadyMinted = 'AlreadyMinted', AlreadyInitialized = 'AlreadyInitialized', ContractNotBeZero = 'ContractNotBeZero', ContractNotInitialized = 'ContractNotInitialized', NotOwner = 'NotOwner', NotFoundName = 'NotFoundName' };
 export enum RegistryContractErrorOutput { IncorrectAssetId = 'IncorrectAssetId', InvalidAmount = 'InvalidAmount', AlreadyMinted = 'AlreadyMinted', AlreadyInitialized = 'AlreadyInitialized', ContractNotBeZero = 'ContractNotBeZero', ContractNotInitialized = 'ContractNotInitialized', NotOwner = 'NotOwner', NotFoundName = 'NotFoundName' };
 
@@ -76,24 +74,19 @@ const abi = {
       "metadataTypeId": 4
     },
     {
-      "type": "enum sway_libs::reentrancy::errors::ReentrancyError",
-      "concreteTypeId": "4d216c57b3357523323f59401c7355785b41bdf832f6e1106272186b94797038",
-      "metadataTypeId": 5
-    },
-    {
       "type": "struct events::NewNameEvent",
       "concreteTypeId": "de123b38a3d90c3cc5a3b578a47a6105e998b48d85f6fcf34c1b4b3907806a75",
-      "metadataTypeId": 7
+      "metadataTypeId": 6
     },
     {
       "type": "struct std::contract_id::ContractId",
       "concreteTypeId": "29c10735d33b5159f0c71ee1dbd17b36a3e69e41f00fab0d42e1bd9f428d8a54",
-      "metadataTypeId": 12
+      "metadataTypeId": 11
     },
     {
       "type": "struct std::string::String",
       "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c",
-      "metadataTypeId": 13
+      "metadataTypeId": 12
     },
     {
       "type": "u16",
@@ -171,15 +164,15 @@ const abi = {
         },
         {
           "name": "Bytes",
-          "typeId": 10
+          "typeId": 9
         },
         {
           "name": "Int",
-          "typeId": 14
+          "typeId": 13
         },
         {
           "name": "String",
-          "typeId": 13
+          "typeId": 12
         }
       ]
     },
@@ -189,35 +182,25 @@ const abi = {
       "components": [
         {
           "name": "Address",
-          "typeId": 8
+          "typeId": 7
         },
         {
           "name": "ContractId",
-          "typeId": 12
-        }
-      ]
-    },
-    {
-      "type": "enum sway_libs::reentrancy::errors::ReentrancyError",
-      "metadataTypeId": 5,
-      "components": [
-        {
-          "name": "NonReentrant",
-          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+          "typeId": 11
         }
       ]
     },
     {
       "type": "raw untyped ptr",
-      "metadataTypeId": 6
+      "metadataTypeId": 5
     },
     {
       "type": "struct events::NewNameEvent",
-      "metadataTypeId": 7,
+      "metadataTypeId": 6,
       "components": [
         {
           "name": "name",
-          "typeId": 13
+          "typeId": 12
         },
         {
           "name": "name_hash",
@@ -233,13 +216,13 @@ const abi = {
         },
         {
           "name": "asset_id",
-          "typeId": 9
+          "typeId": 8
         }
       ]
     },
     {
       "type": "struct std::address::Address",
-      "metadataTypeId": 8,
+      "metadataTypeId": 7,
       "components": [
         {
           "name": "bits",
@@ -249,7 +232,7 @@ const abi = {
     },
     {
       "type": "struct std::asset_id::AssetId",
-      "metadataTypeId": 9,
+      "metadataTypeId": 8,
       "components": [
         {
           "name": "bits",
@@ -259,35 +242,35 @@ const abi = {
     },
     {
       "type": "struct std::bytes::Bytes",
-      "metadataTypeId": 10,
+      "metadataTypeId": 9,
       "components": [
         {
           "name": "buf",
-          "typeId": 11
+          "typeId": 10
         },
         {
           "name": "len",
-          "typeId": 14
+          "typeId": 13
         }
       ]
     },
     {
       "type": "struct std::bytes::RawBytes",
-      "metadataTypeId": 11,
+      "metadataTypeId": 10,
       "components": [
         {
           "name": "ptr",
-          "typeId": 6
+          "typeId": 5
         },
         {
           "name": "cap",
-          "typeId": 14
+          "typeId": 13
         }
       ]
     },
     {
       "type": "struct std::contract_id::ContractId",
-      "metadataTypeId": 12,
+      "metadataTypeId": 11,
       "components": [
         {
           "name": "bits",
@@ -297,17 +280,17 @@ const abi = {
     },
     {
       "type": "struct std::string::String",
-      "metadataTypeId": 13,
+      "metadataTypeId": 12,
       "components": [
         {
           "name": "bytes",
-          "typeId": 10
+          "typeId": 9
         }
       ]
     },
     {
       "type": "u64",
-      "metadataTypeId": 14
+      "metadataTypeId": 13
     }
   ],
   "functions": [
@@ -394,10 +377,6 @@ const abi = {
     }
   ],
   "loggedTypes": [
-    {
-      "logId": "5557842539076482339",
-      "concreteTypeId": "4d216c57b3357523323f59401c7355785b41bdf832f6e1106272186b94797038"
-    },
     {
       "logId": "9273072382193316023",
       "concreteTypeId": "80b09233651e30b7fa04b552a421e25fc4ea6dd8c3c8051ad05c9c2b4f6a13ce"
