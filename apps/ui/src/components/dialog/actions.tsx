@@ -31,6 +31,7 @@ const DialogPrimaryAction = (props: DialogActionProps) => (
     variant="primary"
     _disabled={{
       bg: 'button.500',
+      opacity: '.6',
       cursor: 'not-allowed',
       _hover: { bgColor: 'button.600' },
     }}

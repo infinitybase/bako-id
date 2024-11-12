@@ -9,9 +9,10 @@ import { ExplorerTypes } from '../../types';
 
 interface IAddressesCard {
   domain: string | null;
+  explorerUrl: string;
 }
 
-export const AddressesCard = ({ domain }: IAddressesCard) => {
+export const AddressesCard = ({ domain, explorerUrl }: IAddressesCard) => {
   if (!domain) return null;
 
   return (
@@ -38,7 +39,11 @@ export const AddressesCard = ({ domain }: IAddressesCard) => {
           rightAction={<CopyText value={Address.fromB256(domain).toB256()} />}
           content={formatAddress(Address.fromB256(domain).toB256())}
           additionalIcon={
-            <Explorer id={domain ?? ''} type={ExplorerTypes.ASSETS} />
+            <Explorer
+              id={domain ?? ''}
+              type={ExplorerTypes.ASSETS}
+              explorerUrl={explorerUrl}
+            />
           }
         />
       </Flex>

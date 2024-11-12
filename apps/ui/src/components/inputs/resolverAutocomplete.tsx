@@ -19,6 +19,7 @@ interface IResolverAutocomplete extends InputProps {
   control: Control<CustomAutocompleteValue>;
   errors: FieldErrors<CustomAutocompleteValue>;
   isLoading: boolean;
+  isSignLoading: boolean;
 }
 
 export const ResolverAutocomplete = ({
@@ -28,12 +29,13 @@ export const ResolverAutocomplete = ({
   control,
   errors,
   isLoading,
+  isSignLoading,
   ...rest
 }: IResolverAutocomplete) => {
   return (
     <Box w="full" h="full" display="flex" flexDirection="column">
       <FormControl
-        isInvalid={!isValid || !!errors.resolver?.message}
+        isInvalid={!isSignLoading && (!isValid || !!errors.resolver?.message)}
         display="flex"
         flexDirection="column"
       >
@@ -93,6 +95,7 @@ export const ResolverAutocomplete = ({
         </InputGroup>
         <Box h={9} w="full">
           {isLoading &&
+            !isSignLoading &&
             !errors.resolver?.message &&
             inputValue.length === 66 && (
               <FormHelperText
