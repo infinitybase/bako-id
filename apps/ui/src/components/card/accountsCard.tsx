@@ -1,12 +1,12 @@
-import { Button, Flex, Heading, Icon, VStack } from '@chakra-ui/react';
+import { Button, Flex, Heading, VStack } from '@chakra-ui/react';
 import { Card } from '..';
-import { CopyIcon } from '../icons/copyIcon';
 import { VerifiedAccountInput } from '../inputs/verifiedAccount';
 import { PlusSquareIcon } from '@chakra-ui/icons';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
-import { Metadatas } from '../../utils/metadatas';
-import { MetadataKeys } from '../../utils/metadataKeys';
+import { getMetadataRedirects } from '../../utils/metadatas';
+import type { MetadataKeys } from '../../utils/metadataKeys';
 import { Explorer } from '../helpers/explorer';
+import { CopyText } from '../helpers/copy';
 
 interface AccountsCardProps {
   metadata: { key: string; value: string | undefined }[] | undefined;
@@ -16,19 +16,15 @@ interface AccountsCardProps {
 export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
   const { isMyDomain } = useSidebar();
 
-  // const metaDataKeys = Object.values(MetadataKeys).map(
-  //   (key) => key.split(':')[1],
-  // );
+  const getInputIcon = (key: MetadataKeys, value: string) => {
+    const url = getMetadataRedirects(key, value);
 
-  // const mustBeRedirected = (key: string) => {
-  //   const mustBeRedirectedKeys = ['website', 'x', 'github', 'telegram'];
+    if (url) {
+      return <Explorer redirectLink={url ?? ''} />;
+    }
 
-  //   if (mustBeRedirectedKeys.includes(key)) {
-  //     return <Explorer id={owner ?? ''} type={ExplorerTypes.ASSETS} />;
-  //   }
-
-  //   return <Icon as={CopyIcon} />;
-  // };
+    return <CopyText value={value} />;
+  };
 
   return (
     <Card
@@ -57,8 +53,6 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
           const keyAfterColon = m.key.split(':')[1];
           const variant = { key: keyAfterColon, value: m.value };
 
-          console.log('variant', variant.key);
-
           return (
             <VerifiedAccountInput
               key={m.key}
@@ -66,7 +60,10 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
               variant={variant}
               isVerified
               rightAddon
-              rightAddonName={<Icon as={CopyIcon} />}
+              rightAddonName={getInputIcon(
+                m.key as MetadataKeys,
+                m.value ?? '',
+              )}
             />
           );
         })}

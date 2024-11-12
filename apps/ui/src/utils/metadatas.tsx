@@ -13,13 +13,14 @@ import {
 import { MetadataKeys } from './metadataKeys';
 
 export const getMetadataRedirects = (
-  key: keyof typeof MetadataKeys,
+  key: MetadataKeys,
   value: string,
-) => {
-  const metaDatas: Partial<Record<keyof typeof MetadataKeys, string>> = {
-    SOCIAL_X: `https://x.com/${value}`,
-    SOCIAL_GITHUB: `https://github.com/${value}`,
-    SOCIAL_TELEGRAM: `https://t.me/${value}`,
+): string | null => {
+  const metaDatas: Partial<Record<MetadataKeys, string>> = {
+    'social:x': `https://x.com/${value}`,
+    'social:github': `https://github.com/${value}`,
+    'social:telegram': `https://t.me/${value}`,
+    'contact:website': value,
   };
 
   return metaDatas[key] || null;
