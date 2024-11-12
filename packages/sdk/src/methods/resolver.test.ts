@@ -69,7 +69,11 @@ describe('Test resolver', () => {
     await managerCall.waitForResult();
 
     const registerCall = await registry.functions
-      .constructor({ bits: manager.id.toB256() }, { bits: nft.id.toB256() })
+      .constructor(
+        { bits: owner.address.toB256() },
+        { bits: manager.id.toB256() },
+        { bits: nft.id.toB256() }
+      )
       .call();
     await registerCall.waitForResult();
 
