@@ -63,13 +63,20 @@ export const Buy = () => {
   const BuyButton = (
     <BuyOrConnectButton
       progress={signProgress}
-      handleBuyDomain={() => !agreed && setShowTerms(true)}
+      handleBuyDomain={() =>
+        !agreed ? setShowTerms(true) : handleBuyDomain(resolverAddress)
+      }
       isLoadingBalance={isLoadingBalance}
       signInLoad={signInLoad}
       totalPrice={totalPrice}
       wallet={!!wallet}
       walletBalance={walletBalance}
-      isDisabled={!!errors.resolver?.message || !isValid}
+      isDisabled={
+        !!errors.resolver?.message ||
+        !isValid ||
+        buy.loading ||
+        isLoadingBalance
+      }
     />
   );
 
@@ -141,6 +148,7 @@ export const Buy = () => {
               errors={errors}
               control={control}
               isLoading={isResolverValidatingFetching}
+              isSignLoading={signInLoad}
             />
           </Stack>
           <VStack h="full" w="full" alignItems="start" spacing={5}>

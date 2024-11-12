@@ -11,6 +11,8 @@ import {
 } from '../icons';
 import { MetadataKeys } from '../../utils/metadataKeys';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
+import { useProvider } from '@fuels/react';
+import { getExplorer } from '../../utils/getExplorer';
 
 interface IProfileCard {
   domainName: string | null;
@@ -34,6 +36,10 @@ export const ProfileCard = ({
   const shortBio = metadata?.find((m) => m.key === MetadataKeys.CONTACT_BIO);
 
   // const handle = handles?.find((handle) => handle.name === domainName);
+
+  const { provider } = useProvider();
+
+  const explorerUrl = getExplorer(provider?.getChainId());
 
   return (
     <Card
@@ -112,8 +118,7 @@ export const ProfileCard = ({
               rightIcon={<ExploreIcon />}
               onClick={() =>
                 window.open(
-                  `${import.meta.env.VITE_EXPLORER_URL}${domain}${ExplorerTypes.ASSETS}`,
-                  '_blank',
+                  `${explorerUrl}/account/${domain}${ExplorerTypes.ASSETS}`,
                 )
               }
             >
