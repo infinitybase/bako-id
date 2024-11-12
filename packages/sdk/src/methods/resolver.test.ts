@@ -36,7 +36,10 @@ describe('Test resolver', () => {
       ],
     });
 
-    const { contracts } = node;
+    const {
+      contracts,
+      wallets: [owner],
+    } = node;
     const [resolver, registry, manager, nft] = contracts;
 
     (getContractId as jest.Mock).mockImplementation((_provider, contract) => {
@@ -58,7 +61,10 @@ describe('Test resolver', () => {
     await nftCall.waitForResult();
 
     const managerCall = await manager.functions
-      .constructor({ ContractId: { bits: registry.id.toB256() } })
+      .constructor(
+        { Address: { bits: owner.address.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
+      )
       .call();
     await managerCall.waitForResult();
 

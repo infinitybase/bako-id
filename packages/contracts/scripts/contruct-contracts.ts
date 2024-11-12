@@ -1,10 +1,16 @@
-import { Provider, Wallet } from 'fuels';
+import { Provider, Wallet, ZeroBytes32 } from 'fuels';
 import dotenv from 'dotenv';
 import { getContractId, Manager, Nft, Registry, Resolver } from '../src';
 
 dotenv.config({
   path: '../.env',
 });
+
+const logger = {
+  success: (...data: any) => console.log(`✅ `, ...data),
+  error: (...data: any) => console.error(`❌ `, ...data),
+  warn: (...data: any) => console.log(`❌ `, ...data),
+};
 
 const requireEnv = (name: string) => {
   const value = process.env[name];
@@ -42,26 +48,42 @@ const main = async () => {
       .constructor({ ContractId: { bits: registryId } })
       .call();
     await nftConstruct.waitForResult();
-    console.log('NFT construct success!');
+    logger.success('NFT construct success!');
   } catch (e) {
     if (e instanceof Error && /CannotReinitialized/.test(e.message)) {
-      console.error('NFT Contract is already initialized.');
+      logger.warn('NFT Contract is already initialized.');
     } else {
-      console.error('NFT construct failed', e);
+      logger.error('NFT construct failed', e);
     }
   }
 
   try {
-    const managerConstruct = await manager.functions
-      .constructor({ ContractId: { bits: registryId } })
+    const { value: managerOwner } = await manager.functions.owner().get();
+
+    // @ts-ignore
+    if (managerOwner === 'Uninitialized') {
+      const managerConstruct = await manager.functions
+        .constructor(
+          { Address: { bits: wallet.address.toB256() } },
+          { ContractId: { bits: registryId } },
+        )
+        .call();
+      await managerConstruct.waitForResult();
+      logger.success('Manager construct success!');
+    } else if (managerOwner.Initialized) {
+      logger.warn('Manager Contract is already initialized.');
+    }
+
+    const addAdminCall = await manager.functions
+      .add_admin({ ContractId: { bits: registryId } })
       .call();
-    await managerConstruct.waitForResult();
-    console.log('Manager construct success!');
+    await addAdminCall.waitForResult();
+    logger.success('Manager admin added to registry!');
   } catch (e) {
-    if (e instanceof Error && /ContractAlreadyInitialized/.test(e.message)) {
-      console.error('Manager Contract is already initialized.');
+    if (e instanceof Error && /CannotReinitialized/.test(e.message)) {
+      logger.warn('Manager Contract is already initialized.');
     } else {
-      console.error('Manager construct failed', e);
+      logger.error('Manager construct failed', e);
     }
   }
 
@@ -70,12 +92,12 @@ const main = async () => {
       .constructor({ bits: managerId })
       .call();
     await resolverConstruct.waitForResult();
-    console.log('Resolver construct success!');
+    logger.success('Resolver construct success!');
   } catch (e) {
     if (e instanceof Error && /Contract already initialized/.test(e.message)) {
-      console.error('Resolver Contract is already initialized.');
+      logger.warn('Resolver Contract is already initialized.');
     } else {
-      console.error('Resolver construct failed', e);
+      logger.error('Resolver construct failed', e);
     }
   }
 
@@ -84,22 +106,22 @@ const main = async () => {
       .constructor({ bits: managerId }, { bits: nftId })
       .call();
     await registryConstruct.waitForResult();
-    console.log('Registry construct success!');
+    logger.success('Registry construct success!');
   } catch (e) {
     if (e instanceof Error && /AlreadyInitialized/.test(e.message)) {
-      console.error('Registry Contract is already initialized.');
+      logger.warn('Registry Contract is already initialized.');
     } else {
-      console.error('Registry construct failed', e);
+      logger.error('Registry construct failed', e);
     }
   }
 };
 
 main()
   .then(() => {
-    console.log('Done!');
+    logger.success('Done!');
     process.exit(0);
   })
   .catch((error) => {
-    console.error('Construct failed!', error);
+    logger.error('Construct failed!', error);
     process.exit(1);
   });

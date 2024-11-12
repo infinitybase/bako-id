@@ -133,7 +133,7 @@ export class RegistryContract {
     const contract = new Registry(this.contract.id.toB256(), account);
 
     const domainName = assertValidDomain(domain);
-    const amount = domainPrices(domain, period);
+    const amount = domainPrices(domainName, period);
     const resolverInput = {
       Address: { bits: getRandomB256() },
     };

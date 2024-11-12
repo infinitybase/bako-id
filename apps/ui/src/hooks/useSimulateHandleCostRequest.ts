@@ -23,7 +23,7 @@ const useDebounce = <T>(value: T, delay: number) => {
 const useSimulateHandleCostRequest = (domain: string, period: number) => {
   const { provider } = useProvider();
 
-  const debouncedSearch = useDebounce([domain, period], 500);
+  const debouncedSearch = useDebounce([domain, period, provider], 500);
 
   return useQuery({
     queryKey: ['simulateHandleCost', ...debouncedSearch],

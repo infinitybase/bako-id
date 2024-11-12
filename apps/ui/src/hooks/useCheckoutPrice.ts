@@ -1,6 +1,6 @@
 import { domainPrices } from '@bako-id/sdk';
 import { useParams } from '@tanstack/react-router';
-import { bn, type BN } from 'fuels';
+import { type BN, bn } from 'fuels';
 import { useMemo } from 'react';
 import { useUsdPrice } from '.';
 import { Coin, type Domains } from '../types';
