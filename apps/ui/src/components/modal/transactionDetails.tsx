@@ -59,7 +59,7 @@ export const TransactionDomainDetailsModal = ({
           <TextValue
             justifyContent="start"
             textColor="grey.100"
-            leftAction={'cost'}
+            leftAction={'total'}
             content={`${cost.toString()} ETH`}
           />
         </VStack>
