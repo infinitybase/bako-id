@@ -1,9 +1,12 @@
-import { Button, Flex, Heading, Icon, Text, VStack } from '@chakra-ui/react';
+import { Button, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import { Card } from '..';
-import { CopyIcon } from '../icons/copyIcon';
 import { VerifiedAccountInput } from '../inputs/verifiedAccount';
 import { PlusSquareIcon } from '@chakra-ui/icons';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
+import { getMetadataRedirects } from '../../utils/metadatas';
+import type { MetadataKeys } from '../../utils/metadataKeys';
+import { Explorer } from '../helpers/explorer';
+import { CopyText } from '../helpers/copy';
 
 interface AccountsCardProps {
   metadata: { key: string; value: string | undefined }[] | undefined;
@@ -12,6 +15,16 @@ interface AccountsCardProps {
 
 export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
   const { isMyDomain } = useSidebar();
+
+  const getInputIcon = (key: MetadataKeys, value: string) => {
+    const url = getMetadataRedirects(key, value);
+
+    if (url) {
+      return <Explorer redirectLink={url ?? ''} />;
+    }
+
+    return <CopyText value={value} />;
+  };
 
   return (
     <Card
@@ -35,12 +48,7 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
         )}
       </Flex>
 
-      <VStack
-        spacing={5}
-        h={metadata?.length ? 'unset' : 'full'}
-        alignItems={metadata?.length ? 'unset' : 'center'}
-        justifyContent={metadata?.length ? 'unset' : 'center'}
-      >
+      <VStack spacing={5}>
         {metadata?.length ? (
           metadata?.map((m) => {
             const keyAfterColon = m.key.split(':')[1];
@@ -53,12 +61,15 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
                 variant={variant}
                 isVerified
                 rightAddon
-                rightAddonName={<Icon as={CopyIcon} />}
+                rightAddonName={getInputIcon(
+                  m.key as MetadataKeys,
+                  m.value ?? '',
+                )}
               />
             );
           })
         ) : (
-          <Text fontSize="xs" lineHeight="16.8px" color="grey.200">
+          <Text color="grey.200" fontSize="xs" maxW="172px" h="26px" mt={20}>
             It seems like you haven’t added any account yet.
           </Text>
         )}
