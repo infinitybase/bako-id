@@ -22,7 +22,7 @@ export type MetadataResponse =
   | { key: string; value: string | undefined }[]
   | undefined;
 
-export const useMetadata = () => {
+export const useMetadata = (handleOnSuccess?: () => void) => {
   const [updatedMetadata, setUpdatedMetadata] = useState<MetadataKeyValue[]>(
     [],
   );
@@ -87,6 +87,7 @@ export const useMetadata = () => {
       });
 
       setUpdatedMetadata([]);
+      handleOnSuccess?.();
 
       handleListRequest.refetch();
       transactionModal.onClose();

@@ -1,4 +1,4 @@
-import { TransactionStatus, bn, getDecodedLogs } from 'fuels';
+import { TransactionStatus, Wallet, bn } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
 import {
   Manager,
@@ -43,12 +43,19 @@ describe('[METHODS] Registry Contract', () => {
     nft = new Nft(nftAbi.id, owner);
 
     const nftCall = await nft.functions
-      .constructor({ ContractId: { bits: registry.id.toB256() } })
+      .constructor(
+        { Address: { bits: owner.address.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
+      )
       .call();
     await nftCall.waitForResult();
 
     const registerCall = await registry.functions
-      .constructor({ bits: manager.id.toB256() }, { bits: nftAbi.id.toB256() })
+      .constructor(
+        { bits: owner.address.toB256() },
+        { bits: manager.id.toB256() },
+        { bits: nftAbi.id.toB256() }
+      )
       .call();
     await registerCall.waitForResult();
 
@@ -100,8 +107,10 @@ describe('[METHODS] Registry Contract', () => {
 
   it('should error to initialize proxy contract when proxy already initialized', async () => {
     try {
+      const [owner] = node.wallets;
       const { waitForResult } = await registry.functions
         .constructor(
+          { bits: owner.address.toB256() },
           { bits: manager.id.toB256() },
           { bits: manager.id.toB256() }
         )
@@ -109,7 +118,7 @@ describe('[METHODS] Registry Contract', () => {
       const { transactionResult } = await waitForResult();
       expect(transactionResult.status).toBe(TransactionStatus.failure);
     } catch (error) {
-      expectContainLogError(error, 'AlreadyInitialized');
+      expectContainLogError(error, 'CannotReinitialized');
       expectRequireRevertError(error);
     }
   });
@@ -122,25 +131,13 @@ describe('[METHODS] Registry Contract', () => {
     const price = domainPrices(domain);
 
     try {
-      const res = await registry.functions
+      const _res = await registry.functions
         .register(domain, { Address: { bits: owner.address.toB256() } }, bn(1))
         .addContracts([manager, nft])
         .callParams({
           forward: { assetId: provider.getBaseAssetId(), amount: price },
         })
         .call();
-
-      const response = await res.waitForResult();
-      const a = getDecodedLogs(
-        response.transactionResult.receipts,
-        registry.interface.jsonAbi,
-        {
-          [manager.id.toB256()]: manager.interface.jsonAbi,
-          [nft.id.toB256()]: nft.interface.jsonAbi,
-        }
-      );
-
-      console.log(a);
 
       const { waitForResult } = await registry.functions
         .register(domain, { Address: { bits: owner.address.toB256() } }, bn(1))
@@ -153,6 +150,7 @@ describe('[METHODS] Registry Contract', () => {
 
       expect(transactionResult.status).toBe(TransactionStatus.failure);
     } catch (error) {
+      console.log(error);
       expectContainLogError(error, 'AlreadyMinted');
       expectRequireRevertError(error);
     }
@@ -175,6 +173,125 @@ describe('[METHODS] Registry Contract', () => {
 
     const { transactionResult } = await registerCallFn.waitForResult();
     expect(transactionResult.status).toBe(TransactionStatus.success);
+  });
+
+  it('should transfer funds correctly', async () => {
+    const { provider, wallets } = node;
+    const [owner] = wallets;
+    const domain = randomName(3);
+
+    const baseAssetId = provider.getBaseAssetId();
+    const price = domainPrices(domain);
+    const recipient = Wallet.generate({ provider });
+
+    const registerCallFn = await registry.functions
+      .register(domain, { Address: { bits: owner.address.toB256() } }, bn(1))
+      .addContracts([manager, nft])
+      .callParams({
+        forward: { assetId: baseAssetId, amount: price },
+      })
+      .call();
+    await registerCallFn.waitForResult();
+
+    const contractBalance = await registry.getBalance(baseAssetId);
+
+    const transferCall = await registry.functions
+      .transfer_funds(
+        contractBalance,
+        { bits: baseAssetId },
+        { bits: recipient.address.toB256() }
+      )
+      .call();
+    await transferCall.waitForResult();
+
+    const recipientBalance = await recipient.getBalance(baseAssetId);
+    expect(recipientBalance.toNumber()).toBe(contractBalance.toNumber());
+  });
+
+  it('should error on transfer funds when not owner', async () => {
+    const { provider, wallets } = node;
+    const [owner, notOwner] = wallets;
+
+    const notOwnerRegistry = new Registry(registry.id, notOwner);
+
+    const domain = randomName(3);
+
+    const baseAssetId = provider.getBaseAssetId();
+    const price = domainPrices(domain);
+    const recipient = Wallet.generate({ provider });
+
+    const registerCallFn = await notOwnerRegistry.functions
+      .register(domain, { Address: { bits: owner.address.toB256() } }, bn(1))
+      .addContracts([manager, nft])
+      .callParams({
+        forward: { assetId: baseAssetId, amount: price },
+      })
+      .call();
+    await registerCallFn.waitForResult();
+
+    const contractBalance = await notOwnerRegistry.getBalance(baseAssetId);
+
+    await expect(async () => {
+      const transferCall = await notOwnerRegistry.functions
+        .transfer_funds(
+          contractBalance,
+          { bits: baseAssetId },
+          { bits: recipient.address.toB256() }
+        )
+        .call();
+      await transferCall.waitForResult();
+    }).rejects.toThrow(/NotOwner/);
+  });
+
+  it('should transfer ownership correctly', async () => {
+    const [owner, newOwner] = node.wallets;
+    const baseAssetId = node.provider.getBaseAssetId();
+
+    const registryDeploy = await RegistryFactory.deploy(owner);
+    const { contract: registry } = await registryDeploy.waitForResult();
+
+    const contractFund = await owner.transferToContract(
+      registry.id,
+      bn(100),
+      baseAssetId
+    );
+    await contractFund.waitForResult();
+
+    const constructCall = await registry.functions
+      .constructor(
+        { bits: owner.address.toB256() },
+        { bits: manager.id.toB256() },
+        { bits: manager.id.toB256() }
+      )
+      .call();
+    const { transactionResult } = await constructCall.waitForResult();
+    expect(transactionResult.status).toBe(TransactionStatus.success);
+
+    const transferOwnerShipCall = await registry.functions
+      .transfer_ownership({ bits: newOwner.address.toB256() })
+      .call();
+    const transferOwnershipResult = await transferOwnerShipCall.waitForResult();
+    expect(transferOwnershipResult.transactionResult.status).toBe(
+      TransactionStatus.success
+    );
+
+    await expect(async () => {
+      const { waitForResult } = await registry.functions
+        .transfer_funds(
+          bn(100),
+          { bits: baseAssetId },
+          { bits: newOwner.address.toB256() }
+        )
+        .call();
+      await waitForResult();
+    }).rejects.toThrow(/NotOwner/);
+
+    await expect(async () => {
+      const transferOwnerShipCall = await registry.functions
+        .transfer_ownership({ bits: owner.address.toB256() })
+        .call();
+      await transferOwnerShipCall.waitForResult();
+    }).rejects.toThrow(/NotOwner/);
   });
 
   it.each(['@invalid-!@#%$!', 'my@asd.other', '@MYHanDLE'])(

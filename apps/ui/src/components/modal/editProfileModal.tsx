@@ -45,6 +45,7 @@ interface EditProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
   metadata: MetadataResponse;
+  handleOnSuccess: () => void;
 }
 
 export interface IMetadata {
@@ -435,6 +436,7 @@ const ModalFiltersTabs = ({
 export const EditMetadataModal = ({
   isOpen,
   onClose,
+  handleOnSuccess,
 }: EditProfileModalProps) => {
   const { domain } = useParams({ strict: false });
   const { wallet } = useWallet();
@@ -444,7 +446,7 @@ export const EditMetadataModal = ({
     transactionModal,
     updatedMetadata,
     setUpdatedMetadata,
-  } = useMetadata();
+  } = useMetadata(handleOnSuccess);
 
   const [filter, setFilter] = useState(FilterButtonTypes.ALL);
 

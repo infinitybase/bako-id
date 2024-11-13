@@ -47,12 +47,19 @@ describe('[METHODS] Resolver Contract', () => {
     nft = new Nft(nftAbi.id, owner);
 
     const nftCall = await nft.functions
-      .constructor({ ContractId: { bits: registry.id.toB256() } })
+      .constructor(
+        { Address: { bits: owner.address.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
+      )
       .call();
     await nftCall.waitForResult();
 
     const registryContructor = await registry.functions
-      .constructor({ bits: manager.id.toB256() }, { bits: nft.id.toB256() })
+      .constructor(
+        { bits: owner.address.toB256() },
+        { bits: manager.id.toB256() },
+        { bits: nft.id.toB256() }
+      )
       .call();
     await registryContructor.waitForResult();
 

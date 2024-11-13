@@ -15,13 +15,16 @@ describe('[METHODS] NFT Contract', () => {
 
     const {
       contracts: [nftAbi],
-      wallets: [deployer],
+      wallets: [owner],
     } = node;
 
-    nft = new Nft(nftAbi.id, deployer);
+    nft = new Nft(nftAbi.id, owner);
 
     const nftCall = await nft.functions
-      .constructor({ Address: { bits: deployer.address.toB256() } })
+      .constructor(
+        { Address: { bits: owner.address.toB256() } },
+        { Address: { bits: owner.address.toB256() } }
+      )
       .call();
     await nftCall.waitForResult();
   });
@@ -36,7 +39,10 @@ describe('[METHODS] NFT Contract', () => {
 
     try {
       const { waitForResult } = await nft.functions
-        .constructor({ Address: { bits: owner.address.toB256() } })
+        .constructor(
+          { Address: { bits: owner.address.toB256() } },
+          { Address: { bits: owner.address.toB256() } }
+        )
         .call();
 
       const { transactionResult } = await waitForResult();
@@ -47,7 +53,7 @@ describe('[METHODS] NFT Contract', () => {
     }
   });
 
-  it('should an error when minting from an account that is not the owner', async () => {
+  it('should an error when minting from an account that is not the admin', async () => {
     const { wallets } = node;
     const [owner, account] = wallets;
 
@@ -60,8 +66,9 @@ describe('[METHODS] NFT Contract', () => {
       const { transactionResult } = await waitForResult();
       expect(transactionResult.status).toBe(TransactionStatus.failure);
     } catch (error) {
+      console.log(error);
       expectRequireRevertError(error);
-      expectContainLogError(error, 'NotOwner');
+      expectContainLogError(error, 'NotAdmin');
     } finally {
       nft.account = owner;
     }
