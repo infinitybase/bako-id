@@ -10,6 +10,7 @@ import { launchTestNode } from 'fuels/test-utils';
 import { randomName } from '../utils';
 import { RegistryContract } from './registry';
 import { ResolverContract } from './resolver';
+import { ensCheckRegister } from './ens';
 
 jest.mock('../methods/offChainSync', () => {
   const { OffChainSyncMock } = require('../test/mocks/offChainSync');
@@ -58,7 +59,7 @@ describe('Test resolver', () => {
     const nftCall = await nft.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } }
+        { ContractId: { bits: registry.id.toB256() } },
       )
       .call();
     await nftCall.waitForResult();
@@ -66,7 +67,7 @@ describe('Test resolver', () => {
     const managerCall = await manager.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } }
+        { ContractId: { bits: registry.id.toB256() } },
       )
       .call();
     await managerCall.waitForResult();
@@ -75,7 +76,7 @@ describe('Test resolver', () => {
       .constructor(
         { bits: owner.address.toB256() },
         { bits: manager.id.toB256() },
-        { bits: nft.id.toB256() }
+        { bits: nft.id.toB256() },
       )
       .call();
     await registerCall.waitForResult();
@@ -177,6 +178,17 @@ describe('Test resolver', () => {
     const name = await contract.name(resolverAddress);
     expect(name).toBe(domain);
   });
+
+  it.only(
+    '[RESOLVER]: ',
+    async () => {
+      const metadata = await ensCheckRegister('vitalik.eth');
+      // console.log(metadata);
+
+      expect(metadata).toBeDefined();
+    },
+    1000 * 20,
+  );
 
   it('should should resolve the first domain registered', async () => {
     const {
