@@ -56,7 +56,10 @@ describe('Test resolver', () => {
     });
 
     const nftCall = await nft.functions
-      .constructor({ ContractId: { bits: registry.id.toB256() } })
+      .constructor(
+        { Address: { bits: owner.address.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
+      )
       .call();
     await nftCall.waitForResult();
 
