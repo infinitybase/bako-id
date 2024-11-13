@@ -1,0 +1,9 @@
+type Manager_ManagerLogEvent {
+  id: ID!
+  name: String!
+  owner: String!
+  resolver: String!
+  name_hash: String!
+  timestamp: String!
+  period: Int!
+}
