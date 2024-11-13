@@ -76,7 +76,7 @@ export const useHome = () => {
     }
 
     navigate({
-      to: '/profile/$domain',
+      to: `/profile/${domain.replace('@', '')}`,
       params: { domain },
       startTransition: true,
     });
