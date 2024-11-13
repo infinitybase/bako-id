@@ -291,4 +291,39 @@ describe('Test Registry', () => {
       })
     ).rejects.toThrow('Account is required to setMetadata');
   });
+
+  it('should get ttl and timestamp correctly', async () => {
+    const {
+      contracts: [registry],
+      wallets: [wallet],
+      provider,
+    } = node;
+
+    const domain = randomName();
+    const period = 1;
+    const contract = new RegistryContract(registry.id.toB256(), wallet);
+    const {
+      transactionResult: { date },
+    } = await contract.register({
+      domain,
+      period,
+      resolver: provider.getBaseAssetId(),
+    });
+
+    const { ttl, timestamp } = await contract.getDates(domain);
+    const expectedTtl = new Date(
+      date!.getFullYear() + period,
+      date!.getMonth(),
+      date!.getDate()
+    );
+    expectedTtl.setHours(0, 0, 0, 0);
+    date!.setHours(0, 0, 0, 0);
+
+    expect(ttl).toEqual(expectedTtl);
+    expect(timestamp).toEqual(date);
+
+    await expect(() => contract.getDates('not_found')).rejects.toThrow(
+      'Domain not found'
+    );
+  });
 });

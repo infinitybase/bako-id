@@ -7,16 +7,12 @@ import { ExploreIcon } from '../../icons/explore';
 import { TextValue } from '../../inputs';
 
 interface ValidityBodyProps {
-  period: Date;
-  gracePeriod: Date;
-  timestamp: Date;
+  ttl?: Date;
+  gracePeriod?: Date;
+  timestamp?: Date;
 }
 
-const ValidityBody = ({
-  gracePeriod,
-  period,
-  timestamp,
-}: ValidityBodyProps) => {
+const ValidityBody = ({ gracePeriod, ttl, timestamp }: ValidityBodyProps) => {
   return (
     <>
       <FormControl>
@@ -24,11 +20,11 @@ const ValidityBody = ({
           Name expires
         </FormHelperText>
         <TextValue
-          leftAction={format(period, 'MMMM dd, yyyy')}
+          leftAction={ttl ? format(ttl, 'MMMM dd, yyyy') : ''}
           leftColor="grey.100"
           color="section.500"
           justifyContent="start"
-          content={formatTimeWithTimeZone(period)}
+          content={ttl ? formatTimeWithTimeZone(ttl) : ''}
         />
       </FormControl>
       <FormControl my={4}>
@@ -53,10 +49,10 @@ const ValidityBody = ({
         </FormHelperText>
         <TextValue
           leftColor="grey.100"
-          leftAction={format(gracePeriod, 'MMMM dd, yyyy')}
+          leftAction={gracePeriod ? format(gracePeriod, 'MMMM dd, yyyy') : ''}
           color="section.500"
           justifyContent="start"
-          content={formatTimeWithTimeZone(gracePeriod)}
+          content={gracePeriod ? formatTimeWithTimeZone(gracePeriod) : ''}
         />
       </FormControl>
       <FormControl>
@@ -65,10 +61,10 @@ const ValidityBody = ({
         </FormHelperText>
         <TextValue
           leftColor="grey.100"
-          leftAction={format(timestamp, 'MMMM dd, yyyy')}
+          leftAction={timestamp ? format(timestamp, 'MMMM dd, yyyy') : ''}
           color="section.500"
           justifyContent="start"
-          content={formatTimeWithTimeZone(timestamp)}
+          content={timestamp ? formatTimeWithTimeZone(timestamp) : ''}
           rightAction={<Icon as={ExploreIcon} />}
         />
       </FormControl>

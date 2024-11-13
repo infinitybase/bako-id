@@ -150,7 +150,6 @@ describe('[METHODS] Registry Contract', () => {
 
       expect(transactionResult.status).toBe(TransactionStatus.failure);
     } catch (error) {
-      console.log(error);
       expectContainLogError(error, 'AlreadyMinted');
       expectRequireRevertError(error);
     }

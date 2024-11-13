@@ -22,7 +22,7 @@ use lib::abis::manager::{Manager, ManagerInfo, RecordData};
 use lib::validations::{assert_name_validity};
 use lib::string::{concat_string};
 use events::{NewNameEvent};
-use abis::{Registry, Constructor, Ownership};
+use abis::{Registry, Constructor, Ownership, RegistryInfo};
 use lib::{domain_price};
 
 storage {
@@ -138,6 +138,38 @@ impl Registry for Contract {
 
         let nft_contract = abi(SetAssetMetadata, token_id.into());
         nft_contract.set_metadata(asset_id, key, value);
+    }
+}
+
+impl RegistryInfo for Contract {
+    #[storage(read)]
+    fn ttl(name: String) -> Option<u64> {
+        let manager_id = get_manager_id();
+        let manager_contract = abi(ManagerInfo, manager_id.into());
+        let register = manager_contract.get_record(name);
+
+        match register {
+            None => None,
+            Some(record) => {
+                let period = record.period.as_u64();
+                let year_in_seconds: u64 = 365 * 24 * 3600;
+                let timestamp = record.timestamp;
+                let ttl = timestamp + (period * year_in_seconds);
+                Some(ttl)
+            },
+        }
+    }
+
+    #[storage(read)]
+    fn timestamp(name: String) -> Option<u64> {
+        let manager_id = get_manager_id();
+        let manager_contract = abi(ManagerInfo, manager_id.into());
+        let register = manager_contract.get_record(name);
+        
+        match register {
+            None => None,
+            Some(record) => Some(record.timestamp),
+        }
     }
 }
 

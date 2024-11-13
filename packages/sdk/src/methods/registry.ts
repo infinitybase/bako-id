@@ -1,6 +1,7 @@
 import { Manager, Nft, Registry, getContractId } from '@bako-id/contracts';
 import {
   Account,
+  DateTime,
   type Provider,
   TransactionStatus,
   getMintedAssetId,
@@ -29,6 +30,19 @@ export type RegisterPayload = {
 export type SimulatePayload = {
   domain: string;
   period: number;
+};
+
+const formatTAI64toDate = (value: string) => {
+  const date = DateTime.fromTai64(value);
+  return new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    0,
+    0,
+    0,
+    0
+  );
 };
 
 async function checkAccountBalance(
@@ -252,5 +266,29 @@ export class RegistryContract {
       },
       {} as Record<MetadataKeys, string | undefined>
     );
+  }
+
+  async getDates(domain: string) {
+    const domainName = assertValidDomain(domain);
+    const _domain = await this.managerContract.functions
+      .get_record(domainName)
+      .get();
+    if (!_domain.value) {
+      throw new Error('Domain not found');
+    }
+
+    const {
+      value: [ttl, timestamp],
+    } = await this.contract
+      .multiCall([
+        this.contract.functions.ttl(domainName),
+        this.contract.functions.timestamp(domainName),
+      ])
+      .get();
+
+    return {
+      ttl: formatTAI64toDate(ttl.toString()),
+      timestamp: formatTAI64toDate(timestamp.toString()),
+    };
   }
 }
