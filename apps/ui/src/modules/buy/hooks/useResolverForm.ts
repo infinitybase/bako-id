@@ -13,26 +13,10 @@ export type CustomAutocompleteValue = {
 export const useResolverForm = () => {
   const { data: provider } = useGetProviderRequest();
   const { wallet } = useWallet();
+  const [isFirstLoadingValidation, setIsFirstLoadingValidation] =
+    useState(true);
 
-  const [resolverAddress, setResolverAddress] = useState<string>(
-    wallet?.address.toB256() ?? '',
-  );
-
-  const {
-    data: isValid,
-    refetch,
-    isLoading: isResolverValidatingLoading,
-    isFetching: isResolverValidatingFetching,
-  } = useQuery({
-    queryKey: ['validateResolver', provider, resolverAddress],
-    queryFn: async () => {
-      const type = await provider?.getAddressType(resolverAddress);
-      return type ? Boolean(type === 'Account' || type === 'Contract') : false;
-    },
-    enabled: Boolean(provider && resolverAddress.length >= 66),
-    staleTime: Number.POSITIVE_INFINITY,
-    refetchOnWindowFocus: false,
-  });
+  const [resolverAddress, setResolverAddress] = useState<string>('');
 
   const {
     control,
@@ -44,6 +28,25 @@ export const useResolverForm = () => {
     defaultValues: {
       resolver: '',
     },
+  });
+
+  const {
+    data: isValid,
+    refetch,
+    isLoading: isResolverValidatingLoading,
+    isFetching: isResolverValidatingFetching,
+  } = useQuery({
+    queryKey: ['validateResolver', resolverAddress],
+    queryFn: async () => {
+      const type = await provider?.getAddressType(resolverAddress);
+
+      isFirstLoadingValidation && setIsFirstLoadingValidation(false);
+
+      return type ? Boolean(type === 'Account' || type === 'Contract') : false;
+    },
+    enabled: Boolean(provider && resolverAddress.length >= 66),
+    staleTime: Number.POSITIVE_INFINITY,
+    refetchOnWindowFocus: false,
   });
 
   const handleResolverAddressChange = (
@@ -63,12 +66,12 @@ export const useResolverForm = () => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (wallet?.address && resolverAddress.length === 0) {
+    if (provider && wallet) {
       const address = wallet.address.toB256();
       setResolverAddress(address);
       setValue('resolver', address, { shouldValidate: true });
     }
-  }, [wallet]);
+  }, [wallet, provider]);
 
   return {
     control,
@@ -79,5 +82,6 @@ export const useResolverForm = () => {
     wallet,
     isResolverValidatingLoading,
     isResolverValidatingFetching,
+    isFirstLoadingValidation,
   };
 };

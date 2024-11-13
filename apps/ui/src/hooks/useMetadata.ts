@@ -76,9 +76,7 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
       };
 
       const setContract = RegistryContract.create(wallet);
-      await setContract
-        .setMetadata(domain, metadataPayload)
-        .catch((e) => console.log(e));
+      return await setContract.setMetadata(domain, metadataPayload);
     },
     onSuccess: () => {
       successToast({
@@ -94,8 +92,16 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
     },
     onError: (error) => {
       console.error(error.message);
+
+      const errorTitle =
+        error.message?.includes('rejected') ||
+        error.message?.includes('disconnected') ||
+        error.message?.includes('cancelled')
+          ? 'Signature Failed'
+          : 'Profile Update Failed';
+
       errorToast({
-        title: 'Profile Update Failed',
+        title: errorTitle,
         description:
           'There was an error updating your profile, please try again',
       });

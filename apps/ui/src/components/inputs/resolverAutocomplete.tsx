@@ -35,7 +35,11 @@ export const ResolverAutocomplete = ({
   return (
     <Box w="full" h="full" display="flex" flexDirection="column">
       <FormControl
-        isInvalid={!isSignLoading && (!isValid || !!errors.resolver?.message)}
+        isInvalid={
+          !isSignLoading &&
+          !isLoading &&
+          (!isValid || !!errors.resolver?.message)
+        }
         display="flex"
         flexDirection="column"
       >
@@ -62,7 +66,7 @@ export const ResolverAutocomplete = ({
             render={({ field }) => (
               <Input
                 {...field}
-                isDisabled={isLoading}
+                isDisabled={isLoading || isSignLoading}
                 variant="autocomplete"
                 value={inputValue}
                 color="white"
@@ -93,6 +97,7 @@ export const ResolverAutocomplete = ({
             Address
           </FormLabel>
         </InputGroup>
+
         <Box h={9} w="full">
           {isLoading &&
             !isSignLoading &&
