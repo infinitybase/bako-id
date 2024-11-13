@@ -1,5 +1,4 @@
 import { createEnsPublicClient } from '@ensdomains/ensjs';
-import { getTextRecord } from '@ensdomains/ensjs/public';
 import { http } from 'viem';
 import { mainnet } from 'viem/chains';
 import { type ENSMetadataKeys, ensToMetadataMap } from './types';
@@ -14,10 +13,6 @@ const client = createEnsPublicClient({
   key: ENS_API_KEY,
 });
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 const graphql_url = `https://gateway.thegraph.com/api/${ENS_API_KEY}/subgraphs/id/5XqPmWe6gjyrJtFn9cLy237i4cWw2j9HcUJEXsP5qGtH`;
 
 export const ensCheckRegister = async (name: string) => {
@@ -26,23 +21,14 @@ export const ensCheckRegister = async (name: string) => {
 
   const keys = records.resolver.texts;
 
-  const result: Record<string, string> = {};
-
-  for await (const key of keys) {
-    try {
-      const [value] = await client.ensBatch(getTextRecord.batch({ name, key }));
-      // @ts-ignore
-      result[key] = value;
-      await sleep(400);
-    } catch (_) {
-      // no type nothing here, just keep because is inconsistent this api
-      // console.log(E);
-    }
-  }
+  const request = await client.getRecords({
+    name,
+    texts: [...keys],
+  });
 
   const mappedResult: Record<string, string> = {};
 
-  for (const [key, value] of Object.entries(result)) {
+  for (const { key, value } of request.texts) {
     const ensKey = key as ENSMetadataKeys;
     const metadataKey = ensToMetadataMap[ensKey];
 
