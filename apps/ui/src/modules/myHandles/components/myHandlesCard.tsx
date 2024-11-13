@@ -7,6 +7,7 @@ import {
   CardHeader,
   Center,
   Divider,
+  Skeleton,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -15,9 +16,10 @@ import { useNavigate } from '@tanstack/react-router';
 
 interface MyHandlesCard {
   handles?: IDRecord[];
+  isLoading: boolean;
 }
 
-export const MyHandlesCard = ({ handles }: MyHandlesCard) => {
+export const MyHandlesCard = ({ handles, isLoading }: MyHandlesCard) => {
   const navigate = useNavigate();
   return (
     <Center w="full" h={['auto', '70%', 'xl', '3xl']} alignItems="center">
@@ -60,29 +62,34 @@ export const MyHandlesCard = ({ handles }: MyHandlesCard) => {
             },
           }}
         >
-          {handles?.length ? (
-            handles.map((handle) => (
-              <HandleCard key={handle.name} handle={handle} />
-            ))
-          ) : (
-            <VStack mt={4} h="282px" placeContent="center">
-              <VStack
-                minH="90px"
-                maxW="172px"
-                alignItems="center"
-                justifyContent="center"
-                textAlign="center"
-                spacing={6}
-              >
-                <Text color="grey.200" fontSize="xs">
-                  It seems like you haven’t purchased any Hanfle yet.
-                </Text>
-                <Button variant="primary" onClick={() => navigate({ to: '/' })}>
-                  Purchase
-                </Button>
+          <Skeleton isLoaded={!isLoading} minH="200px" rounded="lg">
+            {handles?.length ? (
+              handles.map((handle) => (
+                <HandleCard key={handle.name} handle={handle} />
+              ))
+            ) : (
+              <VStack mt={4} h="282px" placeContent="center">
+                <VStack
+                  minH="90px"
+                  maxW="172px"
+                  alignItems="center"
+                  justifyContent="center"
+                  textAlign="center"
+                  spacing={6}
+                >
+                  <Text color="grey.200" fontSize="xs">
+                    It seems like you haven’t purchased any Hanfle yet.
+                  </Text>
+                  <Button
+                    variant="primary"
+                    onClick={() => navigate({ to: '/' })}
+                  >
+                    Purchase
+                  </Button>
+                </VStack>
               </VStack>
-            </VStack>
-          )}
+            )}
+          </Skeleton>
         </CardBody>
         <Box mx={3} mt={-2}>
           {/* Add verification if the handles quantity it's large then 5 to show the divider. */}
