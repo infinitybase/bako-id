@@ -39,21 +39,23 @@ export const useHome = () => {
   const handleChangeDomain = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e?.target ?? {};
 
-    if (value.length >= 3) {
+    const formattedValue = value.toLowerCase();
+
+    if (formattedValue.length >= 3) {
       setIsDisabled(true);
     }
 
-    if (value.length < 3) {
+    if (formattedValue.length < 3) {
       setAvailable(null);
-      setDomain(value);
+      setDomain(formattedValue);
       return;
     }
 
-    const isValid = isValidDomain(value);
+    const isValid = isValidDomain(formattedValue);
 
-    if (isValid || !value) {
-      setDomain(value);
-      debounceSearch(value);
+    if (isValid || !formattedValue) {
+      setDomain(formattedValue);
+      debounceSearch(formattedValue);
     }
   };
 
