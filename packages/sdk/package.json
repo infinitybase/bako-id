@@ -21,7 +21,7 @@
   "scripts": {
     "build": "tsup",
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
-    "test:registry": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js src/methods/resolver.test.ts --runInBand",
+    "test:registry": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js src/methods/registry.test.ts --runInBand",
     "test:watch": "jest --verbose --runInBand --watch"
   },
   "keywords": [],

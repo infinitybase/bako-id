@@ -10,7 +10,6 @@ import { launchTestNode } from 'fuels/test-utils';
 import { randomName } from '../utils';
 import { RegistryContract } from './registry';
 import { ResolverContract } from './resolver';
-import { ensCheckRegister } from './ens';
 
 jest.mock('../methods/offChainSync', () => {
   const { OffChainSyncMock } = require('../test/mocks/offChainSync');
@@ -178,17 +177,6 @@ describe('Test resolver', () => {
     const name = await contract.name(resolverAddress);
     expect(name).toBe(domain);
   });
-
-  it.only(
-    '[RESOLVER]: ',
-    async () => {
-      const metadata = await ensCheckRegister('vitalik.eth');
-      // console.log(metadata);
-
-      expect(metadata).toBeDefined();
-    },
-    1000 * 20,
-  );
 
   it('should should resolve the first domain registered', async () => {
     const {
