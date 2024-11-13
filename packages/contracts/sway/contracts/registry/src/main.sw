@@ -94,6 +94,9 @@ impl Registry for Contract {
         let owner = msg_sender().unwrap();
         let name_hash = sha256(name);
 
+        log(msg_amount());
+        log(domain_price(name, period));
+
         require(
             msg_amount() == domain_price(name, period),
             RegistryContractError::InvalidAmount,

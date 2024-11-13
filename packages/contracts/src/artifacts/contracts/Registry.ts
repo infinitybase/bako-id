@@ -620,6 +620,10 @@ const abi = {
       "concreteTypeId": "3d558a9e1ceda727203eccf236db03255f30ce308181b93340f5ffb2e19831d8"
     },
     {
+      "logId": "1515152261580153489",
+      "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+    },
+    {
       "logId": "16001917540453911612",
       "concreteTypeId": "de123b38a3d90c3cc5a3b578a47a6105e998b48d85f6fcf34c1b4b3907806a75"
     },
