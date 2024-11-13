@@ -1,26 +1,26 @@
 import {
   Box,
-  Flex,
   FormControl,
   FormErrorMessage,
-  FormHelperText,
   FormLabel,
   Input,
   InputGroup,
   type InputProps,
   InputRightElement,
-  Text,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Dialog } from '../dialog';
 import { CloseIcon } from '../icons/closeIcon';
-import { TrashIcon } from '../icons/trashIcon';
+import type { MetadataKeyValue } from '../../hooks/useMetadata';
+import type { MetadataKeys } from '../../utils/metadataKeys';
 
+import validator from 'validator';
+import { Metadatas } from '../../utils/metadatas';
 interface IEditTextValueInput extends InputProps {
   title: string;
   modalType: string;
-  onMetadataChange: (metadata: { key: string; value: string }) => void;
+  onMetadataChange: (metadata: MetadataKeyValue) => void;
   onClose: () => void;
 }
 
@@ -35,10 +35,13 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
     props.modalType.split(':')[1].charAt(0).toUpperCase() +
     props.modalType.split(':')[1].slice(1);
 
+  const isWebsiteInput = selectedType === Metadatas.Website[0].title;
+
   const {
     control,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<EditTextValueInput>({
     mode: 'all',
     reValidateMode: 'onChange',
@@ -48,9 +51,24 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
   });
 
   const handleSave = () => {
+    let formattedInput = '';
+    if (isWebsiteInput) {
+      formattedInput = inputValue.startsWith('https://')
+        ? inputValue
+        : `https://${inputValue}`;
+
+      if (formattedInput !== inputValue) {
+        setInputValue(formattedInput);
+      }
+      if (!validator.isURL(formattedInput)) {
+        setError('title', { message: 'Invalid Website' });
+        return;
+      }
+    }
+
     props.onMetadataChange({
-      key: props.modalType,
-      value: inputValue,
+      key: props.modalType as MetadataKeys,
+      value: isWebsiteInput ? formattedInput : inputValue,
     });
     setInputValue('');
   };
@@ -129,7 +147,7 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
               </InputRightElement>
             )}
           </InputGroup>
-          <FormHelperText
+          {/* <FormHelperText
             position="absolute"
             bottom={2}
             w="full"
@@ -138,7 +156,7 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
             justifyContent="end"
           >
             <Flex
-              gap={1}
+              gap={1}w
               alignItems="center"
               color="section.200"
               _hover={{
@@ -152,9 +170,9 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
               </Text>
               <TrashIcon w={5} h={5} />
             </Flex>
-          </FormHelperText>
+          </FormHelperText> */}
           <Box h={9} w="full">
-            {errors.title?.message && inputValue.length <= 3 && (
+            {errors.title?.message && (
               <FormErrorMessage
                 w="full"
                 color="error.500"

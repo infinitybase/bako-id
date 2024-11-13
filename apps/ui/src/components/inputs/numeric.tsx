@@ -1,5 +1,6 @@
 import { Box, Button, Input } from '@chakra-ui/react';
-import { useState } from 'react';
+import { debounce } from 'lodash';
+import { useCallback, useState } from 'react';
 
 interface NumericInputProps {
   index: number;
@@ -8,16 +9,19 @@ interface NumericInputProps {
 
 export const NumericInput = ({ index, onChange }: NumericInputProps) => {
   const [period, setPeriod] = useState(1);
+
+  const debouncedOnChange = useCallback(debounce(onChange, 500), []);
+
   const decrement = () => {
     const newValue = Math.max(period - 1, 1);
     setPeriod((prev) => prev - 1);
-    onChange(index, newValue);
+    debouncedOnChange(index, newValue);
   };
 
   const increment = () => {
     const newValue = period + 1;
     setPeriod((prev) => prev + 1);
-    onChange(index, newValue);
+    debouncedOnChange(index, newValue);
   };
 
   return (

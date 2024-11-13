@@ -1,1 +1,1 @@
-export * from './fixtures/wallet';
+export * from './mocks/wallet';

@@ -8,15 +8,15 @@ export const useResolverContract = () => {
   const { provider } = useProvider();
 
   const providerQuery = useQuery({
-    queryKey: ['resolverProvider', provider],
+    queryKey: ['resolverProvider'],
     queryFn: async () => {
-      if (provider) return provider;
-      return Provider.create(import.meta.env.VITE_PROVIDER_URL);
+      return provider || Provider.create(import.meta.env.VITE_PROVIDER_URL);
     },
+    staleTime: Number.POSITIVE_INFINITY,
+    enabled: !provider,
   });
 
   const contract = useMemo(() => {
-    console.log('provider', providerQuery.data);
     if (!providerQuery.data) return null;
     return ResolverContract.create(providerQuery.data);
   }, [providerQuery.data]);

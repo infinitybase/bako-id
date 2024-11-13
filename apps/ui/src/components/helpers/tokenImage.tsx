@@ -1,24 +1,37 @@
-import { Image as ChakraImage, type ImageProps } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import {
+  Image as ChakraImage,
+  Flex,
+  type ImageProps,
+  Spinner,
+} from '@chakra-ui/react';
+import { useState } from 'react';
 
 interface TokenImageProps extends ImageProps {
   src: string;
+  spinnerSize?: string;
 }
 
 export const TokenImage = ({ src, ...props }: TokenImageProps) => {
-  useEffect(() => {
-    if (src) {
-      const img = new Image();
-      img.src = src;
-    }
-  }, [src]);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(true);
 
   return (
-    <ChakraImage
-      src={src}
-      w={['17rem', '50%', '50%', '55%']}
-      h="fit"
-      {...props}
-    />
+    <Flex justifyContent="center" alignItems="center" position="relative">
+      {isGeneratingImage && (
+        <Spinner
+          boxSize={props.spinnerSize ?? '100px'}
+          mx="auto"
+          left={props.spinnerSize ? 12 : 'unset'}
+          position="absolute"
+        />
+      )}
+      <ChakraImage
+        onLoad={() => setIsGeneratingImage(false)}
+        sx={{ display: isGeneratingImage ? 'none' : 'block' }}
+        src={src}
+        w={['17rem', '50%', '50%', '55%']}
+        h="fit"
+        {...props}
+      />
+    </Flex>
   );
 };

@@ -3,6 +3,8 @@ import { launchTestNode } from 'fuels/test-utils';
 import {
   Manager,
   ManagerFactory,
+  Nft,
+  NftFactory,
   Registry,
   RegistryFactory,
   Resolver,
@@ -21,6 +23,7 @@ describe('[METHODS] Resolver Contract', () => {
   let manager: Manager;
   let registry: Registry;
   let resolver: Resolver;
+  let nft: Nft;
 
   beforeAll(async () => {
     node = await launchTestNode({
@@ -29,20 +32,34 @@ describe('[METHODS] Resolver Contract', () => {
         { factory: ManagerFactory },
         { factory: RegistryFactory },
         { factory: ResolverFactory },
+        { factory: NftFactory },
       ],
     });
 
     const {
-      contracts: [managerAbi, registryAbi, resolverAbi],
-      wallets: [deployer],
+      contracts: [managerAbi, registryAbi, resolverAbi, nftAbi],
+      wallets: [owner],
     } = node;
 
-    manager = new Manager(managerAbi.id, deployer);
-    registry = new Registry(registryAbi.id, deployer);
-    resolver = new Resolver(resolverAbi.id, deployer);
+    manager = new Manager(managerAbi.id, owner);
+    registry = new Registry(registryAbi.id, owner);
+    resolver = new Resolver(resolverAbi.id, owner);
+    nft = new Nft(nftAbi.id, owner);
+
+    const nftCall = await nft.functions
+      .constructor(
+        { Address: { bits: owner.address.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
+      )
+      .call();
+    await nftCall.waitForResult();
 
     const registryContructor = await registry.functions
-      .constructor({ bits: manager.id.toB256() })
+      .constructor(
+        { bits: owner.address.toB256() },
+        { bits: manager.id.toB256() },
+        { bits: nft.id.toB256() }
+      )
       .call();
     await registryContructor.waitForResult();
 
@@ -52,7 +69,10 @@ describe('[METHODS] Resolver Contract', () => {
     await resolverConstructor.waitForResult();
 
     const managerConstructor = await manager.functions
-      .constructor({ ContractId: { bits: registry.id.toB256() } })
+      .constructor(
+        { Address: { bits: owner.address.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
+      )
       .call();
     await managerConstructor.waitForResult();
   });
@@ -124,7 +144,7 @@ describe('[METHODS] Resolver Contract', () => {
       .callParams({
         forward: { assetId: provider.getBaseAssetId(), amount: price },
       })
-      .addContracts([manager])
+      .addContracts([manager, nft])
       .call();
     await waitForRegister();
 

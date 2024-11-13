@@ -1,7 +1,6 @@
 {
-  "extends": "@fuels/ts-config/base.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "keyofStringsOnly": true,
     "ignoreDeprecations": "5.0",
     "resolveJsonModule": true,
     "outDir": "./dist",
@@ -13,12 +12,6 @@
       "module": "commonjs"
     }
   },
-  "include": [
-    "**/*.ts"
-  ],
-  "exclude": [
-    "**/*.test.ts",
-    "dist",
-    "node_modules/**/*"
-  ]
+  "include": ["**/*.ts", "../../apps/server/src/s3.ts"],
+  "exclude": ["**/*.test.ts", "dist", "node_modules/**/*"]
 }

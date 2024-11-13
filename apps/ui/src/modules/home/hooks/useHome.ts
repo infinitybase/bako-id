@@ -11,25 +11,37 @@ export const useHome = () => {
   const [domain, setDomain] = useState('');
   const { resolveDomain } = useDomain();
   const [available, setAvailable] = useState<boolean | null>(null);
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [domainIsAvailable, setDomainIsAvailable] = useState<boolean | null>(
-    null
+    null,
   );
 
   const debounceSearch = useCallback(
     debounce((value: string) => {
+      setIsDisabled(true);
       resolveDomain.mutateAsync(value).then((info) => {
         if (!info) {
           setAvailable(true);
+          setTimeout(() => {
+            setIsDisabled(false);
+          }, 500);
           return;
         }
         setAvailable(false);
+        setTimeout(() => {
+          setIsDisabled(false);
+        }, 500);
       });
     }, 500),
-    []
+    [],
   );
 
   const handleChangeDomain = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e?.target ?? {};
+
+    if (value.length >= 3) {
+      setIsDisabled(true);
+    }
 
     if (value.length < 3) {
       setAvailable(null);
@@ -46,6 +58,9 @@ export const useHome = () => {
   };
 
   const handleConfirmDomain = async () => {
+    if (isDisabled) {
+      return null;
+    }
     const isValid = isValidDomain(domain);
     if (!isValid) return;
 
@@ -85,5 +100,6 @@ export const useHome = () => {
     handleConfirmDomain,
     domainIsAvailable,
     resolveDomain,
+    isDisabled,
   };
 };

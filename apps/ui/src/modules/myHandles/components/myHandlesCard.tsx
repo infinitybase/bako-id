@@ -1,3 +1,4 @@
+import type { IDRecord } from '@bako-id/sdk';
 import {
   Box,
   Card,
@@ -8,11 +9,10 @@ import {
   Skeleton,
   VStack,
 } from '@chakra-ui/react';
-import type { Handle } from '../../../types';
 import { HandleCard } from './handleCard';
 
 interface MyHandlesCard {
-  handles?: Handle[];
+  handles?: IDRecord[];
 }
 
 export const MyHandlesCard = ({ handles }: MyHandlesCard) => {
@@ -58,7 +58,9 @@ export const MyHandlesCard = ({ handles }: MyHandlesCard) => {
           }}
         >
           {handles ? (
-            handles.map((handle) => <HandleCard handle={handle} />)
+            handles.map((handle) => (
+              <HandleCard key={handle.name} handle={handle} />
+            ))
           ) : (
             <VStack spacing={3} my={3}>
               {[...Array(6)].map((_, index) => (

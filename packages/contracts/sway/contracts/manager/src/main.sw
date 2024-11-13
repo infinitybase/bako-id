@@ -1,15 +1,22 @@
 contract;
 
+mod events;
+
 use std::string::String;
 use std::hash::{sha256, Hash};
 use std::storage::storage_string::*;
+use std::block::timestamp;
+use sway_libs::{admin::*, ownership::*};
+use standards::src5::{SRC5, State};
+
 use lib::abis::manager::{RecordData, Manager, ManagerInfo};
+use events::{ManagerLogEvent};
+
 
 storage {
     records_data: StorageMap<b256, RecordData> = StorageMap {},
     records_name: StorageMap<b256, StorageString> = StorageMap {},
     records_resolver: StorageMap<Identity, b256> = StorageMap {},
-    owner: Identity = Identity::Address(Address::zero()),
 }
 
 enum ManagerError {
@@ -17,26 +24,20 @@ enum ManagerError {
     RecordNotFound: (),
     RecordAlreadyExists: (),
     ContractNotInitialized: (),
-    ContractAlreadyInitialized: (),
 }
 
 #[storage(read)]
-fn only_owner(name: String) {
+fn only_owner_or_admin() {
     let sender = msg_sender().unwrap();
-    let contract_owner = storage.owner.read();
+    let owner = _owner();
 
     require(
-        contract_owner != Identity::Address(Address::zero()), 
+        owner != State::Uninitialized,
         ManagerError::ContractNotInitialized
     );
-
-    let is_record_owner = match storage.records_data.get(sha256(name)).try_read() {
-        Some(data) => data.owner == sender,
-        None => false,
-    };
-    let is_contract_owner = storage.owner.read() == sender;
+    
     require(
-        is_record_owner || is_contract_owner, 
+        owner == State::Initialized(msg_sender().unwrap()) || is_admin(sender), 
         ManagerError::OnlyOwner
     );
 }
@@ -44,7 +45,7 @@ fn only_owner(name: String) {
 impl Manager for Contract {
     #[storage(read, write)]
     fn set_record(name: String, data: RecordData) {
-        only_owner(name);
+        only_owner_or_admin();
         let name_hash = sha256(name);
         let record_data = storage.records_data.get(name_hash).try_read();
         require(record_data.is_none(), ManagerError::RecordAlreadyExists);
@@ -56,20 +57,33 @@ impl Manager for Contract {
         if (storage.records_resolver.get(data.resolver).try_read().is_none()) {
             storage.records_resolver.insert(data.resolver, name_hash);
         }
+
+        log(ManagerLogEvent {
+            fnname: String::from_ascii_str("set_record"),
+            name,
+            owner: data.owner,
+            resolver: data.resolver,
+            name_hash,
+            timestamp: timestamp(),
+            period: data.period,
+        });
+
     }
 
     #[storage(read, write)]
     fn set_resolver(name: String, resolver: Identity) {
-        only_owner(name);
+        only_owner_or_admin();
         let name_hash = sha256(name);
         let record_data = storage.records_data.get(name_hash).try_read();
         require(record_data.is_some(), ManagerError::RecordNotFound);
 
-        let mut records_data = record_data.unwrap();
-        records_data.resolver = resolver;
+        if (storage.records_resolver.get(resolver).try_read().is_none()) {
+            let mut records_data = record_data.unwrap();
+            records_data.resolver = resolver;
 
-        storage.records_data.insert(name_hash, records_data);
-        storage.records_resolver.insert(resolver, name_hash);
+            storage.records_data.insert(name_hash, records_data);
+            storage.records_resolver.insert(resolver, name_hash);
+        }
     }
 }
 
@@ -103,20 +117,6 @@ impl ManagerInfo for Contract {
     }
 
     #[storage(read)]
-    fn get_ttl(name: String) -> Option<u64> {
-        let name_hash = sha256(name);
-        let record_data = storage.records_data.get(name_hash).try_read();
-        
-        match record_data {
-            Some(data) => {
-                let year_in_seconds: u64 = 365 * 24 * 3600;
-                Some(data.timestamp * (data.period.as_u64() * year_in_seconds)) 
-            },
-            None => None,
-        }
-    }
-
-    #[storage(read)]
     fn get_name(resolver: Identity) -> Option<String> {
         let name_hash = storage.records_resolver.get(resolver).try_read();
 
@@ -130,17 +130,51 @@ impl ManagerInfo for Contract {
 
 abi Constructor {
     #[storage(read, write)]
-    fn constructor(owner: Identity);
+    fn constructor(owner: Identity, admin: Identity);
 }
 
 impl Constructor for Contract {
     #[storage(read, write)]
-    fn constructor(owner: Identity) {
-        let current_owner = storage.owner.read();
-        require(
-            current_owner == Identity::Address(Address::zero()), 
-            ManagerError::ContractAlreadyInitialized
-        );
-        storage.owner.write(owner);
+    fn constructor(owner: Identity, admin: Identity) {
+        initialize_ownership(owner);
+        add_admin(admin);
+    }
+}
+
+abi Admin {
+    #[storage(read, write)]
+    fn revoke_admin(admin: Identity);
+    
+    #[storage(read, write)]
+    fn add_admin(admin: Identity);
+
+    #[storage(read, write)]
+    fn transfer_ownership(new_owner: Identity);
+}
+
+impl Admin for Contract {
+    #[storage(read, write)]
+    fn revoke_admin(admin: Identity) {
+        only_owner();
+        revoke_admin(admin);
+    }
+
+    #[storage(read, write)]
+    fn add_admin(admin: Identity) {
+        only_owner();
+        add_admin(admin);
+    }
+
+    #[storage(read, write)]
+    fn transfer_ownership(new_owner: Identity) {
+        only_owner();
+        transfer_ownership(new_owner);
+    }
+}
+
+impl SRC5 for Contract {
+    #[storage(read)]
+    fn owner() -> State {
+        _owner()
     }
 }

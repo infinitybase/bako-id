@@ -1,4 +1,10 @@
-import { Box, Flex, useMediaQuery, type BoxProps } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  HStack,
+  useMediaQuery,
+  type BoxProps,
+} from '@chakra-ui/react';
 
 interface TextValueProps extends Omit<BoxProps, 'value'> {
   content?: string;
@@ -7,6 +13,7 @@ interface TextValueProps extends Omit<BoxProps, 'value'> {
   rightAction?: string | React.ReactNode;
   breakRow?: boolean;
   darkBg?: boolean;
+  additionalIcon?: React.ReactNode;
 }
 
 const TextValue = ({
@@ -16,6 +23,7 @@ const TextValue = ({
   rightAction,
   breakRow,
   darkBg,
+  additionalIcon,
   ...rest
 }: TextValueProps) => {
   const [isMobile] = useMediaQuery('(max-width: 42em)');
@@ -62,14 +70,26 @@ const TextValue = ({
       >
         {content}
       </Box>
-      <Box
-        _hover={{
-          cursor: 'pointer',
-          color: 'button.500',
-        }}
-      >
-        {rightAction}
-      </Box>
+      <HStack>
+        <Box
+          _hover={{
+            cursor: 'pointer',
+            color: 'button.500',
+          }}
+        >
+          {rightAction}
+        </Box>
+        {additionalIcon && (
+          <Box
+            _hover={{
+              cursor: 'pointer',
+              color: 'button.500',
+            }}
+          >
+            {additionalIcon}
+          </Box>
+        )}
+      </HStack>
     </Flex>
   );
 };

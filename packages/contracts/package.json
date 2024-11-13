@@ -14,10 +14,10 @@
   },
   "files": ["dist"],
   "scripts": {
-    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand --silent",
     "build": "tsup",
     "prebuild": "pnpm fuels build",
-    "postinstall": "pnpm build"
+    "contracts:start": "ts-node scripts/construct-contracts.ts"
   },
   "keywords": [],
   "author": "",

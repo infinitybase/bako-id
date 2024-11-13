@@ -13,6 +13,7 @@ import {
   FarcasterIcon,
   GithubIcon,
   LocationIcon,
+  MailIcon,
   TelegramIcon,
   TwitterIcon,
   WebsiteIcon,
@@ -25,16 +26,17 @@ interface CustomInputProps extends InputProps {
   isVerified?: boolean;
   rightAddon: boolean;
   rightAddonName: string | ReactNode;
-  variant: { key: string; value: string };
+  variant: { key: string; value: string | undefined };
 }
 
 const VerifiedAccountInput = (props: CustomInputProps) => {
   const { isMyDomain } = useSidebar();
+
   const { value, variant, isVerified, rightAddon, rightAddonName, ...rest } =
     props;
 
   const variants = {
-    twitter: {
+    x: {
       name: 'X',
       value: props.value,
       icon: TwitterIcon,
@@ -84,7 +86,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
       value: props.value,
       icon: WebsiteIcon,
       color: 'white',
-      bgColor: '#F05D48',
+      bgColor: '#EB8D2E',
       verify: () => {},
       add: () => {},
     },
@@ -97,6 +99,15 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
       verify: () => {},
       add: () => {},
     },
+    email: {
+      name: 'Email',
+      value: props.value,
+      icon: MailIcon,
+      color: 'white',
+      bgColor: '#F05D48',
+      verify: () => {},
+      add: () => {},
+    },
   };
 
   const copyValueToClipboard = () => {
@@ -106,8 +117,8 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
   const currentVariant = variants[variant.key as keyof typeof variants];
 
   if (!isMyDomain && !isVerified) return;
-  const isVerifiedVariant =
-    currentVariant?.name === 'Farcaster' || currentVariant?.name === 'X';
+  // const isVerifiedVariant =
+  //   currentVariant?.name === 'Farcaster' || currentVariant?.name === 'X';
 
   if (currentVariant) {
     return (
@@ -132,7 +143,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
               w={6}
               h={6}
             />
-            {currentVariant?.value && isVerifiedVariant && (
+            {/* {currentVariant?.value && isVerifiedVariant && (
               <Text
                 zIndex={1}
                 left="100%"
@@ -142,7 +153,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
               >
                 {isVerified ? 'Verified' : 'Not verified'}
               </Text>
-            )}
+            )} */}
           </InputLeftAddon>
 
           <Box

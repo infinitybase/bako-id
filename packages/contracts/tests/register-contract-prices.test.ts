@@ -1,6 +1,13 @@
 import { TransactionStatus, bn } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
-import { Manager, ManagerFactory, Registry, RegistryFactory } from '../src';
+import {
+  Manager,
+  ManagerFactory,
+  Nft,
+  NftFactory,
+  Registry,
+  RegistryFactory,
+} from '../src';
 import {
   domainPrices,
   expectContainLogError,
@@ -13,6 +20,7 @@ describe('[PRICES] Registry Contract', () => {
 
   let manager: Manager;
   let registry: Registry;
+  let nft: Nft;
 
   beforeAll(async () => {
     node = await launchTestNode({
@@ -20,24 +28,41 @@ describe('[PRICES] Registry Contract', () => {
       contractsConfigs: [
         { factory: ManagerFactory },
         { factory: RegistryFactory },
+        { factory: NftFactory },
       ],
     });
 
     const {
-      contracts: [managerAbi, registryAbi],
-      wallets: [deployer],
+      contracts: [managerAbi, registryAbi, nftAbi],
+      wallets: [owner],
     } = node;
 
-    manager = new Manager(managerAbi.id, deployer);
-    registry = new Registry(registryAbi.id, deployer);
+    manager = new Manager(managerAbi.id, owner);
+    registry = new Registry(registryAbi.id, owner);
+    nft = new Nft(nftAbi.id, owner);
+
+    const nftCall = await nft.functions
+      .constructor(
+        { Address: { bits: owner.address.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
+      )
+      .call();
+    await nftCall.waitForResult();
 
     const { waitForResult } = await registry.functions
-      .constructor({ bits: manager.id.toB256() })
+      .constructor(
+        { bits: owner.address.toB256() },
+        { bits: manager.id.toB256() },
+        { bits: nftAbi.id.toB256() }
+      )
       .call();
     await waitForResult();
 
     const managerCall = await manager.functions
-      .constructor({ ContractId: { bits: registry.id.toB256() } })
+      .constructor(
+        { Address: { bits: owner.address.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
+      )
       .call();
     await managerCall.waitForResult();
   });
@@ -98,7 +123,7 @@ describe('[PRICES] Registry Contract', () => {
         .callParams({
           forward: { assetId: provider.getBaseAssetId(), amount: price },
         })
-        .addContracts([manager])
+        .addContracts([manager, nft])
         .call();
       const { transactionResult } = await waitForRegister();
 

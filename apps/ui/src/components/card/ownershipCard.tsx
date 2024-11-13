@@ -4,16 +4,19 @@ import { Card, TextValue } from '..';
 import { ExplorerTypes } from '../../types';
 import { formatAddress } from '../../utils/formatter';
 import { Explorer } from '../helpers/explorer';
+import { useParams } from '@tanstack/react-router';
+import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
 
 interface IOwnershipCard {
   owner: string | null;
+  explorerUrl: string;
 }
-export const OwnershipCard = ({ owner }: IOwnershipCard) => {
-  // const { domain } = useParams({ strict: false });
-  // const { data } = useGetGracePeriod(domain.replace('@', ''));
-  // const { isMyDomain } = useSidebar();
+export const OwnershipCard = ({ owner, explorerUrl }: IOwnershipCard) => {
+  const { domain } = useParams({ strict: false });
+  const { data } = useGetGracePeriod(domain.replace('@', ''));
 
-  // if (!data) return null;
+  if (!data) return null;
+
   return (
     <Card
       w="full"
@@ -45,18 +48,37 @@ export const OwnershipCard = ({ owner }: IOwnershipCard) => {
         <TextValue
           leftAction={'owner'}
           rightAction={
-            <Explorer id={owner ?? ''} type={ExplorerTypes.ASSETS} />
+            <Explorer
+              id={owner ?? ''}
+              type={ExplorerTypes.ASSETS}
+              explorerUrl={explorerUrl}
+            />
           }
           content={owner ? formatAddress(Address.fromB256(owner).toB256()) : ''}
         />
-        {/*<TextValue*/}
-        {/*  leftAction={'expiry'}*/}
-        {/*  textAlign="right"*/}
-        {/*  rightAction={*/}
-        {/*    <CopyText value={format(data.period, 'MMMM dd, yyyy')} />*/}
-        {/*  }*/}
-        {/*  content={format(data.period, 'MMMM dd, yyyy')}*/}
-        {/*/>*/}
+        {/* <TextValue
+          leftAction={'manager'}
+          rightAction={
+            <Explorer id={owner ?? ''} type={ExplorerTypes.ASSETS} />
+          }
+          content={manager}
+        />
+        <TextValue
+          leftAction={'parent'}
+          textAlign="right"
+          rightAction={
+            <CopyText value={format(data!.period, 'MMMM dd, yyyy')} />
+          }
+          content={parent}
+        /> */}
+        {/* <TextValue
+          leftAction={'expiry'}
+          textAlign="right"
+          rightAction={
+            <CopyText value={format(data!.period, 'MMMM dd, yyyy')} />
+          }
+          content={format(data!.period, 'MMMM dd, yyyy')}
+        /> */}
       </Flex>
     </Card>
   );

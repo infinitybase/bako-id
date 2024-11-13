@@ -10,33 +10,24 @@ use std::block::timestamp;
 use std::hash::{Hash, sha256};
 use std::storage::storage_string::{*, StorageString};
 use std::call_frames::msg_asset_id;
-use std::context::msg_amount;
-use standards::src20::{SRC20};
-use standards::src7::{SRC7, Metadata};
-use sway_libs::asset::supply::_mint;
+use std::context::{msg_amount, this_balance};
+use standards::src3::SRC3;
+use std::asset::transfer;
+use standards::src7::{Metadata};
 use sway_libs::asset::metadata::*;
-use sway_libs::asset::base::{_total_assets,_total_supply};
+use sway_libs::asset::base::SetAssetAttributes;
+use sway_libs::ownership::*;
+use standards::src5::{SRC5, State};
 use lib::abis::manager::{Manager, ManagerInfo, RecordData};
 use lib::validations::{assert_name_validity};
 use lib::string::{concat_string};
 use events::{NewNameEvent};
-use abis::{Registry, Constructor};
+use abis::{Registry, Constructor, Ownership};
 use lib::{domain_price};
 
-configurable {
-    /// The decimals of the asset minted by this contract.
-    DECIMALS: u8 = 0u8,
-    /// The name of the asset minted by this contract.
-    NAME: str[7] = __to_str_array("Bako ID"),
-    /// The symbol of the asset minted by this contract.
-    SYMBOL: str[4] = __to_str_array("BKID"),
-}
-
 storage {
-    total_assets: u64 = 0,
-    total_supply: StorageMap<AssetId, u64> = StorageMap {},
-    metadata: StorageMetadata = StorageMetadata {},
     manager_id: ContractId = ContractId::zero(),
+    token_id: ContractId = ContractId::zero(),
 }
 
 #[storage(read)]
@@ -49,22 +40,13 @@ fn get_manager_id() -> ContractId {
 #[storage(read, write)]
 fn mint_token(name: String, receiver: Identity) -> AssetId {
     let sub_id = sha256(name);
-    let total_supply = _total_supply(
-        storage.total_supply,
-        AssetId::new(ContractId::this(), sub_id)
-    ).unwrap_or(0);
+    let token_id = storage.token_id.read();
+    let asset_id = AssetId::new(token_id, sub_id);
+    let src3_contract = abi(SRC3, token_id.into());
+    src3_contract.mint(receiver, Some(sub_id), 1);
 
-    require(total_supply == 0, "Asset already minted.");
-
-    let asset_id = _mint(
-        storage.total_assets, 
-        storage.total_supply, 
-        receiver, 
-        sub_id, 
-        1
-    );
-
-    storage.metadata.insert(
+    let nft_contract = abi(SetAssetMetadata, token_id.into());
+    nft_contract.set_metadata(
         asset_id, 
         String::from_ascii_str("image:png"), 
         Metadata::String(
@@ -74,6 +56,9 @@ fn mint_token(name: String, receiver: Identity) -> AssetId {
             )
         )
     );
+
+    let nft_contract = abi(SetAssetAttributes, token_id.into());
+    nft_contract.set_name(asset_id, concat_string(String::from_ascii_str("@"), name));
 
     asset_id
 }
@@ -85,6 +70,8 @@ enum RegistryContractError {
     AlreadyInitialized: (),
     ContractNotBeZero: (),
     ContractNotInitialized: (),
+    NotOwner: (),
+    NotFoundName: (),
 }
 
 impl Registry for Contract {
@@ -129,59 +116,76 @@ impl Registry for Contract {
             name_hash,
         });
     }
+    
+    #[storage(write, read)]
+    fn set_metadata_info(name: String, key: String, value: Metadata) {
+        let manager_id = get_manager_id();
+        let manager_contract = abi(ManagerInfo, manager_id.into());
+        let register = manager_contract.get_record(name);
+        
+        require(
+            register.is_some(),
+            RegistryContractError::NotFoundName,
+        );
+
+        require(
+            register.unwrap().owner == msg_sender().unwrap(),
+            RegistryContractError::NotOwner,
+        );
+
+        let token_id = storage.token_id.read();
+        let asset_id = AssetId::new(token_id, sha256(name));
+
+        let nft_contract = abi(SetAssetMetadata, token_id.into());
+        nft_contract.set_metadata(asset_id, key, value);
+    }
 }
 
 impl Constructor for Contract {
     #[storage(read, write)]
-    fn constructor(manager_id: ContractId) {
+    fn constructor(owner: Address, manager_id: ContractId, token_id: ContractId) {
+        initialize_ownership(Identity::Address(owner));
+
         require(manager_id != ContractId::zero(), RegistryContractError::ContractNotBeZero);
+        require(token_id != ContractId::zero(), RegistryContractError::ContractNotBeZero);
 
         let contract_id = storage.manager_id.read();
         require(contract_id == ContractId::zero(), RegistryContractError::AlreadyInitialized);
 
+        let contract_id = storage.token_id.read();
+        require(contract_id == ContractId::zero(), RegistryContractError::AlreadyInitialized);
+
         storage.manager_id.write(manager_id);
+        storage.token_id.write(token_id);
     }
 }
 
-impl SRC20 for Contract {
-    #[storage(read)]
-    fn total_assets() -> u64 {
-        _total_assets(storage.total_assets)
+impl Ownership for Contract {
+    #[storage(read, write)]
+    fn transfer_ownership(new_owner: Address) {
+        only_owner();
+        transfer_ownership(Identity::Address(new_owner));
     }
 
     #[storage(read)]
-    fn total_supply(asset: AssetId) -> Option<u64> {
-        _total_supply(storage.total_supply, asset)
-    }
-
-    #[storage(read)]
-    fn name(asset: AssetId) -> Option<String> {
-        match storage.total_supply.get(asset).try_read() {
-            Some(_) => Some(String::from_ascii_str(from_str_array(NAME))),
-            None => None,
-        }
-    }
-
-    #[storage(read)]
-    fn symbol(asset: AssetId) -> Option<String> {
-        match storage.total_supply.get(asset).try_read() {
-            Some(_) => Some(String::from_ascii_str(from_str_array(SYMBOL))),
-            None => None,
-        }
-    }
-
-    #[storage(read)]
-    fn decimals(asset: AssetId) -> Option<u8> {
-        match storage.total_supply.get(asset).try_read() {
-            Some(_) => Some(DECIMALS),
-            None => None,
-        }
+    fn transfer_funds(amount: u64, asset_id: AssetId, recipien: Address) {
+        only_owner();
+        let total_balance = this_balance(asset_id);
+        require(
+            total_balance >= amount,
+            RegistryContractError::InvalidAmount
+        );
+        transfer(
+            Identity::Address(recipien),
+            AssetId::base(),
+            amount,
+        );
     }
 }
 
-impl SRC7 for Contract {
+impl SRC5 for Contract {
     #[storage(read)]
-    fn metadata(asset: AssetId, key: String) -> Option<Metadata> {
-        storage.metadata.get(asset, key)
+    fn owner() -> State {
+        _owner()
     }
 }

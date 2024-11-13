@@ -3,10 +3,13 @@ import { Suspense } from 'react';
 import { AddressesCard } from '../../../components/card/addressesCard.tsx';
 import { OwnershipCard } from '../../../components/card/ownershipCard.tsx';
 import { ProfileCard } from '../../../components/card/profileCard.tsx';
-import { ProfileCardSkeleton } from '../../../components/skeletons';
-import { AccountsCardSkeleton } from '../../../components/skeletons/accountsCardSkeleton';
-import { AddressCardSkeleton } from '../../../components/skeletons/addressCardSkeleton';
-import { OwnershipCardSkeleton } from '../../../components/skeletons/ownershipCardSkeleton';
+import { AccountsCard } from '../../../components/card/accountsCard.tsx';
+import { ProfileCardLoadingSkeleton } from './profileCardLoadingSkeleton.tsx';
+
+import { EditMetadataModal } from '../../../components/modal/editProfileModal.tsx';
+import { useMetadata } from '../../../hooks/useMetadata.ts';
+import { useProvider } from '@fuels/react';
+import { getExplorer } from '../../../utils/getExplorer.ts';
 
 type ProfileCardsProps = {
   domainParam: string;
@@ -18,11 +21,36 @@ type ProfileCardsProps = {
 export const ProfileCards = ({
   domain,
   domainParam,
-  isLoading,
+  isLoading: loadingDomain,
   owner,
 }: ProfileCardsProps) => {
-  const LoadingData = () => (
+  const { metadataModal, metadata, setUpdatedMetadata, loadingMetadata } =
+    useMetadata();
+
+  const loading = loadingDomain || loadingMetadata;
+
+  const handleOnSuccess = () => {
+    metadataModal.onClose();
+    setUpdatedMetadata([]);
+  };
+
+  const { provider } = useProvider();
+  const explorerUrl = getExplorer(provider?.getChainId());
+
+  return loading || !owner ? (
+    <ProfileCardLoadingSkeleton />
+  ) : (
     <Suspense>
+      <EditMetadataModal
+        isOpen={metadataModal.isOpen}
+        onClose={() => {
+          metadataModal.onClose();
+          setUpdatedMetadata([]);
+        }}
+        metadata={metadata}
+        handleOnSuccess={handleOnSuccess}
+      />
+
       <Stack
         display="flex"
         h="fit-content"
@@ -31,7 +59,12 @@ export const ProfileCards = ({
         w="full"
       >
         <Flex w="full" h="full" flexDirection="column" gap={[4, 4, 4, 6]}>
-          <ProfileCardSkeleton />
+          <ProfileCard
+            domainName={domainParam}
+            domain={domain ?? ''}
+            metadata={metadata}
+            editAction={metadataModal.onOpen}
+          />
 
           <Stack
             w="full"
@@ -39,69 +72,19 @@ export const ProfileCards = ({
             direction={['column', 'column', 'column', 'row']}
             gap={[4, 4, 4, 6]}
           >
-            <OwnershipCardSkeleton />
-            <AddressCardSkeleton />
+            <OwnershipCard
+              owner={owner ?? ''}
+              explorerUrl={`${explorerUrl}/account/`}
+            />
+
+            <AddressesCard
+              domain={domain ?? ''}
+              explorerUrl={`${explorerUrl}/account/`}
+            />
           </Stack>
         </Flex>
-        <AccountsCardSkeleton />
+        <AccountsCard metadata={metadata} addAction={metadataModal.onOpen} />
       </Stack>
     </Suspense>
   );
-
-  const LoadedData = () => {
-    // const { domain: domainName } = useParams({ strict: false });
-    // const { wallet } = useWallet();
-    //
-    // const { data: metadata } = useQuery({
-    //   queryKey: ['getAllMetadatas'],
-    //   queryFn: async () => {
-    //     if (!wallet) return;
-    //
-    //     // const userMetadata = UserMetadataContract.initialize(
-    //     //   wallet,
-    //     //   domainName,
-    //     // );
-    //
-    //     // return userMetadata.getAll();
-    //
-    //     return [];
-    //   },
-    //   enabled: !!wallet && !!domainName,
-    // });
-
-    return (
-      <Suspense>
-        <Stack
-          display="flex"
-          h="fit-content"
-          spacing={6}
-          direction={['column', 'column', 'column', 'row']}
-          w="full"
-        >
-          <Flex w="full" h="full" flexDirection="column" gap={[4, 4, 4, 6]}>
-            <ProfileCard
-              domainName={domainParam}
-              domain={domain ?? ''}
-              owner={owner ?? ''}
-              metadata={[]}
-            />
-
-            <Stack
-              w="full"
-              h="full"
-              direction={['column', 'column', 'column', 'row']}
-              gap={[4, 4, 4, 6]}
-            >
-              <OwnershipCard owner={owner ?? ''} />
-
-              <AddressesCard domain={domain ?? ''} />
-            </Stack>
-          </Flex>
-          {/*<AccountsCard metadata={[]} />*/}
-        </Stack>
-      </Suspense>
-    );
-  };
-
-  return isLoading ? <LoadingData /> : <LoadedData />;
 };

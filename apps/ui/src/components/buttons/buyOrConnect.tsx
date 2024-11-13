@@ -1,7 +1,9 @@
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import type { BN } from 'fuels';
-import { WalletIcon } from '..';
 import { ConnectButton } from './connectButton';
+import { ProgressButton } from './progressButton';
+import { useEffect, useState } from 'react';
+import { useConnectUI } from '@fuels/react';
 
 interface IBuyOrConnectProps {
   wallet: boolean;
@@ -10,6 +12,8 @@ interface IBuyOrConnectProps {
   totalPrice: BN | string;
   isLoadingBalance: boolean;
   signInLoad: boolean;
+  isDisabled: boolean;
+  progress: number;
 }
 
 export const BuyOrConnectButton = ({
@@ -19,8 +23,32 @@ export const BuyOrConnectButton = ({
   totalPrice,
   wallet,
   walletBalance,
+  isDisabled,
+  progress,
 }: IBuyOrConnectProps) => {
-  if (wallet) {
+  const { connect, isConnected, isConnecting } = useConnectUI();
+
+  const [connectProgress, setConnectProgress] = useState(0);
+
+  useEffect(() => {
+    if (isConnecting) {
+      setConnectProgress(33);
+
+      setTimeout(() => {
+        setConnectProgress(66);
+      }, 700);
+    }
+
+    if (isConnected) {
+      setConnectProgress(100);
+    }
+
+    return () => {
+      setConnectProgress(0);
+    };
+  }, [isConnecting, isConnected]);
+
+  if (wallet && connectProgress === 100 && isConnected) {
     return (
       <Box
         w="full"
@@ -29,28 +57,35 @@ export const BuyOrConnectButton = ({
         flexDirection="column"
         gap={3}
       >
-        <Button
+        <ProgressButton
+          progress={progress}
           w="full"
           isLoading={isLoadingBalance}
-          isDisabled={!wallet || walletBalance?.lt(totalPrice)}
+          isDisabled={!wallet || walletBalance?.lt(totalPrice) || isDisabled}
           onClick={handleBuyDomain}
-          background="button.500"
           color="background.500"
+          bg="button.500"
           fontSize={14}
           _hover={{ bgColor: 'button.600' }}
+          progressColor="white"
         >
           <Flex align="center" gap={2}>
-            <WalletIcon w={4} h={4} />
             {signInLoad ? (
               <Text>Signing...</Text>
             ) : (
               <Text>Confirm Transaction</Text>
             )}
           </Flex>
-        </Button>
+        </ProgressButton>
       </Box>
     );
   }
 
-  return <ConnectButton />;
+  return (
+    <ConnectButton
+      connect={connect}
+      isConnecting={isConnecting}
+      progress={connectProgress}
+    />
+  );
 };

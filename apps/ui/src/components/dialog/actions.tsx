@@ -26,7 +26,17 @@ const DialogActions = ({
 );
 
 const DialogPrimaryAction = (props: DialogActionProps) => (
-  <Button w="full" variant="primary" {...props} />
+  <Button
+    w="full"
+    variant="primary"
+    _disabled={{
+      bg: 'button.500',
+      opacity: '.6',
+      cursor: 'not-allowed',
+      _hover: { bgColor: 'button.600' },
+    }}
+    {...props}
+  />
 );
 
 const DialogSecondaryAction = (props: DialogActionProps) => (

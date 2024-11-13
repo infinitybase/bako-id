@@ -52,7 +52,11 @@
       "build/**",
       "dist/**",
       "sway/**",
-      "pnpm-lock.yaml"
+      "pnpm-lock.yaml",
+      ".next",
+      ".serverless",
+      "artifacts/**",
+      "routeTree.gen.ts"
     ]
   }
 }

@@ -3,4 +3,5 @@ members = [
     "./contracts/manager",
     "./contracts/registry",
     "./contracts/resolver",
+    "./contracts/nft",
 ]

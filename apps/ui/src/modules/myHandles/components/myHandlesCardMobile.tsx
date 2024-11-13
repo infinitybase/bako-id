@@ -1,3 +1,4 @@
+import type { IDRecord } from '@bako-id/sdk';
 import {
   Box,
   Center,
@@ -7,11 +8,10 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import type { Handle } from '../../../types';
 import { HandleCard } from './handleCard';
 
 interface IMyHandlesCardMobile {
-  handles?: Handle[];
+  handles?: IDRecord[];
 }
 
 export const MyHandlesCardMobile = ({ handles }: IMyHandlesCardMobile) => {
@@ -44,6 +44,7 @@ export const MyHandlesCardMobile = ({ handles }: IMyHandlesCardMobile) => {
           {handles ? (
             handles.map((handle) => (
               <HandleCard
+                key={handle.name}
                 handle={handle}
                 mx={0}
                 _hover={{}}
