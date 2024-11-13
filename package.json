@@ -4,6 +4,10 @@
   "description": "",
   "main": "index.js",
   "packageManager": "pnpm@9.4.0",
+  "engines": {
+    "node": "^18.20.3 || ^20.0.0 || ^22.0.0",
+    "pnpm": "^9.4.0"
+  },
   "scripts": {
     "build": "turbo run build",
     "build:doc": "turbo run docs:build",

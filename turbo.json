@@ -1,12 +1,12 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
-    "prebuild": {
-      "outputs": ["dist/**"],
+    "build:sway": {
+      "outputs": ["dist/**", "**/artifacts/**"],
       "cache": true
     },
     "build": {
-      "dependsOn": ["^prebuild", "^build"],
+      "dependsOn": ["^build:sway", "^build"],
       "outputs": ["dist/**", ".next/**"],
       "cache": true
     },
