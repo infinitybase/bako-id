@@ -6,7 +6,7 @@
 
 /*
   Fuels version: 0.96.1
-  Forc version: 0.66.2
+  Forc version: 0.66.4
   Fuel-Core version: 0.40.0
 */
 
@@ -24,16 +24,22 @@ import type {
   StdString,
 } from 'fuels';
 
-import type { Enum } from "./common";
+import type { Option, Enum } from "./common";
 
+export enum AccessErrorInput { NotOwner = 'NotOwner' };
+export enum AccessErrorOutput { NotOwner = 'NotOwner' };
 export type IdentityInput = Enum<{ Address: AddressInput, ContractId: ContractIdInput }>;
 export type IdentityOutput = Enum<{ Address: AddressOutput, ContractId: ContractIdOutput }>;
+export enum InitializationErrorInput { CannotReinitialized = 'CannotReinitialized' };
+export enum InitializationErrorOutput { CannotReinitialized = 'CannotReinitialized' };
 export type MetadataInput = Enum<{ B256: [], Bytes: Bytes, Int: BigNumberish, String: StdString }>;
 export type MetadataOutput = Enum<{ B256: [], Bytes: Bytes, Int: BN, String: StdString }>;
 export enum NameValidationErrorInput { InvalidLenght = 'InvalidLenght', InvalidChars = 'InvalidChars', IsEmpty = 'IsEmpty' };
 export enum NameValidationErrorOutput { InvalidLenght = 'InvalidLenght', InvalidChars = 'InvalidChars', IsEmpty = 'IsEmpty' };
 export enum RegistryContractErrorInput { IncorrectAssetId = 'IncorrectAssetId', InvalidAmount = 'InvalidAmount', AlreadyMinted = 'AlreadyMinted', AlreadyInitialized = 'AlreadyInitialized', ContractNotBeZero = 'ContractNotBeZero', ContractNotInitialized = 'ContractNotInitialized', NotOwner = 'NotOwner', NotFoundName = 'NotFoundName' };
 export enum RegistryContractErrorOutput { IncorrectAssetId = 'IncorrectAssetId', InvalidAmount = 'InvalidAmount', AlreadyMinted = 'AlreadyMinted', AlreadyInitialized = 'AlreadyInitialized', ContractNotBeZero = 'ContractNotBeZero', ContractNotInitialized = 'ContractNotInitialized', NotOwner = 'NotOwner', NotFoundName = 'NotFoundName' };
+export type StateInput = Enum<{ Uninitialized: undefined, Initialized: IdentityInput, Revoked: undefined }>;
+export type StateOutput = Enum<{ Uninitialized: void, Initialized: IdentityOutput, Revoked: void }>;
 
 export type AddressInput = { bits: string };
 export type AddressOutput = AddressInput;
@@ -43,6 +49,10 @@ export type ContractIdInput = { bits: string };
 export type ContractIdOutput = ContractIdInput;
 export type NewNameEventInput = { name: StdString, name_hash: string, owner: IdentityInput, resolver: IdentityInput, asset_id: AssetIdInput };
 export type NewNameEventOutput = { name: StdString, name_hash: string, owner: IdentityOutput, resolver: IdentityOutput, asset_id: AssetIdOutput };
+export type OwnershipSetInput = { new_owner: IdentityInput };
+export type OwnershipSetOutput = { new_owner: IdentityOutput };
+export type OwnershipTransferredInput = { new_owner: IdentityInput, previous_owner: IdentityInput };
+export type OwnershipTransferredOutput = { new_owner: IdentityOutput, previous_owner: IdentityOutput };
 
 const abi = {
   "programType": "contract",
@@ -64,33 +74,80 @@ const abi = {
       "metadataTypeId": 2
     },
     {
+      "type": "enum standards::src5::AccessError",
+      "concreteTypeId": "3f702ea3351c9c1ece2b84048006c8034a24cbc2bad2e740d0412b4172951d3d",
+      "metadataTypeId": 3
+    },
+    {
+      "type": "enum standards::src5::State",
+      "concreteTypeId": "192bc7098e2fe60635a9918afb563e4e5419d386da2bdbf0d716b4bc8549802c",
+      "metadataTypeId": 4
+    },
+    {
       "type": "enum standards::src7::Metadata",
       "concreteTypeId": "f44b531974c6c04e17e66ab54e9868d230b9a24b3710b184399c363f0190180d",
-      "metadataTypeId": 3
+      "metadataTypeId": 5
     },
     {
       "type": "enum std::identity::Identity",
       "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335",
-      "metadataTypeId": 4
+      "metadataTypeId": 6
+    },
+    {
+      "type": "enum std::option::Option<u64>",
+      "concreteTypeId": "d852149004cc9ec0bbe7dc4e37bffea1d41469b759512b6136f2e865a4c06e7d",
+      "metadataTypeId": 7,
+      "typeArguments": [
+        "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+      ]
+    },
+    {
+      "type": "enum sway_libs::ownership::errors::InitializationError",
+      "concreteTypeId": "1dfe7feadc1d9667a4351761230f948744068a090fe91b1bc6763a90ed5d3893",
+      "metadataTypeId": 8
     },
     {
       "type": "struct events::NewNameEvent",
       "concreteTypeId": "de123b38a3d90c3cc5a3b578a47a6105e998b48d85f6fcf34c1b4b3907806a75",
-      "metadataTypeId": 6
+      "metadataTypeId": 11
+    },
+    {
+      "type": "struct std::address::Address",
+      "concreteTypeId": "f597b637c3b0f588fb8d7086c6f4735caa3122b85f0423b82e489f9bb58e2308",
+      "metadataTypeId": 12
+    },
+    {
+      "type": "struct std::asset_id::AssetId",
+      "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974",
+      "metadataTypeId": 13
     },
     {
       "type": "struct std::contract_id::ContractId",
       "concreteTypeId": "29c10735d33b5159f0c71ee1dbd17b36a3e69e41f00fab0d42e1bd9f428d8a54",
-      "metadataTypeId": 11
+      "metadataTypeId": 16
     },
     {
       "type": "struct std::string::String",
       "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c",
-      "metadataTypeId": 12
+      "metadataTypeId": 17
+    },
+    {
+      "type": "struct sway_libs::ownership::events::OwnershipSet",
+      "concreteTypeId": "e1ef35033ea9d2956f17c3292dea4a46ce7d61fdf37bbebe03b7b965073f43b5",
+      "metadataTypeId": 18
+    },
+    {
+      "type": "struct sway_libs::ownership::events::OwnershipTransferred",
+      "concreteTypeId": "b3fffbcb3158d7c010c31b194b60fb7857adb4ad61bdcf4b8b42958951d9f308",
+      "metadataTypeId": 19
     },
     {
       "type": "u16",
       "concreteTypeId": "29881aad8730c5ab11d275376323d8e4ff4179aae8ccb6c13fe4902137e162ef"
+    },
+    {
+      "type": "u64",
+      "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
     }
   ],
   "metadataTypes": [
@@ -155,8 +212,36 @@ const abi = {
       ]
     },
     {
-      "type": "enum standards::src7::Metadata",
+      "type": "enum standards::src5::AccessError",
       "metadataTypeId": 3,
+      "components": [
+        {
+          "name": "NotOwner",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        }
+      ]
+    },
+    {
+      "type": "enum standards::src5::State",
+      "metadataTypeId": 4,
+      "components": [
+        {
+          "name": "Uninitialized",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "Initialized",
+          "typeId": 6
+        },
+        {
+          "name": "Revoked",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        }
+      ]
+    },
+    {
+      "type": "enum standards::src7::Metadata",
+      "metadataTypeId": 5,
       "components": [
         {
           "name": "B256",
@@ -164,43 +249,74 @@ const abi = {
         },
         {
           "name": "Bytes",
-          "typeId": 9
+          "typeId": 14
         },
         {
           "name": "Int",
-          "typeId": 13
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
         },
         {
           "name": "String",
-          "typeId": 12
+          "typeId": 17
         }
       ]
     },
     {
       "type": "enum std::identity::Identity",
-      "metadataTypeId": 4,
+      "metadataTypeId": 6,
       "components": [
         {
           "name": "Address",
-          "typeId": 7
+          "typeId": 12
         },
         {
           "name": "ContractId",
-          "typeId": 11
+          "typeId": 16
         }
       ]
     },
     {
+      "type": "enum std::option::Option",
+      "metadataTypeId": 7,
+      "components": [
+        {
+          "name": "None",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "Some",
+          "typeId": 9
+        }
+      ],
+      "typeParameters": [
+        9
+      ]
+    },
+    {
+      "type": "enum sway_libs::ownership::errors::InitializationError",
+      "metadataTypeId": 8,
+      "components": [
+        {
+          "name": "CannotReinitialized",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        }
+      ]
+    },
+    {
+      "type": "generic T",
+      "metadataTypeId": 9
+    },
+    {
       "type": "raw untyped ptr",
-      "metadataTypeId": 5
+      "metadataTypeId": 10
     },
     {
       "type": "struct events::NewNameEvent",
-      "metadataTypeId": 6,
+      "metadataTypeId": 11,
       "components": [
         {
           "name": "name",
-          "typeId": 12
+          "typeId": 17
         },
         {
           "name": "name_hash",
@@ -208,21 +324,21 @@ const abi = {
         },
         {
           "name": "owner",
-          "typeId": 4
+          "typeId": 6
         },
         {
           "name": "resolver",
-          "typeId": 4
+          "typeId": 6
         },
         {
           "name": "asset_id",
-          "typeId": 8
+          "typeId": 13
         }
       ]
     },
     {
       "type": "struct std::address::Address",
-      "metadataTypeId": 7,
+      "metadataTypeId": 12,
       "components": [
         {
           "name": "bits",
@@ -232,7 +348,7 @@ const abi = {
     },
     {
       "type": "struct std::asset_id::AssetId",
-      "metadataTypeId": 8,
+      "metadataTypeId": 13,
       "components": [
         {
           "name": "bits",
@@ -242,35 +358,35 @@ const abi = {
     },
     {
       "type": "struct std::bytes::Bytes",
-      "metadataTypeId": 9,
+      "metadataTypeId": 14,
       "components": [
         {
           "name": "buf",
-          "typeId": 10
+          "typeId": 15
         },
         {
           "name": "len",
-          "typeId": 13
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
         }
       ]
     },
     {
       "type": "struct std::bytes::RawBytes",
-      "metadataTypeId": 10,
+      "metadataTypeId": 15,
       "components": [
         {
           "name": "ptr",
-          "typeId": 5
+          "typeId": 10
         },
         {
           "name": "cap",
-          "typeId": 13
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
         }
       ]
     },
     {
       "type": "struct std::contract_id::ContractId",
-      "metadataTypeId": 11,
+      "metadataTypeId": 16,
       "components": [
         {
           "name": "bits",
@@ -280,17 +396,37 @@ const abi = {
     },
     {
       "type": "struct std::string::String",
-      "metadataTypeId": 12,
+      "metadataTypeId": 17,
       "components": [
         {
           "name": "bytes",
-          "typeId": 9
+          "typeId": 14
         }
       ]
     },
     {
-      "type": "u64",
-      "metadataTypeId": 13
+      "type": "struct sway_libs::ownership::events::OwnershipSet",
+      "metadataTypeId": 18,
+      "components": [
+        {
+          "name": "new_owner",
+          "typeId": 6
+        }
+      ]
+    },
+    {
+      "type": "struct sway_libs::ownership::events::OwnershipTransferred",
+      "metadataTypeId": 19,
+      "components": [
+        {
+          "name": "new_owner",
+          "typeId": 6
+        },
+        {
+          "name": "previous_owner",
+          "typeId": 6
+        }
+      ]
     }
   ],
   "functions": [
@@ -355,6 +491,46 @@ const abi = {
     {
       "inputs": [
         {
+          "name": "name",
+          "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c"
+        }
+      ],
+      "name": "timestamp",
+      "output": "d852149004cc9ec0bbe7dc4e37bffea1d41469b759512b6136f2e865a4c06e7d",
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "name",
+          "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c"
+        }
+      ],
+      "name": "ttl",
+      "output": "d852149004cc9ec0bbe7dc4e37bffea1d41469b759512b6136f2e865a4c06e7d",
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "owner",
+          "concreteTypeId": "f597b637c3b0f588fb8d7086c6f4735caa3122b85f0423b82e489f9bb58e2308"
+        },
+        {
           "name": "manager_id",
           "concreteTypeId": "29c10735d33b5159f0c71ee1dbd17b36a3e69e41f00fab0d42e1bd9f428d8a54"
         },
@@ -374,6 +550,64 @@ const abi = {
           ]
         }
       ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "amount",
+          "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "asset_id",
+          "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974"
+        },
+        {
+          "name": "recipien",
+          "concreteTypeId": "f597b637c3b0f588fb8d7086c6f4735caa3122b85f0423b82e489f9bb58e2308"
+        }
+      ],
+      "name": "transfer_funds",
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "new_owner",
+          "concreteTypeId": "f597b637c3b0f588fb8d7086c6f4735caa3122b85f0423b82e489f9bb58e2308"
+        }
+      ],
+      "name": "transfer_ownership",
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read",
+            "write"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "output": "192bc7098e2fe60635a9918afb563e4e5419d386da2bdbf0d716b4bc8549802c",
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
     }
   ],
   "loggedTypes": [
@@ -388,6 +622,22 @@ const abi = {
     {
       "logId": "16001917540453911612",
       "concreteTypeId": "de123b38a3d90c3cc5a3b578a47a6105e998b48d85f6fcf34c1b4b3907806a75"
+    },
+    {
+      "logId": "2161305517876418151",
+      "concreteTypeId": "1dfe7feadc1d9667a4351761230f948744068a090fe91b1bc6763a90ed5d3893"
+    },
+    {
+      "logId": "16280289466020123285",
+      "concreteTypeId": "e1ef35033ea9d2956f17c3292dea4a46ce7d61fdf37bbebe03b7b965073f43b5"
+    },
+    {
+      "logId": "4571204900286667806",
+      "concreteTypeId": "3f702ea3351c9c1ece2b84048006c8034a24cbc2bad2e740d0412b4172951d3d"
+    },
+    {
+      "logId": "12970362301975156672",
+      "concreteTypeId": "b3fffbcb3158d7c010c31b194b60fb7857adb4ad61bdcf4b8b42958951d9f308"
     }
   ],
   "messagesTypes": [],
@@ -413,7 +663,12 @@ export class RegistryInterface extends Interface {
   declare functions: {
     register: FunctionFragment;
     set_metadata_info: FunctionFragment;
+    timestamp: FunctionFragment;
+    ttl: FunctionFragment;
     constructor: FunctionFragment;
+    transfer_funds: FunctionFragment;
+    transfer_ownership: FunctionFragment;
+    owner: FunctionFragment;
   };
 }
 
@@ -425,7 +680,12 @@ export class Registry extends Contract {
   declare functions: {
     register: InvokeFunction<[name: StdString, resolver: IdentityInput, period: BigNumberish], void>;
     set_metadata_info: InvokeFunction<[name: StdString, key: StdString, value: MetadataInput], void>;
-    constructor: InvokeFunction<[manager_id: ContractIdInput, token_id: ContractIdInput], void>;
+    timestamp: InvokeFunction<[name: StdString], Option<BN>>;
+    ttl: InvokeFunction<[name: StdString], Option<BN>>;
+    constructor: InvokeFunction<[owner: AddressInput, manager_id: ContractIdInput, token_id: ContractIdInput], void>;
+    transfer_funds: InvokeFunction<[amount: BigNumberish, asset_id: AssetIdInput, recipien: AddressInput], void>;
+    transfer_ownership: InvokeFunction<[new_owner: AddressInput], void>;
+    owner: InvokeFunction<[], StateOutput>;
   };
 
   constructor(

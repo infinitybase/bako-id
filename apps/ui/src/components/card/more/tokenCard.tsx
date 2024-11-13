@@ -13,11 +13,17 @@ import { useProfile } from '../../../modules/profile/hooks/useProfile';
 import { ExploreIcon } from '../../icons/explore';
 import { ActionDomainModal } from '../../modal/actionDomainModal';
 import { TokenBody } from './tokenBody';
+import { getExplorer } from '../../../utils/getExplorer';
+import { useProvider } from '@fuels/react';
+import { ExplorerTypes } from '../../../types';
 
 export const TokenCard = () => {
   const { token } = useToken();
   const { domain, domainParam } = useProfile();
   const action = useDisclosure();
+  const { provider } = useProvider();
+
+  const explorerUrl = getExplorer(provider?.getChainId());
 
   return (
     <>
@@ -38,7 +44,9 @@ export const TokenCard = () => {
               rightIcon={<ExploreIcon w={5} h={5} />}
               // isDisabled={!isMyDomain}
               onClick={() =>
-                window.open(`https://app.fuel.network/account/${domain}/assets`)
+                window.open(
+                  `${explorerUrl}/account/${domain}${ExplorerTypes.ASSETS}`,
+                )
               }
             >
               Explorer

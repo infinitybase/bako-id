@@ -16,7 +16,8 @@
   "scripts": {
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand --silent",
     "build": "tsup",
-    "prebuild": "pnpm fuels build"
+    "build:sway": "pnpm fuels build",
+    "contracts:start": "ts-node scripts/construct-contracts.ts"
   },
   "keywords": [],
   "author": "",

@@ -14,7 +14,7 @@ use standards::src5::{SRC5, State};
 use sway_libs::asset::supply::{_burn, _mint};
 use sway_libs::asset::metadata::*;
 use sway_libs::asset::base::{_total_assets,_total_supply, _set_name, _name, SetAssetAttributes};
-use sway_libs::ownership::{_owner, initialize_ownership, only_owner};
+use sway_libs::{admin::*, ownership::*};
 
 pub enum MintError {
     CannotMintMoreThanOneNFTWithSubId: (),
@@ -42,13 +42,45 @@ storage {
 
 abi Constructor {
     #[storage(read, write)]
-    fn constructor(owner: Identity);
+    fn constructor(owner: Identity, admin: Identity);
 }
 
 impl Constructor for Contract {
     #[storage(read, write)]
-    fn constructor(owner: Identity) {
+    fn constructor(owner: Identity, admin: Identity) {
         initialize_ownership(owner);
+        add_admin(admin);
+    }
+}
+
+abi Admin {
+    #[storage(read, write)]
+    fn revoke_admin(admin: Identity);
+    
+    #[storage(read, write)]
+    fn add_admin(admin: Identity);
+
+    #[storage(read, write)]
+    fn transfer_ownership(new_owner: Identity);
+}
+
+impl Admin for Contract {
+    #[storage(read, write)]
+    fn revoke_admin(admin: Identity) {
+        only_owner();
+        revoke_admin(admin);
+    }
+
+    #[storage(read, write)]
+    fn add_admin(admin: Identity) {
+        only_owner();
+        add_admin(admin);
+    }
+
+    #[storage(read, write)]
+    fn transfer_ownership(new_owner: Identity) {
+        only_owner();
+        transfer_ownership(new_owner);
     }
 }
 
@@ -95,7 +127,7 @@ impl SRC7 for Contract {
 impl SRC3 for Contract {
     #[storage(read, write)]
     fn mint(recipient: Identity, sub_id: Option<SubId>, amount: u64) {
-        only_owner();
+        only_admin();
         require(sub_id.is_some(), MintError::CannotMintMoreThanOneNFTWithSubId);
         // Checks to ensure this is a valid mint.
         let asset = AssetId::new(ContractId::this(), sub_id.unwrap());
@@ -124,7 +156,7 @@ impl SRC3 for Contract {
     #[payable]
     #[storage(read, write)]
     fn burn(sub_id: SubId, amount: u64) {
-        only_owner();
+        only_admin();
         _burn(storage.total_supply, sub_id, amount);
     }
 }
@@ -139,7 +171,7 @@ impl SRC5 for Contract {
 impl SetAssetAttributes for Contract {
     #[storage(write)]
     fn set_name(asset: AssetId, name: String) {
-        only_owner();
+        only_admin();
         require(
             storage
                 .name
@@ -166,7 +198,7 @@ impl SetAssetAttributes for Contract {
 impl SetAssetMetadata for Contract {
     #[storage(read, write)]
     fn set_metadata(asset: AssetId, key: String, metadata: Metadata) {
-        only_owner();
+        only_admin();
         _set_metadata(storage.metadata, asset, key, metadata);
     }
 }

@@ -56,7 +56,10 @@ describe('Test resolver', () => {
     });
 
     const nftCall = await nft.functions
-      .constructor({ ContractId: { bits: registry.id.toB256() } })
+      .constructor(
+        { Address: { bits: owner.address.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
+      )
       .call();
     await nftCall.waitForResult();
 
@@ -69,7 +72,11 @@ describe('Test resolver', () => {
     await managerCall.waitForResult();
 
     const registerCall = await registry.functions
-      .constructor({ bits: manager.id.toB256() }, { bits: nft.id.toB256() })
+      .constructor(
+        { bits: owner.address.toB256() },
+        { bits: manager.id.toB256() },
+        { bits: nft.id.toB256() }
+      )
       .call();
     await registerCall.waitForResult();
 

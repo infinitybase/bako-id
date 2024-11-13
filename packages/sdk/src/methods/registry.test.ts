@@ -55,7 +55,10 @@ describe('Test Registry', () => {
     });
 
     const nftCall = await nft.functions
-      .constructor({ ContractId: { bits: registry.id.toB256() } })
+      .constructor(
+        { Address: { bits: owner.address.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
+      )
       .call();
     await nftCall.waitForResult();
 
@@ -68,7 +71,11 @@ describe('Test Registry', () => {
     await managerCall.waitForResult();
 
     const registerCall = await registry.functions
-      .constructor({ bits: manager.id.toB256() }, { bits: nft.id.toB256() })
+      .constructor(
+        { bits: owner.address.toB256() },
+        { bits: manager.id.toB256() },
+        { bits: nft.id.toB256() }
+      )
       .call();
     await registerCall.waitForResult();
   });
@@ -283,5 +290,40 @@ describe('Test Registry', () => {
         [MetadataKeys.CONTACT_BIO]: 'bio',
       })
     ).rejects.toThrow('Account is required to setMetadata');
+  });
+
+  it('should get ttl and timestamp correctly', async () => {
+    const {
+      contracts: [registry],
+      wallets: [wallet],
+      provider,
+    } = node;
+
+    const domain = randomName();
+    const period = 1;
+    const contract = new RegistryContract(registry.id.toB256(), wallet);
+    const {
+      transactionResult: { date },
+    } = await contract.register({
+      domain,
+      period,
+      resolver: provider.getBaseAssetId(),
+    });
+
+    const { ttl, timestamp } = await contract.getDates(domain);
+    const expectedTtl = new Date(
+      date!.getFullYear() + period,
+      date!.getMonth(),
+      date!.getDate()
+    );
+    expectedTtl.setHours(0, 0, 0, 0);
+    date!.setHours(0, 0, 0, 0);
+
+    expect(ttl).toEqual(expectedTtl);
+    expect(timestamp).toEqual(date);
+
+    await expect(() => contract.getDates('not_found')).rejects.toThrow(
+      'Domain not found'
+    );
   });
 });

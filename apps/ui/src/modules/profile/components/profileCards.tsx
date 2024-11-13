@@ -8,6 +8,8 @@ import { ProfileCardLoadingSkeleton } from './profileCardLoadingSkeleton.tsx';
 
 import { EditMetadataModal } from '../../../components/modal/editProfileModal.tsx';
 import { useMetadata } from '../../../hooks/useMetadata.ts';
+import { useProvider } from '@fuels/react';
+import { getExplorer } from '../../../utils/getExplorer.ts';
 
 type ProfileCardsProps = {
   domainParam: string;
@@ -27,6 +29,14 @@ export const ProfileCards = ({
 
   const loading = loadingDomain || loadingMetadata;
 
+  const handleOnSuccess = () => {
+    metadataModal.onClose();
+    setUpdatedMetadata([]);
+  };
+
+  const { provider } = useProvider();
+  const explorerUrl = getExplorer(provider?.getChainId());
+
   return loading || !owner ? (
     <ProfileCardLoadingSkeleton />
   ) : (
@@ -38,6 +48,7 @@ export const ProfileCards = ({
           setUpdatedMetadata([]);
         }}
         metadata={metadata}
+        handleOnSuccess={handleOnSuccess}
       />
 
       <Stack
@@ -61,9 +72,15 @@ export const ProfileCards = ({
             direction={['column', 'column', 'column', 'row']}
             gap={[4, 4, 4, 6]}
           >
-            <OwnershipCard owner={owner ?? ''} />
+            <OwnershipCard
+              owner={owner ?? ''}
+              explorerUrl={`${explorerUrl}/account/`}
+            />
 
-            <AddressesCard domain={domain ?? ''} />
+            <AddressesCard
+              domain={domain ?? ''}
+              explorerUrl={`${explorerUrl}/account/`}
+            />
           </Stack>
         </Flex>
         <AccountsCard metadata={metadata} addAction={metadataModal.onOpen} />

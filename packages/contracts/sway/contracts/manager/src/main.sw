@@ -77,11 +77,13 @@ impl Manager for Contract {
         let record_data = storage.records_data.get(name_hash).try_read();
         require(record_data.is_some(), ManagerError::RecordNotFound);
 
-        let mut records_data = record_data.unwrap();
-        records_data.resolver = resolver;
+        if (storage.records_resolver.get(resolver).try_read().is_none()) {
+            let mut records_data = record_data.unwrap();
+            records_data.resolver = resolver;
 
-        storage.records_data.insert(name_hash, records_data);
-        storage.records_resolver.insert(resolver, name_hash);
+            storage.records_data.insert(name_hash, records_data);
+            storage.records_resolver.insert(resolver, name_hash);
+        }
     }
 }
 

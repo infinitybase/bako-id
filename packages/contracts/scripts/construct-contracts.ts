@@ -1,4 +1,4 @@
-import { Provider, Wallet, ZeroBytes32 } from 'fuels';
+import { Provider, Wallet } from 'fuels';
 import dotenv from 'dotenv';
 import { getContractId, Manager, Nft, Registry, Resolver } from '../src';
 
@@ -8,6 +8,7 @@ dotenv.config({
 
 const logger = {
   success: (...data: any) => console.log(`✅ `, ...data),
+  info: (...data: any) => console.log(`🗞 `, ...data),
   error: (...data: any) => console.error(`❌ `, ...data),
   warn: (...data: any) => console.log(`❌ `, ...data),
 };
@@ -26,6 +27,14 @@ const setup = async () => {
 
   const provider = await Provider.create(providerUrl);
   const wallet = Wallet.fromPrivateKey(privateKey, provider);
+  const balance = await wallet.getBalance();
+
+  logger.info(
+    `Setup
+    Provider: ${providerUrl} 
+    Wallet: ${wallet.address.toB256()}
+    Balance: ${balance.format()} ETH`,
+  );
 
   return { provider, wallet };
 };
@@ -44,11 +53,27 @@ const main = async () => {
   const nft = new Nft(nftId, wallet);
 
   try {
-    const nftConstruct = await nft.functions
-      .constructor({ ContractId: { bits: registryId } })
+    const { value: nftOwner } = await manager.functions.owner().get();
+
+    // @ts-ignore
+    if (nftOwner === 'Uninitialized') {
+      const nftConstruct = await nft.functions
+        .constructor(
+          { Address: { bits: wallet.address.toB256() } },
+          { ContractId: { bits: registryId } },
+        )
+        .call();
+      await nftConstruct.waitForResult();
+      logger.success('NFT construct success!');
+    } else if (nftOwner.Initialized) {
+      logger.warn('NFT Contract is already initialized.');
+    }
+
+    const addAdminCall = await nft.functions
+      .add_admin({ ContractId: { bits: registryId } })
       .call();
-    await nftConstruct.waitForResult();
-    logger.success('NFT construct success!');
+    await addAdminCall.waitForResult();
+    logger.success('NFT admin added to registry!');
   } catch (e) {
     if (e instanceof Error && /CannotReinitialized/.test(e.message)) {
       logger.warn('NFT Contract is already initialized.');
@@ -103,12 +128,16 @@ const main = async () => {
 
   try {
     const registryConstruct = await registry.functions
-      .constructor({ bits: managerId }, { bits: nftId })
+      .constructor(
+        { bits: wallet.address.toB256() },
+        { bits: managerId },
+        { bits: nftId },
+      )
       .call();
     await registryConstruct.waitForResult();
     logger.success('Registry construct success!');
   } catch (e) {
-    if (e instanceof Error && /AlreadyInitialized/.test(e.message)) {
+    if (e instanceof Error && /CannotReinitialized/.test(e.message)) {
       logger.warn('Registry Contract is already initialized.');
     } else {
       logger.error('Registry construct failed', e);

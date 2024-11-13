@@ -27,7 +27,8 @@ export const Buy = () => {
     isValid,
     resolverAddress,
     wallet,
-    isResolverValidatingFetching,
+    isResolverValidatingLoading,
+    isFirstLoadingValidation,
   } = useResolverForm();
   const [agreed, setAgreed] = useState<boolean>(false);
   const [showTerms, setShowTerms] = useState<boolean>(false);
@@ -63,13 +64,20 @@ export const Buy = () => {
   const BuyButton = (
     <BuyOrConnectButton
       progress={signProgress}
-      handleBuyDomain={() => !agreed && setShowTerms(true)}
+      handleBuyDomain={() =>
+        !agreed ? setShowTerms(true) : handleBuyDomain(resolverAddress)
+      }
       isLoadingBalance={isLoadingBalance}
       signInLoad={signInLoad}
       totalPrice={totalPrice}
       wallet={!!wallet}
       walletBalance={walletBalance}
-      isDisabled={!!errors.resolver?.message || !isValid}
+      isDisabled={
+        !!errors.resolver?.message ||
+        !isValid ||
+        buy.loading ||
+        isLoadingBalance
+      }
     />
   );
 
@@ -137,10 +145,11 @@ export const Buy = () => {
             <ResolverAutocomplete
               handleChange={handleResolverAddressChange}
               inputValue={resolverAddress}
-              isValid={isValid ?? false}
+              isValid={isFirstLoadingValidation ? true : (isValid ?? false)}
               errors={errors}
               control={control}
-              isLoading={isResolverValidatingFetching}
+              isLoading={isResolverValidatingLoading}
+              isSignLoading={signInLoad}
             />
           </Stack>
           <VStack h="full" w="full" alignItems="start" spacing={5}>
