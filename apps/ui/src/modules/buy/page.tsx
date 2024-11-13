@@ -27,7 +27,8 @@ export const Buy = () => {
     isValid,
     resolverAddress,
     wallet,
-    isResolverValidatingFetching,
+    isResolverValidatingLoading,
+    isFirstLoadingValidation,
   } = useResolverForm();
   const [agreed, setAgreed] = useState<boolean>(false);
   const [showTerms, setShowTerms] = useState<boolean>(false);
@@ -144,10 +145,10 @@ export const Buy = () => {
             <ResolverAutocomplete
               handleChange={handleResolverAddressChange}
               inputValue={resolverAddress}
-              isValid={isValid ?? false}
+              isValid={isFirstLoadingValidation ? true : (isValid ?? false)}
               errors={errors}
               control={control}
-              isLoading={isResolverValidatingFetching}
+              isLoading={isResolverValidatingLoading}
               isSignLoading={signInLoad}
             />
           </Stack>

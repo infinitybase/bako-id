@@ -11,7 +11,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
-import type { TransactionResult } from 'fuels';
+import { bn, type TransactionResult } from 'fuels';
 import { TwitterShareButton } from 'react-share';
 import {
   CheckoutCard,
@@ -25,6 +25,7 @@ import { TransactionDomainDetailsModal } from '../../components/modal/transactio
 import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
 import { useScreenSize } from '../../hooks/useScreenSize';
 import { calculatePeriodYears } from '../../utils/calculator';
+import { useWallet } from '@fuels/react';
 
 interface IPurchased {
   domain: string;
@@ -38,11 +39,23 @@ export const Purchased = ({
   transaction,
 }: IPurchased) => {
   const { data } = useGetGracePeriod(domain.replace('@', ''));
+  const { wallet } = useWallet();
   const modal = useDisclosure();
   const { isMobile } = useScreenSize();
   const navigate = useNavigate();
 
   const year = calculatePeriodYears(data?.timestamp, data?.period);
+
+  const mainOperation = transaction.operations.find(
+    (op) => op.assetsSent && op.from?.address === wallet?.address.toB256(),
+  );
+
+  const totalAmountPaidForNFT =
+    mainOperation?.assetsSent?.map((item) => bn(item.amount))[0] ?? bn(0);
+
+  const sumTotalAmountAndTxFee = transaction?.fee
+    ?.add(totalAmountPaidForNFT)
+    .format();
 
   const navigateToMyHandle = () => {
     navigate({
@@ -158,7 +171,7 @@ export const Purchased = ({
         onClose={modal.onClose}
         domain={domain}
         period={year}
-        cost={transaction?.fee?.format()}
+        cost={sumTotalAmountAndTxFee}
       />
     </Box>
   );
