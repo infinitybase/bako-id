@@ -10,6 +10,7 @@ import { TokenCardSkeleton } from '../../../../components/skeletons/tokenCardSke
 import { ValidityCardSkeleton } from '../../../../components/skeletons/validityCardSkeleton';
 import { useScreenSize } from '../../../../hooks/useScreenSize';
 import { useToken } from '../../../../hooks/useToken';
+import { NSCard } from '../../../../components/card/nsCard';
 
 const More = () => {
   const { token } = useToken();
@@ -73,6 +74,7 @@ const More = () => {
                     <TokenCard />
                     <ValidityCard />
                     <ResolverCard />
+                    <NSCard />
                   </Suspense>
                 </>
               ) : (

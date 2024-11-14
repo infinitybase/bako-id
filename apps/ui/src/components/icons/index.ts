@@ -36,3 +36,4 @@ export * from './userIcon';
 export * from './verticalOptions';
 export * from './wallet';
 export * from './websiteIcon';
+export * from './blueWarningIcon';
