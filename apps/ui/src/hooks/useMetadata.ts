@@ -22,15 +22,7 @@ export type MetadataResponse =
   | { key: string; value: string | undefined }[]
   | undefined;
 
-export type UseMetadaProps = {
-  handleOnSuccess?: () => void;
-  importingFromENS?: boolean;
-};
-
-export const useMetadata = ({
-  handleOnSuccess,
-  importingFromENS,
-}: UseMetadaProps = {}) => {
+export const useMetadata = (handleOnSuccess?: () => void) => {
   const [updatedMetadata, setUpdatedMetadata] = useState<MetadataKeyValue[]>(
     [],
   );

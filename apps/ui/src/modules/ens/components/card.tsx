@@ -9,11 +9,8 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { NSDialog } from './dialog';
-// import { useGetENSData } from '../../hooks/useGetENSData';
 
 export const NSCard = () => {
-  // const value = useGetENSData('vitalik.eth');
-
   const ensDialogState = useDisclosure();
 
   return (

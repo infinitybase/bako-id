@@ -2,14 +2,14 @@ import {
   Box,
   FormControl,
   FormErrorMessage,
-  FormHelperText,
   FormLabel,
   Input,
   InputGroup,
+  InputRightElement,
   Spinner,
   type InputProps,
 } from '@chakra-ui/react';
-import { Controller, type FieldErrors, type Control } from 'react-hook-form';
+import { Controller, type Control } from 'react-hook-form';
 import type { NSAutocompleteValue } from './dialog';
 
 interface INSAutocomplete extends InputProps {
@@ -17,28 +17,20 @@ interface INSAutocomplete extends InputProps {
   inputValue: string;
   isValid: boolean;
   control: Control<NSAutocompleteValue>;
-  errors: FieldErrors<NSAutocompleteValue>;
   isLoading: boolean;
 }
 
 export const NSAutocomplete = ({
   handleChange,
   inputValue,
-  isValid,
   control,
-  errors,
   isLoading,
+  isValid,
   ...rest
 }: INSAutocomplete) => {
   return (
-    <Box w="full" h="full" display="flex" flexDirection="column">
-      <FormControl
-        // isInvalid={
-        //   !isSignLoading && !isLoading && (!isValid || !!errors.ens?.message)
-        // }
-        display="flex"
-        flexDirection="column"
-      >
+    <Box w="full" display="flex" flexDirection="column">
+      <FormControl isInvalid={!isValid} display="flex" flexDirection="column">
         <InputGroup
           display="flex"
           alignItems="center"
@@ -47,16 +39,6 @@ export const NSAutocomplete = ({
         >
           <Controller
             name="ens"
-            // rules={{
-            //   required: {
-            //     value: true,
-            //     message: `The Resolver can't be empty`,
-            //   },
-            //   minLength: {
-            //     value: 66,
-            //     message: 'Invalid address',
-            //   },
-            // }}
             control={control}
             defaultValue=""
             render={({ field }) => (
@@ -91,36 +73,15 @@ export const NSAutocomplete = ({
           <FormLabel isTruncated fontWeight="normal" maxW="80%" fontSize="sm">
             ENS username
           </FormLabel>
+          {isLoading && (
+            <InputRightElement mt={1}>
+              <Spinner boxSize={3} />
+            </InputRightElement>
+          )}
         </InputGroup>
 
-        <Box h={6} w="full">
-          {isLoading && !errors.ens?.message && inputValue.length === 66 && (
-            <FormHelperText
-              w="full"
-              display="flex"
-              alignItems="center"
-              pl={2}
-              gap={2}
-            >
-              Validating <Spinner boxSize={3} />
-            </FormHelperText>
-          )}
-          {!isLoading &&
-            errors.ens?.message &&
-            inputValue.length >= 1 &&
-            inputValue.length <= 66 && (
-              <FormErrorMessage
-                w="full"
-                color="error.500"
-                display="flex"
-                alignItems="center"
-                pl={2}
-                gap={2}
-              >
-                {errors.ens.message}
-              </FormErrorMessage>
-            )}
-          {!isLoading && errors.ens?.message && inputValue.length === 0 && (
+        <Box h={8} w="full">
+          {!isValid && (
             <FormErrorMessage
               w="full"
               color="error.500"
@@ -129,20 +90,7 @@ export const NSAutocomplete = ({
               pl={2}
               gap={2}
             >
-              {errors.ens.message}
-            </FormErrorMessage>
-          )}
-
-          {!isLoading && !isValid && inputValue.length >= 66 && (
-            <FormErrorMessage
-              w="full"
-              color="error.500"
-              display="flex"
-              alignItems="center"
-              pl={2}
-              gap={2}
-            >
-              Invalid address
+              ENS not found
             </FormErrorMessage>
           )}
         </Box>

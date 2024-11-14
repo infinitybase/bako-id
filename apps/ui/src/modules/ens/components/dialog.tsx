@@ -17,35 +17,53 @@ export type NSAutocompleteValue = {
   ens: string;
 };
 
-const value = {
-  'contact:website': 'https://mockedwebsite.ko',
-  'social:x': 'mockedX',
-  'social:github': 'mockedGithub',
-};
-
 export interface NSDialogProps extends Omit<ModalProps, 'children'> {}
 
 export const NSDialog = ({ isOpen, onClose, ...rest }: NSDialogProps) => {
-  const { handleSaveRequest, setUpdatedMetadata } = useMetadata();
-  const { ensData, inputValue, control, errors, handleInputChange, isLoading } =
-    useENSForm();
+  const {
+    ensData,
+    inputValue,
+    control,
+    handleInputChange,
+    isLoading,
+    ensName,
+    setEnsName,
+    setInputValue,
+  } = useENSForm();
 
-  console.log('isLoading:', isLoading);
+  const handleOnSuccess = () => {
+    onClose();
+    setUpdatedMetadata([]);
+    setEnsName('');
+    setInputValue('');
+  };
 
-  console.log('ensData:', ensData);
+  const { handleSaveRequest, setUpdatedMetadata } =
+    useMetadata(handleOnSuccess);
 
-  const metadataArray: MetadataKeyValue[] = Object.entries(value).map(
-    ([key, value]) => ({
-      key: key as MetadataKeys,
-      value,
-    }),
-  );
+  const handleClose = () => {
+    setEnsName('');
+    setInputValue('');
+    onClose();
+  };
+
+  const formattedMetadata: MetadataKeyValue[] | null = ensData
+    ? Object.entries(ensData).map(([key, value]) => ({
+        key: key as MetadataKeys,
+        value,
+      }))
+    : null;
 
   const handleConfirmAction = () => {
-    setUpdatedMetadata(metadataArray);
-
-    handleSaveRequest.mutate();
+    if (formattedMetadata) {
+      setUpdatedMetadata(formattedMetadata);
+      handleSaveRequest.mutate();
+    }
   };
+
+  const disableAction = !isLoading && !ensData;
+
+  const isValid = !(!isLoading && !ensData && ensName);
 
   return (
     <Dialog.Modal
@@ -54,23 +72,20 @@ export const NSDialog = ({ isOpen, onClose, ...rest }: NSDialogProps) => {
       modalTitle="Import account from ENS"
       modalSubtitle="Set your ENS username below and confirm the import."
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       closeOnOverlayClick={false}
       size={{ base: 'full', md: 'lg' }}
       titleFontSize="14px"
       subtitleFontSize="xs"
     >
       <Dialog.Body>
-        <VStack>
-          <NSAutocomplete
-            handleChange={handleInputChange}
-            inputValue={inputValue}
-            isValid={true}
-            errors={errors}
-            control={control}
-            isLoading={isLoading}
-          />
-        </VStack>
+        <NSAutocomplete
+          handleChange={handleInputChange}
+          inputValue={inputValue}
+          control={control}
+          isLoading={isLoading}
+          isValid={isValid}
+        />
 
         <VStack
           alignItems="start"
@@ -97,13 +112,13 @@ export const NSDialog = ({ isOpen, onClose, ...rest }: NSDialogProps) => {
         <Dialog.SecondaryAction
           isDisabled={handleSaveRequest.isPending}
           isLoading={handleSaveRequest.isPending}
-          onClick={onClose}
+          onClick={handleClose}
         >
           Cancel
         </Dialog.SecondaryAction>
         <Dialog.PrimaryAction
-          isDisabled={handleSaveRequest.isPending}
-          isLoading={handleSaveRequest.isPending}
+          isDisabled={handleSaveRequest.isPending || disableAction}
+          isLoading={handleSaveRequest.isPending || isLoading}
           onClick={handleConfirmAction}
         >
           Import and overwrite

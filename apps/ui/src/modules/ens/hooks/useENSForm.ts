@@ -11,13 +11,7 @@ export const useENSForm = () => {
   const [ensName, setEnsName] = useState<string>('');
   const [inputValue, setInputValue] = useState<string>('');
 
-  const { data, isLoading, refetch } = useGetENSData(ensName);
-
-  const {
-    control,
-    formState: { errors },
-    setValue,
-  } = useForm<CustomAutocompleteValue>({
+  const { control, setValue } = useForm<CustomAutocompleteValue>({
     mode: 'all',
     reValidateMode: 'onChange',
     defaultValues: {
@@ -25,23 +19,33 @@ export const useENSForm = () => {
     },
   });
 
+  const { data, isLoading, isFetching, refetch } = useGetENSData(ensName);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInputValue(value);
 
-    if (value.includes('.eth') || value.includes('.box')) {
-      setEnsName(value);
-      setValue('ens', value);
-      refetch();
+    value.length === 0 && setEnsName('');
+
+    if (value.length >= 3) {
+      if (value.endsWith('.eth') || value.endsWith('.box')) {
+        setTimeout(() => {
+          setEnsName(value);
+          setValue('ens', value);
+          refetch();
+        }, 500);
+      }
     }
   };
 
   return {
     control,
-    errors,
     handleInputChange,
-    ensData: data,
-    isLoading,
+    ensData: ensName ? data : null,
+    isLoading: isLoading || isFetching,
     inputValue,
+    ensName,
+    setEnsName,
+    setInputValue,
   };
 };
