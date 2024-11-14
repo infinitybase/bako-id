@@ -33,6 +33,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <FuelProvider
           theme="dark"
           networks={NETWORKS}
+          uiConfig={{ suggestBridge: false }}
           fuelConfig={{
             connectors: [
               new BakoSafeConnector(),
@@ -47,5 +48,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </ChakraProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
