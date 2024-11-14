@@ -1,17 +1,20 @@
 import { Box, Flex, Text, type BoxProps } from '@chakra-ui/react';
 import type { BN } from 'fuels';
 import { ErrorIcon } from '../icons/errorIcon';
+import type { Coin } from '../../types';
 
 interface IBuyErrorProps extends BoxProps {
   buyError?: string;
   walletBalance: BN | null;
   totalPrice: BN;
+  selectedCoin: Coin;
 }
 
 export const BuyError = ({
   totalPrice,
   buyError,
   walletBalance,
+  selectedCoin,
 }: IBuyErrorProps) => {
   return (
     <Box maxW="full" h="auto" display="flex" my={2}>
@@ -48,7 +51,8 @@ export const BuyError = ({
             <ErrorIcon w={4} h={4} />
             {walletBalance?.lt(totalPrice) && (
               <Text>
-                You need at least {totalPrice.format()} ETH to buy this domain.
+                You need at least {totalPrice.format()} {selectedCoin} to buy
+                this domain.
               </Text>
             )}
             {buyError !== undefined && <Text>{buyError}</Text>}

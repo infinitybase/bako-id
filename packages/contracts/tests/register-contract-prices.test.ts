@@ -132,12 +132,12 @@ describe('[PRICES] Registry Contract', () => {
   );
 
   it.each([
-    [3, 2, '0.01'],
-    [4, 2, '0.002'],
-    [10, 2, '0.0004'],
-    [3, 7, '0.035'],
-    [4, 7, '0.007'],
-    [10, 7, '0.0014'],
+    [3, 2, '0.2'],
+    [4, 2, '0.02'],
+    [10, 2, '0.002'],
+    [3, 7, '0.7'],
+    [4, 7, '0.07'],
+    [10, 7, '0.007'],
   ])(
     'should return right price for domain with %d chars and %d year',
     async (domainLength, years, price) => {

@@ -5,14 +5,17 @@ import { useMyHandles } from './hooks';
 
 export const MyHandles = () => {
   const [isMobile] = useMediaQuery('(max-width: 30em)');
-  const { data: handles } = useMyHandles();
+  const { data: handles, isLoading, isFetching } = useMyHandles();
 
   return (
     <Box w="full" h="full">
       {isMobile ? (
-        <MyHandlesCardMobile handles={handles} />
+        <MyHandlesCardMobile
+          handles={handles}
+          isLoading={isLoading || isFetching}
+        />
       ) : (
-        <MyHandlesCard handles={handles} />
+        <MyHandlesCard handles={handles} isLoading={isLoading || isFetching} />
       )}
     </Box>
   );

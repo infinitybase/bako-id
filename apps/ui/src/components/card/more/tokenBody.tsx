@@ -25,7 +25,7 @@ const TokenBody = ({ contractId, onOpen, subId }: TokenCardProps) => {
           <TextValue
             breakRow
             justifyContent="start"
-            leftAction={'hex'}
+            leftAction="Asset id"
             content={contractId}
             rightAction={<CopyText value={contractId ?? ''} />}
           />
@@ -33,7 +33,7 @@ const TokenBody = ({ contractId, onOpen, subId }: TokenCardProps) => {
           <TextValue
             breakRow
             justifyContent="start"
-            leftAction={'decimal'}
+            leftAction="Name hex"
             content={subId}
             rightAction={<CopyText value={subId ?? ''} />}
           />

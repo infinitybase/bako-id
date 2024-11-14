@@ -8,6 +8,7 @@ dotenv.config({
 
 const logger = {
   success: (...data: any) => console.log(`✅ `, ...data),
+  info: (...data: any) => console.log(`🗞 `, ...data),
   error: (...data: any) => console.error(`❌ `, ...data),
   warn: (...data: any) => console.log(`❌ `, ...data),
 };
@@ -26,6 +27,14 @@ const setup = async () => {
 
   const provider = await Provider.create(providerUrl);
   const wallet = Wallet.fromPrivateKey(privateKey, provider);
+  const balance = await wallet.getBalance();
+
+  logger.info(
+    `Setup
+    Provider: ${providerUrl} 
+    Wallet: ${wallet.address.toB256()}
+    Balance: ${balance.format()} ETH`,
+  );
 
   return { provider, wallet };
 };
@@ -60,7 +69,9 @@ const main = async () => {
       logger.warn('NFT Contract is already initialized.');
     }
 
-    const addAdminCall = await nft.functions.add_admin({ ContractId: { bits: registryId } }).call();
+    const addAdminCall = await nft.functions
+      .add_admin({ ContractId: { bits: registryId } })
+      .call();
     await addAdminCall.waitForResult();
     logger.success('NFT admin added to registry!');
   } catch (e) {

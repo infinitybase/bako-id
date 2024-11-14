@@ -3,17 +3,18 @@ import { useParams } from '@tanstack/react-router';
 
 import { Card } from '..';
 import { DoubleArrowRightIcon } from '../..';
-import { useGetGracePeriod } from '../../../hooks/useGetGracePeriod';
 
 import { useSidebar } from '../../sidebar/hooks/useSidebar';
 import { ValidityBody } from './validityBody';
+import { useGetGracePeriod } from '../../../hooks/useGetGracePeriod';
 
 export const ValidityCard = () => {
   const { domain } = useParams({ strict: false });
   const { isMyDomain } = useSidebar();
-  const { data } = useGetGracePeriod(domain.replace('@', ''));
 
-  if (!data) return null;
+  const dates = useGetGracePeriod(domain);
+
+  if (!dates) return null;
 
   return (
     <Card backdropFilter="blur(7px)" h="fit-content" maxW={['full', '45rem']}>
@@ -40,9 +41,9 @@ export const ValidityCard = () => {
       </CardHeader>
       <CardBody mt={4}>
         <ValidityBody
-          timestamp={data.timestamp}
-          gracePeriod={data.gracePeriod}
-          period={data.period}
+          timestamp={dates?.timestamp}
+          gracePeriod={dates?.gracePeriod}
+          ttl={dates?.ttl}
         />
       </CardBody>
     </Card>

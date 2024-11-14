@@ -14,6 +14,14 @@ abi Registry {
     // transfer
 }
 
+abi RegistryInfo {
+  #[storage(read)]
+  fn ttl(name: String) -> Option<u64>;
+
+  #[storage(read)]
+  fn timestamp(name: String) -> Option<u64>;
+}
+
 abi Ownership {
     #[storage(read, write)]
     fn transfer_ownership(new_owner: Address);

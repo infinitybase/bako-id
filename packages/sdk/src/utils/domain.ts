@@ -38,9 +38,9 @@ export const domainPrices = (domain: string, period = 1) => {
   }
 
   const prices: Record<number | string, BN> = {
-    [3]: bn.parseUnits('0.005'),
-    [4]: bn.parseUnits('0.001'),
-    default: bn.parseUnits('0.0002'),
+    [3]: bn.parseUnits('0.1'),
+    [4]: bn.parseUnits('0.01'),
+    default: bn.parseUnits('0.001'),
   };
 
   const price: BN = prices[domainSize] || prices.default;

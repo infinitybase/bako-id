@@ -168,6 +168,7 @@ export const Buy = () => {
           totalPrice={totalPrice}
           walletBalance={walletBalance}
           buyError={buyError}
+          selectedCoin={buy.selectedCoin}
         />
         {!isMobile && BuyButton}
       </Card>

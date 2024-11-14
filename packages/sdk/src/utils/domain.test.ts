@@ -40,9 +40,9 @@ describe('Domain utils', () => {
     const fourChars = getDomainPrice('@noww');
     const fiveChars = getDomainPrice('@nowww');
 
-    expect(threeChars.eq(bn.parseUnits('0.005'))).toBeTruthy();
-    expect(fourChars.eq(bn.parseUnits('0.001'))).toBeTruthy();
-    expect(fiveChars.eq(bn.parseUnits('0.0002'))).toBeTruthy();
+    expect(threeChars.eq(bn.parseUnits('0.1'))).toBeTruthy();
+    expect(fourChars.eq(bn.parseUnits('0.01'))).toBeTruthy();
+    expect(fiveChars.eq(bn.parseUnits('0.001'))).toBeTruthy();
   });
 
   test('Domain to bytes', () => {

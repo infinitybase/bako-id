@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Center,
   Flex,
   Icon,
@@ -12,6 +13,7 @@ import { formatAddress } from '../../utils/formatter';
 import { Connect } from '../helpers';
 import { QuestionIcon } from '../icons/question';
 import { Info } from '../user';
+import { FileIcon } from '../icons';
 
 export const Header = () => {
   const [isMobile] = useMediaQuery('(max-width: 48em)');
@@ -47,23 +49,23 @@ export const Header = () => {
 
       <Flex w="fit-content" align="center" justify="flex-end" gap={2}>
         <Flex w="full" gap={2}>
-          {/*{!isMobile && wallet !== null && (*/}
-          {/*  <Button*/}
-          {/*    w="fit-content"*/}
-          {/*    bgColor="transparent"*/}
-          {/*    _hover={{*/}
-          {/*      bgColor: 'transparent',*/}
-          {/*      color: 'button.500',*/}
-          {/*    }}*/}
-          {/*    color="grey.100"*/}
-          {/*    fontWeight="normal"*/}
-          {/*    fontSize="sm"*/}
-          {/*    rightIcon={<FileIcon w={4} h={4} />}*/}
-          {/*    onClick={() => navigate({ to: '/my-handles' })}*/}
-          {/*  >*/}
-          {/*    My Handles*/}
-          {/*  </Button>*/}
-          {/*)}*/}
+          {!isMobile && wallet !== null && (
+            <Button
+              w="fit-content"
+              bgColor="transparent"
+              _hover={{
+                bgColor: 'transparent',
+                color: 'button.500',
+              }}
+              color="grey.100"
+              fontWeight="normal"
+              fontSize="sm"
+              rightIcon={<FileIcon w={4} h={4} />}
+              onClick={() => navigate({ to: '/my-handles' })}
+            >
+              My Handles
+            </Button>
+          )}
           {wallet ? (
             <Info
               name={formatAddress(wallet.address.toB256())!}
