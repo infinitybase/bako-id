@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 import { Card } from '..';
 
-import { useWallet } from '@fuels/react';
+import { useProvider, useWallet } from '@fuels/react';
 import { Suspense } from 'react';
 import { BakoTooltip, TextValue } from '../..';
 import { useEditResolver } from '../../../hooks/useEditResolver';
@@ -17,6 +17,7 @@ import { ExplorerTypes } from '../../../types';
 import { Explorer } from '../../helpers/explorer';
 import { EditIcon } from '../../icons/editIcon';
 import { EditResolverModal } from '../../modal/editResolver';
+import { getExplorer } from '../../../utils/getExplorer';
 // import { useSidebar } from '../../sidebar/hooks/useSidebar';
 
 export const ResolverCard = () => {
@@ -28,6 +29,9 @@ export const ResolverCard = () => {
     domain: `${domainParam}`,
     account: wallet!,
   });
+
+  const { provider } = useProvider();
+  const explorerUrl = getExplorer(provider?.getChainId());
 
   return (
     <>
@@ -69,6 +73,7 @@ export const ResolverCard = () => {
               content={domain?.Address?.bits ?? domain?.ContractId?.bits ?? ''}
               rightAction={
                 <Explorer
+                  explorerUrl={`${explorerUrl}/account/`}
                   id={domain?.Address?.bits ?? domain?.ContractId?.bits ?? ''}
                   type={ExplorerTypes.ASSETS}
                 />

@@ -25,7 +25,8 @@ import { TransactionDomainDetailsModal } from '../../components/modal/transactio
 import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
 import { useScreenSize } from '../../hooks/useScreenSize';
 import { calculatePeriodYears } from '../../utils/calculator';
-import { useWallet } from '@fuels/react';
+import { useProvider, useWallet } from '@fuels/react';
+import { getExplorer } from '../../utils/getExplorer';
 
 interface IPurchased {
   domain: string;
@@ -43,6 +44,9 @@ export const Purchased = ({
   const modal = useDisclosure();
   const { isMobile } = useScreenSize();
   const navigate = useNavigate();
+
+  const { provider } = useProvider();
+  const explorerUrl = getExplorer(provider?.getChainId());
 
   const year = calculatePeriodYears(data?.timestamp, data?.period);
 
@@ -117,10 +121,7 @@ export const Purchased = ({
           <TransactionsDetailsButton onClick={modal.onOpen} />
           <ViewOnExplorerButton
             onClick={() =>
-              window.open(
-                `https://app.fuel.network/tx/${transactionId}`,
-                '_blank',
-              )
+              window.open(`${explorerUrl}/tx/${transactionId}`, '_blank')
             }
           />
         </HStack>
