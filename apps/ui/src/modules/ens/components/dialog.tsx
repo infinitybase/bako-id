@@ -1,14 +1,37 @@
 import { Flex, Heading, Icon, Text, VStack } from '@chakra-ui/react';
-import { Dialog } from '../dialog';
-import { NSAutocomplete } from './nsAutocomplete';
+import { Dialog } from '../../../components/dialog';
+import { NSAutocomplete } from './autocomplete';
 import { useForm } from 'react-hook-form';
-import { BlueWarningIcon } from '../icons';
+import { BlueWarningIcon } from '../../../components/icons';
+import { type MetadataKeyValue, useMetadata } from '../../../hooks/useMetadata';
+import type { MetadataKeys } from '../../../utils/metadataKeys';
 
 export type NSAutocompleteValue = {
   ens: string;
 };
 
+const value = {
+  'contact:website': 'https://mockedwebsite.ko',
+  'social:x': 'mockedX',
+  'social:github': 'mockedGithub',
+};
+
 export const NSDialog = () => {
+  const { handleSaveRequest, setUpdatedMetadata } = useMetadata();
+
+  const metadataArray: MetadataKeyValue[] = Object.entries(value).map(
+    ([key, value]) => ({
+      key: key as MetadataKeys,
+      value,
+    }),
+  );
+
+  const handleConfirmAction = () => {
+    setUpdatedMetadata(metadataArray);
+
+    handleSaveRequest.mutate();
+  };
+
   const {
     control,
     formState: { errors },
@@ -67,8 +90,19 @@ export const NSDialog = () => {
       </Dialog.Body>
 
       <Dialog.Actions hideDivider gap={2} mt={6}>
-        <Dialog.SecondaryAction>Cancel</Dialog.SecondaryAction>
-        <Dialog.PrimaryAction>Import and overwrite</Dialog.PrimaryAction>
+        <Dialog.SecondaryAction
+          isDisabled={handleSaveRequest.isPending}
+          isLoading={handleSaveRequest.isPending}
+        >
+          Cancel
+        </Dialog.SecondaryAction>
+        <Dialog.PrimaryAction
+          isDisabled={handleSaveRequest.isPending}
+          isLoading={handleSaveRequest.isPending}
+          onClick={handleConfirmAction}
+        >
+          Import and overwrite
+        </Dialog.PrimaryAction>
       </Dialog.Actions>
     </Dialog.Modal>
   );

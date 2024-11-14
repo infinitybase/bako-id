@@ -446,7 +446,7 @@ export const EditMetadataModal = ({
     transactionModal,
     updatedMetadata,
     setUpdatedMetadata,
-  } = useMetadata(handleOnSuccess);
+  } = useMetadata({ handleOnSuccess });
 
   const [filter, setFilter] = useState(FilterButtonTypes.ALL);
 

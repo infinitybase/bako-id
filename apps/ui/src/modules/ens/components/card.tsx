@@ -1,9 +1,21 @@
 import { Suspense } from 'react';
-import { Card } from '.';
-import { Button, CardBody, CardHeader, Heading, Text } from '@chakra-ui/react';
-import { NSDialog } from '../nsDialog';
+import { Card } from '../../../components/card';
+import {
+  Button,
+  CardBody,
+  CardHeader,
+  Heading,
+  Text,
+  useDisclosure,
+} from '@chakra-ui/react';
+import { NSDialog } from './dialog';
+// import { useGetENSData } from '../../hooks/useGetENSData';
 
 export const NSCard = () => {
+  // const value = useGetENSData('vitalik.eth');
+
+  const nsDialogState = useDisclosure();
+
   return (
     <>
       <NSDialog />

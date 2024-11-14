@@ -22,7 +22,15 @@ export type MetadataResponse =
   | { key: string; value: string | undefined }[]
   | undefined;
 
-export const useMetadata = (handleOnSuccess?: () => void) => {
+export type UseMetadaProps = {
+  handleOnSuccess?: () => void;
+  importingFromENS?: boolean;
+};
+
+export const useMetadata = ({
+  handleOnSuccess,
+  importingFromENS,
+}: UseMetadaProps = {}) => {
   const [updatedMetadata, setUpdatedMetadata] = useState<MetadataKeyValue[]>(
     [],
   );
@@ -76,6 +84,7 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
       };
 
       const setContract = RegistryContract.create(wallet);
+
       return await setContract.setMetadata(domain, metadataPayload);
     },
     onSuccess: () => {

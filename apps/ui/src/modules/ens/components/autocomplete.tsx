@@ -10,7 +10,7 @@ import {
   type InputProps,
 } from '@chakra-ui/react';
 import { Controller, type FieldErrors, type Control } from 'react-hook-form';
-import type { NSAutocompleteValue } from '.';
+import type { NSAutocompleteValue } from './dialog';
 
 interface INSAutocomplete extends InputProps {
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
