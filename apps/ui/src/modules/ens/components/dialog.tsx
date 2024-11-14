@@ -1,10 +1,17 @@
-import { Flex, Heading, Icon, Text, VStack } from '@chakra-ui/react';
+import {
+  Flex,
+  Heading,
+  Icon,
+  type ModalProps,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { Dialog } from '../../../components/dialog';
 import { NSAutocomplete } from './autocomplete';
-import { useForm } from 'react-hook-form';
 import { BlueWarningIcon } from '../../../components/icons';
 import { type MetadataKeyValue, useMetadata } from '../../../hooks/useMetadata';
 import type { MetadataKeys } from '../../../utils/metadataKeys';
+import { useENSForm } from '../hooks/useENSForm';
 
 export type NSAutocompleteValue = {
   ens: string;
@@ -16,8 +23,16 @@ const value = {
   'social:github': 'mockedGithub',
 };
 
-export const NSDialog = () => {
+export interface NSDialogProps extends Omit<ModalProps, 'children'> {}
+
+export const NSDialog = ({ isOpen, onClose, ...rest }: NSDialogProps) => {
   const { handleSaveRequest, setUpdatedMetadata } = useMetadata();
+  const { ensData, inputValue, control, errors, handleInputChange, isLoading } =
+    useENSForm();
+
+  console.log('isLoading:', isLoading);
+
+  console.log('ensData:', ensData);
 
   const metadataArray: MetadataKeyValue[] = Object.entries(value).map(
     ([key, value]) => ({
@@ -32,24 +47,14 @@ export const NSDialog = () => {
     handleSaveRequest.mutate();
   };
 
-  const {
-    control,
-    formState: { errors },
-  } = useForm<NSAutocompleteValue>({
-    mode: 'all',
-    reValidateMode: 'onChange',
-    defaultValues: {
-      ens: '',
-    },
-  });
-
   return (
     <Dialog.Modal
+      {...rest}
       motionPreset="slideInBottom"
       modalTitle="Import account from ENS"
       modalSubtitle="Set your ENS username below and confirm the import."
-      isOpen={true}
-      onClose={() => console.log('fhecou')}
+      isOpen={isOpen}
+      onClose={onClose}
       closeOnOverlayClick={false}
       size={{ base: 'full', md: 'lg' }}
       titleFontSize="14px"
@@ -58,13 +63,12 @@ export const NSDialog = () => {
       <Dialog.Body>
         <VStack>
           <NSAutocomplete
-            handleChange={() => {}}
-            inputValue={'resolverAddress'}
+            handleChange={handleInputChange}
+            inputValue={inputValue}
             isValid={true}
             errors={errors}
             control={control}
-            isLoading={false}
-            isSignLoading={false}
+            isLoading={isLoading}
           />
         </VStack>
 
@@ -93,6 +97,7 @@ export const NSDialog = () => {
         <Dialog.SecondaryAction
           isDisabled={handleSaveRequest.isPending}
           isLoading={handleSaveRequest.isPending}
+          onClick={onClose}
         >
           Cancel
         </Dialog.SecondaryAction>

@@ -19,7 +19,6 @@ interface INSAutocomplete extends InputProps {
   control: Control<NSAutocompleteValue>;
   errors: FieldErrors<NSAutocompleteValue>;
   isLoading: boolean;
-  isSignLoading: boolean;
 }
 
 export const NSAutocomplete = ({
@@ -29,7 +28,6 @@ export const NSAutocomplete = ({
   control,
   errors,
   isLoading,
-  isSignLoading,
   ...rest
 }: INSAutocomplete) => {
   return (
@@ -64,7 +62,7 @@ export const NSAutocomplete = ({
             render={({ field }) => (
               <Input
                 {...field}
-                isDisabled={isLoading || isSignLoading}
+                isDisabled={isLoading}
                 variant="autocomplete"
                 value={inputValue}
                 color="white"
@@ -96,20 +94,17 @@ export const NSAutocomplete = ({
         </InputGroup>
 
         <Box h={6} w="full">
-          {isLoading &&
-            !isSignLoading &&
-            !errors.ens?.message &&
-            inputValue.length === 66 && (
-              <FormHelperText
-                w="full"
-                display="flex"
-                alignItems="center"
-                pl={2}
-                gap={2}
-              >
-                Validating <Spinner boxSize={3} />
-              </FormHelperText>
-            )}
+          {isLoading && !errors.ens?.message && inputValue.length === 66 && (
+            <FormHelperText
+              w="full"
+              display="flex"
+              alignItems="center"
+              pl={2}
+              gap={2}
+            >
+              Validating <Spinner boxSize={3} />
+            </FormHelperText>
+          )}
           {!isLoading &&
             errors.ens?.message &&
             inputValue.length >= 1 &&

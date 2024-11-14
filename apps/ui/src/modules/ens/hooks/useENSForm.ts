@@ -1,18 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { isB256 } from 'fuels';
-import { useQuery } from '@tanstack/react-query';
+import { useGetENSData } from '../../../hooks';
 
 export type CustomAutocompleteValue = {
-  resolver: string;
+  ens: string;
 };
 
 export const useENSForm = () => {
-  const [isFirstLoadingValidation, setIsFirstLoadingValidation] =
-    useState(true);
+  const [ensName, setEnsName] = useState<string>('');
+  const [inputValue, setInputValue] = useState<string>('');
 
-  const [resolverAddress, setResolverAddress] = useState<string>('');
+  const { data, isLoading, refetch } = useGetENSData(ensName);
 
   const {
     control,
@@ -22,61 +21,27 @@ export const useENSForm = () => {
     mode: 'all',
     reValidateMode: 'onChange',
     defaultValues: {
-      resolver: '',
+      ens: '',
     },
   });
 
-  const {
-    data: isValid,
-    refetch,
-    isLoading: isResolverValidatingLoading,
-    isFetching: isResolverValidatingFetching,
-  } = useQuery({
-    queryKey: ['validateResolver', resolverAddress],
-    queryFn: async () => {
-      const type = await provider?.getAddressType(resolverAddress);
-
-      isFirstLoadingValidation && setIsFirstLoadingValidation(false);
-
-      return type ? Boolean(type === 'Account' || type === 'Contract') : false;
-    },
-    enabled: Boolean(provider && resolverAddress.length >= 66),
-    staleTime: Number.POSITIVE_INFINITY,
-    refetchOnWindowFocus: false,
-  });
-
-  const handleResolverAddressChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setResolverAddress(value);
+    setInputValue(value);
 
-    if (
-      isB256(value) &&
-      !isResolverValidatingLoading &&
-      !isResolverValidatingFetching
-    ) {
+    if (value.includes('.eth') || value.includes('.box')) {
+      setEnsName(value);
+      setValue('ens', value);
       refetch();
     }
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  //   useEffect(() => {
-  //     if (provider && wallet) {
-  //       const address = wallet.address.toB256();
-  //       setResolverAddress(address);
-  //       setValue('resolver', address, { shouldValidate: true });
-  //     }
-  //   }, [wallet, provider]);
-
   return {
     control,
     errors,
-    isValid,
-    handleResolverAddressChange,
-    resolverAddress,
-    isResolverValidatingLoading,
-    isResolverValidatingFetching,
-    isFirstLoadingValidation,
+    handleInputChange,
+    ensData: data,
+    isLoading,
+    inputValue,
   };
 };

@@ -14,11 +14,14 @@ import { NSDialog } from './dialog';
 export const NSCard = () => {
   // const value = useGetENSData('vitalik.eth');
 
-  const nsDialogState = useDisclosure();
+  const ensDialogState = useDisclosure();
 
   return (
     <>
-      <NSDialog />
+      <NSDialog
+        isOpen={ensDialogState.isOpen}
+        onClose={ensDialogState.onClose}
+      />
       <Suspense>
         <Card
           backdropFilter="blur(7px)"
@@ -41,7 +44,11 @@ export const NSCard = () => {
               Importing data will replace your connected social media accounts
               and update your nickname to match the imported account.
             </Text>
-            <Button variant="primary" maxW="112px">
+            <Button
+              variant="primary"
+              maxW="112px"
+              onClick={ensDialogState.onOpen}
+            >
               Import
             </Button>
           </CardBody>

@@ -6,18 +6,22 @@ const useGetENSData = (ensName: string) => {
     queryKey: ['resolveDomain'],
     queryFn: async () => {
       try {
-        return await ensCheckRegister(ensName);
+        const result = await ensCheckRegister(ensName);
+        return result;
       } catch (error) {
-        console.log('error', error);
+        console.log('Error while searching for ENS', error);
       }
     },
     refetchOnWindowFocus: false,
     staleTime: Number.POSITIVE_INFINITY,
+    enabled: !!ensName,
   });
+
   return {
     data,
     ...rest,
   };
 };
+// vitalik.eth
 
 export { useGetENSData };
