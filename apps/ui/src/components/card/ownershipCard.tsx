@@ -1,4 +1,4 @@
-import { Flex, Heading } from '@chakra-ui/react';
+import { Flex, Heading, Skeleton } from '@chakra-ui/react';
 import { Address } from 'fuels';
 import { Card, TextValue } from '..';
 import { ExplorerTypes } from '../../types';
@@ -15,9 +15,7 @@ interface IOwnershipCard {
 }
 export const OwnershipCard = ({ owner, explorerUrl }: IOwnershipCard) => {
   const { domain } = useParams({ strict: false });
-  const { ttl } = useGetGracePeriod(domain.replace('@', ''));
-
-  if (!ttl) return null;
+  const { dates, isLoading } = useGetGracePeriod(domain.replace('@', ''));
 
   return (
     <Card
@@ -73,14 +71,18 @@ export const OwnershipCard = ({ owner, explorerUrl }: IOwnershipCard) => {
           }
           content={parent}
         /> */}
-        <TextValue
-          leftAction={'expiry'}
-          textAlign="right"
-          rightAction={
-            <CopyText value={ttl ? format(ttl, 'MMMM dd, yyyy') : ''} />
-          }
-          content={ttl ? format(ttl, 'MMMM dd, yyyy') : ''}
-        />
+        <Skeleton isLoaded={!isLoading} w="full" rounded="lg">
+          <TextValue
+            leftAction={'expiry'}
+            textAlign="right"
+            rightAction={
+              <CopyText
+                value={dates?.ttl ? format(dates.ttl, 'MMMM dd, yyyy') : ''}
+              />
+            }
+            content={dates?.ttl ? format(dates.ttl, 'MMMM dd, yyyy') : ''}
+          />
+        </Skeleton>
       </Flex>
     </Card>
   );

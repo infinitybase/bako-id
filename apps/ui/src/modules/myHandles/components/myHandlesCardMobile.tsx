@@ -64,7 +64,7 @@ export const MyHandlesCardMobile = ({
                   spacing={6}
                 >
                   <Text color="grey.200" fontSize="xs">
-                    It seems like you haven’t purchased any Hanfle yet.
+                    It seems like you haven’t purchased any Handle yet.
                   </Text>
                   <Button
                     variant="primary"

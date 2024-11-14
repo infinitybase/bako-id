@@ -12,7 +12,7 @@ export const ValidityCard = () => {
   const { domain } = useParams({ strict: false });
   const { isMyDomain } = useSidebar();
 
-  const dates = useGetGracePeriod(domain);
+  const { dates } = useGetGracePeriod(domain);
 
   if (!dates) return null;
 

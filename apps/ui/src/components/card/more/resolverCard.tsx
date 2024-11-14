@@ -8,16 +8,15 @@ import {
 } from '@chakra-ui/react';
 import { Card } from '..';
 
-import { useProvider, useWallet } from '@fuels/react';
+import { useWallet } from '@fuels/react';
 import { Suspense } from 'react';
 import { BakoTooltip, TextValue } from '../..';
 import { useEditResolver } from '../../../hooks/useEditResolver';
 import { useProfile } from '../../../modules/profile/hooks/useProfile';
-import { ExplorerTypes } from '../../../types';
-import { Explorer } from '../../helpers/explorer';
+
 import { EditIcon } from '../../icons/editIcon';
 import { EditResolverModal } from '../../modal/editResolver';
-import { getExplorer } from '../../../utils/getExplorer';
+
 // import { useSidebar } from '../../sidebar/hooks/useSidebar';
 
 export const ResolverCard = () => {
@@ -30,8 +29,8 @@ export const ResolverCard = () => {
     account: wallet!,
   });
 
-  const { provider } = useProvider();
-  const explorerUrl = getExplorer(provider?.getChainId());
+  // const { provider } = useProvider();
+  // const explorerUrl = getExplorer(provider?.getChainId());
 
   return (
     <>
@@ -71,13 +70,13 @@ export const ResolverCard = () => {
             <TextValue
               leftAction="address"
               content={domain?.Address?.bits ?? domain?.ContractId?.bits ?? ''}
-              rightAction={
-                <Explorer
-                  explorerUrl={`${explorerUrl}/account/`}
-                  id={domain?.Address?.bits ?? domain?.ContractId?.bits ?? ''}
-                  type={ExplorerTypes.ASSETS}
-                />
-              }
+              // rightAction={
+              //   <Explorer
+              //     explorerUrl={`${explorerUrl}/account/`}
+              //     id={domain?.Address?.bits ?? domain?.ContractId?.bits ?? ''}
+              //     type={ExplorerTypes.ASSETS}
+              //   />
+              // }
               whiteSpace="nowrap"
               wordBreak="normal"
               isTruncated

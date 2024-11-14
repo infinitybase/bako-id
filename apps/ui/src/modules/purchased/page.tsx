@@ -39,7 +39,7 @@ export const Purchased = ({
   transactionId,
   transaction,
 }: IPurchased) => {
-  const data = useGetGracePeriod(domain.replace('@', ''));
+  const { dates } = useGetGracePeriod(domain.replace('@', ''));
   const { wallet } = useWallet();
   const modal = useDisclosure();
   const { isMobile } = useScreenSize();
@@ -48,7 +48,7 @@ export const Purchased = ({
   const { provider } = useProvider();
   const explorerUrl = getExplorer(provider?.getChainId());
 
-  const year = calculatePeriodYears(data?.timestamp, data?.gracePeriod);
+  const year = calculatePeriodYears(dates?.timestamp, dates?.gracePeriod);
 
   const mainOperation = transaction.operations.find(
     (op) => op.assetsSent && op.from?.address === wallet?.address.toB256(),
