@@ -22,11 +22,11 @@ import {
 import { TransactionsDetailsButton } from '../../components/buttons/transactionsDetailsButton';
 import { ViewOnExplorerButton } from '../../components/buttons/viewOnExploreButton';
 import { TransactionDomainDetailsModal } from '../../components/modal/transactionDetails';
-import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
 import { useScreenSize } from '../../hooks/useScreenSize';
 import { calculatePeriodYears } from '../../utils/calculator';
 import { useProvider, useWallet } from '@fuels/react';
 import { getExplorer } from '../../utils/getExplorer';
+import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
 
 interface IPurchased {
   domain: string;
@@ -39,7 +39,7 @@ export const Purchased = ({
   transactionId,
   transaction,
 }: IPurchased) => {
-  const { data } = useGetGracePeriod(domain.replace('@', ''));
+  const data = useGetGracePeriod(domain.replace('@', ''));
   const { wallet } = useWallet();
   const modal = useDisclosure();
   const { isMobile } = useScreenSize();
@@ -48,7 +48,7 @@ export const Purchased = ({
   const { provider } = useProvider();
   const explorerUrl = getExplorer(provider?.getChainId());
 
-  const year = calculatePeriodYears(data?.timestamp, data?.period);
+  const year = calculatePeriodYears(data?.timestamp, data?.gracePeriod);
 
   const mainOperation = transaction.operations.find(
     (op) => op.assetsSent && op.from?.address === wallet?.address.toB256(),
@@ -103,7 +103,7 @@ export const Purchased = ({
               Congratulations
             </Heading>
             <Text color="section.200" fontSize={['sm', 'md']}>
-              Now your are the owner of this Handles.
+              Now you are the owner of this Handles.
             </Text>
           </Box>
         </CardHeader>

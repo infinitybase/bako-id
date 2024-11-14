@@ -5,6 +5,8 @@ import { ExplorerTypes } from '../../types';
 import { formatAddress } from '../../utils/formatter';
 import { Explorer } from '../helpers/explorer';
 import { useParams } from '@tanstack/react-router';
+import { CopyText } from '../helpers/copy';
+import { format } from 'date-fns';
 import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
 
 interface IOwnershipCard {
@@ -13,9 +15,9 @@ interface IOwnershipCard {
 }
 export const OwnershipCard = ({ owner, explorerUrl }: IOwnershipCard) => {
   const { domain } = useParams({ strict: false });
-  const { data } = useGetGracePeriod(domain.replace('@', ''));
+  const { ttl } = useGetGracePeriod(domain.replace('@', ''));
 
-  if (!data) return null;
+  if (!ttl) return null;
 
   return (
     <Card
@@ -71,14 +73,14 @@ export const OwnershipCard = ({ owner, explorerUrl }: IOwnershipCard) => {
           }
           content={parent}
         /> */}
-        {/* <TextValue
+        <TextValue
           leftAction={'expiry'}
           textAlign="right"
           rightAction={
-            <CopyText value={format(data!.period, 'MMMM dd, yyyy')} />
+            <CopyText value={ttl ? format(ttl, 'MMMM dd, yyyy') : ''} />
           }
-          content={format(data!.period, 'MMMM dd, yyyy')}
-        /> */}
+          content={ttl ? format(ttl, 'MMMM dd, yyyy') : ''}
+        />
       </Flex>
     </Card>
   );

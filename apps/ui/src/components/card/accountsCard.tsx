@@ -1,4 +1,4 @@
-import { Button, Flex, Heading, VStack } from '@chakra-ui/react';
+import { Button, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import { Card } from '..';
 import { VerifiedAccountInput } from '../inputs/verifiedAccount';
 import { PlusSquareIcon } from '@chakra-ui/icons';
@@ -49,24 +49,30 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
       </Flex>
 
       <VStack spacing={5}>
-        {metadata?.map((m) => {
-          const keyAfterColon = m.key.split(':')[1];
-          const variant = { key: keyAfterColon, value: m.value };
+        {metadata?.length ? (
+          metadata?.map((m) => {
+            const keyAfterColon = m.key.split(':')[1];
+            const variant = { key: keyAfterColon, value: m.value };
 
-          return (
-            <VerifiedAccountInput
-              key={m.key}
-              value={m.value}
-              variant={variant}
-              isVerified
-              rightAddon
-              rightAddonName={getInputIcon(
-                m.key as MetadataKeys,
-                m.value ?? '',
-              )}
-            />
-          );
-        })}
+            return (
+              <VerifiedAccountInput
+                key={m.key}
+                value={m.value}
+                variant={variant}
+                isVerified
+                rightAddon
+                rightAddonName={getInputIcon(
+                  m.key as MetadataKeys,
+                  m.value ?? '',
+                )}
+              />
+            );
+          })
+        ) : (
+          <Text color="grey.200" fontSize="xs" maxW="172px" h="26px" mt={20}>
+            It seems like you haven’t added any account yet.
+          </Text>
+        )}
       </VStack>
     </Card>
   );

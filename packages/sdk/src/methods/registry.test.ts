@@ -17,6 +17,7 @@ import { RegistryContract } from '../index';
 import { InvalidDomainError, NotFoundBalanceError, randomName } from '../utils';
 import { OffChainSync } from './offChainSync';
 import { MetadataKeys } from './types';
+import { ensCheckRegister } from './ens';
 
 jest.mock('@bako-id/contracts', () => ({
   ...jest.requireActual('@bako-id/contracts'),
@@ -57,7 +58,7 @@ describe('Test Registry', () => {
     const nftCall = await nft.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } }
+        { ContractId: { bits: registry.id.toB256() } },
       )
       .call();
     await nftCall.waitForResult();
@@ -65,7 +66,7 @@ describe('Test Registry', () => {
     const managerCall = await manager.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } }
+        { ContractId: { bits: registry.id.toB256() } },
       )
       .call();
     await managerCall.waitForResult();
@@ -74,7 +75,7 @@ describe('Test Registry', () => {
       .constructor(
         { bits: owner.address.toB256() },
         { bits: manager.id.toB256() },
-        { bits: nft.id.toB256() }
+        { bits: nft.id.toB256() },
       )
       .call();
     await registerCall.waitForResult();
@@ -98,7 +99,7 @@ describe('Test Registry', () => {
         resolver: wallet.address.toB256(),
       });
       await expect(invalidSuffix).rejects.toBeInstanceOf(InvalidDomainError);
-    }
+    },
   );
 
   it('should register domain', async () => {
@@ -260,7 +261,7 @@ describe('Test Registry', () => {
 
     const contractWithoutAccount = new RegistryContract(
       registry.id.toB256(),
-      provider
+      provider,
     );
 
     const { fee, price } = await contractWithoutAccount.simulate({
@@ -282,15 +283,16 @@ describe('Test Registry', () => {
         domain: randomName(),
         period: 1,
         resolver: provider.getBaseAssetId(),
-      })
+      }),
     ).rejects.toThrow('Account is required to register a domain');
 
     await expect(() =>
       contractWithoutAccount.setMetadata(randomName(), {
         [MetadataKeys.CONTACT_BIO]: 'bio',
-      })
+      }),
     ).rejects.toThrow('Account is required to setMetadata');
   });
+
 
   it('should get ttl and timestamp correctly', async () => {
     const {
@@ -326,4 +328,14 @@ describe('Test Registry', () => {
       'Domain not found'
     );
   });
+
+  it(
+    'should get metadata from ens',
+    async () => {
+      const metadata = await ensCheckRegister('vitalik.eth');
+      expect(metadata).toBeDefined();
+    },
+    1000 * 20,
+  );
+
 });
