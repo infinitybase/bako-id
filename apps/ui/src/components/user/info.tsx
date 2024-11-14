@@ -15,16 +15,17 @@ import {
 import { useFuel } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
 import type { AbstractAddress } from 'fuels';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { BeginnersGuide } from '../icons/beginnersGuide.tsx';
 import { FileIcon } from '../icons/fileIcon.tsx';
-import { HowToSendCrypto } from '../icons/howToSendCrypto.tsx';
+// import { HowToSendCrypto } from '../icons/howToSendCrypto.tsx';
 import { LogoutIcon } from '../icons/logoutIcon.tsx';
 import { MiningCrypto } from '../icons/miningCrypto.tsx';
 import { MoreBako } from '../icons/moreBako.tsx';
 import { SmallCloseIcon } from '../icons/smallCloseIcon.tsx';
 import { useCustomToast } from '../toast/index.tsx';
 import { TermsOfUseDialog } from '../termsOfUseDialog/index.tsx';
+import accoutIcon from '../../assets/account-icon.svg';
 
 export const Info = ({
   name,
@@ -59,11 +60,23 @@ export const Info = ({
     navigate({ to: '/' });
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  const icon = useMemo(() => {
-    const path = localStorage.getItem(`@BAKO-ID/AVATAR/${account}`);
-    return <Avatar borderRadius="lg" src={path!} />;
-  }, []);
+  const icon = (
+    <Box
+      bg="linear-gradient(132.19deg, #FFC010 0%, #EBA312 48%, #D38015 71%, #B24F18 99%)"
+      p="1px"
+      rounded="lg"
+    >
+      <Avatar
+        borderRadius="lg"
+        src={accoutIcon}
+        objectFit="fill"
+        h="full"
+        borderColor="black"
+        borderWidth={3}
+        p={0.5}
+      />
+    </Box>
+  );
 
   return (
     <>
@@ -266,6 +279,12 @@ export const Info = ({
                       cursor: 'pointer',
                       opacity: 0.8,
                     }}
+                    onClick={() =>
+                      window.open(
+                        'https://www.youtube.com/watch?v=hKBKRobGPfQ&list=PL_aP9ZFhLyyBS1hMgWpY-6JcKrNnxeVDt',
+                        '_blank',
+                      )
+                    }
                     as={BeginnersGuide}
                   />
                   <Box
@@ -276,9 +295,12 @@ export const Info = ({
                       cursor: 'pointer',
                       opacity: 0.8,
                     }}
+                    onClick={() =>
+                      window.open('https://www.bako.global/shields', '_blank')
+                    }
                     as={MiningCrypto}
                   />
-                  <Box
+                  {/* <Box
                     w="125px"
                     h="125px"
                     rounded="xl"
@@ -287,7 +309,7 @@ export const Info = ({
                       opacity: 0.8,
                     }}
                     as={HowToSendCrypto}
-                  />
+                  /> */}
                 </Flex>
               </Flex>
 
