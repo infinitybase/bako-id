@@ -24,7 +24,7 @@ const calculatePeriodYears = (timestamp?: Date, period?: Date) => {
 
   const difference = differenceInYears(period, timestamp);
 
-  return difference + 1;
+  return difference;
 };
 
 export { calculateDomainPrice, calculatePeriodYears };
