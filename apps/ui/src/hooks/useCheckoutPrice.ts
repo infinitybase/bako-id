@@ -21,10 +21,8 @@ export const useCheckoutPrice = (domains: Domains, selectedCoin: Coin) => {
   const totalPrice = useMemo(() => {
     if (!domains || !simulateHandle.data) return bn(0);
 
-    const ETHPrice = domainPrices(
-      domains.name.replace('@', ''),
-      domains.period,
-    );
+    const { fee, price } = simulateHandle.data;
+    const ETHPrice = price.add(fee);
 
     const USDPrice = ETHPrice.mul(usdPrice);
 
@@ -36,7 +34,7 @@ export const useCheckoutPrice = (domains: Domains, selectedCoin: Coin) => {
 
     return selectedCoin === Coin.USD
       ? domainPrices(domains.name.replace('@', ''), domains.period).mul(
-          usdPrice,
+          usdPrice
         )
       : domainPrices(domains.name.replace('@', ''), domains.period);
   }, [domains, selectedCoin, usdPrice]);

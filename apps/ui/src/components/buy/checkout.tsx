@@ -118,7 +118,7 @@ export const Checkout = (props: CheckoutProps) => {
           <Text color="text.500" fontSize={['xs', 'sm']}>
             {!loading ? (
               totalPrice ? (
-                formatCoin(totalPrice?.add(fee), selectedCoin)
+                formatCoin(totalPrice, selectedCoin)
               ) : (
                 '--.--'
               )

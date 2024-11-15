@@ -293,6 +293,27 @@ describe('[METHODS] Registry Contract', () => {
     }).rejects.toThrow(/NotOwner/);
   });
 
+  it('should error on register when contract is paused', async () => {
+    const [owner] = node.wallets;
+
+    const nftDeploy = await NftFactory.deploy(owner);
+    const managerDeploy = await ManagerFactory.deploy(owner);
+    const registryDeploy = await RegistryFactory.deploy(owner);
+
+    const { contract: nft } = await nftDeploy.waitForResult();
+    const { contract: manager } = await managerDeploy.waitForResult();
+    const { contract: registry } = await registryDeploy.waitForResult();
+
+    let { value: isPaused } = await registry.functions.is_paused().get();
+    expect(isPaused).toBe(false);
+
+    const pauseCall = await registry.functions.pause().call();
+    await pauseCall.waitForResult();
+
+    ({ value: isPaused } = await registry.functions.is_paused().get());
+    expect(isPaused).toBe(true);
+  });
+
   it.each(['@invalid-!@#%$!', 'my@asd.other', '@MYHanDLE'])(
     'should throw a error when try register %s',
     async (handle) => {
