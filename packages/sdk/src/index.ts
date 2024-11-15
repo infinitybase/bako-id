@@ -7,5 +7,6 @@ export {
   OffChainSync,
   OffChainData,
   IDRecord,
+  ensCheckRegister,
 } from './methods';
 export { domainPrices, isValidDomain } from './utils';

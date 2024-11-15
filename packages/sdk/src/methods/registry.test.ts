@@ -293,7 +293,6 @@ describe('Test Registry', () => {
     ).rejects.toThrow('Account is required to setMetadata');
   });
 
-
   it('should get ttl and timestamp correctly', async () => {
     const {
       contracts: [registry],
@@ -316,7 +315,7 @@ describe('Test Registry', () => {
     const expectedTtl = new Date(
       date!.getFullYear() + period,
       date!.getMonth(),
-      date!.getDate()
+      date!.getDate(),
     );
     expectedTtl.setHours(0, 0, 0, 0);
     date!.setHours(0, 0, 0, 0);
@@ -325,7 +324,7 @@ describe('Test Registry', () => {
     expect(timestamp).toEqual(date);
 
     await expect(() => contract.getDates('not_found')).rejects.toThrow(
-      'Domain not found'
+      'Domain not found',
     );
   });
 
@@ -337,5 +336,4 @@ describe('Test Registry', () => {
     },
     1000 * 20,
   );
-
 });

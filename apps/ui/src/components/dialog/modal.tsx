@@ -18,6 +18,8 @@ export interface DialogModalProps extends ModalProps {
   hideCloseButton?: boolean;
   modalTitle?: string | ReactNode;
   modalSubtitle?: string;
+  titleFontSize?: string;
+  subtitleFontSize?: string;
 }
 
 const DialogModal = (props: DialogModalProps) => {
@@ -41,7 +43,7 @@ const DialogModal = (props: DialogModalProps) => {
             <ModalHeader
               w="full"
               minW={hideCloseButton ? '100%' : '70%'}
-              fontSize="lg"
+              fontSize={props.titleFontSize ?? 'lg'}
             >
               {modalTitle}
             </ModalHeader>
@@ -60,7 +62,10 @@ const DialogModal = (props: DialogModalProps) => {
             )}
           </Flex>
           {modalSubtitle && (
-            <Text fontSize="sm" color="grey.subtitle">
+            <Text
+              fontSize={props.subtitleFontSize ?? 'sm'}
+              color="grey.subtitle"
+            >
               {modalSubtitle}
             </Text>
           )}

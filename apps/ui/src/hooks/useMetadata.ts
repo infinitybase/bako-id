@@ -76,6 +76,7 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
       };
 
       const setContract = RegistryContract.create(wallet);
+
       return await setContract.setMetadata(domain, metadataPayload);
     },
     onSuccess: () => {
