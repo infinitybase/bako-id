@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { ensCheckRegister } from '@bako-id/sdk';
+import { ensCheckRegister } from '../modules/ens/services';
 
 const useGetENSData = (ensName: string) => {
   const { data, ...rest } = useQuery({
@@ -7,7 +7,7 @@ const useGetENSData = (ensName: string) => {
     queryFn: async () => {
       try {
         const result = await ensCheckRegister(ensName);
-        if (!data && !result) {
+        if (!result) {
           // Need to throw this error to activate the "retry" method.
           throw new Error('Expected null value. Activating Retry method');
         }
@@ -20,11 +20,7 @@ const useGetENSData = (ensName: string) => {
     refetchOnWindowFocus: false,
     staleTime: Number.POSITIVE_INFINITY,
     enabled: !!ensName,
-    // The first request always return null, so i needed do this "trick" to do a retry evertytime. It just do the retry once.
-    retry: (failureCount: number, error: unknown): boolean => {
-      return failureCount === 0 && (data === null || !!error);
-    },
-    retryDelay: 500,
+    retryDelay: (failureCount) => failureCount * 500,
   });
 
   return {

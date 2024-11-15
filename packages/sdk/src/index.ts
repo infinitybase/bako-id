@@ -4,9 +4,9 @@ export {
   RegistryContract,
   RegisterPayload,
   SimulatePayload,
+  MetadataKeys,
   OffChainSync,
   OffChainData,
   IDRecord,
-  ensCheckRegister,
 } from './methods';
 export { domainPrices, isValidDomain } from './utils';
