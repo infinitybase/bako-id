@@ -37,7 +37,7 @@ const ValidityBody = ({ gracePeriod, ttl, timestamp }: ValidityBodyProps) => {
           my={4}
         >
           <Text>Grace period ends</Text>
-          <Icon
+          {/* <Icon
             w={4}
             h={4}
             mr={2}
@@ -45,7 +45,7 @@ const ValidityBody = ({ gracePeriod, ttl, timestamp }: ValidityBodyProps) => {
               cursor: 'pointer',
             }}
             color="grey.100"
-          />
+          /> */}
         </FormHelperText>
         <TextValue
           leftColor="grey.100"

@@ -3,17 +3,15 @@ import { http } from 'viem';
 import { mainnet } from 'viem/chains';
 import { type ENSMetadataKeys, ensToMetadataMap } from './types';
 
-// const ENS_API_KEY = 'da6fef9ce5f2371f562dda77c4029e14';
-
-const { ENS_API_KEY } = process.env;
+const { VITE_ENS_API_KEY } = import.meta.env;
 
 const client = createEnsPublicClient({
   chain: mainnet,
   transport: http('https://web3.ens.domains/v1/mainnet'),
-  key: ENS_API_KEY,
+  key: VITE_ENS_API_KEY,
 });
 
-const graphql_url = `https://gateway.thegraph.com/api/${ENS_API_KEY}/subgraphs/id/5XqPmWe6gjyrJtFn9cLy237i4cWw2j9HcUJEXsP5qGtH`;
+const graphql_url = `https://gateway.thegraph.com/api/${VITE_ENS_API_KEY}/subgraphs/id/5XqPmWe6gjyrJtFn9cLy237i4cWw2j9HcUJEXsP5qGtH`;
 
 export const ensCheckRegister = async (name: string) => {
   const records = await fetchEnsData(name);
@@ -69,8 +67,8 @@ async function fetchEnsData(name: string) {
     body: JSON.stringify({ query: ensQuery }),
   });
 
-  const { data } = await response.json();
-  const d = data?.domains[0] ?? undefined;
+  const lklk = await response.json();
+  const d = lklk.data?.domains[0] ?? undefined;
 
   return d;
 }

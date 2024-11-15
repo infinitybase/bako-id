@@ -91,6 +91,21 @@ export const Buy = () => {
       gap={[12, 12, 12, 12]}
       mb={[0, 0, 'auto', 0]}
       flexDirection="column"
+      overflowY="scroll"
+      sx={{
+        '&::-webkit-scrollbar': {
+          display: 'none',
+          width: '6px',
+          maxHeight: '330px',
+          backgroundColor: 'grey.900',
+          borderRadius: '30px',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: 'button.500',
+          borderRadius: '30px',
+          height: '10px',
+        },
+      }}
     >
       <TermsOfUseDialog
         agreed={agreed}

@@ -4,9 +4,11 @@ import { useProvider, useWallet } from '@fuels/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import { Provider } from 'fuels';
-import { useCustomToast } from '../components';
 import { useState } from 'react';
+import { useCustomToast } from '../components';
 import type { MetadataKeys } from '../utils/metadataKeys';
+
+const { VITE_PROVIDER_URL } = import.meta.env;
 
 export enum MetadataQueryKey {
   HANDLE_LIST = 'handleList',
@@ -24,7 +26,7 @@ export type MetadataResponse =
 
 export const useMetadata = (handleOnSuccess?: () => void) => {
   const [updatedMetadata, setUpdatedMetadata] = useState<MetadataKeyValue[]>(
-    [],
+    []
   );
   const { domain } = useParams({ strict: false });
   const { provider } = useProvider();
@@ -34,7 +36,11 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
   const { successToast, errorToast } = useCustomToast();
 
   const handleListRequest = useQuery({
-    queryKey: [MetadataQueryKey.HANDLE_LIST, domain],
+    queryKey: [
+      MetadataQueryKey.HANDLE_LIST,
+      provider?.url ?? VITE_PROVIDER_URL,
+      domain,
+    ],
     queryFn: async () => {
       try {
         let registryContract: RegistryContract;
@@ -43,7 +49,7 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
           registryContract = RegistryContract.create(provider);
         } else {
           const provider = await Provider.create(
-            import.meta.env.VITE_PROVIDER_URL,
+            import.meta.env.VITE_PROVIDER_URL
           );
           registryContract = RegistryContract.create(provider);
         }
@@ -71,11 +77,12 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
         ...updatedMetadata.reduce(
           // biome-ignore lint/performance/noAccumulatingSpread: <explanation>
           (acc, { key, value }) => ({ ...acc, [key]: value }),
-          {},
+          {}
         ),
       };
 
       const setContract = RegistryContract.create(wallet);
+
       return await setContract.setMetadata(domain, metadataPayload);
     },
     onSuccess: () => {

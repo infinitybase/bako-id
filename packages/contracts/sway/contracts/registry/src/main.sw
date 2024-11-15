@@ -14,6 +14,7 @@ use std::context::{msg_amount, this_balance};
 use standards::src3::SRC3;
 use std::asset::transfer;
 use standards::src7::{Metadata};
+use sway_libs::pausable::{_is_paused, _pause, _unpause, Pausable, require_not_paused};
 use sway_libs::asset::metadata::*;
 use sway_libs::asset::base::SetAssetAttributes;
 use sway_libs::ownership::*;
@@ -77,6 +78,8 @@ enum RegistryContractError {
 impl Registry for Contract {
     #[storage(write, read), payable]
     fn register(name: String, resolver: Identity, period: u16) {
+        require_not_paused();
+
         require(
             msg_asset_id() == AssetId::base(),
             RegistryContractError::IncorrectAssetId,
@@ -222,5 +225,24 @@ impl SRC5 for Contract {
     #[storage(read)]
     fn owner() -> State {
         _owner()
+    }
+}
+ 
+impl Pausable for Contract {
+    #[storage(write)]
+    fn pause() {
+        only_owner();
+        _pause();
+    }
+ 
+    #[storage(write)]
+    fn unpause() {
+        only_owner();
+        _unpause();
+    }
+ 
+    #[storage(read)]
+    fn is_paused() -> bool {
+        _is_paused()
     }
 }
