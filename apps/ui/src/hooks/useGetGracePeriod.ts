@@ -5,7 +5,7 @@ import { RegistryContract } from '@bako-id/sdk';
 
 const useGetGracePeriod = (domain: string) => {
   const { data: provider } = useGetProviderRequest();
-  const { data: dates } = useQuery({
+  const { data: dates, ...rest } = useQuery({
     queryKey: ['getDates', domain],
     queryFn: async () => {
       let registryContract: RegistryContract;
@@ -22,13 +22,10 @@ const useGetGracePeriod = (domain: string) => {
     enabled: !!domain && !!provider,
   });
 
-  return (
-    dates ?? {
-      gracePeriod: new Date(),
-      timestamp: new Date(),
-      ttl: new Date(),
-    }
-  );
+  return {
+    dates,
+    ...rest,
+  };
 };
 
 export { useGetGracePeriod };

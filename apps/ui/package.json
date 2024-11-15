@@ -32,7 +32,9 @@
     "react-icons": "^5.0.1",
     "react-share": "^5.1.0",
     "tai64": "^1.0.0",
-    "validator": "^13.12.0"
+    "validator": "^13.12.0",
+    "@ensdomains/ensjs": "4.0.2",
+    "viem": "2.21.45"
   },
   "devDependencies": {
     "@tanstack/react-query-devtools": "^5.59.16",

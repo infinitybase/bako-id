@@ -4,6 +4,7 @@ export {
   RegistryContract,
   RegisterPayload,
   SimulatePayload,
+  MetadataKeys,
   OffChainSync,
   OffChainData,
   IDRecord,

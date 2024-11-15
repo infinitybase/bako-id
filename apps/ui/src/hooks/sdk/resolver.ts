@@ -4,16 +4,17 @@ import { useQuery } from '@tanstack/react-query';
 import { Provider } from 'fuels';
 import { useMemo } from 'react';
 
+const { VITE_PROVIDER_URL } = import.meta.env;
+
 export const useResolverContract = () => {
   const { provider } = useProvider();
 
   const providerQuery = useQuery({
-    queryKey: ['resolverProvider'],
+    queryKey: ['resolverProvider', provider?.url ?? VITE_PROVIDER_URL],
     queryFn: async () => {
-      return provider || Provider.create(import.meta.env.VITE_PROVIDER_URL);
+      return provider || Provider.create(VITE_PROVIDER_URL);
     },
     staleTime: Number.POSITIVE_INFINITY,
-    enabled: !provider,
   });
 
   const contract = useMemo(() => {

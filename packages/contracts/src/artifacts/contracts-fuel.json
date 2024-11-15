@@ -7,8 +7,14 @@
   },
   "testnet": {
     "manager": "0x39140d7233297276196c49bf13c78ce056083ca8bf61af2698ee3fdeb8af1a8b",
-    "registry": "0xd79176bbfc056666e8e49a893b853c5a23e2cad27b72d604b6c1089ebbf72047",
+    "registry": "0x99861f09c4c32397baa24f9bedbfc9a10f6531b1f8c8a3ed2d28e7a083ac5e93",
     "resolver": "0x0a48766da16bbafd1141048fced3053344307aaee7eab8dc3be290f901b3f791",
     "nft": "0x3e347cb4cd26e358e350379f25da34a7838554f7b4cd4a43fa4736af35ba64ec"
+  },
+  "mainnet": {
+    "manager": "0x3ca7ac3db222a740e1c89158d9255afc2c3591ee3f34aedcaaf7cfeceebd0833",
+    "registry": "0x3bb2e28713f05a171dbd193d3b86a358d259b5a94cda74a6ae16e4f20d32e1b8",
+    "resolver": "0x3f12590e0fbd5fa29044b54fb3af17c1441c8eda1f1a74bdbf0f03ae489c448d",
+    "nft": "0x6a209d27a050740dc2539dcc41914f07c35ecb21f0c02279e85777353b474801"
   }
 }

@@ -9,37 +9,47 @@ Compatible with BETA-5
 
 ## Installation
 
+#### Pnpm
+```bash
+pnpm install fuels @bako-id/sdk
+```
+
+#### Npm
 ```bash
 npm install fuels @bako-id/sdk
 ```
 
-## Getting Started
-
-### Domain resolver
-```ts
-import { resolver } from '@bako-id/sdk';
-
-const providerURL = 'https://testnet.fuel.network/v1/graphql';
-
-// Get Bako handle resolver
-const fuelDomain = await resolver('@my_domain');
-console.log(fuelDomain); // { owner: '0x000...', resolver: '0x000...' }
+#### Yarn
+```bash
+yarn install fuels @bako-id/sdk
 ```
 
-### Domain register
+## Getting Started
+
+### Resolving a domain address
+
 ```ts
-import { register } from '@bako-id/sdk';
-import { Wallet } from 'fuels';
+import { OffChainSync } from '@bako-id/sdk';
+import { Provider } from 'fuels';
 
-// Fuel Wallet instance
-const wallet: Wallet;
+const provider = await Provider.create('https://testnet.fuel.network/v1/graphql');
+const sync = await OffChainSync.create(provider);
 
-// Register a Bako handle 
-await register({
-  account: wallet,
-  resolver: '0x0000...',
-  domain: '@my_domain',
-});
+const resolverAddress = sync.getResolver('bakoid'); 
+console.log(resolverAddress); // 0x000000...
+```
+
+### Resolving a domain name
+
+```ts
+import { OffChainSync } from '@bako-id/sdk';
+import { Provider } from 'fuels';
+
+const provider = await Provider.create('https://testnet.fuel.network/v1/graphql');
+const sync = await OffChainSync.create(provider);
+
+const name = sync.getDomain('0x000000...'); 
+console.log(name); // @bakoid
 ```
 
 ## 📜 License
