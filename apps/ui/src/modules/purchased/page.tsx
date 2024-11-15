@@ -148,7 +148,6 @@ export const Purchased = ({
                 justifyContent: 'center',
               }}
               url={window.location.origin}
-              // url={'https://youtube.com'}
               title={`I just minted my own ${window.location.pathname.replace('/buy/%40', '@')} Handle on`}
               hashtags={['web3', 'bakoid', 'fuelnetwork']}
               related={[]}
