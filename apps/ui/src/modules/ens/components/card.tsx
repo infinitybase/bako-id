@@ -27,7 +27,7 @@ export const NSCard = () => {
         >
           <CardHeader w="full">
             <Heading fontSize="lg" color="grey.100">
-              Import Data from NS
+              Import Data from ENS
             </Heading>
           </CardHeader>
           <CardBody
