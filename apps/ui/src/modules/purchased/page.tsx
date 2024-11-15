@@ -146,9 +146,10 @@ export const Purchased = ({
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              url="http://localhost:5173/"
-              title="Create your web3 domain!"
-              hashtags={['web3', 'fueldomains']}
+              url={window.location.origin}
+              // url={'https://youtube.com'}
+              title={`I just minted my own ${window.location.pathname.replace('/buy/%40', '@')} Handle on`}
+              hashtags={['web3', 'bakoid', 'fuelnetwork']}
               related={[]}
             >
               <TwitterIcon w={4} h={4} mr={2} />
