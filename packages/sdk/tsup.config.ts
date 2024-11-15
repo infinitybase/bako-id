@@ -1,7 +1,7 @@
 import { extendConfig } from '@shared/tsup';
 
 if (process.env.NODE_ENV !== 'production') {
-  await import('dotenv/config');
+  import('dotenv/config');
 }
 
 export default extendConfig({
