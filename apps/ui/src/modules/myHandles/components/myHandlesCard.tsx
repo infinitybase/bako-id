@@ -1,21 +1,26 @@
 import type { IDRecord } from '@bako-id/sdk';
 import {
   Box,
+  Button,
   Card,
   CardBody,
   CardHeader,
   Center,
   Divider,
   Skeleton,
+  Text,
   VStack,
 } from '@chakra-ui/react';
 import { HandleCard } from './handleCard';
+import { useNavigate } from '@tanstack/react-router';
 
 interface MyHandlesCard {
   handles?: IDRecord[];
+  isLoading: boolean;
 }
 
-export const MyHandlesCard = ({ handles }: MyHandlesCard) => {
+export const MyHandlesCard = ({ handles, isLoading }: MyHandlesCard) => {
+  const navigate = useNavigate();
   return (
     <Center w="full" h={['auto', '70%', 'xl', '3xl']} alignItems="center">
       <Card
@@ -57,22 +62,40 @@ export const MyHandlesCard = ({ handles }: MyHandlesCard) => {
             },
           }}
         >
-          {handles ? (
-            handles.map((handle) => (
-              <HandleCard key={handle.name} handle={handle} />
-            ))
-          ) : (
-            <VStack spacing={3} my={3}>
-              {[...Array(6)].map((_, index) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                <Skeleton w="97%" height="14" rounded="lg" key={index} />
-              ))}
-            </VStack>
-          )}
+          <Skeleton isLoaded={!isLoading} minH="200px" rounded="lg">
+            {handles?.length ? (
+              handles.map((handle) => (
+                <HandleCard key={handle.name} handle={handle} />
+              ))
+            ) : (
+              <VStack mt={4} h="282px" placeContent="center">
+                <VStack
+                  minH="90px"
+                  maxW="172px"
+                  alignItems="center"
+                  justifyContent="center"
+                  textAlign="center"
+                  spacing={6}
+                >
+                  <Text color="grey.200" fontSize="xs">
+                    It seems like you haven’t purchased any Hanfle yet.
+                  </Text>
+                  <Button
+                    variant="primary"
+                    onClick={() => navigate({ to: '/' })}
+                  >
+                    Purchase
+                  </Button>
+                </VStack>
+              </VStack>
+            )}
+          </Skeleton>
         </CardBody>
         <Box mx={3} mt={-2}>
           {/* Add verification if the handles quantity it's large then 5 to show the divider. */}
-          <Divider w="full" borderColor="stroke.500" />
+          {handles?.length ? (
+            <Divider w="full" borderColor="stroke.500" />
+          ) : null}
         </Box>
       </Card>
     </Center>

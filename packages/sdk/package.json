@@ -15,7 +15,9 @@
       "require": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
@@ -29,7 +31,6 @@
     "fuels": "0.96.1"
   },
   "devDependencies": {
-    "@bako-id/contracts": "workspace:*",
     "@fuels/ts-config": "^0.15.1",
     "@shared/tsup": "workspace:*",
     "@types/jest": "^29.5.11",
@@ -42,6 +43,7 @@
     "jest": "^29.6.4"
   },
   "dependencies": {
+    "@bako-id/contracts": "workspace:*",
     "@fuel-ts/errors": "^0.90.0",
     "tai64": "^1.0.0"
   }
