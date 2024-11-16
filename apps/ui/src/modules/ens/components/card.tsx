@@ -16,6 +16,10 @@ export const NSCard = () => {
 
   const { isMyDomain: isOwner } = useSidebar();
 
+  if (!isOwner) {
+    return null;
+  }
+
   return (
     <>
       <NSDialog
@@ -45,7 +49,6 @@ export const NSCard = () => {
               and update your nickname to match the imported account.
             </Text>
             <Button
-              hidden={!isOwner}
               variant="primary"
               maxW="112px"
               onClick={ensDialogState.onOpen}
