@@ -1,5 +1,3 @@
-import { Suspense } from 'react';
-import { Card } from '../../../components/card';
 import {
   Button,
   CardBody,
@@ -8,10 +6,15 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { Suspense } from 'react';
+import { Card } from '../../../components/card';
+import { useSidebar } from '../../../components/sidebar/hooks/useSidebar.tsx';
 import { NSDialog } from './dialog';
 
 export const NSCard = () => {
   const ensDialogState = useDisclosure();
+
+  const { isMyDomain: isOwner } = useSidebar();
 
   return (
     <>
@@ -42,6 +45,7 @@ export const NSCard = () => {
               and update your nickname to match the imported account.
             </Text>
             <Button
+              hidden={!isOwner}
               variant="primary"
               maxW="112px"
               onClick={ensDialogState.onOpen}
