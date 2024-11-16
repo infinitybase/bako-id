@@ -1,5 +1,3 @@
-import { Suspense } from 'react';
-import { Card } from '../../../components/card';
 import {
   Button,
   CardBody,
@@ -8,10 +6,19 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { Suspense } from 'react';
+import { Card } from '../../../components/card';
+import { useSidebar } from '../../../components/sidebar/hooks/useSidebar.tsx';
 import { NSDialog } from './dialog';
 
 export const NSCard = () => {
   const ensDialogState = useDisclosure();
+
+  const { isMyDomain: isOwner } = useSidebar();
+
+  if (!isOwner) {
+    return null;
+  }
 
   return (
     <>

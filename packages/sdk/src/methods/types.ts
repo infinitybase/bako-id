@@ -39,4 +39,6 @@ export enum MetadataKeys {
   RES_DESCRIPTION = 'res:description',
   RES_DATE = 'res:date',
   RES_BLOCK = 'res:block',
+
+  AVATAR = 'avatar',
 }

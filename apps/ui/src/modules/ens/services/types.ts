@@ -6,12 +6,14 @@ export enum ENSMetadataKeys {
   SOCIAL_DISCORD = 'com.discord',
   SOCIAL_TELEGRAM = 'org.telegram',
 
+  AVATAR = 'avatar',
   CONTACT_WEBSITE = 'url',
   CONTACT_NICKNAME = 'name',
   CONTACT_EMAIL = 'email',
 }
 
 export const ensToMetadataMap: Record<ENSMetadataKeys, MetadataKeys> = {
+  [ENSMetadataKeys.AVATAR]: MetadataKeys.AVATAR,
   [ENSMetadataKeys.SOCIAL_X]: MetadataKeys.SOCIAL_X,
   [ENSMetadataKeys.SOCIAL_GITHUB]: MetadataKeys.SOCIAL_GITHUB,
   [ENSMetadataKeys.SOCIAL_DISCORD]: MetadataKeys.SOCIAL_DISCORD,

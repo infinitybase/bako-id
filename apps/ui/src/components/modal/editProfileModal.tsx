@@ -4,6 +4,7 @@
 //   type Metadata,
 // } from '@bako-id/sdk';
 import {
+  Box,
   Button,
   CloseButton,
   Flex,
@@ -23,6 +24,11 @@ import { useWallet } from '@fuels/react';
 import { useParams } from '@tanstack/react-router';
 import type { Account } from 'fuels';
 import React, { useMemo, useState, type ReactNode } from 'react';
+import {
+  type MetadataKeyValue,
+  type MetadataResponse,
+  useMetadata,
+} from '../../hooks/useMetadata';
 import { Metadatas } from '../../utils/metadatas';
 import { MetadataCard } from '../card/metadataCard';
 import { Dialog } from '../dialog';
@@ -30,11 +36,6 @@ import { AvatarIcon } from '../icons';
 import { EditProfileFieldsModal } from './editProfileFieldsModal';
 import { EditProfilePicModal } from './editProfilePicModal';
 import { TransactionsDetailsModal } from './transactionDetails';
-import {
-  type MetadataKeyValue,
-  type MetadataResponse,
-  useMetadata,
-} from '../../hooks/useMetadata';
 
 interface Metadata {
   key: string;
@@ -92,7 +93,11 @@ const TabsTypes = [
 
 const ModalTitle = ({
   onClose,
-}: Pick<EditProfileModalProps, 'onClose'> & { wallet: Account }) => {
+  avatar,
+}: Pick<EditProfileModalProps, 'onClose'> & {
+  wallet: Account;
+  avatar?: string;
+}) => {
   const modalTitle = useDisclosure();
   const { domain } = useParams({ strict: false });
   // const { data: handles, refetch: refetchHandles } = useMyHandles();
@@ -128,17 +133,32 @@ const ModalTitle = ({
   return (
     <Flex w="full" justify="space-between">
       <Flex>
-        <Icon
-          w={[16, 16, 16, 20]}
-          h={[16, 16, 16, 20]}
-          rounded="lg"
-          mr={3}
-          as={AvatarIcon}
-          _hover={{
-            cursor: 'pointer',
-          }}
-          onClick={modalTitle.onOpen}
-        />
+        {avatar ? (
+          <Box
+            w={48}
+            h={28}
+            rounded="lg"
+            mr={4}
+            bgImage={`url(${avatar})`}
+            bgSize="cover"
+            bgPosition="center"
+            bgRepeat="no-repeat"
+            border="1.5px solid"
+            borderColor={'button.500'}
+          />
+        ) : (
+          <Icon
+            w={[16, 16, 16, 20]}
+            h={[16, 16, 16, 20]}
+            rounded="lg"
+            mr={3}
+            as={AvatarIcon}
+            // _hover={{
+            //   cursor: 'pointer',
+            // }}
+            // onClick={modalTitle.onOpen}
+          />
+        )}
         <Flex
           gap={4}
           alignItems="flex-start"
@@ -288,7 +308,7 @@ const MetadataTabPanel = ({
 
               const isEmpty = !userMetadata[metadata.key];
               const isUpdated = !!updates.find(
-                ({ key }) => key === metadata.key,
+                ({ key }) => key === metadata.key
               );
 
               return (
@@ -448,6 +468,8 @@ export const EditMetadataModal = ({
     setUpdatedMetadata,
   } = useMetadata(handleOnSuccess);
 
+  const avatar = metadata?.find((meta) => meta.key === 'avatar')?.value;
+
   const [filter, setFilter] = useState(FilterButtonTypes.ALL);
 
   const handleFilterClick = (newFilter: FilterButtonTypes) => {
@@ -462,7 +484,9 @@ export const EditMetadataModal = ({
         isOpen={isOpen}
         onClose={onClose}
         size={['full', '2xl', '2xl', '2xl']}
-        modalTitle={<ModalTitle onClose={onClose} wallet={wallet!} />}
+        modalTitle={
+          <ModalTitle avatar={avatar} onClose={onClose} wallet={wallet!} />
+        }
       >
         <ModalFiltersButtons changeFilter={handleFilterClick} filter={filter} />
 

@@ -1,4 +1,4 @@
-import { RegistryContract } from '@bako-id/sdk';
+import { type MetadataKeys, RegistryContract } from '@bako-id/sdk';
 import { useDisclosure } from '@chakra-ui/react';
 import { useProvider, useWallet } from '@fuels/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -6,7 +6,6 @@ import { useParams } from '@tanstack/react-router';
 import { Provider } from 'fuels';
 import { useState } from 'react';
 import { useCustomToast } from '../components';
-import type { MetadataKeys } from '../utils/metadataKeys';
 
 const { VITE_PROVIDER_URL } = import.meta.env;
 

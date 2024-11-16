@@ -1,7 +1,10 @@
 import { Box, Button, Flex, Icon, Text, useMediaQuery } from '@chakra-ui/react';
 
+import { useProvider } from '@fuels/react';
 import { Card } from '.';
 import { ExplorerTypes } from '../../types';
+import { getExplorer } from '../../utils/getExplorer';
+import { MetadataKeys } from '../../utils/metadataKeys';
 import {
   AvatarIcon,
   // DisabledXBadgeIcon,
@@ -9,10 +12,7 @@ import {
   ExploreIcon,
   // FarcasterBadgeIcon,
 } from '../icons';
-import { MetadataKeys } from '../../utils/metadataKeys';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
-import { useProvider } from '@fuels/react';
-import { getExplorer } from '../../utils/getExplorer';
 
 interface IProfileCard {
   domainName: string | null;
@@ -31,9 +31,10 @@ export const ProfileCard = ({
   const { isMyDomain: isOwner } = useSidebar();
 
   const nickname = metadata?.find(
-    (m) => m.key === MetadataKeys.CONTACT_NICKNAME,
+    (m) => m.key === MetadataKeys.CONTACT_NICKNAME
   );
   const shortBio = metadata?.find((m) => m.key === MetadataKeys.CONTACT_BIO);
+  const avatar = metadata?.find((m) => m.key === MetadataKeys.AVATAR);
 
   // const handle = handles?.find((handle) => handle.name === domainName);
 
@@ -51,7 +52,22 @@ export const ProfileCard = ({
       gap={4}
     >
       <Flex w="full">
-        <Icon w={32} h={32} rounded="lg" mr={4} as={AvatarIcon} />
+        {avatar ? (
+          <Box
+            w={32}
+            h={28}
+            rounded="lg"
+            mr={4}
+            bgImage={`url(${avatar.value})`}
+            bgSize="cover"
+            bgPosition="center"
+            bgRepeat="no-repeat"
+            border="1.5px solid"
+            borderColor={'button.500'}
+          />
+        ) : (
+          <Icon w={32} h={32} rounded="lg" mr={4} as={AvatarIcon} />
+        )}
         <Flex
           gap={4}
           alignItems={isLowerThanMobile ? 'flex-start' : 'flex-start'}
@@ -118,7 +134,7 @@ export const ProfileCard = ({
               rightIcon={<ExploreIcon />}
               onClick={() =>
                 window.open(
-                  `${explorerUrl}/account/${domain}${ExplorerTypes.ASSETS}`,
+                  `${explorerUrl}/account/${domain}${ExplorerTypes.ASSETS}`
                 )
               }
             >
