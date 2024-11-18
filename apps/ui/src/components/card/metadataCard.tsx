@@ -1,7 +1,7 @@
+import type { MetadataKeys } from '@bako-id/sdk';
 import { Box, Flex, Text } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
 import { CheckBadge } from './checkBadge';
-import type { MetadataKeys } from '../../utils/metadataKeys';
 
 interface IMetadataCard {
   keys: MetadataKeys;
