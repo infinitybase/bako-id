@@ -16,6 +16,7 @@ import { useFuel } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
 import type { AbstractAddress } from 'fuels';
 import { useState } from 'react';
+import accoutIcon from '../../assets/account-icon.svg';
 import { BeginnersGuide } from '../icons/beginnersGuide.tsx';
 import { FileIcon } from '../icons/fileIcon.tsx';
 // import { HowToSendCrypto } from '../icons/howToSendCrypto.tsx';
@@ -23,9 +24,8 @@ import { LogoutIcon } from '../icons/logoutIcon.tsx';
 import { MiningCrypto } from '../icons/miningCrypto.tsx';
 import { MoreBako } from '../icons/moreBako.tsx';
 import { SmallCloseIcon } from '../icons/smallCloseIcon.tsx';
-import { useCustomToast } from '../toast/index.tsx';
 import { TermsOfUseDialog } from '../termsOfUseDialog/index.tsx';
-import accoutIcon from '../../assets/account-icon.svg';
+import { useCustomToast } from '../toast/index.tsx';
 
 export const Info = ({
   name,
@@ -280,10 +280,7 @@ export const Info = ({
                       opacity: 0.8,
                     }}
                     onClick={() =>
-                      window.open(
-                        'https://www.youtube.com/watch?v=hKBKRobGPfQ&list=PL_aP9ZFhLyyBS1hMgWpY-6JcKrNnxeVDt',
-                        '_blank',
-                      )
+                      window.open('https://www.youtube.com/@BakoLabs', '_blank')
                     }
                     as={BeginnersGuide}
                   />
