@@ -1,11 +1,8 @@
-![twitter](https://img.shields.io/twitter/follow/fuel_domains?style=social)
-![Waitlist](https://img.shields.io/badge/Fuel_Domais-Waitlist-green?link=https%3A%2F%2Ffuel.domains)
-
+![twitter](https://img.shields.io/twitter/follow/bakoidentity?style=social)
 
 # 📦 Bako ID SDK
 
 Bako ID SDK enable to register a `@` handler domain in [Fuel Network](https://www.fuel.network/).
-Compatible with BETA-5
 
 ## Installation
 
@@ -35,7 +32,7 @@ import { Provider } from 'fuels';
 const provider = await Provider.create('https://testnet.fuel.network/v1/graphql');
 const sync = await OffChainSync.create(provider);
 
-const resolverAddress = sync.getResolver('bakoid'); 
+const resolverAddress = sync.getResolver('bakoid');
 console.log(resolverAddress); // 0x000000...
 ```
 
@@ -48,7 +45,7 @@ import { Provider } from 'fuels';
 const provider = await Provider.create('https://testnet.fuel.network/v1/graphql');
 const sync = await OffChainSync.create(provider);
 
-const name = sync.getDomain('0x000000...'); 
+const name = sync.getDomain('0x000000...');
 console.log(name); // @bakoid
 ```
 
