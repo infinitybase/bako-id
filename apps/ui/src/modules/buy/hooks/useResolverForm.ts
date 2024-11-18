@@ -71,7 +71,7 @@ export const useResolverForm = () => {
       setResolverAddress(address);
       setValue('resolver', address, { shouldValidate: true });
     }
-  }, [wallet, provider, resolverAddress]);
+  }, [wallet, provider]);
 
   return {
     control,
