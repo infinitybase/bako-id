@@ -6,7 +6,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { coinbaseWallet, walletConnect } from '@wagmi/connectors';
 import { http, createConfig, injected } from '@wagmi/core';
 import { mainnet, sepolia } from '@wagmi/core/chains';
-import { CHAIN_IDS } from 'fuels';
+import { CHAIN_IDS, Provider } from 'fuels';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { InnerApp } from './components';
@@ -67,6 +67,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           fuelConfig={{
             connectors: defaultConnectors({
               ethWagmiConfig: wagmiConfig,
+              chainId: CHAIN_IDS.fuel.mainnet,
+              fuelProvider: Provider.create(import.meta.env.VITE_PROVIDER_URL!),
             }),
           }}
         >
