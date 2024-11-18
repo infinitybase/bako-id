@@ -1,43 +1,5 @@
-import { Provider, Wallet } from 'fuels';
-import dotenv from 'dotenv';
 import { getContractId, Manager, Nft, Registry, Resolver } from '../src';
-
-dotenv.config({
-  path: '../.env',
-});
-
-const logger = {
-  success: (...data: any) => console.log(`✅ `, ...data),
-  info: (...data: any) => console.log(`🗞 `, ...data),
-  error: (...data: any) => console.error(`❌ `, ...data),
-  warn: (...data: any) => console.log(`❌ `, ...data),
-};
-
-const requireEnv = (name: string) => {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`${name} is required`);
-  }
-  return value;
-};
-
-const setup = async () => {
-  const providerUrl = requireEnv('PROVIDER_URL');
-  const privateKey = requireEnv('PRIVATE_KEY');
-
-  const provider = await Provider.create(providerUrl);
-  const wallet = Wallet.fromPrivateKey(privateKey, provider);
-  const balance = await wallet.getBalance();
-
-  logger.info(
-    `Setup
-    Provider: ${providerUrl} 
-    Wallet: ${wallet.address.toB256()}
-    Balance: ${balance.format()} ETH`,
-  );
-
-  return { provider, wallet };
-};
+import { logger, setup } from './utils';
 
 const main = async () => {
   const { provider, wallet } = await setup();
