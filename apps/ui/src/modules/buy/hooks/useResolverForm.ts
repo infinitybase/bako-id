@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { useWallet } from '@fuels/react';
-import { useGetProviderRequest } from '../../../hooks/useGetProviderRequest';
-import { isB256 } from 'fuels';
 import { useQuery } from '@tanstack/react-query';
+import { isB256 } from 'fuels';
+import { useGetProviderRequest } from '../../../hooks/useGetProviderRequest';
 
 export type CustomAutocompleteValue = {
   resolver: string;
@@ -50,7 +50,7 @@ export const useResolverForm = () => {
   });
 
   const handleResolverAddressChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = e.target.value;
     setResolverAddress(value);
@@ -66,12 +66,12 @@ export const useResolverForm = () => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (provider && wallet) {
+    if (provider && wallet && !resolverAddress) {
       const address = wallet.address.toB256();
       setResolverAddress(address);
       setValue('resolver', address, { shouldValidate: true });
     }
-  }, [wallet, provider]);
+  }, [wallet, provider, resolverAddress]);
 
   return {
     control,
