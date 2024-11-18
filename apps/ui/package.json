@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@wagmi/connectors": "5.1.7",
+    "@wagmi/core": "2.13.4",
     "@bako-id/sdk": "workspace:*",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
@@ -20,7 +22,6 @@
     "@tanstack/react-query": "^5.59.16",
     "@tanstack/react-router": "^1.77.8",
     "@tanstack/router-devtools": "^1.77.8",
-    "@wagmi/connectors": "5.0.24",
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.11",
     "framer-motion": "^11.3.4",
