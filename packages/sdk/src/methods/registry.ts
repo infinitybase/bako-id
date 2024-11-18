@@ -122,7 +122,12 @@ export class RegistryContract {
 
     if (transactionResult.status === TransactionStatus.success) {
       await OffChainSync.setNew(
-        { domain: domainName, resolver, period },
+        {
+          resolver,
+          period,
+          domain: domainName,
+          owner: this.account.address.toB256(),
+        },
         this.provider,
         transactionId
       );

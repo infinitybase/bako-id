@@ -53,17 +53,17 @@ export const Checkout = (props: CheckoutProps) => {
           >
             {ETH}
           </Button>
-          <Button
-            border="none"
-            w={12}
-            h={7}
-            onClick={() => handleChangeCoin(USD)}
-            bgColor={selectedCoin === USD ? 'button.500' : 'grey.600'}
-            color={selectedCoin === USD ? 'background.900' : 'grey.400'}
-            fontSize="sm"
-          >
-            {USD}
-          </Button>
+          {/*<Button*/}
+          {/*  border="none"*/}
+          {/*  w={12}*/}
+          {/*  h={7}*/}
+          {/*  onClick={() => handleChangeCoin(USD)}*/}
+          {/*  bgColor={selectedCoin === USD ? 'button.500' : 'grey.600'}*/}
+          {/*  color={selectedCoin === USD ? 'background.900' : 'grey.400'}*/}
+          {/*  fontSize="sm"*/}
+          {/*>*/}
+          {/*  {USD}*/}
+          {/*</Button>*/}
         </HStack>
       </HStack>
       <VStack
