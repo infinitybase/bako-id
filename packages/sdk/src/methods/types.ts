@@ -41,4 +41,6 @@ export enum MetadataKeys {
   RES_BLOCK = 'res:block',
 
   AVATAR = 'avatar',
+
+  ENS_DOMAIN = 'ens:domain',
 }

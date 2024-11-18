@@ -1,3 +1,4 @@
+import { MetadataKeys } from '@bako-id/sdk';
 import {
   BioIcon,
   DiscordIcon,
@@ -10,17 +11,17 @@ import {
   UserIcon,
   WebsiteIcon,
 } from '../components/icons/';
-import { MetadataKeys } from './metadataKeys';
 
 export const getMetadataRedirects = (
   key: MetadataKeys,
-  value: string,
+  value: string
 ): string | null => {
   const metaDatas: Partial<Record<MetadataKeys, string>> = {
     'social:x': `https://x.com/${value}`,
     'social:github': `https://github.com/${value}`,
     'social:telegram': `https://t.me/${value}`,
     'contact:website': value,
+    'ens:domain': `https://app.ens.domains/${value}`,
   };
 
   return metaDatas[key] || null;

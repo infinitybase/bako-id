@@ -1,12 +1,12 @@
+import { PlusSquareIcon } from '@chakra-ui/icons';
 import { Button, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import { Card } from '..';
-import { VerifiedAccountInput } from '../inputs/verifiedAccount';
-import { PlusSquareIcon } from '@chakra-ui/icons';
-import { useSidebar } from '../sidebar/hooks/useSidebar';
-import { getMetadataRedirects } from '../../utils/metadatas';
 import type { MetadataKeys } from '../../utils/metadataKeys';
-import { Explorer } from '../helpers/explorer';
+import { getMetadataRedirects } from '../../utils/metadatas';
 import { CopyText } from '../helpers/copy';
+import { Explorer } from '../helpers/explorer';
+import { VerifiedAccountInput } from '../inputs/verifiedAccount';
+import { useSidebar } from '../sidebar/hooks/useSidebar';
 
 interface AccountsCardProps {
   metadata: { key: string; value: string | undefined }[] | undefined;
@@ -51,8 +51,7 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
       <VStack spacing={5}>
         {metadata?.length ? (
           metadata?.map((m) => {
-            const keyAfterColon = m.key.split(':')[1];
-            const variant = { key: keyAfterColon, value: m.value };
+            const variant = { key: m.key as MetadataKeys, value: m.value };
 
             return (
               <VerifiedAccountInput
@@ -63,7 +62,7 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
                 rightAddon
                 rightAddonName={getInputIcon(
                   m.key as MetadataKeys,
-                  m.value ?? '',
+                  m.value ?? ''
                 )}
               />
             );

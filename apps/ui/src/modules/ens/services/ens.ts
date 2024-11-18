@@ -1,3 +1,4 @@
+import { MetadataKeys } from '@bako-id/sdk';
 import { createEnsPublicClient } from '@ensdomains/ensjs';
 import { http } from 'viem';
 import { mainnet } from 'viem/chains';
@@ -34,6 +35,8 @@ export const ensCheckRegister = async (name: string) => {
       mappedResult[metadataKey] = value;
     }
   }
+
+  mappedResult[MetadataKeys.ENS_DOMAIN] = name;
 
   return mappedResult;
 };

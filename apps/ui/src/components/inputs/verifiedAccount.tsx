@@ -1,3 +1,4 @@
+import { MetadataKeys } from '@bako-id/sdk';
 import {
   Box,
   Icon,
@@ -19,6 +20,7 @@ import {
   WebsiteIcon,
 } from '..';
 import { AddIcon } from '../icons/addIcon';
+import { ENSIcon } from '../icons/ensicon.tsx';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
 
 interface CustomInputProps extends InputProps {
@@ -26,7 +28,7 @@ interface CustomInputProps extends InputProps {
   isVerified?: boolean;
   rightAddon: boolean;
   rightAddonName: string | ReactNode;
-  variant: { key: string; value: string | undefined };
+  variant: { key: MetadataKeys; value: string | undefined };
 }
 
 const VerifiedAccountInput = (props: CustomInputProps) => {
@@ -36,7 +38,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
     props;
 
   const variants = {
-    x: {
+    [MetadataKeys.SOCIAL_X]: {
       name: 'X',
       value: props.value,
       icon: TwitterIcon,
@@ -45,7 +47,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
       verify: () => {},
       add: () => {},
     },
-    farcaster: {
+    [MetadataKeys.SOCIAL_FARCASTER]: {
       name: 'Farcaster',
       value: props.value,
       icon: FarcasterIcon,
@@ -54,7 +56,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
       verify: () => {},
       add: () => {},
     },
-    discord: {
+    [MetadataKeys.SOCIAL_DISCORD]: {
       name: 'Discord',
       value: props.value,
       icon: DiscordIcon,
@@ -63,7 +65,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
       verify: () => {},
       add: () => {},
     },
-    github: {
+    [MetadataKeys.SOCIAL_GITHUB]: {
       name: 'Github',
       value: props.value,
       icon: GithubIcon,
@@ -72,7 +74,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
       verify: () => {},
       add: () => {},
     },
-    location: {
+    [MetadataKeys.CONTACT_LOCATION]: {
       name: 'Location',
       value: props.value,
       icon: LocationIcon,
@@ -81,7 +83,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
       verify: () => {},
       add: () => {},
     },
-    website: {
+    [MetadataKeys.CONTACT_WEBSITE]: {
       name: 'Website',
       value: props.value,
       icon: WebsiteIcon,
@@ -90,7 +92,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
       verify: () => {},
       add: () => {},
     },
-    telegram: {
+    [MetadataKeys.SOCIAL_TELEGRAM]: {
       name: 'Telegram',
       value: props.value,
       icon: TelegramIcon,
@@ -99,12 +101,21 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
       verify: () => {},
       add: () => {},
     },
-    email: {
+    [MetadataKeys.CONTACT_EMAIL]: {
       name: 'Email',
       value: props.value,
       icon: MailIcon,
       color: 'white',
       bgColor: '#F05D48',
+      verify: () => {},
+      add: () => {},
+    },
+    [MetadataKeys.ENS_DOMAIN]: {
+      name: 'ENS',
+      value: props.value,
+      icon: ENSIcon,
+      color: 'white',
+      bgColor: '#0080BC',
       verify: () => {},
       add: () => {},
     },
