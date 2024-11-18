@@ -51,12 +51,12 @@ export default async function handler(
     },
     records: {
       ...resolverData?.records,
-      [params.resolver]: [
-        ...(resolverData?.records?.[params.resolver] || []),
+      [params.owner]: [
+        ...(resolverData?.records?.[params.owner] || []),
         {
           name: params.domain,
           resolver: params.resolver,
-          owner: params.resolver,
+          owner: params.owner,
           assetId: r.mintedAssets[0].assetId,
         },
       ],

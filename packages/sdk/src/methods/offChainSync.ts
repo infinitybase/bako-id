@@ -59,7 +59,7 @@ export class OffChainSync {
    * @returns {Promise<void>} A promise that resolves when the data is set.
    */
   static async setNew(
-    params: RegisterPayload,
+    params: RegisterPayload & { owner: string },
     provider: Provider,
     tx_id: string
   ): Promise<void> {
@@ -84,9 +84,15 @@ export class OffChainSync {
    * @returns {Promise<OffChainData>} A promise that resolves to the off-chain data.
    */
   private static async getJsonFile(chainId: number): Promise<OffChainData> {
-    return await fetch(
-      `${OFF_CHAIN_DATA_URL}/${chainId}/${RESOLVER_FILENAME}`
-    ).then((res) => res.json());
+    const timestamp = new Date().getTime();
+    const url = `${OFF_CHAIN_DATA_URL}/${chainId}/${RESOLVER_FILENAME}?_=${timestamp}`;
+    return await fetch(url, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        Pragma: 'no-cache',
+        Expires: '0',
+      },
+    }).then((res) => res.json());
   }
 
   /**
