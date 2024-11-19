@@ -7,15 +7,15 @@ import {
   Heading,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useProvider } from '@fuels/react';
 import { Card } from '..';
 import { useToken } from '../../../hooks/useToken';
 import { useProfile } from '../../../modules/profile/hooks/useProfile';
+import { ExplorerTypes } from '../../../types';
+import { getExplorer } from '../../../utils/getExplorer';
 import { ExploreIcon } from '../../icons/explore';
 import { ActionDomainModal } from '../../modal/actionDomainModal';
 import { TokenBody } from './tokenBody';
-import { getExplorer } from '../../../utils/getExplorer';
-import { useProvider } from '@fuels/react';
-import { ExplorerTypes } from '../../../types';
 
 export const TokenCard = () => {
   const { token } = useToken();
@@ -45,7 +45,7 @@ export const TokenCard = () => {
               // isDisabled={!isMyDomain}
               onClick={() =>
                 window.open(
-                  `${explorerUrl}/account/${domain}${ExplorerTypes.ASSETS}`,
+                  `${explorerUrl}/account/${domain?.Address?.bits ?? domain?.ContractId?.bits}${ExplorerTypes.ASSETS}`
                 )
               }
             >
