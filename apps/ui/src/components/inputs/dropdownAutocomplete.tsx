@@ -84,7 +84,7 @@ export const DropdownAutocomplete = (props: IAutocomplete) => {
               sx={{ _placeholder: { color: 'grey.200' } }}
               {...props}
             />
-            <FormLabel>Search for an available Handles</FormLabel>
+            <FormLabel>Search for an available Handle</FormLabel>
 
             {!inputValue && (
               <InputRightElement h={12}>
