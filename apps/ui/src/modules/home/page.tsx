@@ -43,7 +43,7 @@ export const Home = () => {
               fontSize={{ base: 24, md: 32, lg: 32, xl: 32 }}
               gap={2}
             >
-              Search new Handles
+              Search new Handle
             </Text>
 
             <Text fontSize="sm" color="section.200">
