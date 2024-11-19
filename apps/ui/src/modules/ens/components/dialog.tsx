@@ -28,6 +28,8 @@ import { type MetadataKeyValue, useMetadata } from '../../../hooks/useMetadata';
 import { useENSForm } from '../hooks/useENSForm';
 import { ENSMetadataKeys } from '../services';
 import { NSAutocomplete } from './autocomplete';
+import { useNavigate } from '@tanstack/react-router';
+import { useProfile } from '../../profile/hooks/useProfile';
 
 const ensMetadata = {
   [ENSMetadataKeys.AVATAR]: {
@@ -159,12 +161,15 @@ export const NSDialog = ({ isOpen, onClose, ...rest }: NSDialogProps) => {
     setEnsName,
     setInputValue,
   } = useENSForm();
+  const navigate = useNavigate();
+  const { domainParam } = useProfile();
 
   const handleOnSuccess = () => {
     onClose();
     setUpdatedMetadata([]);
     setEnsName('');
     setInputValue('');
+    navigate({ to: `/profile/${domainParam}` });
   };
 
   const { handleSaveRequest, setUpdatedMetadata } =
