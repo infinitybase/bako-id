@@ -10,8 +10,9 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useProvider, useWallet } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
-import { bn, type TransactionResult } from 'fuels';
+import { type TransactionResult, bn } from 'fuels';
 import { TwitterShareButton } from 'react-share';
 import {
   CheckoutCard,
@@ -22,11 +23,10 @@ import {
 import { TransactionsDetailsButton } from '../../components/buttons/transactionsDetailsButton';
 import { ViewOnExplorerButton } from '../../components/buttons/viewOnExploreButton';
 import { TransactionDomainDetailsModal } from '../../components/modal/transactionDetails';
+import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
 import { useScreenSize } from '../../hooks/useScreenSize';
 import { calculatePeriodYears } from '../../utils/calculator';
-import { useProvider, useWallet } from '@fuels/react';
 import { getExplorer } from '../../utils/getExplorer';
-import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
 
 interface IPurchased {
   domain: string;
@@ -51,7 +51,7 @@ export const Purchased = ({
   const year = calculatePeriodYears(dates?.timestamp, dates?.gracePeriod);
 
   const mainOperation = transaction.operations.find(
-    (op) => op.assetsSent && op.from?.address === wallet?.address.toB256(),
+    (op) => op.assetsSent && op.from?.address === wallet?.address.toB256()
   );
 
   const totalAmountPaidForNFT =
@@ -103,7 +103,7 @@ export const Purchased = ({
               Congratulations
             </Heading>
             <Text color="section.200" fontSize={['sm', 'md']}>
-              Now you are the owner of this Handles.
+              Now you are the owner of this Handle.
             </Text>
           </Box>
         </CardHeader>
