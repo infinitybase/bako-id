@@ -12,7 +12,10 @@ import { bn } from 'fuels';
 import type { UseBuyReturn } from '../../modules/buy/hooks';
 import { Coin } from '../../types';
 
-const { ETH, USD } = Coin;
+const {
+  ETH,
+  // USD
+} = Coin;
 
 interface CheckoutProps extends UseBuyReturn {}
 
