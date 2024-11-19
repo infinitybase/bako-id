@@ -103,7 +103,7 @@ export const Purchased = ({
               Congratulations
             </Heading>
             <Text color="section.200" fontSize={['sm', 'md']}>
-              Now you are the owner of this Handles.
+              Now you are the owner of this Handle.
             </Text>
           </Box>
         </CardHeader>

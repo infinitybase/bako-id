@@ -132,7 +132,7 @@ export const Autocomplete = (props: IAutocomplete) => {
               )}
             />
             <FormLabel isTruncated fontWeight="normal" maxW="80%" fontSize="sm">
-              Search for an available Handles
+              Search for an available Handle
             </FormLabel>
 
             <Flex
