@@ -58,7 +58,7 @@ export const Autocomplete = (props: IAutocomplete) => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const forbiddenCharacters = /[^a-zA-Z0-9-_]/g; // Special characters except letters, numbers, hyphens, and underscores
+    const forbiddenCharacters = /[^a-zA-Z0-9_]/g; // Special characters except letters, numbers, and underscores
     const hasForbiddenCharacters = forbiddenCharacters.test(
       e.target.value.replace('@', ''), // Ignores first '@'
     );
