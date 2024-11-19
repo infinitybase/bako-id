@@ -70,13 +70,28 @@ export const Purchased = ({
   return (
     <Box
       w="full"
-      h="full"
       display="flex"
       alignItems="center"
       mt={[12, 6, 0, 0]}
       gap={[12, 5, 5, 5]}
       mb={[0, 0, 'auto', 0]}
       flexDirection="column"
+      h="80vh"
+      overflowY="scroll"
+      sx={{
+        '&::-webkit-scrollbar': {
+          display: 'none',
+          width: '6px',
+          maxHeight: '330px',
+          backgroundColor: 'grey.900',
+          borderRadius: '30px',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: 'button.500',
+          borderRadius: '30px',
+          height: '10px',
+        },
+      }}
     >
       {!isMobile && <GoBack />}
       <Card
@@ -89,6 +104,7 @@ export const Purchased = ({
         alignSelf="center"
         display="flex"
         flexDir="column"
+        minH={630}
       >
         <CardHeader>
           <Box

@@ -20,7 +20,7 @@ export const BakoSafeBanner = (props: BakoSafeBannerProps) => {
     <Box
       w="full"
       bgColor="input.600"
-      borderRadius="xl"
+      borderRadius="lg"
       display="flex"
       alignItems="center"
       justifyContent="center"
@@ -34,7 +34,7 @@ export const BakoSafeBanner = (props: BakoSafeBannerProps) => {
     >
       <Flex gap={2} w="75%" flexDir="column">
         <Icon color="black" as={props.icon} h={12} w={32} />
-        <Text w="full" fontSize="sm" color="section.200" whiteSpace="pretty">
+        <Text w="full" fontSize="xs" color="section.200" whiteSpace="pretty">
           The ultimate Multisig Wallet experience
         </Text>
       </Flex>

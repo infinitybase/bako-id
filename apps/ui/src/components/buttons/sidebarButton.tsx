@@ -26,9 +26,7 @@ export const SidebarButton = ({
 }: SidebarButtonProps) => {
   const { domain } = useParams({ strict: false });
   const navigate = useNavigate();
-
   const href = window.location.pathname;
-  const samePath = href.includes(title.toLowerCase());
 
   const handleChangeRoute = (route: string) => {
     setActive(route);
@@ -44,10 +42,12 @@ export const SidebarButton = ({
   };
 
   useEffect(() => {
+    const samePath = href.includes(title.toLowerCase());
+
     if (samePath) {
       setActive(title);
     }
-  }, [title, setActive, samePath]);
+  }, [title, setActive, href]);
 
   return (
     <Button
