@@ -1,5 +1,5 @@
 import { isValidDomain } from '@bako-id/sdk';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDomain } from '../../../hooks';
 import type { Domains } from '../../../types';
 
@@ -13,13 +13,27 @@ export enum Coin {
   ETH = 'ETH',
 }
 
+const assetIds = {
+  [Coin.USD]:
+    '0xc26c91055de37528492e7e97d91c6f4abe34aae26f2c4d25cff6bfe45b5dc9a9',
+};
+
 export const useBuy = () => {
   const { successToast } = useCustomToast();
   const { domain } = useParams({ strict: false });
   const { wallet } = useWallet();
-  const { balance: walletBalance, isLoading: isLoadingBalance } = useBalance({
+
+  const { balance: walletBalance, isLoading: loadingEthBalance } = useBalance({
     account: wallet?.address.toAddress(),
   });
+
+  const { balance: usdcBalance, isLoading: loadingUsdcBalance } = useBalance({
+    account: wallet?.address.toAddress(),
+    assetId: assetIds[Coin.USD],
+  });
+
+  const isLoadingBalance = loadingEthBalance || loadingUsdcBalance;
+
   const { registerDomain, resolveDomain } = useDomain(domain);
   const [selectedCoin, setSelectedCoin] = useState<Coin>(Coin.ETH);
   const [signInLoad, setSignInLoad] = useState<boolean>(false);
@@ -88,6 +102,15 @@ export const useBuy = () => {
     setSelectedCoin(coin);
   };
 
+  const insufficientBalance = useMemo(() => {
+    const balance = {
+      [Coin.ETH]: Number(walletBalance?.format()),
+      [Coin.USD]: Number(usdcBalance?.formatUnits(6)),
+    };
+
+    return balance[selectedCoin] < Number(totalPrice.format());
+  }, [selectedCoin, totalPrice, walletBalance, usdcBalance]);
+
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
 
@@ -113,6 +136,7 @@ export const useBuy = () => {
     signInLoad,
     walletBalance,
     isLoadingBalance,
+    insufficientBalance,
     formatCoin,
     handleChangeCoin,
     handleConfirmDomain,

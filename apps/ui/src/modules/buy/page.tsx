@@ -43,7 +43,7 @@ export const Buy = () => {
     handleBuyDomain,
     isLoadingBalance,
     signInLoad,
-    walletBalance,
+    insufficientBalance,
     registerDomain,
     domain,
     signProgress,
@@ -71,7 +71,7 @@ export const Buy = () => {
       signInLoad={signInLoad}
       totalPrice={totalPrice}
       wallet={!!wallet}
-      walletBalance={walletBalance}
+      insufficientBalance={insufficientBalance!}
       isDisabled={
         !!errors.resolver?.message ||
         !isValid ||
@@ -181,7 +181,7 @@ export const Buy = () => {
         </CardBody>
         <BuyError
           totalPrice={totalPrice}
-          walletBalance={walletBalance}
+          insufficientBalance={insufficientBalance!}
           buyError={buyError}
           selectedCoin={buy.selectedCoin}
         />

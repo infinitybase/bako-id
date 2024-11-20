@@ -5,7 +5,7 @@ import type { Coin } from '../../types';
 
 interface IBuyErrorProps extends BoxProps {
   buyError?: string;
-  walletBalance: BN | null;
+  insufficientBalance: boolean;
   totalPrice: BN;
   selectedCoin: Coin;
 }
@@ -13,7 +13,7 @@ interface IBuyErrorProps extends BoxProps {
 export const BuyError = ({
   totalPrice,
   buyError,
-  walletBalance,
+  insufficientBalance,
   selectedCoin,
 }: IBuyErrorProps) => {
   return (
@@ -36,7 +36,7 @@ export const BuyError = ({
         </Box>
       )}
 
-      {walletBalance?.lt(totalPrice) && !buyError && (
+      {insufficientBalance && !buyError && (
         <Box
           w="full"
           h={10}
@@ -49,7 +49,7 @@ export const BuyError = ({
         >
           <Flex h="full" align="center" ml={4} gap={2}>
             <ErrorIcon w={4} h={4} />
-            {walletBalance?.lt(totalPrice) && (
+            {insufficientBalance && (
               <Text>
                 You need at least {totalPrice.format()} {selectedCoin} to buy
                 this domain.

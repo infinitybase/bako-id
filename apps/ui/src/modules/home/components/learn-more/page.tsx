@@ -5,9 +5,7 @@ import {
   Flex,
   Heading,
   Link,
-  ListItem,
   Text,
-  UnorderedList,
   VStack,
 } from '@chakra-ui/react';
 import { Card, GoBack } from '../../../../components';
@@ -79,7 +77,7 @@ export const LearnMore = () => {
                 </CardBody>
               </Card>
             </Flex>
-            <Flex direction="column" gap={3} w="full">
+            {/* <Flex direction="column" gap={3} w="full">
               <Heading fontSize="lg">
                 How do I get a free or discounted Handle?
               </Heading>
@@ -95,7 +93,7 @@ export const LearnMore = () => {
                   </UnorderedList>
                 </CardBody>
               </Card>
-            </Flex>
+            </Flex> */}
             <Flex direction="column" gap={3} w="full">
               <Heading fontSize="lg">How can I use my Handle?</Heading>
               <Card w="full">
