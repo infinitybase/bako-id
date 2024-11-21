@@ -62,13 +62,13 @@ export class BakoIDClient {
   /**
    * Creates an instance of BakoIDClient.
    * @param {Provider | string} provider - The provider instance or URL.
-   * @param {string} [apiURL=API_URL] - The API URL.
+   * @param {string} [apiURL] - The API URL.
    */
-  constructor(provider: Provider | string, apiURL: string = API_URL!) {
+  constructor(provider: Provider | string, apiURL?: string) {
     const providerUrl = typeof provider === 'string' ? provider : provider.url;
     this.network = resolveNetwork(providerUrl);
     this.httpClient = httpClient({
-      url: apiURL,
+      url: apiURL ?? API_URL!,
       network: this.network,
     });
   }
