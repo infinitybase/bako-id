@@ -304,6 +304,31 @@ describe('[METHODS] Registry Contract', () => {
     const { contract: manager } = await managerDeploy.waitForResult();
     const { contract: registry } = await registryDeploy.waitForResult();
 
+    const nftCall = await nft.functions
+      .constructor(
+        { Address: { bits: owner.address.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
+      )
+      .call();
+    await nftCall.waitForResult();
+
+    const registerCall = await registry.functions
+      .constructor(
+        { bits: owner.address.toB256() },
+        { bits: manager.id.toB256() },
+        { bits: nft.id.toB256() }
+      )
+      .call();
+    await registerCall.waitForResult();
+
+    const managerCall = await manager.functions
+      .constructor(
+        { Address: { bits: owner.address.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
+      )
+      .call();
+    await managerCall.waitForResult();
+
     let { value: isPaused } = await registry.functions.is_paused().get();
     expect(isPaused).toBe(false);
 
@@ -312,6 +337,24 @@ describe('[METHODS] Registry Contract', () => {
 
     ({ value: isPaused } = await registry.functions.is_paused().get());
     expect(isPaused).toBe(true);
+
+    await expect(async () => {
+      const registerCallFn = await registry.functions
+        .register(
+          '@domainn',
+          { Address: { bits: owner.address.toB256() } },
+          bn(1)
+        )
+        .addContracts([manager, nft])
+        .callParams({
+          forward: {
+            assetId: node.provider.getBaseAssetId(),
+            amount: domainPrices('@domainn'),
+          },
+        })
+        .call();
+      await registerCallFn.waitForResult();
+    }).rejects.toThrow(/Paused/);
   });
 
   it.each(['@invalid-!@#%$!', 'my@asd.other', '@MYHanDLE'])(

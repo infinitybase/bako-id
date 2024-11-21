@@ -1,7 +1,7 @@
-jest.mock('../methods/offChainSync', () => {
-  const { OffChainSyncMock } = require('../test/mocks/offChainSync');
+jest.mock('../methods/client', () => {
+  const { BakoIDClientMock } = require('../test/mocks/client');
   return {
-    OffChainSync: OffChainSyncMock,
+    BakoIDClient: BakoIDClientMock,
   };
 });
 
@@ -15,7 +15,7 @@ import { WalletUnlocked, getRandomB256, hashMessage } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
 import { RegistryContract } from '../index';
 import { InvalidDomainError, NotFoundBalanceError, randomName } from '../utils';
-import { OffChainSync } from './offChainSync';
+import { BakoIDClient } from './client';
 import { MetadataKeys } from './types';
 
 jest.mock('@bako-id/contracts', () => ({
@@ -107,13 +107,13 @@ describe('Test Registry', () => {
       wallets: [wallet],
     } = node;
     const contract = new RegistryContract(registry.id.toB256(), wallet);
-    const sync = await OffChainSync.create(wallet.provider);
+    const sync = new BakoIDClient(wallet.provider);
 
     const resolver = wallet.address.toB256();
     const domain = `bako_${randomName(3)}`;
 
-    expect(sync.getDomain(resolver)).toBeUndefined();
-    expect(sync.getResolver(domain)).toBeUndefined();
+    expect(await sync.name(resolver)).toBeNull();
+    expect(await sync.resolver(domain)).toBeNull();
 
     const result = await contract.register({
       domain,
@@ -122,13 +122,11 @@ describe('Test Registry', () => {
     });
     const mintedToken = result.transactionResult.mintedAssets[0];
 
-    await sync.syncData();
-
     expect(mintedToken).toBeDefined();
     expect(mintedToken.subId).toBe(hashMessage(domain));
-    expect(sync.getDomain(resolver)).toBe(domain);
-    expect(sync.getResolver(domain)).toBe(resolver);
-    expect(sync.getRecords(resolver).length).toBe(1);
+    expect(await sync.name(resolver)).toBe(domain);
+    expect(await sync.resolver(domain)).toBe(resolver);
+    expect(await sync.records(resolver)).toHaveLength(1);
 
     const { image } = await contract.token(domain);
     expect(image).toBeDefined();
@@ -172,7 +170,7 @@ describe('Test Registry', () => {
     } = node;
     const contract = new RegistryContract(registry.id.toB256(), wallet);
 
-    const sync = await OffChainSync.create(wallet.provider);
+    const sync = new BakoIDClient(wallet.provider);
     const domain1 = `bako_${randomName(3)}`;
     const domain2 = `bako_${randomName(3)}`;
     const resolver = getRandomB256();
@@ -184,12 +182,10 @@ describe('Test Registry', () => {
 
     const mintedToken_1 = result1.transactionResult.mintedAssets[0];
 
-    await sync.syncData();
-
     expect(mintedToken_1).toBeDefined();
-    expect(sync.getRecords(resolver).length).toBe(1);
-    expect(sync.getDomain(resolver)).toBe(domain1);
-    expect(sync.getResolver(domain1)).toBe(resolver);
+    expect(await sync.records(resolver)).toHaveLength(1);
+    expect(await sync.name(resolver)).toBe(domain1);
+    expect(await sync.resolver(domain1)).toBe(resolver);
     expect(mintedToken_1.subId).toBe(hashMessage(domain1));
 
     const result2 = await contract.register({
@@ -197,15 +193,12 @@ describe('Test Registry', () => {
       period: 1,
       resolver,
     });
-
-    await sync.syncData();
-
     const mintedToken_2 = result2.transactionResult.mintedAssets[0];
 
     expect(mintedToken_2).toBeDefined();
-    expect(sync.getDomain(resolver)).toBe(domain1);
-    expect(sync.getRecords(resolver).length).toBe(2);
-    expect(sync.getResolver(domain2)).toBe(resolver);
+    expect(await sync.name(resolver)).toBe(domain1);
+    expect(await sync.records(resolver)).toHaveLength(2);
+    expect(await sync.resolver(domain2)).toBe(resolver);
     expect(mintedToken_2.subId).toBe(hashMessage(domain2));
   });
 

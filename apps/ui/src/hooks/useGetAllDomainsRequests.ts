@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { OffChainSync } from '@bako-id/sdk';
+import { BakoIDClient } from '@bako-id/sdk';
 import { useWallet } from '@fuels/react';
 import { ZeroBytes32 } from 'fuels';
 
@@ -11,11 +11,11 @@ const useGetAllDomainRequests = () => {
   return useQuery({
     queryKey: ['getAllDomains', wallet?.address.toB256() ?? ZeroBytes32],
     queryFn: async () => {
-      const sync = await OffChainSync.create(wallet!.provider);
-      const walletAddress = wallet!.address.toB256();
-      const records = sync.getRecords(walletAddress);
-
-      return records;
+      const bakoIDClient = new BakoIDClient(
+        wallet!.provider,
+        import.meta.env.VITE_API_URL
+      );
+      return bakoIDClient.records(wallet!.address.toB256());
     },
     enabled: !!wallet,
   });

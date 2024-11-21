@@ -18,7 +18,7 @@ import {
   domainPrices,
   getFakeAccount,
 } from '../utils';
-import { OffChainSync } from './offChainSync';
+import { BakoIDClient } from './client';
 import { MetadataKeys } from './types';
 
 export type RegisterPayload = {
@@ -66,6 +66,7 @@ export class RegistryContract {
   private managerContract: Manager;
   private account: Account | undefined;
   private provider: Provider;
+  private bakoIDClient: BakoIDClient;
 
   constructor(id: string, accountOrProvider: Account | Provider) {
     if ('address' in accountOrProvider && !!accountOrProvider.address) {
@@ -84,6 +85,7 @@ export class RegistryContract {
       getContractId(this.provider.url, 'manager'),
       accountOrProvider
     );
+    this.bakoIDClient = new BakoIDClient(this.provider);
   }
 
   static create(accountOrProvider: Account | Provider) {
@@ -121,16 +123,13 @@ export class RegistryContract {
       await registerCall.waitForResult();
 
     if (transactionResult.status === TransactionStatus.success) {
-      await OffChainSync.setNew(
-        {
-          resolver,
-          period,
-          domain: domainName,
-          owner: this.account.address.toB256(),
-        },
-        this.provider,
-        transactionId
-      );
+      await this.bakoIDClient.register({
+        period,
+        resolver,
+        transactionId,
+        domain: domainName,
+        owner: this.account.address.toB256(),
+      });
     }
 
     return {
