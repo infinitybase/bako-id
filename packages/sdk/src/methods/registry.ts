@@ -18,7 +18,7 @@ import {
   domainPrices,
   getFakeAccount,
 } from '../utils';
-import { BakoIDClient } from './client';
+import type { BakoIDClient } from './client';
 import { MetadataKeys } from './types';
 
 export type RegisterPayload = {
@@ -68,7 +68,11 @@ export class RegistryContract {
   private provider: Provider;
   private bakoIDClient: BakoIDClient;
 
-  constructor(id: string, accountOrProvider: Account | Provider) {
+  constructor(
+    id: string,
+    accountOrProvider: Account | Provider,
+    bakoIDClient: BakoIDClient
+  ) {
     if ('address' in accountOrProvider && !!accountOrProvider.address) {
       this.account = accountOrProvider;
       this.provider = accountOrProvider.provider;
@@ -85,10 +89,13 @@ export class RegistryContract {
       getContractId(this.provider.url, 'manager'),
       accountOrProvider
     );
-    this.bakoIDClient = new BakoIDClient(this.provider);
+    this.bakoIDClient = bakoIDClient;
   }
 
-  static create(accountOrProvider: Account | Provider) {
+  static create(
+    accountOrProvider: Account | Provider,
+    bakoIDClient: BakoIDClient
+  ) {
     let provider: Provider;
 
     if (accountOrProvider instanceof Account) {
@@ -98,7 +105,7 @@ export class RegistryContract {
     }
 
     const contractId = getContractId(provider.url, 'registry');
-    return new RegistryContract(contractId, accountOrProvider);
+    return new RegistryContract(contractId, accountOrProvider, bakoIDClient);
   }
 
   async register(params: RegisterPayload) {

@@ -91,7 +91,11 @@ describe('Test Registry', () => {
         contracts: [registry],
         wallets: [wallet],
       } = node;
-      const contract = new RegistryContract(registry.id.toB256(), wallet);
+      const contract = new RegistryContract(
+        registry.id.toB256(),
+        wallet,
+        new BakoIDClient(wallet.provider)
+      );
       const invalidSuffix = contract.register({
         domain,
         period: 1,
@@ -106,14 +110,14 @@ describe('Test Registry', () => {
       contracts: [registry],
       wallets: [wallet],
     } = node;
-    const contract = new RegistryContract(registry.id.toB256(), wallet);
-    const sync = new BakoIDClient(wallet.provider);
+    const client = new BakoIDClient(wallet.provider);
+    const contract = new RegistryContract(registry.id.toB256(), wallet, client);
 
     const resolver = wallet.address.toB256();
     const domain = `bako_${randomName(3)}`;
 
-    expect(await sync.name(resolver)).toBeNull();
-    expect(await sync.resolver(domain)).toBeNull();
+    expect(await client.name(resolver)).toBeNull();
+    expect(await client.resolver(domain)).toBeNull();
 
     const result = await contract.register({
       domain,
@@ -124,9 +128,9 @@ describe('Test Registry', () => {
 
     expect(mintedToken).toBeDefined();
     expect(mintedToken.subId).toBe(hashMessage(domain));
-    expect(await sync.name(resolver)).toBe(domain);
-    expect(await sync.resolver(domain)).toBe(resolver);
-    expect(await sync.records(resolver)).toHaveLength(1);
+    expect(await client.name(resolver)).toBe(domain);
+    expect(await client.resolver(domain)).toBe(resolver);
+    expect(await client.records(resolver)).toHaveLength(1);
 
     const { image } = await contract.token(domain);
     expect(image).toBeDefined();
@@ -145,7 +149,8 @@ describe('Test Registry', () => {
       [MetadataKeys.LINK_BLOG]: 'https://random.com',
     };
 
-    const contract = new RegistryContract(registry.id.toB256(), wallet);
+    const client = new BakoIDClient(wallet.provider);
+    const contract = new RegistryContract(registry.id.toB256(), wallet, client);
 
     const resolver = wallet.address.toB256();
     const domain = `bako_${randomName(3)}`;
@@ -168,7 +173,8 @@ describe('Test Registry', () => {
       contracts: [registry],
       wallets: [wallet],
     } = node;
-    const contract = new RegistryContract(registry.id.toB256(), wallet);
+    const client = new BakoIDClient(wallet.provider);
+    const contract = new RegistryContract(registry.id.toB256(), wallet, client);
 
     const sync = new BakoIDClient(wallet.provider);
     const domain1 = `bako_${randomName(3)}`;
@@ -207,7 +213,8 @@ describe('Test Registry', () => {
       contracts: [registry],
       wallets: [wallet],
     } = node;
-    const contract = new RegistryContract(registry.id.toB256(), wallet);
+    const client = new BakoIDClient(wallet.provider);
+    const contract = new RegistryContract(registry.id.toB256(), wallet, client);
     const result = await contract.register({
       domain: `bako_${randomName(3)}`,
       period: 1,
@@ -223,7 +230,8 @@ describe('Test Registry', () => {
     } = node;
 
     const wallet = WalletUnlocked.generate({ provider });
-    const contract = new RegistryContract(registry.id.toB256(), wallet);
+    const client = new BakoIDClient(wallet.provider);
+    const contract = new RegistryContract(registry.id.toB256(), wallet, client);
     const registerResult = contract.register({
       domain: `bako_${randomName(3)}`,
       period: 1,
@@ -241,7 +249,8 @@ describe('Test Registry', () => {
     } = node;
 
     const domain = randomName();
-    const contract = new RegistryContract(registry.id.toB256(), wallet);
+    const client = new BakoIDClient(wallet.provider);
+    const contract = new RegistryContract(registry.id.toB256(), wallet, client);
     await contract.register({
       domain,
       period: 1,
@@ -253,7 +262,8 @@ describe('Test Registry', () => {
 
     const contractWithoutAccount = new RegistryContract(
       registry.id.toB256(),
-      provider
+      provider,
+      client
     );
 
     const { fee, price } = await contractWithoutAccount.simulate({
@@ -294,7 +304,8 @@ describe('Test Registry', () => {
 
     const domain = randomName();
     const period = 1;
-    const contract = new RegistryContract(registry.id.toB256(), wallet);
+    const client = new BakoIDClient(wallet.provider);
+    const contract = new RegistryContract(registry.id.toB256(), wallet, client);
     const {
       transactionResult: { date },
     } = await contract.register({
