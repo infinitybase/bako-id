@@ -29,12 +29,21 @@ export const useCheckoutPrice = (domains: Domains, selectedCoin: Coin) => {
     return selectedCoin === Coin.USD ? USDPrice : ETHPrice;
   }, [domains, simulateHandle.data, usdPrice, selectedCoin]);
 
+  const totalPriceETH = useMemo(() => {
+    if (!domains || !simulateHandle.data) return bn(0);
+
+    const { fee, price } = simulateHandle.data;
+    const ETHPrice = price.add(fee);
+
+    return ETHPrice;
+  }, [domains, simulateHandle.data]);
+
   const domainPrice = useMemo(() => {
     if (!domains) return bn(0);
 
     return selectedCoin === Coin.USD
       ? domainPrices(domains.name.replace('@', ''), domains.period).mul(
-          usdPrice
+          usdPrice,
         )
       : domainPrices(domains.name.replace('@', ''), domains.period);
   }, [domains, selectedCoin, usdPrice]);
@@ -57,6 +66,7 @@ export const useCheckoutPrice = (domains: Domains, selectedCoin: Coin) => {
 
   return {
     totalPrice,
+    totalPriceETH,
     domainPrice,
     fee,
     formatCoin,

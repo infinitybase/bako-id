@@ -7,11 +7,13 @@ interface IBuyErrorProps extends BoxProps {
   buyError?: string;
   walletBalance: BN | null;
   totalPrice: BN;
+  totalPriceETH: BN;
   selectedCoin: Coin;
 }
 
 export const BuyError = ({
   totalPrice,
+  totalPriceETH,
   buyError,
   walletBalance,
   selectedCoin,
@@ -36,7 +38,7 @@ export const BuyError = ({
         </Box>
       )}
 
-      {walletBalance?.lt(totalPrice) && !buyError && (
+      {walletBalance?.lt(totalPriceETH) && !buyError && (
         <Box
           w="full"
           h={10}
@@ -49,7 +51,7 @@ export const BuyError = ({
         >
           <Flex h="full" align="center" ml={4} gap={2}>
             <ErrorIcon w={4} h={4} />
-            {walletBalance?.lt(totalPrice) && (
+            {walletBalance?.lt(totalPriceETH) && (
               <Text>
                 You need at least {totalPrice.format()} {selectedCoin} to buy
                 this domain.
