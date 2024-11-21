@@ -4,7 +4,7 @@ import type { OffChainData } from '@bako-id/sdk';
 import { Provider, TransactionResponse, hashMessage } from 'fuels';
 import { type NextRequest, NextResponse } from 'next/server';
 
-export async function POST(req: NextRequest, _res: NextResponse) {
+export async function POST(req: NextRequest) {
   const FILENAME = 'resolver.json';
 
   const { params, provider, tx_id } = await req.json();

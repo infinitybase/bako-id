@@ -3,7 +3,7 @@ import { validateNetwork } from '@/utils';
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { type NextRequest, NextResponse } from 'next/server';
 
-export async function GET(req: NextRequest, _res: NextResponse) {
+export async function GET(req: NextRequest) {
   const [network, , addr] = req.nextUrl.pathname.split('/').filter((a) => !!a);
 
   try {
