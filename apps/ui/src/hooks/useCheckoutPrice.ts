@@ -59,7 +59,14 @@ export const useCheckoutPrice = (domains: Domains, selectedCoin: Coin) => {
   const formatCoin = (value: BN, selectedCoin: Coin) => {
     if (!value) return '--.--';
 
-    const formatted = value.format({ precision: 7 });
+    let formatted = value.format({ precision: 7 });
+
+    if (selectedCoin === Coin.USD) {
+      formatted = Number(formatted).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+    }
 
     return `${formatted} ${coinSymbol[selectedCoin]}`;
   };
