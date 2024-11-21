@@ -389,7 +389,7 @@ const ModalFiltersTabs = ({
     return 420;
   };
 
-  const showEmptyState = (category: MetadataItem[]) => {
+  const isEmpty = (category: MetadataItem[]) => {
     const cases = {
       added:
         filters === FilterButtonTypes.ADDED &&
@@ -432,32 +432,36 @@ const ModalFiltersTabs = ({
         }}
       >
         <TabPanel w="full" h="full" px={0}>
-          {showEmptyState([...Metadatas.General, ...Metadatas.Social]) ? (
+          {isEmpty([...Metadatas.General, ...Metadatas.Social]) ? (
             <ModalEmptyState />
           ) : (
             <>
-              <MetadataTabPanel
-                title="General"
-                updates={updates}
-                metadatas={Metadatas.General}
-                userMetadata={userMetadata}
-                setUpdates={setUpdates}
-                filters={filters}
-              />
+              {!isEmpty(Metadatas.General) && (
+                <MetadataTabPanel
+                  title="General"
+                  updates={updates}
+                  metadatas={Metadatas.General}
+                  userMetadata={userMetadata}
+                  setUpdates={setUpdates}
+                  filters={filters}
+                />
+              )}
 
-              <MetadataTabPanel
-                title="Social"
-                updates={updates}
-                metadatas={Metadatas.Social}
-                userMetadata={userMetadata}
-                setUpdates={setUpdates}
-                filters={filters}
-              />
+              {!isEmpty(Metadatas.Social) && (
+                <MetadataTabPanel
+                  title="Social"
+                  updates={updates}
+                  metadatas={Metadatas.Social}
+                  userMetadata={userMetadata}
+                  setUpdates={setUpdates}
+                  filters={filters}
+                />
+              )}
             </>
           )}
         </TabPanel>
         <TabPanel w="full" h="full" px={0}>
-          {showEmptyState(Metadatas.Social) ? (
+          {isEmpty(Metadatas.Social) ? (
             <ModalEmptyState />
           ) : (
             <MetadataTabPanel
@@ -471,7 +475,7 @@ const ModalFiltersTabs = ({
           )}
         </TabPanel>
         <TabPanel w="full" h="full" px={0}>
-          {showEmptyState(Metadatas.Address) ? (
+          {isEmpty(Metadatas.Address) ? (
             <ModalEmptyState />
           ) : (
             <MetadataTabPanel
@@ -485,7 +489,7 @@ const ModalFiltersTabs = ({
           )}
         </TabPanel>
         <TabPanel w="full" h="full" px={0}>
-          {showEmptyState(Metadatas.Website) ? (
+          {isEmpty(Metadatas.Website) ? (
             <ModalEmptyState />
           ) : (
             <MetadataTabPanel

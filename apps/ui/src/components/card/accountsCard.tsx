@@ -8,7 +8,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { Card, ImportDataIcon } from '..';
-import type { MetadataKeys } from '../../utils/metadataKeys';
+import { MetadataKeys } from '../../utils/metadataKeys';
 import { getMetadataRedirects } from '../../utils/metadatas';
 import { CopyText } from '../helpers/copy';
 import { Explorer } from '../helpers/explorer';
@@ -20,6 +20,34 @@ interface AccountsCardProps {
   metadata: { key: string; value: string | undefined }[] | undefined;
   addAction: () => void;
 }
+
+const EmptyAccounts = ({ ensAction }: { ensAction: () => void }) => {
+  const { isMyDomain } = useSidebar();
+
+  return (
+    <VStack w="full" h={'full'} justify={'center'} py={6} spacing={4}>
+      <Text color="grey.200" fontSize="xs" maxW="172px" textAlign={'center'}>
+        {isMyDomain
+          ? 'It seems like you haven’t added any account yet.'
+          : 'It seems like this user hasn’t added any account yet'}
+      </Text>
+
+      {isMyDomain && (
+        <Button
+          h={'28px'}
+          color="grey.100"
+          fontSize={'xs'}
+          variant="ghosted"
+          bg={'white.100'}
+          rightIcon={<ImportDataIcon fontSize={18} />}
+          onClick={ensAction}
+        >
+          Import data from ENS
+        </Button>
+      )}
+    </VStack>
+  );
+};
 
 export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
   const { isMyDomain } = useSidebar();
@@ -48,7 +76,6 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
         display="flex"
         backdropFilter="blur(6px)"
         flexDirection="column"
-        gap={6}
       >
         <Flex alignItems="center" justify="space-between">
           <Heading fontSize="lg">Accounts</Heading>
@@ -63,9 +90,14 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
           )}
         </Flex>
 
-        <VStack spacing={5} h="full" justify={'center'}>
-          {metadata?.length ? (
-            metadata?.map((m) => {
+        {metadata?.filter(
+          (data) =>
+            ![MetadataKeys.CONTACT_BIO, MetadataKeys.CONTACT_NICKNAME].includes(
+              data.key as MetadataKeys,
+            ),
+        ).length ? (
+          <VStack spacing={5} h="full" mt={6}>
+            {metadata?.map((m) => {
               const variant = { key: m.key as MetadataKeys, value: m.value };
 
               return (
@@ -81,34 +113,11 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
                   )}
                 />
               );
-            })
-          ) : (
-            <>
-              <Text
-                color="grey.200"
-                fontSize="xs"
-                maxW="172px"
-                // h="26px"
-                // mt={20}
-                textAlign={'center'}
-              >
-                It seems like you haven’t added any account yet.
-              </Text>
-
-              <Button
-                h={'28px'}
-                color="grey.100"
-                fontSize={'xs'}
-                variant="ghosted"
-                bg={'white.100'}
-                rightIcon={<ImportDataIcon fontSize={18} color={'grey.100'} />}
-                onClick={ensDialogState.onOpen}
-              >
-                Import data from ENS
-              </Button>
-            </>
-          )}
-        </VStack>
+            })}
+          </VStack>
+        ) : (
+          <EmptyAccounts ensAction={ensDialogState.onOpen} />
+        )}
       </Card>
     </>
   );
