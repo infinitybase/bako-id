@@ -506,6 +506,7 @@ const ModalFiltersTabs = ({
 export const EditMetadataModal = ({
   onClose,
   handleOnSuccess,
+  isOpen,
 }: EditProfileModalProps) => {
   const { domain } = useParams({ strict: false });
   const { wallet } = useWallet();
@@ -530,9 +531,7 @@ export const EditMetadataModal = ({
       <Dialog.Modal
         closeOnOverlayClick={false}
         hideCloseButton
-        // TODO: Rollback
-        isOpen={true}
-        // isOpen={isOpen}
+        isOpen={isOpen}
         onClose={onClose}
         size={['full', '2xl', '2xl', '2xl']}
         modalTitle={
