@@ -3,6 +3,8 @@ import type { RegisterPayload } from './registry';
 
 const { API_URL } = process.env;
 
+console.log(API_URL);
+
 export const OFF_CHAIN_DATA_URL = 'https://bako-id.s3.us-east-1.amazonaws.com';
 export const RESOLVER_FILENAME = 'resolver.json';
 
