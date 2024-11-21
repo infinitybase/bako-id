@@ -5,8 +5,8 @@ export {
   RegisterPayload,
   SimulatePayload,
   MetadataKeys,
-  OffChainSync,
   OffChainData,
   IDRecord,
+  BakoIDClient,
 } from './methods';
 export { domainPrices, isValidDomain } from './utils';

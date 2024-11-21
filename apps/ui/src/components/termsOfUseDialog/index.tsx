@@ -26,7 +26,8 @@ const TermsOfUseDialog = ({
     if (scrollContainerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } =
         scrollContainerRef.current;
-      if (scrollTop + clientHeight >= scrollHeight) {
+
+      if (Math.ceil(scrollTop) + clientHeight >= scrollHeight) {
         setRead(true);
       }
     }

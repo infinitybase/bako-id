@@ -8,13 +8,14 @@ import {
 import { type Account, ZeroBytes32, getRandomB256 } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
 import { randomName } from '../utils';
+import { BakoIDClient } from './client';
 import { RegistryContract } from './registry';
 import { ResolverContract } from './resolver';
 
-jest.mock('../methods/offChainSync', () => {
-  const { OffChainSyncMock } = require('../test/mocks/offChainSync');
+jest.mock('../methods/client', () => {
+  const { BakoIDClientMock } = require('../test/mocks/client');
   return {
-    OffChainSync: OffChainSyncMock,
+    BakoIDClient: BakoIDClientMock,
   };
 });
 
@@ -58,7 +59,7 @@ describe('Test resolver', () => {
     const nftCall = await nft.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
       )
       .call();
     await nftCall.waitForResult();
@@ -66,7 +67,7 @@ describe('Test resolver', () => {
     const managerCall = await manager.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
       )
       .call();
     await managerCall.waitForResult();
@@ -75,7 +76,7 @@ describe('Test resolver', () => {
       .constructor(
         { bits: owner.address.toB256() },
         { bits: manager.id.toB256() },
-        { bits: nft.id.toB256() },
+        { bits: nft.id.toB256() }
       )
       .call();
     await registerCall.waitForResult();
@@ -104,7 +105,8 @@ describe('Test resolver', () => {
     const owner = account ?? wallet;
     const resolverAddress =
       accountResolver ?? contractId ?? owner.address.toB256();
-    const contract = new RegistryContract(registry.id.toB256(), owner);
+    const client = new BakoIDClient(wallet.provider);
+    const contract = new RegistryContract(registry.id.toB256(), owner, client);
     await contract.register({
       domain,
       period: 1,

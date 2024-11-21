@@ -1,6 +1,6 @@
 import contracts from './artifacts/contracts-fuel.json';
 
-type NetworkKeys = keyof typeof contracts;
+export type NetworkKeys = keyof typeof contracts;
 type ContractKeys<N extends NetworkKeys> = keyof (typeof contracts)[N];
 
 const DEFAULT_NETWORK: NetworkKeys = 'testnet';

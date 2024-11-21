@@ -1,24 +1,13 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { getJsonFile, putJsonFile } from '@/s3';
+import type { OffChainData } from '@bako-id/sdk';
 import { Provider, TransactionResponse, hashMessage } from 'fuels';
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { type NextRequest, NextResponse } from 'next/server';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const { method } = req;
-
-  if (method === 'OPTIONS') {
-    return res.status(200).send({});
-  }
-
-  if (method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
-  }
+export async function POST(req: NextRequest) {
   const FILENAME = 'resolver.json';
 
-  const { params, provider, tx_id } = req.body;
+  const { params, provider, tx_id } = await req.json();
 
   const _provider = await Provider.create(provider);
 
@@ -37,7 +26,7 @@ export default async function handler(
     throw new Error('Invalid minted name');
   }
 
-  const resolverData: Record<string, any> = await getJsonFile(resovlerFileName);
+  const resolverData: OffChainData = await getJsonFile(resovlerFileName);
 
   const newData = {
     resolversName: {
@@ -68,5 +57,5 @@ export default async function handler(
     ...newData,
   });
 
-  return res.status(200).json({});
+  return NextResponse.json({ success: true });
 }
