@@ -30,14 +30,13 @@ import {
   type MetadataResponse,
   useMetadata,
 } from '../../hooks/useMetadata';
-import { Metadatas } from '../../utils/metadatas';
+import { type MetadataItem, Metadatas } from '../../utils/metadatas';
 import { MetadataCard } from '../card/metadataCard';
 import { Dialog } from '../dialog';
 import { AvatarIcon } from '../icons';
 import { EditProfileFieldsModal } from './editProfileFieldsModal';
 import { EditProfilePicModal } from './editProfilePicModal';
 import { TransactionsDetailsModal } from './transactionDetails';
-import type { MetadataKeys } from '../../utils/metadataKeys';
 
 interface Metadata {
   key: string;
@@ -390,15 +389,7 @@ const ModalFiltersTabs = ({
     return 420;
   };
 
-  type CategoryItem = {
-    key: MetadataKeys;
-    title: string;
-    icon: JSX.Element;
-    description: string;
-    validated: boolean;
-  };
-
-  const showEmptyState = (category: CategoryItem[]) => {
+  const showEmptyState = (category: MetadataItem[]) => {
     const cases = {
       added:
         filters === FilterButtonTypes.ADDED &&
@@ -441,10 +432,7 @@ const ModalFiltersTabs = ({
         }}
       >
         <TabPanel w="full" h="full" px={0}>
-          {showEmptyState([
-            ...Metadatas.General,
-            ...Metadatas.Social,
-          ] as CategoryItem[]) ? (
+          {showEmptyState([...Metadatas.General, ...Metadatas.Social]) ? (
             <ModalEmptyState />
           ) : (
             <>
@@ -469,7 +457,7 @@ const ModalFiltersTabs = ({
           )}
         </TabPanel>
         <TabPanel w="full" h="full" px={0}>
-          {showEmptyState(Metadatas.Social as CategoryItem[]) ? (
+          {showEmptyState(Metadatas.Social) ? (
             <ModalEmptyState />
           ) : (
             <MetadataTabPanel
@@ -483,7 +471,7 @@ const ModalFiltersTabs = ({
           )}
         </TabPanel>
         <TabPanel w="full" h="full" px={0}>
-          {showEmptyState(Metadatas.Address as CategoryItem[]) ? (
+          {showEmptyState(Metadatas.Address) ? (
             <ModalEmptyState />
           ) : (
             <MetadataTabPanel
@@ -497,7 +485,7 @@ const ModalFiltersTabs = ({
           )}
         </TabPanel>
         <TabPanel w="full" h="full" px={0}>
-          {showEmptyState(Metadatas.Website as CategoryItem[]) ? (
+          {showEmptyState(Metadatas.Website) ? (
             <ModalEmptyState />
           ) : (
             <MetadataTabPanel
