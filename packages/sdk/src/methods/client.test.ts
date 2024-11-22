@@ -49,4 +49,22 @@ describe('Client', () => {
     const records = await client.records('0x');
     expect(records.length).toBe(0);
   });
+
+  it('should correctly parse address', async () => {
+    const address = Address.fromRandom();
+    const domain = '@testaddress';
+    await client.register({
+      domain,
+      period: 10,
+      transactionId: '0x123',
+      owner: address.toString(),
+      resolver: address.toString(),
+    });
+
+    const name = await client.name(address.toString());
+    expect(name).toBe('@testaddress');
+
+    const records = await client.records(address.toString());
+    expect(records.length).toBe(1);
+  });
 });

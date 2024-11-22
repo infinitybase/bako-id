@@ -1,5 +1,5 @@
 import { type NetworkKeys, resolveNetwork } from '@bako-id/contracts';
-import { type Provider, hashMessage } from 'fuels';
+import { Address, type Provider, hashMessage } from 'fuels';
 import type { OffChainData, RegisterInput } from '../../methods';
 
 export class BakoIDClientMock {
@@ -18,6 +18,9 @@ export class BakoIDClientMock {
 
   async register(params: RegisterInput): Promise<void> {
     const resolverData = this.getList();
+
+    params.owner = Address.fromDynamicInput(params.owner).toB256();
+    params.resolver = Address.fromDynamicInput(params.resolver).toB256();
 
     if (!resolverData?.resolversName?.[params.domain]) {
       resolverData.resolversName[params.domain] = params.resolver;
@@ -44,16 +47,20 @@ export class BakoIDClientMock {
 
   async resolver(key: string) {
     const resolver = this.getList()?.resolversName?.[key];
-    return resolver ?? null;
+    return resolver ? Address.fromDynamicInput(resolver).toB256() : null;
   }
 
   async name(key: string) {
-    const name = this.getList()?.resolversAddress?.[key];
+    const name =
+      this.getList()?.resolversAddress?.[
+        Address.fromDynamicInput(key).toB256()
+      ];
     return name ?? null;
   }
 
   async records(owner: string) {
-    const records = this.getList()?.records?.[owner] || [];
+    const records =
+      this.getList()?.records?.[Address.fromDynamicInput(owner).toB256()] || [];
     return records;
   }
 
