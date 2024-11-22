@@ -63,6 +63,8 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
     return <CopyText value={value} />;
   };
 
+  const avoidKeys = [MetadataKeys.CONTACT_BIO, MetadataKeys.CONTACT_NICKNAME];
+
   return (
     <>
       <NSDialog
@@ -91,10 +93,7 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
         </Flex>
 
         {metadata?.filter(
-          (data) =>
-            ![MetadataKeys.CONTACT_BIO, MetadataKeys.CONTACT_NICKNAME].includes(
-              data.key as MetadataKeys,
-            ),
+          (data) => !avoidKeys.includes(data.key as MetadataKeys),
         ).length ? (
           <VStack spacing={5} h="full" mt={6}>
             {metadata?.map((m) => {
