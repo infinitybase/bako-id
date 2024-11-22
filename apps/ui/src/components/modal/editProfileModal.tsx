@@ -6,6 +6,7 @@
 import {
   Box,
   Button,
+  Center,
   CloseButton,
   Flex,
   Icon,
@@ -29,7 +30,7 @@ import {
   type MetadataResponse,
   useMetadata,
 } from '../../hooks/useMetadata';
-import { Metadatas } from '../../utils/metadatas';
+import { type MetadataItem, Metadatas } from '../../utils/metadatas';
 import { MetadataCard } from '../card/metadataCard';
 import { Dialog } from '../dialog';
 import { AvatarIcon } from '../icons';
@@ -90,6 +91,22 @@ const TabsTypes = [
   { key: 'Website', name: 'Website' },
   // { key: 'Other', name: 'Other' },
 ];
+
+const ModalEmptyState = () => {
+  return (
+    <Center
+      h={'full'}
+      bg="input.900"
+      border={'1px'}
+      borderColor={'input.600'}
+      borderRadius={8}
+    >
+      <Text color="grey.400" fontSize="sm">
+        Nothing to show here
+      </Text>
+    </Center>
+  );
+};
 
 const ModalTitle = ({
   onClose,
@@ -308,7 +325,7 @@ const MetadataTabPanel = ({
 
               const isEmpty = !userMetadata[metadata.key];
               const isUpdated = !!updates.find(
-                ({ key }) => key === metadata.key
+                ({ key }) => key === metadata.key,
               );
 
               return (
@@ -372,6 +389,19 @@ const ModalFiltersTabs = ({
     return 420;
   };
 
+  const isEmpty = (category: MetadataItem[]) => {
+    const cases = {
+      added:
+        filters === FilterButtonTypes.ADDED &&
+        !category.some(({ key }) => key in userMetadata),
+      notAdded:
+        filters === FilterButtonTypes.NOT_ADDED &&
+        category.every(({ key }) => key in userMetadata),
+    };
+
+    return Object.values(cases).includes(true);
+  };
+
   return (
     <Tabs position="relative" borderColor="disabled.500">
       <TabList w="full" color="disabled.500">
@@ -390,6 +420,7 @@ const ModalFiltersTabs = ({
       />
 
       <TabPanels
+        pt={4}
         h={calculateHeight()}
         overflowY="scroll"
         overflowX="hidden"
@@ -400,53 +431,75 @@ const ModalFiltersTabs = ({
           },
         }}
       >
-        <TabPanel w="full" px={0}>
-          <MetadataTabPanel
-            title="General"
-            updates={updates}
-            metadatas={Metadatas.General}
-            userMetadata={userMetadata}
-            setUpdates={setUpdates}
-            filters={filters}
-          />
-          <MetadataTabPanel
-            title="Social"
-            updates={updates}
-            metadatas={Metadatas.Social}
-            userMetadata={userMetadata}
-            setUpdates={setUpdates}
-            filters={filters}
-          />
+        <TabPanel w="full" h="full" px={0}>
+          {isEmpty([...Metadatas.General, ...Metadatas.Social]) ? (
+            <ModalEmptyState />
+          ) : (
+            <>
+              {!isEmpty(Metadatas.General) && (
+                <MetadataTabPanel
+                  title="General"
+                  updates={updates}
+                  metadatas={Metadatas.General}
+                  userMetadata={userMetadata}
+                  setUpdates={setUpdates}
+                  filters={filters}
+                />
+              )}
+              {!isEmpty(Metadatas.Social) && (
+                <MetadataTabPanel
+                  title="Social"
+                  updates={updates}
+                  metadatas={Metadatas.Social}
+                  userMetadata={userMetadata}
+                  setUpdates={setUpdates}
+                  filters={filters}
+                />
+              )}
+            </>
+          )}
         </TabPanel>
-        <TabPanel w="full" px={0}>
-          <MetadataTabPanel
-            title="Social"
-            updates={updates}
-            metadatas={Metadatas.Social}
-            userMetadata={userMetadata}
-            setUpdates={setUpdates}
-            filters={filters}
-          />
+        <TabPanel w="full" h="full" px={0}>
+          {isEmpty(Metadatas.Social) ? (
+            <ModalEmptyState />
+          ) : (
+            <MetadataTabPanel
+              title="Social"
+              updates={updates}
+              metadatas={Metadatas.Social}
+              userMetadata={userMetadata}
+              setUpdates={setUpdates}
+              filters={filters}
+            />
+          )}
         </TabPanel>
-        <TabPanel w="full" px={0}>
-          <MetadataTabPanel
-            title="Addresses"
-            updates={updates}
-            metadatas={Metadatas.Address}
-            userMetadata={userMetadata}
-            setUpdates={setUpdates}
-            filters={filters}
-          />
+        <TabPanel w="full" h="full" px={0}>
+          {isEmpty(Metadatas.Address) ? (
+            <ModalEmptyState />
+          ) : (
+            <MetadataTabPanel
+              title="Addresses"
+              updates={updates}
+              metadatas={Metadatas.Address}
+              userMetadata={userMetadata}
+              setUpdates={setUpdates}
+              filters={filters}
+            />
+          )}
         </TabPanel>
-        <TabPanel w="full" px={0}>
-          <MetadataTabPanel
-            title="Website"
-            updates={updates}
-            metadatas={Metadatas.Website}
-            userMetadata={userMetadata}
-            setUpdates={setUpdates}
-            filters={filters}
-          />
+        <TabPanel w="full" h="full" px={0}>
+          {isEmpty(Metadatas.Website) ? (
+            <ModalEmptyState />
+          ) : (
+            <MetadataTabPanel
+              title="Website"
+              updates={updates}
+              metadatas={Metadatas.Website}
+              userMetadata={userMetadata}
+              setUpdates={setUpdates}
+              filters={filters}
+            />
+          )}
         </TabPanel>
       </TabPanels>
     </Tabs>
@@ -454,9 +507,9 @@ const ModalFiltersTabs = ({
 };
 
 export const EditMetadataModal = ({
-  isOpen,
   onClose,
   handleOnSuccess,
+  isOpen,
 }: EditProfileModalProps) => {
   const { domain } = useParams({ strict: false });
   const { wallet } = useWallet();
