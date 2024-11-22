@@ -58,8 +58,14 @@ export const Autocomplete = (props: IAutocomplete) => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let inputValue = e.target.value.replace(/\s+/g, ''); // Remove white spaces
-    inputValue = inputValue.replace(/[^a-zA-Z0-9-_]/g, ''); // Remove special characters except letters, numbers, hyphens, and underscores
+    const forbiddenCharacters = /[^a-zA-Z0-9_]/g; // Special characters except letters, numbers, and underscores
+    const hasForbiddenCharacters = forbiddenCharacters.test(
+      e.target.value.replace('@', ''), // Ignores first '@'
+    );
+
+    let inputValue = e.target.value
+      .replace(/\s+/g, '') // Remove white spaces
+      .replace(forbiddenCharacters, ''); // Remove forbidden characters
 
     if (inputValue && !inputValue.startsWith('@')) {
       inputValue = `@${inputValue}`; // Add "@" if not present
@@ -73,7 +79,7 @@ export const Autocomplete = (props: IAutocomplete) => {
       const valid = isValidDomain(inputValue); // Check if the domain is valid
       trigger('handle'); // Trigger the handle again to revalidate after onChange
 
-      if (!valid) return;
+      if (!valid || hasForbiddenCharacters) return;
       if (inputValue.length > 3) handleChangeDomain(e);
     } else {
       setInputValue('');
