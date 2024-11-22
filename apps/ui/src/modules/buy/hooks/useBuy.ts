@@ -32,7 +32,7 @@ export const useBuy = () => {
       period: 1,
     },
   ]);
-  const { totalPrice, domainPrice, fee, formatCoin, loading } =
+  const { totalPrice, totalPriceETH, domainPrice, fee, formatCoin, loading } =
     useCheckoutPrice(domains[0], selectedCoin);
 
   const handlePeriodChange = (index: number, newValue: number) => {
@@ -117,6 +117,7 @@ export const useBuy = () => {
     handleChangeCoin,
     handleConfirmDomain,
     totalPrice,
+    totalPriceETH,
     fee,
     domainPrice,
     loading,
