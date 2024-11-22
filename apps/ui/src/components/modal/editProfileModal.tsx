@@ -446,7 +446,6 @@ const ModalFiltersTabs = ({
                   filters={filters}
                 />
               )}
-
               {!isEmpty(Metadatas.Social) && (
                 <MetadataTabPanel
                   title="Social"
