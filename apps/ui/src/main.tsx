@@ -16,7 +16,7 @@ import { defaultTheme } from './theme/default.ts';
 
 const { VITE_SENTRY_DSN, VITE_NODE_ENV } = import.meta.env;
 
-if (VITE_SENTRY_DSN && VITE_NODE_ENV === 'production') {
+if (VITE_NODE_ENV === 'production' && VITE_SENTRY_DSN) {
   Sentry.init({
     dsn: VITE_SENTRY_DSN,
     integrations: [
