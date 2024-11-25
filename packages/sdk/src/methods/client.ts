@@ -1,7 +1,9 @@
 import { type NetworkKeys, resolveNetwork } from '@bako-id/contracts';
-import type { Provider } from 'fuels';
+import { Address, type Provider } from 'fuels';
 
 const { API_URL } = process.env;
+
+const UI_URL = 'https://app.bako.id';
 
 export enum Networks {
   MAINNET = 9889,
@@ -79,7 +81,12 @@ export class BakoIDClient {
    * @returns {Promise<any>} A promise that resolves to the registration response.
    */
   async register(params: RegisterInput) {
-    return this.httpClient.post('/register', params);
+    return this.httpClient.post('/register', {
+      ...params,
+      domain: params.domain.replace('@', ''),
+      owner: Address.fromDynamicInput(params.owner).toB256(),
+      resolver: Address.fromDynamicInput(params.resolver).toB256(),
+    });
   }
 
   /**
@@ -89,7 +96,7 @@ export class BakoIDClient {
    */
   async records(owner: string) {
     const { records } = await this.httpClient.get<{ records: IDRecord[] }>(
-      `/records/${owner}`
+      `/records/${Address.fromDynamicInput(owner).toB256()}`
     );
     return records || [];
   }
@@ -104,7 +111,7 @@ export class BakoIDClient {
       `/addr/${name}`
     );
 
-    return address ?? null;
+    return address ? Address.fromDynamicInput(address).toString() : null;
   }
 
   /**
@@ -114,8 +121,17 @@ export class BakoIDClient {
    */
   async name(addr: string) {
     const { name } = await this.httpClient.get<{ name: string | null }>(
-      `/name/${addr}`
+      `/name/${Address.fromDynamicInput(addr).toB256()}`
     );
     return name ?? null;
+  }
+
+  /**
+   * Retrieves the profile URL for a given name.
+   * @param {string} name - The name to resolve.
+   * @returns {string} The profile URL.
+   */
+  profile(name: string) {
+    return `${UI_URL}/profile/${name.replace('@', '')}?network=${this.network}`;
   }
 }
