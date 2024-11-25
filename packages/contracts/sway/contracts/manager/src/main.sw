@@ -10,7 +10,7 @@ use sway_libs::{admin::*, ownership::*};
 use standards::src5::{SRC5, State};
 
 use lib::abis::manager::{RecordData, Manager, ManagerInfo};
-use events::{ManagerLogEvent};
+use events::{NewRecordEvent, OwnerChangedEvent, ResolverChangedEvent};
 
 
 storage {
@@ -58,8 +58,7 @@ impl Manager for Contract {
             storage.records_resolver.insert(data.resolver, name_hash);
         }
 
-        log(ManagerLogEvent {
-            fnname: String::from_ascii_str("set_record"),
+        log(NewRecordEvent {
             name,
             owner: data.owner,
             resolver: data.resolver,
@@ -79,11 +78,40 @@ impl Manager for Contract {
 
         if (storage.records_resolver.get(resolver).try_read().is_none()) {
             let mut records_data = record_data.unwrap();
+            let old_resolver = records_data.resolver;
             records_data.resolver = resolver;
 
             storage.records_data.insert(name_hash, records_data);
             storage.records_resolver.insert(resolver, name_hash);
+
+            log(ResolverChangedEvent {
+                name,
+                name_hash,
+                old_resolver,
+                new_resolver: resolver,
+            });
         }
+    }
+
+    #[storage(read, write)]
+    fn set_owner(name: String, owner: Identity) {
+        only_owner_or_admin();
+        let name_hash = sha256(name);
+        let record_data = storage.records_data.get(name_hash).try_read();
+        require(record_data.is_some(), ManagerError::RecordNotFound);
+
+        let mut record_data = record_data.unwrap();
+        let old_owner = record_data.owner;
+        record_data.owner = owner;
+
+        storage.records_data.insert(name_hash, record_data);
+
+        log(OwnerChangedEvent {
+            name,
+            name_hash,
+            old_owner,
+            new_owner: owner,
+        });
     }
 }
 

@@ -357,6 +357,86 @@ describe('[METHODS] Registry Contract', () => {
     }).rejects.toThrow(/Paused/);
   });
 
+  it('should change the resolver correctly', async () => {
+    const [owner, notOwner] = node.wallets;
+    const domain = randomName(3);
+
+    const resolver = Wallet.generate({ provider: node.provider });
+
+    const price = domainPrices(domain);
+
+    const registerCallFn = await registry.functions
+      .register(domain, { Address: { bits: owner.address.toB256() } }, bn(1))
+      .addContracts([manager, nft])
+      .callParams({
+        forward: { assetId: node.provider.getBaseAssetId(), amount: price },
+      })
+      .call();
+    await registerCallFn.waitForResult();
+
+    // Change resolver correctly
+    const changeResolverCall = await registry.functions
+      .set_resolver(domain, { Address: { bits: resolver.address.toB256() } })
+      .addContracts([manager])
+      .call();
+    await changeResolverCall.waitForResult();
+
+    const { value: newResolver } = await manager.functions
+      .get_resolver(domain)
+      .get();
+    expect(newResolver?.Address?.bits).toBe(resolver.address.toB256());
+
+    // Should throw an error when not owner
+    registry.account = notOwner;
+
+    await expect(async () => {
+      const changeResolverCall = await registry.functions
+        .set_resolver(domain, { Address: { bits: resolver.address.toB256() } })
+        .addContracts([manager])
+        .call();
+      await changeResolverCall.waitForResult();
+    }).rejects.toThrow(/NotOwner/);
+
+    registry.account = owner;
+  });
+
+  it('should change the owner correctly', async () => {
+    const [owner, newOwner] = node.wallets;
+    const domain = randomName(3);
+
+    const price = domainPrices(domain);
+
+    const registerCallFn = await registry.functions
+      .register(domain, { Address: { bits: owner.address.toB256() } }, bn(1))
+      .addContracts([manager, nft])
+      .callParams({
+        forward: { assetId: node.provider.getBaseAssetId(), amount: price },
+      })
+      .call();
+    await registerCallFn.waitForResult();
+
+    // Change owner correctly
+    const changeOwnerCall = await registry.functions
+      .set_owner(domain, { Address: { bits: newOwner.address.toB256() } })
+      .addContracts([manager])
+      .call();
+    await changeOwnerCall.waitForResult();
+
+    const { value: newOwnerAddress } = await manager.functions
+      .get_owner(domain)
+      .get();
+    expect(newOwnerAddress?.Address?.bits).toBe(newOwner.address.toB256());
+
+    // Should throw an error when not owner
+    await expect(async () => {
+      const changeOwnerCall = await registry.functions
+        .set_owner(domain, { Address: { bits: newOwner.address.toB256() } })
+        .addContracts([manager])
+        .call();
+      await changeOwnerCall.waitForResult();
+    }).rejects.toThrow(/NotOwner/);
+  });
+
   it.each(['@invalid-!@#%$!', 'my@asd.other', '@MYHanDLE'])(
     'should throw a error when try register %s',
     async (handle) => {
