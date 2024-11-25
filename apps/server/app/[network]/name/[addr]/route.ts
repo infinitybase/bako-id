@@ -1,3 +1,4 @@
+import { handleError } from '@/error';
 import { FILENAME, getJsonFile } from '@/s3';
 import { validateNetwork } from '@/utils';
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
@@ -13,10 +14,12 @@ export async function GET(req: NextRequest) {
     const name = offChainData.resolversAddress[addr as string];
     return NextResponse.json({ name: name ?? null });
   } catch (e) {
+    handleError(e as Error);
+
     return NextResponse.json(
       // @ts-ignore
       { error: e?.message ?? 'Internal Error' },
-      { status: 400 }
+      { status: 400 },
     );
   }
 }

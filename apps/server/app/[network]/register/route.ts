@@ -1,4 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { handleError } from '@/error';
 import { getJsonFile, putJsonFile } from '@/s3';
 import { validateNetwork } from '@/utils';
 import type { OffChainData } from '@bako-id/sdk';
@@ -32,7 +33,7 @@ export async function POST(req: NextRequest) {
 
     //valdations
     const isValidDomain = r?.mintedAssets?.find(
-      (a) => a.subId === hashMessage(body.domain)
+      (a) => a.subId === hashMessage(body.domain),
     );
 
     if (!isValidDomain) {
@@ -72,10 +73,12 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (e) {
+    handleError(e as Error);
+
     return NextResponse.json(
       // @ts-ignore
       { error: e?.message ?? 'Internal Error' },
-      { status: 400 }
+      { status: 400 },
     );
   }
 }

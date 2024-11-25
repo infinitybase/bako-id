@@ -6,11 +6,31 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { coinbaseWallet, walletConnect } from '@wagmi/connectors';
 import { http, createConfig, injected } from '@wagmi/core';
 import { mainnet, sepolia } from '@wagmi/core/chains';
+import * as Sentry from '@sentry/react';
+
 import { CHAIN_IDS, Provider } from 'fuels';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { InnerApp } from './components';
 import { defaultTheme } from './theme/default.ts';
+
+const { VITE_SENTRY_DSN, VITE_NODE_ENV } = import.meta.env;
+
+if (VITE_NODE_ENV === 'production' && VITE_SENTRY_DSN) {
+  Sentry.init({
+    dsn: VITE_SENTRY_DSN,
+    integrations: [
+      Sentry.browserTracingIntegration(),
+      Sentry.browserProfilingIntegration(),
+      Sentry.replayIntegration(),
+    ],
+    tracesSampleRate: 1.0,
+    tracePropagationTargets: ['localhost', 'https://api.bako.id'],
+    profilesSampleRate: 1.0,
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
+  });
+}
 
 const queryClient = new QueryClient();
 
@@ -78,5 +98,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </ChakraProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
