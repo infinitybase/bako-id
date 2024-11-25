@@ -17,6 +17,8 @@ const resulverEmpty: OffChainData = {
   records: {},
 };
 
+export const FILENAME = 'resolver.json';
+
 export const s3 = new AWS.S3();
 
 export const getJsonFile = async (filename: string): Promise<OffChainData> => {

@@ -1,4 +1,8 @@
-import { type MetadataKeys, RegistryContract } from '@bako-id/sdk';
+import {
+  BakoIDClient,
+  type MetadataKeys,
+  RegistryContract,
+} from '@bako-id/sdk';
 import { useDisclosure } from '@chakra-ui/react';
 import { useProvider, useWallet } from '@fuels/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -45,12 +49,20 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
         let registryContract: RegistryContract;
 
         if (provider) {
-          registryContract = RegistryContract.create(provider);
+          const client = new BakoIDClient(
+            provider,
+            import.meta.env.VITE_API_URL
+          );
+          registryContract = RegistryContract.create(provider, client);
         } else {
           const provider = await Provider.create(
             import.meta.env.VITE_PROVIDER_URL
           );
-          registryContract = RegistryContract.create(provider);
+          const client = new BakoIDClient(
+            provider,
+            import.meta.env.VITE_API_URL
+          );
+          registryContract = RegistryContract.create(provider, client);
         }
 
         const metadata = await registryContract.getMetadata(domain);
@@ -80,7 +92,11 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
         ),
       };
 
-      const setContract = RegistryContract.create(wallet);
+      const client = new BakoIDClient(
+        wallet.provider,
+        import.meta.env.VITE_API_URL
+      );
+      const setContract = RegistryContract.create(wallet, client);
 
       return await setContract.setMetadata(domain, metadataPayload);
     },

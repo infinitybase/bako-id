@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
+import { BakoIDClient, RegistryContract } from '@bako-id/sdk';
 import { useGetProviderRequest } from './useGetProviderRequest';
-import { RegistryContract } from '@bako-id/sdk';
 
 const useGetGracePeriod = (domain: string) => {
   const { data: provider } = useGetProviderRequest();
@@ -10,7 +10,8 @@ const useGetGracePeriod = (domain: string) => {
     queryFn: async () => {
       let registryContract: RegistryContract;
       if (provider) {
-        registryContract = RegistryContract.create(provider);
+        const client = new BakoIDClient(provider, import.meta.env.VITE_API_URL);
+        registryContract = RegistryContract.create(provider, client);
 
         const { ttl, timestamp } = await registryContract.getDates(domain);
         const gracePeriod = new Date(ttl);

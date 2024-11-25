@@ -26,26 +26,26 @@ yarn install fuels @bako-id/sdk
 ### Resolving a domain address
 
 ```ts
-import { OffChainSync } from '@bako-id/sdk';
+import { BakoIDClient } from '@bako-id/sdk';
 import { Provider } from 'fuels';
 
 const provider = await Provider.create('https://testnet.fuel.network/v1/graphql');
-const sync = await OffChainSync.create(provider);
+const client = new BakoIDClient(provider.url);
 
-const resolverAddress = sync.getResolver('bakoid'); 
+const resolverAddress = await client.resolver('bakoid'); 
 console.log(resolverAddress); // 0x000000...
 ```
 
 ### Resolving a domain name
 
 ```ts
-import { OffChainSync } from '@bako-id/sdk';
+import { BakoIDClient } from '@bako-id/sdk';
 import { Provider } from 'fuels';
 
 const provider = await Provider.create('https://testnet.fuel.network/v1/graphql');
-const sync = await OffChainSync.create(provider);
+const client = new BakoIDClient(provider.url);
 
-const name = sync.getDomain('0x000000...'); 
+const name = await client.name('0x000000...'); 
 console.log(name); // @bakoid
 ```
 
