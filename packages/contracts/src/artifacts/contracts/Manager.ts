@@ -32,8 +32,8 @@ export type IdentityInput = Enum<{ Address: AddressInput, ContractId: ContractId
 export type IdentityOutput = Enum<{ Address: AddressOutput, ContractId: ContractIdOutput }>;
 export enum InitializationErrorInput { CannotReinitialized = 'CannotReinitialized' };
 export enum InitializationErrorOutput { CannotReinitialized = 'CannotReinitialized' };
-export enum ManagerErrorInput { OnlyOwner = 'OnlyOwner', RecordNotFound = 'RecordNotFound', RecordAlreadyExists = 'RecordAlreadyExists', ContractNotInitialized = 'ContractNotInitialized' };
-export enum ManagerErrorOutput { OnlyOwner = 'OnlyOwner', RecordNotFound = 'RecordNotFound', RecordAlreadyExists = 'RecordAlreadyExists', ContractNotInitialized = 'ContractNotInitialized' };
+export enum ManagerErrorInput { OnlyOwner = 'OnlyOwner', RecordNotFound = 'RecordNotFound', RecordAlreadyExists = 'RecordAlreadyExists', ContractNotInitialized = 'ContractNotInitialized', ResolverAlreadyInUse = 'ResolverAlreadyInUse' };
+export enum ManagerErrorOutput { OnlyOwner = 'OnlyOwner', RecordNotFound = 'RecordNotFound', RecordAlreadyExists = 'RecordAlreadyExists', ContractNotInitialized = 'ContractNotInitialized', ResolverAlreadyInUse = 'ResolverAlreadyInUse' };
 export type StateInput = Enum<{ Uninitialized: undefined, Initialized: IdentityInput, Revoked: undefined }>;
 export type StateOutput = Enum<{ Uninitialized: void, Initialized: IdentityOutput, Revoked: void }>;
 
@@ -171,6 +171,10 @@ const abi = {
         },
         {
           "name": "ContractNotInitialized",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "ResolverAlreadyInUse",
           "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
         }
       ]

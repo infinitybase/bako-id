@@ -82,8 +82,12 @@ export class BakoIDClientMock {
     if (!record) return;
 
     record.resolver = params.address;
-    resolverData.resolversAddress[params.address] = params.domain;
     resolverData.resolversName[params.domain] = params.address;
+
+    if (!resolverData.resolversAddress[params.address]) {
+      delete resolverData.resolversAddress[record.resolver];
+      resolverData.resolversAddress[params.address] = params.domain;
+    }
 
     BakoIDClientMock.list.set(this.network, resolverData);
   }

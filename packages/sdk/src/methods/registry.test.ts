@@ -407,6 +407,13 @@ describe('Test Registry', () => {
       .get();
     expect(onChainRecord?.Address?.bits).toBe(newAddress);
 
+    await expect(() =>
+      contract.changeResolver({
+        domain,
+        address: newAddress,
+      })
+    ).rejects.toThrow(/ResolverAlreadyInUse/);
+
     contract = new RegistryContract(registry.id.toB256(), newResolver, client);
 
     await expect(() =>

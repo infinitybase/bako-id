@@ -386,6 +386,15 @@ describe('[METHODS] Registry Contract', () => {
       .get();
     expect(newResolver?.Address?.bits).toBe(resolver.address.toB256());
 
+    // Should throw an error when change to a resolver in use
+    await expect(async () => {
+      const changeResolverCall = await registry.functions
+        .set_resolver(domain, { Address: { bits: resolver.address.toB256() } })
+        .addContracts([manager])
+        .call();
+      await changeResolverCall.waitForResult();
+    }).rejects.toThrow(/ResolverAlreadyInUse/);
+
     // Should throw an error when not owner
     registry.account = notOwner;
 
