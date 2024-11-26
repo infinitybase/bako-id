@@ -1,13 +1,23 @@
-import { Flex, Heading, Skeleton } from '@chakra-ui/react';
+import {
+  Button,
+  Flex,
+  Heading,
+  Skeleton,
+  useDisclosure,
+} from '@chakra-ui/react';
+import { useAccount } from '@fuels/react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useParams } from '@tanstack/react-router';
+import { format } from 'date-fns';
 import { Address } from 'fuels';
-import { Card, TextValue } from '..';
+import { useMemo } from 'react';
+import { Card, EditIcon, TextValue } from '..';
+import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
+import { OwnershipDialog } from '../../modules/profile/components/ownershipDialog.tsx';
 import { ExplorerTypes } from '../../types';
 import { formatAddress } from '../../utils/formatter';
-import { Explorer } from '../helpers/explorer';
-import { useParams } from '@tanstack/react-router';
 import { CopyText } from '../helpers/copy';
-import { format } from 'date-fns';
-import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
+import { Explorer } from '../helpers/explorer';
 
 interface IOwnershipCard {
   owner: string | null;
@@ -16,6 +26,21 @@ interface IOwnershipCard {
 export const OwnershipCard = ({ owner, explorerUrl }: IOwnershipCard) => {
   const { domain } = useParams({ strict: false });
   const { dates, isLoading } = useGetGracePeriod(domain.replace('@', ''));
+  const { account } = useAccount();
+  const queryClient = useQueryClient();
+
+  const dialog = useDisclosure({
+    onClose() {
+      queryClient.invalidateQueries({
+        queryKey: ['resolveOwner', domain],
+      });
+    },
+  });
+
+  const isMyDomain = useMemo(() => {
+    if (!owner || !account) return false;
+    return account === Address.fromString(owner).toString();
+  }, [account, owner]);
 
   return (
     <Card
@@ -38,6 +63,21 @@ export const OwnershipCard = ({ owner, explorerUrl }: IOwnershipCard) => {
             Extend
           </Button>
         )} */}
+        {isMyDomain && (
+          <Button
+            variant="ghosted"
+            onClick={dialog.onOpen}
+            isDisabled={!isMyDomain}
+            rightIcon={<EditIcon />}
+          >
+            Edit
+          </Button>
+        )}
+        <OwnershipDialog
+          doamin={domain}
+          isOpen={dialog.isOpen}
+          onClose={dialog.onClose}
+        />
       </Flex>
       <Flex
         direction="column"
