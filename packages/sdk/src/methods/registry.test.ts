@@ -11,7 +11,12 @@ import {
   RegistryFactory,
   getContractId,
 } from '@bako-id/contracts';
-import { WalletUnlocked, getRandomB256, hashMessage } from 'fuels';
+import {
+  TransactionStatus,
+  WalletUnlocked,
+  getRandomB256,
+  hashMessage,
+} from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
 import { RegistryContract } from '../index';
 import { InvalidDomainError, NotFoundBalanceError, randomName } from '../utils';
@@ -180,6 +185,7 @@ describe('Test Registry', () => {
     const domain1 = `bako_${randomName(3)}`;
     const domain2 = `bako_${randomName(3)}`;
     const resolver = getRandomB256();
+    const ownerAddress = wallet.address.toB256();
     const result1 = await contract.register({
       domain: domain1,
       period: 1,
@@ -189,7 +195,7 @@ describe('Test Registry', () => {
     const mintedToken_1 = result1.transactionResult.mintedAssets[0];
 
     expect(mintedToken_1).toBeDefined();
-    expect(await sync.records(resolver)).toHaveLength(1);
+    expect(await sync.records(ownerAddress)).toHaveLength(1);
     expect(await sync.name(resolver)).toBe(domain1);
     expect(await sync.resolver(domain1)).toBe(resolver);
     expect(mintedToken_1.subId).toBe(hashMessage(domain1));
@@ -203,7 +209,7 @@ describe('Test Registry', () => {
 
     expect(mintedToken_2).toBeDefined();
     expect(await sync.name(resolver)).toBe(domain1);
-    expect(await sync.records(resolver)).toHaveLength(2);
+    expect(await sync.records(ownerAddress)).toHaveLength(2);
     expect(await sync.resolver(domain2)).toBe(resolver);
     expect(mintedToken_2.subId).toBe(hashMessage(domain2));
   });
@@ -329,5 +335,85 @@ describe('Test Registry', () => {
     await expect(() => contract.getDates('not_found')).rejects.toThrow(
       'Domain not found'
     );
+  });
+
+  it('should change owner correctly', async () => {
+    const {
+      contracts: [registry, manager],
+      wallets: [owner, newOwner],
+    } = node;
+
+    const domain = randomName();
+    const client = new BakoIDClient(owner.provider);
+    const contract = new RegistryContract(registry.id.toB256(), owner, client);
+    await contract.register({
+      domain,
+      period: 1,
+      resolver: owner.address.toB256(),
+    });
+
+    const newAddress = newOwner.address.toB256();
+    const result = await contract.changeOwner({
+      domain,
+      address: newAddress,
+    });
+
+    expect(result.status).toBe(TransactionStatus.success);
+
+    const offChainRecord = await client.records(newAddress);
+    expect(offChainRecord).toHaveLength(1);
+
+    const { value: onChainRecord } = await manager.functions
+      .get_owner(domain)
+      .get();
+    expect(onChainRecord?.Address?.bits).toBe(newAddress);
+
+    await expect(() =>
+      contract.changeOwner({
+        domain,
+        address: newAddress,
+      })
+    ).rejects.toThrow(/NotOwner/);
+  });
+
+  it('should change resolver correctly', async () => {
+    const {
+      contracts: [registry, manager],
+      wallets: [owner, newResolver],
+    } = node;
+
+    const domain = randomName();
+    const client = new BakoIDClient(owner.provider);
+    let contract = new RegistryContract(registry.id.toB256(), owner, client);
+    await contract.register({
+      domain,
+      period: 1,
+      resolver: owner.address.toB256(),
+    });
+
+    const newAddress = newResolver.address.toB256();
+    const result = await contract.changeResolver({
+      domain,
+      address: newAddress,
+    });
+
+    expect(result.status).toBe(TransactionStatus.success);
+
+    const offChainRecord = await client.resolver(domain);
+    expect(offChainRecord).toBe(newAddress);
+
+    const { value: onChainRecord } = await manager.functions
+      .get_resolver(domain)
+      .get();
+    expect(onChainRecord?.Address?.bits).toBe(newAddress);
+
+    contract = new RegistryContract(registry.id.toB256(), newResolver, client);
+
+    await expect(() =>
+      contract.changeResolver({
+        domain,
+        address: newAddress,
+      })
+    ).rejects.toThrow(/NotOwner/);
   });
 });
