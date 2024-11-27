@@ -107,7 +107,7 @@ export const OwnershipDialog = (props: OwnershipDialogProps) => {
     <Dialog.Modal
       motionPreset="slideInBottom"
       modalTitle="Change Ownership"
-      modalSubtitle="Set your ENS username below and confirm the import."
+      modalSubtitle="Set the adress to be the new owner of this handle"
       isOpen={props.isOpen}
       onClose={props.onClose}
       closeOnOverlayClick={false}
