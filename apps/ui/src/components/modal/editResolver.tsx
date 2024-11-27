@@ -14,6 +14,7 @@ import {
 import { Suspense, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { AddressUtils } from '../../utils/address';
+import { ProgressButton } from '../buttons/progressButton.tsx';
 import { Dialog } from '../dialog';
 import { BakoTooltip } from '../helpers';
 import { InfoIcon } from '../icons/infoIcon';
@@ -22,9 +23,11 @@ import { TextValue } from '../inputs';
 interface IEditResolverModal {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (resolver: string) => void;
+  onConfirm: (resolver: string) => Promise<void>;
   domain: string;
   resolver: string;
+  progress: number;
+  isLoading?: boolean;
 }
 
 interface IDetailStepModal {
@@ -35,6 +38,8 @@ interface IDetailStepModal {
   domain: string;
   resolver: string;
   newResolver: string;
+  progress: number;
+  isLoading?: boolean;
 }
 
 interface IEditResolverStepModal {
@@ -57,6 +62,8 @@ const DetailStepModal = ({
   onClose,
   onConfirm,
   onReturn,
+  progress,
+  isLoading,
 }: IDetailStepModal) => (
   <Dialog.Modal
     size="lg"
@@ -95,7 +102,16 @@ const DetailStepModal = ({
 
     <Dialog.Actions hideDivider mt={8} gap={2}>
       <Dialog.SecondaryAction onClick={onReturn}>Cancel</Dialog.SecondaryAction>
-      <Dialog.PrimaryAction onClick={onConfirm}>Confirm</Dialog.PrimaryAction>
+      <ProgressButton
+        w="full"
+        background="button.500"
+        progressColor="white"
+        isDisabled={isLoading}
+        progress={progress}
+        onClick={onConfirm}
+      >
+        Confirm
+      </ProgressButton>
     </Dialog.Actions>
   </Dialog.Modal>
 );
@@ -227,6 +243,8 @@ export const EditResolverModal = ({
   onConfirm,
   domain,
   resolver,
+  progress,
+  isLoading,
 }: IEditResolverModal) => {
   const {
     isOpen: isOpenDetailStep,
@@ -245,13 +263,14 @@ export const EditResolverModal = ({
       isOpen={isOpenDetailStep}
       onClose={closeAll}
       onReturn={onCloseDetailStep}
-      onConfirm={() => {
-        onConfirm(newResolver);
-        closeAll();
+      onConfirm={async () => {
+        onConfirm(newResolver).then(closeAll).catch(console.log);
       }}
+      isLoading={isLoading}
       domain={domain}
       resolver={resolver}
       newResolver={newResolver}
+      progress={progress}
     />
   ) : (
     <EditResolverStepModal

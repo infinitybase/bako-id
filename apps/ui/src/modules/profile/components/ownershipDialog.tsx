@@ -12,56 +12,17 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import {
-  type DefaultError,
-  type UseMutationResult,
-  useMutation,
-} from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { isB256 } from 'fuels';
-import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { BlueWarningIcon, Dialog, useCustomToast } from '../../../components';
 import { ProgressButton } from '../../../components/buttons/progressButton.tsx';
 import { useRegistryContract } from '../../../hooks/sdk';
+import { useMutationProgress } from '../../../hooks/useMutationProgress.ts';
 
 export interface OwnershipDialogProps extends Omit<ModalProps, 'children'> {
   doamin: string;
 }
-
-const useMutationProgress = <
-  TData = unknown,
-  TError = DefaultError,
-  TVariables = unknown,
-  TContext = unknown,
->(
-  mutation: UseMutationResult<TData, TError, TVariables, TContext>
-) => {
-  const [connectProgress, setConnectProgress] = useState(0);
-
-  useEffect(() => {
-    if (mutation.status === 'pending') {
-      setConnectProgress(33);
-
-      setTimeout(() => {
-        setConnectProgress(66);
-      }, 700);
-    }
-
-    if (mutation.status === 'success') {
-      setConnectProgress(100);
-    }
-
-    if (mutation.status === 'error' || mutation.status === 'idle') {
-      setConnectProgress(0);
-    }
-
-    return () => {
-      setConnectProgress(0);
-    };
-  }, [mutation.status]);
-
-  return connectProgress;
-};
 
 export const OwnershipDialog = (props: OwnershipDialogProps) => {
   const form = useForm({
