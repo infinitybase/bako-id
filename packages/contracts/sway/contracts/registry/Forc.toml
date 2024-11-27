@@ -9,3 +9,6 @@ standards = { git = "https://github.com/FuelLabs/sway-standards", tag = "v0.6.1"
 sway_libs = { git = "https://github.com/FuelLabs/sway-libs", tag = "v0.24.0" }
 lib = { path = "../../lib" }
 
+[proxy]
+enabled = true
+address = "0xef32ff8ec4989a5ca542e178fb7899b3f65eac67b2a0f8b8a5c71e493fcc2754"

@@ -39,7 +39,10 @@ export const OwnershipCard = ({ owner, explorerUrl }: IOwnershipCard) => {
 
   const isMyDomain = useMemo(() => {
     if (!owner || !account) return false;
-    return account === Address.fromString(owner).toString();
+    return (
+      Address.fromString(account).toString() ===
+      Address.fromString(owner).toString()
+    );
   }, [account, owner]);
 
   return (

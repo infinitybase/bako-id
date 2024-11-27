@@ -7,7 +7,7 @@
   },
   "testnet": {
     "manager": "0x39140d7233297276196c49bf13c78ce056083ca8bf61af2698ee3fdeb8af1a8b",
-    "registry": "0x99861f09c4c32397baa24f9bedbfc9a10f6531b1f8c8a3ed2d28e7a083ac5e93",
+    "registry": "0xef32ff8ec4989a5ca542e178fb7899b3f65eac67b2a0f8b8a5c71e493fcc2754",
     "resolver": "0x0a48766da16bbafd1141048fced3053344307aaee7eab8dc3be290f901b3f791",
     "nft": "0x3e347cb4cd26e358e350379f25da34a7838554f7b4cd4a43fa4736af35ba64ec"
   },
