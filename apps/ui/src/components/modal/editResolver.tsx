@@ -11,8 +11,10 @@ import {
   VStack,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Suspense, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useProvider } from '@fuels/react';
+import { isB256 } from 'fuels';
+import { Suspense, useEffect, useState } from 'react';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { AddressUtils } from '../../utils/address';
 import { ProgressButton } from '../buttons/progressButton.tsx';
 import { Dialog } from '../dialog';
@@ -125,7 +127,8 @@ const EditResolverStepModal = ({
 }: IEditResolverStepModal) => {
   const {
     control,
-    formState: { errors },
+    formState: { errors, isValid },
+    setError,
   } = useForm<EditResolverValidation>({
     mode: 'all',
     reValidateMode: 'onChange',
@@ -133,6 +136,37 @@ const EditResolverStepModal = ({
       resolver: '',
     },
   });
+
+  const [isValidResolver, setIsValidResolver] = useState(false);
+  const { provider } = useProvider();
+
+  const resolver = useWatch({
+    control,
+    name: 'resolver',
+  });
+
+  useEffect(() => {
+    if (isB256(resolver) && provider) {
+      provider
+        .getAddressType(resolver)
+        .then((type) => {
+          const validAccountType = ['Account', 'Contract'].includes(type);
+          setIsValidResolver(validAccountType);
+          if (!validAccountType) {
+            setError('resolver', {
+              type: 'manual',
+              message: 'The resolver address must be an Account or Contract.',
+            });
+          }
+        })
+        .catch(() => {
+          setIsValidResolver(false);
+        });
+      return;
+    }
+
+    setIsValidResolver(false);
+  }, [resolver, provider]);
 
   return (
     <Dialog.Modal
@@ -231,7 +265,12 @@ const EditResolverStepModal = ({
         <Dialog.SecondaryAction onClick={onClose}>
           Cancel
         </Dialog.SecondaryAction>
-        <Dialog.PrimaryAction onClick={onOpen}>Save</Dialog.PrimaryAction>
+        <Dialog.PrimaryAction
+          isDisabled={!isValid || !isValidResolver}
+          onClick={onOpen}
+        >
+          Save
+        </Dialog.PrimaryAction>
       </Dialog.Actions>
     </Dialog.Modal>
   );
