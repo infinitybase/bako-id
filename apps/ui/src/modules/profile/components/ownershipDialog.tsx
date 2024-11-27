@@ -71,7 +71,7 @@ export const OwnershipDialog = (props: OwnershipDialogProps) => {
       address: '',
     },
   });
-  const { successToast } = useCustomToast();
+  const { successToast, errorToast } = useCustomToast();
   const registryContract = useRegistryContract();
 
   const mutation = useMutation({
@@ -86,12 +86,18 @@ export const OwnershipDialog = (props: OwnershipDialogProps) => {
     onSuccess: () => {
       form.reset({ address: '' });
       successToast({
-        title: 'Ownership changed',
-        description: 'The ownership of the domain has been changed',
+        title: 'Transaction success',
+        description: 'The owner of the handle has been updated',
       });
       setTimeout(() => {
         props.onClose();
       }, 700);
+    },
+    onError: () => {
+      errorToast({
+        title: 'Transaction error',
+        description: 'An error occurred while updating the owner',
+      });
     },
   });
 
