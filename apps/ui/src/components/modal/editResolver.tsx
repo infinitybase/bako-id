@@ -255,7 +255,7 @@ const EditResolverStepModal = ({
                           </UnorderedList>
                         }
                       >
-                        <InfoIcon w={4} h={4} color="section.200" mb={0.5} />
+                        <InfoIcon w={4} h={4} color="error.500" mb={0.5} />
                       </BakoTooltip>
                     ) : (
                       <></>
