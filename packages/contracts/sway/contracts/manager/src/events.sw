@@ -3,7 +3,10 @@ library;
 use std::string::String;
 use std::block::timestamp;
 
-pub struct NewRecordEvent {
+pub struct ManagerLogEvent {
+    /// the function name
+    pub fnname: String,
+
     /// the name string
     pub name: String,
 

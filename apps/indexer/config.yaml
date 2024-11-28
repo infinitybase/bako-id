@@ -13,3 +13,7 @@ networks:
     events:
     - name: ManagerLogEvent
       logId: '11146364172429795543'
+    - name: OwnerChangedEvent
+      logId: '4160095253491321915'
+    - name: ResolverChangedEvent
+      logId: '2059351015524214332'

@@ -3,15 +3,14 @@ contract;
 mod events;
 
 use std::string::String;
-use std::hash::{sha256, Hash};
+use std::hash::{Hash, sha256};
 use std::storage::storage_string::*;
 use std::block::timestamp;
 use sway_libs::{admin::*, ownership::*};
 use standards::src5::{SRC5, State};
 
-use lib::abis::manager::{RecordData, Manager, ManagerInfo};
-use events::{NewRecordEvent, OwnerChangedEvent, ResolverChangedEvent};
-
+use lib::abis::manager::{Manager, ManagerInfo, RecordData};
+use events::{ManagerLogEvent, OwnerChangedEvent, ResolverChangedEvent};
 
 storage {
     records_data: StorageMap<b256, RecordData> = StorageMap {},
@@ -34,12 +33,12 @@ fn only_owner_or_admin() {
 
     require(
         owner != State::Uninitialized,
-        ManagerError::ContractNotInitialized
+        ManagerError::ContractNotInitialized,
     );
 
     require(
         owner == State::Initialized(msg_sender().unwrap()) || is_admin(sender),
-        ManagerError::OnlyOwner
+        ManagerError::OnlyOwner,
     );
 }
 
@@ -55,11 +54,13 @@ impl Manager for Contract {
         storage.records_name.insert(name_hash, StorageString {});
         storage.records_name.get(name_hash).write_slice(name);
 
-        if (storage.records_resolver.get(data.resolver).try_read().is_none()) {
+        if (storage.records_resolver.get(data.resolver).try_read().is_none())
+        {
             storage.records_resolver.insert(data.resolver, name_hash);
         }
 
-        log(NewRecordEvent {
+        log(ManagerLogEvent {
+            fnname: String::from_ascii_str("set_record"),
             name,
             owner: data.owner,
             resolver: data.resolver,
@@ -67,7 +68,6 @@ impl Manager for Contract {
             timestamp: timestamp(),
             period: data.period,
         });
-
     }
 
     #[storage(read, write)]
@@ -78,8 +78,12 @@ impl Manager for Contract {
         require(record_data.is_some(), ManagerError::RecordNotFound);
 
         require(
-            storage.records_resolver.get(resolver).try_read().is_none(),
-            ManagerError::ResolverAlreadyInUse
+            storage
+                .records_resolver
+                .get(resolver)
+                .try_read()
+                .is_none(),
+            ManagerError::ResolverAlreadyInUse,
         );
 
         let mut records_data = record_data.unwrap();

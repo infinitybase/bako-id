@@ -41,8 +41,8 @@ export type AddressInput = { bits: string };
 export type AddressOutput = AddressInput;
 export type ContractIdInput = { bits: string };
 export type ContractIdOutput = ContractIdInput;
-export type NewRecordEventInput = { name: StdString, owner: IdentityInput, resolver: IdentityInput, name_hash: string, timestamp: BigNumberish, period: BigNumberish };
-export type NewRecordEventOutput = { name: StdString, owner: IdentityOutput, resolver: IdentityOutput, name_hash: string, timestamp: BN, period: number };
+export type ManagerLogEventInput = { fnname: StdString, name: StdString, owner: IdentityInput, resolver: IdentityInput, name_hash: string, timestamp: BigNumberish, period: BigNumberish };
+export type ManagerLogEventOutput = { fnname: StdString, name: StdString, owner: IdentityOutput, resolver: IdentityOutput, name_hash: string, timestamp: BN, period: number };
 export type OwnerChangedEventInput = { name: StdString, name_hash: string, old_owner: IdentityInput, new_owner: IdentityInput };
 export type OwnerChangedEventOutput = { name: StdString, name_hash: string, old_owner: IdentityOutput, new_owner: IdentityOutput };
 export type OwnershipSetInput = { new_owner: IdentityInput };
@@ -113,8 +113,8 @@ const abi = {
       "metadataTypeId": 6
     },
     {
-      "type": "struct events::NewRecordEvent",
-      "concreteTypeId": "9557377d8eacf04082e65f85e3075fac7f54d73428f6a779c7768060c36dbd89",
+      "type": "struct events::ManagerLogEvent",
+      "concreteTypeId": "9aafd728aad1a0d76d5874a850f257bf49c6d7b6979517e19b53496080e902e9",
       "metadataTypeId": 9
     },
     {
@@ -257,9 +257,13 @@ const abi = {
       "metadataTypeId": 8
     },
     {
-      "type": "struct events::NewRecordEvent",
+      "type": "struct events::ManagerLogEvent",
       "metadataTypeId": 9,
       "components": [
+        {
+          "name": "fnname",
+          "typeId": 17
+        },
         {
           "name": "name",
           "typeId": 17
@@ -689,8 +693,8 @@ const abi = {
       "concreteTypeId": "39bba09788238c3baa4c4b8b27b80b5233e43c9ec834a34db38a901a76a9f13c"
     },
     {
-      "logId": "10761130847029227584",
-      "concreteTypeId": "9557377d8eacf04082e65f85e3075fac7f54d73428f6a779c7768060c36dbd89"
+      "logId": "11146364172429795543",
+      "concreteTypeId": "9aafd728aad1a0d76d5874a850f257bf49c6d7b6979517e19b53496080e902e9"
     },
     {
       "logId": "2059351015524214332",
