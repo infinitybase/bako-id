@@ -266,7 +266,7 @@ const EditResolverStepModal = ({
               </Box>
             </FormControl>
           </VStack>
-          {warningMessage && !errors.resolver?.message && (
+          {warningMessage && isValidResolver && !errors.resolver?.message && (
             <Alert.Warning message={warningMessage} />
           )}
         </Dialog.Body>
@@ -277,7 +277,7 @@ const EditResolverStepModal = ({
           Cancel
         </Dialog.SecondaryAction>
         <Dialog.PrimaryAction
-          isDisabled={!isValid || !isValidResolver}
+          isDisabled={!isValid || !isValidResolver || !!warningMessage}
           onClick={onOpen}
         >
           Save
