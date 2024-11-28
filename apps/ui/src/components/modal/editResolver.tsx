@@ -12,10 +12,11 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useProvider } from '@fuels/react';
-import { isB256 } from 'fuels';
+import { Address, isB256 } from 'fuels';
 import { Suspense, useEffect, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { AddressUtils } from '../../utils/address';
+import { AddressUtils, CHECKSUM_MESSAGE } from '../../utils/address';
+import { Alert } from '../alert';
 import { ProgressButton } from '../buttons/progressButton.tsx';
 import { Dialog } from '../dialog';
 import { BakoTooltip } from '../helpers';
@@ -138,6 +139,7 @@ const EditResolverStepModal = ({
   });
 
   const [isValidResolver, setIsValidResolver] = useState(false);
+  const [warningMessage, setWarningMessage] = useState<string | undefined>();
   const { provider } = useProvider();
 
   const resolver = useWatch({
@@ -145,6 +147,7 @@ const EditResolverStepModal = ({
     name: 'resolver',
   });
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (isB256(resolver) && provider) {
       provider
@@ -162,9 +165,14 @@ const EditResolverStepModal = ({
         .catch(() => {
           setIsValidResolver(false);
         });
+
+      const checksumValid = Address.isChecksumValid(resolver);
+      setWarningMessage(checksumValid ? undefined : CHECKSUM_MESSAGE);
+
       return;
     }
 
+    setWarningMessage(undefined);
     setIsValidResolver(false);
   }, [resolver, provider]);
 
@@ -258,6 +266,9 @@ const EditResolverStepModal = ({
               </Box>
             </FormControl>
           </VStack>
+          {warningMessage && !errors.resolver?.message && (
+            <Alert.Warning message={warningMessage} />
+          )}
         </Dialog.Body>
       </Suspense>
 
