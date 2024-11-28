@@ -36,11 +36,11 @@ const baseStyle = defineStyle({
     _blur: {
       background: 'dark.250',
     },
-
     _placeholder: {
       color: 'grey.200',
       fontWeight: 'medium',
     },
+    _invalid: inputInvalidStyle,
   },
   addon: {},
   element: {},

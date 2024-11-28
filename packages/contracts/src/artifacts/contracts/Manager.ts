@@ -32,8 +32,8 @@ export type IdentityInput = Enum<{ Address: AddressInput, ContractId: ContractId
 export type IdentityOutput = Enum<{ Address: AddressOutput, ContractId: ContractIdOutput }>;
 export enum InitializationErrorInput { CannotReinitialized = 'CannotReinitialized' };
 export enum InitializationErrorOutput { CannotReinitialized = 'CannotReinitialized' };
-export enum ManagerErrorInput { OnlyOwner = 'OnlyOwner', RecordNotFound = 'RecordNotFound', RecordAlreadyExists = 'RecordAlreadyExists', ContractNotInitialized = 'ContractNotInitialized' };
-export enum ManagerErrorOutput { OnlyOwner = 'OnlyOwner', RecordNotFound = 'RecordNotFound', RecordAlreadyExists = 'RecordAlreadyExists', ContractNotInitialized = 'ContractNotInitialized' };
+export enum ManagerErrorInput { OnlyOwner = 'OnlyOwner', RecordNotFound = 'RecordNotFound', RecordAlreadyExists = 'RecordAlreadyExists', ContractNotInitialized = 'ContractNotInitialized', ResolverAlreadyInUse = 'ResolverAlreadyInUse' };
+export enum ManagerErrorOutput { OnlyOwner = 'OnlyOwner', RecordNotFound = 'RecordNotFound', RecordAlreadyExists = 'RecordAlreadyExists', ContractNotInitialized = 'ContractNotInitialized', ResolverAlreadyInUse = 'ResolverAlreadyInUse' };
 export type StateInput = Enum<{ Uninitialized: undefined, Initialized: IdentityInput, Revoked: undefined }>;
 export type StateOutput = Enum<{ Uninitialized: void, Initialized: IdentityOutput, Revoked: void }>;
 
@@ -41,14 +41,18 @@ export type AddressInput = { bits: string };
 export type AddressOutput = AddressInput;
 export type ContractIdInput = { bits: string };
 export type ContractIdOutput = ContractIdInput;
-export type ManagerLogEventInput = { fnname: StdString, name: StdString, owner: IdentityInput, resolver: IdentityInput, name_hash: string, timestamp: BigNumberish, period: BigNumberish };
-export type ManagerLogEventOutput = { fnname: StdString, name: StdString, owner: IdentityOutput, resolver: IdentityOutput, name_hash: string, timestamp: BN, period: number };
+export type NewRecordEventInput = { name: StdString, owner: IdentityInput, resolver: IdentityInput, name_hash: string, timestamp: BigNumberish, period: BigNumberish };
+export type NewRecordEventOutput = { name: StdString, owner: IdentityOutput, resolver: IdentityOutput, name_hash: string, timestamp: BN, period: number };
+export type OwnerChangedEventInput = { name: StdString, name_hash: string, old_owner: IdentityInput, new_owner: IdentityInput };
+export type OwnerChangedEventOutput = { name: StdString, name_hash: string, old_owner: IdentityOutput, new_owner: IdentityOutput };
 export type OwnershipSetInput = { new_owner: IdentityInput };
 export type OwnershipSetOutput = { new_owner: IdentityOutput };
 export type OwnershipTransferredInput = { new_owner: IdentityInput, previous_owner: IdentityInput };
 export type OwnershipTransferredOutput = { new_owner: IdentityOutput, previous_owner: IdentityOutput };
 export type RecordDataInput = { owner: IdentityInput, resolver: IdentityInput, period: BigNumberish, timestamp: BigNumberish };
 export type RecordDataOutput = { owner: IdentityOutput, resolver: IdentityOutput, period: number, timestamp: BN };
+export type ResolverChangedEventInput = { name: StdString, name_hash: string, old_resolver: IdentityInput, new_resolver: IdentityInput };
+export type ResolverChangedEventOutput = { name: StdString, name_hash: string, old_resolver: IdentityOutput, new_resolver: IdentityOutput };
 
 const abi = {
   "programType": "contract",
@@ -109,29 +113,39 @@ const abi = {
       "metadataTypeId": 6
     },
     {
-      "type": "struct events::ManagerLogEvent",
-      "concreteTypeId": "9aafd728aad1a0d76d5874a850f257bf49c6d7b6979517e19b53496080e902e9",
+      "type": "struct events::NewRecordEvent",
+      "concreteTypeId": "9557377d8eacf04082e65f85e3075fac7f54d73428f6a779c7768060c36dbd89",
       "metadataTypeId": 9
+    },
+    {
+      "type": "struct events::OwnerChangedEvent",
+      "concreteTypeId": "39bba09788238c3baa4c4b8b27b80b5233e43c9ec834a34db38a901a76a9f13c",
+      "metadataTypeId": 10
+    },
+    {
+      "type": "struct events::ResolverChangedEvent",
+      "concreteTypeId": "1c9448d67429263ce86f33b8c35db64a7aaf74d408d085047883f527427b6ad0",
+      "metadataTypeId": 11
     },
     {
       "type": "struct lib::abis::manager::RecordData",
       "concreteTypeId": "a06087fea05d71c273e06e235102af0ef06e08660df4f94ecbe49e7f96ab4635",
-      "metadataTypeId": 10
+      "metadataTypeId": 12
     },
     {
       "type": "struct std::string::String",
       "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c",
-      "metadataTypeId": 15
+      "metadataTypeId": 17
     },
     {
       "type": "struct sway_libs::ownership::events::OwnershipSet",
       "concreteTypeId": "e1ef35033ea9d2956f17c3292dea4a46ce7d61fdf37bbebe03b7b965073f43b5",
-      "metadataTypeId": 16
+      "metadataTypeId": 18
     },
     {
       "type": "struct sway_libs::ownership::events::OwnershipTransferred",
       "concreteTypeId": "b3fffbcb3158d7c010c31b194b60fb7857adb4ad61bdcf4b8b42958951d9f308",
-      "metadataTypeId": 17
+      "metadataTypeId": 19
     }
   ],
   "metadataTypes": [
@@ -157,6 +171,10 @@ const abi = {
         },
         {
           "name": "ContractNotInitialized",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "ResolverAlreadyInUse",
           "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
         }
       ]
@@ -195,11 +213,11 @@ const abi = {
       "components": [
         {
           "name": "Address",
-          "typeId": 11
+          "typeId": 13
         },
         {
           "name": "ContractId",
-          "typeId": 14
+          "typeId": 16
         }
       ]
     },
@@ -239,16 +257,12 @@ const abi = {
       "metadataTypeId": 8
     },
     {
-      "type": "struct events::ManagerLogEvent",
+      "type": "struct events::NewRecordEvent",
       "metadataTypeId": 9,
       "components": [
         {
-          "name": "fnname",
-          "typeId": 15
-        },
-        {
           "name": "name",
-          "typeId": 15
+          "typeId": 17
         },
         {
           "name": "owner",
@@ -264,17 +278,61 @@ const abi = {
         },
         {
           "name": "timestamp",
-          "typeId": 19
+          "typeId": 21
         },
         {
           "name": "period",
-          "typeId": 18
+          "typeId": 20
+        }
+      ]
+    },
+    {
+      "type": "struct events::OwnerChangedEvent",
+      "metadataTypeId": 10,
+      "components": [
+        {
+          "name": "name",
+          "typeId": 17
+        },
+        {
+          "name": "name_hash",
+          "typeId": 0
+        },
+        {
+          "name": "old_owner",
+          "typeId": 4
+        },
+        {
+          "name": "new_owner",
+          "typeId": 4
+        }
+      ]
+    },
+    {
+      "type": "struct events::ResolverChangedEvent",
+      "metadataTypeId": 11,
+      "components": [
+        {
+          "name": "name",
+          "typeId": 17
+        },
+        {
+          "name": "name_hash",
+          "typeId": 0
+        },
+        {
+          "name": "old_resolver",
+          "typeId": 4
+        },
+        {
+          "name": "new_resolver",
+          "typeId": 4
         }
       ]
     },
     {
       "type": "struct lib::abis::manager::RecordData",
-      "metadataTypeId": 10,
+      "metadataTypeId": 12,
       "components": [
         {
           "name": "owner",
@@ -286,17 +344,17 @@ const abi = {
         },
         {
           "name": "period",
-          "typeId": 18
+          "typeId": 20
         },
         {
           "name": "timestamp",
-          "typeId": 19
+          "typeId": 21
         }
       ]
     },
     {
       "type": "struct std::address::Address",
-      "metadataTypeId": 11,
+      "metadataTypeId": 13,
       "components": [
         {
           "name": "bits",
@@ -306,21 +364,21 @@ const abi = {
     },
     {
       "type": "struct std::bytes::Bytes",
-      "metadataTypeId": 12,
+      "metadataTypeId": 14,
       "components": [
         {
           "name": "buf",
-          "typeId": 13
+          "typeId": 15
         },
         {
           "name": "len",
-          "typeId": 19
+          "typeId": 21
         }
       ]
     },
     {
       "type": "struct std::bytes::RawBytes",
-      "metadataTypeId": 13,
+      "metadataTypeId": 15,
       "components": [
         {
           "name": "ptr",
@@ -328,13 +386,13 @@ const abi = {
         },
         {
           "name": "cap",
-          "typeId": 19
+          "typeId": 21
         }
       ]
     },
     {
       "type": "struct std::contract_id::ContractId",
-      "metadataTypeId": 14,
+      "metadataTypeId": 16,
       "components": [
         {
           "name": "bits",
@@ -344,17 +402,17 @@ const abi = {
     },
     {
       "type": "struct std::string::String",
-      "metadataTypeId": 15,
+      "metadataTypeId": 17,
       "components": [
         {
           "name": "bytes",
-          "typeId": 12
+          "typeId": 14
         }
       ]
     },
     {
       "type": "struct sway_libs::ownership::events::OwnershipSet",
-      "metadataTypeId": 16,
+      "metadataTypeId": 18,
       "components": [
         {
           "name": "new_owner",
@@ -364,7 +422,7 @@ const abi = {
     },
     {
       "type": "struct sway_libs::ownership::events::OwnershipTransferred",
-      "metadataTypeId": 17,
+      "metadataTypeId": 19,
       "components": [
         {
           "name": "new_owner",
@@ -378,14 +436,37 @@ const abi = {
     },
     {
       "type": "u16",
-      "metadataTypeId": 18
+      "metadataTypeId": 20
     },
     {
       "type": "u64",
-      "metadataTypeId": 19
+      "metadataTypeId": 21
     }
   ],
   "functions": [
+    {
+      "inputs": [
+        {
+          "name": "name",
+          "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c"
+        },
+        {
+          "name": "owner",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        }
+      ],
+      "name": "set_owner",
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read",
+            "write"
+          ]
+        }
+      ]
+    },
     {
       "inputs": [
         {
@@ -604,8 +685,16 @@ const abi = {
       "concreteTypeId": "00b1211efa160123969a7efe1d4597cdb9c6b6e4b311f933e55760a79e7c28fb"
     },
     {
-      "logId": "11146364172429795543",
-      "concreteTypeId": "9aafd728aad1a0d76d5874a850f257bf49c6d7b6979517e19b53496080e902e9"
+      "logId": "4160095253491321915",
+      "concreteTypeId": "39bba09788238c3baa4c4b8b27b80b5233e43c9ec834a34db38a901a76a9f13c"
+    },
+    {
+      "logId": "10761130847029227584",
+      "concreteTypeId": "9557377d8eacf04082e65f85e3075fac7f54d73428f6a779c7768060c36dbd89"
+    },
+    {
+      "logId": "2059351015524214332",
+      "concreteTypeId": "1c9448d67429263ce86f33b8c35db64a7aaf74d408d085047883f527427b6ad0"
     },
     {
       "logId": "2161305517876418151",
@@ -636,6 +725,7 @@ export class ManagerInterface extends Interface {
   }
 
   declare functions: {
+    set_owner: FunctionFragment;
     set_record: FunctionFragment;
     set_resolver: FunctionFragment;
     get_name: FunctionFragment;
@@ -656,6 +746,7 @@ export class Manager extends Contract {
 
   declare interface: ManagerInterface;
   declare functions: {
+    set_owner: InvokeFunction<[name: StdString, owner: IdentityInput], void>;
     set_record: InvokeFunction<[name: StdString, data: RecordDataInput], void>;
     set_resolver: InvokeFunction<[name: StdString, resolver: IdentityInput], void>;
     get_name: InvokeFunction<[resolver: IdentityInput], Option<StdString>>;

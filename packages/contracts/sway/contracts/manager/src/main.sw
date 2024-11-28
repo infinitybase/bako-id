@@ -10,7 +10,7 @@ use sway_libs::{admin::*, ownership::*};
 use standards::src5::{SRC5, State};
 
 use lib::abis::manager::{RecordData, Manager, ManagerInfo};
-use events::{ManagerLogEvent};
+use events::{NewRecordEvent, OwnerChangedEvent, ResolverChangedEvent};
 
 
 storage {
@@ -24,6 +24,7 @@ enum ManagerError {
     RecordNotFound: (),
     RecordAlreadyExists: (),
     ContractNotInitialized: (),
+    ResolverAlreadyInUse: (),
 }
 
 #[storage(read)]
@@ -35,9 +36,9 @@ fn only_owner_or_admin() {
         owner != State::Uninitialized,
         ManagerError::ContractNotInitialized
     );
-    
+
     require(
-        owner == State::Initialized(msg_sender().unwrap()) || is_admin(sender), 
+        owner == State::Initialized(msg_sender().unwrap()) || is_admin(sender),
         ManagerError::OnlyOwner
     );
 }
@@ -58,8 +59,7 @@ impl Manager for Contract {
             storage.records_resolver.insert(data.resolver, name_hash);
         }
 
-        log(ManagerLogEvent {
-            fnname: String::from_ascii_str("set_record"),
+        log(NewRecordEvent {
             name,
             owner: data.owner,
             resolver: data.resolver,
@@ -77,13 +77,47 @@ impl Manager for Contract {
         let record_data = storage.records_data.get(name_hash).try_read();
         require(record_data.is_some(), ManagerError::RecordNotFound);
 
-        if (storage.records_resolver.get(resolver).try_read().is_none()) {
-            let mut records_data = record_data.unwrap();
-            records_data.resolver = resolver;
+        require(
+            storage.records_resolver.get(resolver).try_read().is_none(),
+            ManagerError::ResolverAlreadyInUse
+        );
 
-            storage.records_data.insert(name_hash, records_data);
-            storage.records_resolver.insert(resolver, name_hash);
-        }
+        let mut records_data = record_data.unwrap();
+        let old_resolver = records_data.resolver;
+
+        records_data.resolver = resolver;
+
+        storage.records_resolver.remove(old_resolver);
+        storage.records_data.insert(name_hash, records_data);
+        storage.records_resolver.insert(resolver, name_hash);
+
+        log(ResolverChangedEvent {
+            name,
+            name_hash,
+            old_resolver,
+            new_resolver: resolver,
+        });
+    }
+
+    #[storage(read, write)]
+    fn set_owner(name: String, owner: Identity) {
+        only_owner_or_admin();
+        let name_hash = sha256(name);
+        let record_data = storage.records_data.get(name_hash).try_read();
+        require(record_data.is_some(), ManagerError::RecordNotFound);
+
+        let mut record_data = record_data.unwrap();
+        let old_owner = record_data.owner;
+        record_data.owner = owner;
+
+        storage.records_data.insert(name_hash, record_data);
+
+        log(OwnerChangedEvent {
+            name,
+            name_hash,
+            old_owner,
+            new_owner: owner,
+        });
     }
 }
 
@@ -98,7 +132,7 @@ impl ManagerInfo for Contract {
     fn get_resolver(name: String) -> Option<Identity> {
         let name_hash = sha256(name);
         let record_data = storage.records_data.get(name_hash).try_read();
-        
+
         match record_data {
             Some(data) => Some(data.resolver),
             None => None,
@@ -109,7 +143,7 @@ impl ManagerInfo for Contract {
     fn get_owner(name: String) -> Option<Identity> {
         let name_hash = sha256(name);
         let record_data = storage.records_data.get(name_hash).try_read();
-        
+
         match record_data {
             Some(data) => Some(data.owner),
             None => None,
@@ -144,7 +178,7 @@ impl Constructor for Contract {
 abi Admin {
     #[storage(read, write)]
     fn revoke_admin(admin: Identity);
-    
+
     #[storage(read, write)]
     fn add_admin(admin: Identity);
 

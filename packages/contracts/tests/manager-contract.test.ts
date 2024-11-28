@@ -150,6 +150,15 @@ describe('[METHODS] Resolver Contract', () => {
       .get_resolver(domain)
       .get();
     expect(resolverAddress?.Address?.bits).toBe(newResolver.address.toB256());
+
+    await expect(async () => {
+      const { waitForResult: waitForResult1 } = await manager.functions
+        .set_resolver(domain, {
+          Address: { bits: newResolver.address.toB256() },
+        })
+        .call();
+      await waitForResult1();
+    }).rejects.toThrow(/ResolverAlreadyInUse/);
   });
 
   it('should get a record infos correctly', async () => {

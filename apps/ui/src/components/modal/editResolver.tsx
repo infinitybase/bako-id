@@ -11,9 +11,13 @@ import {
   VStack,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Suspense, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { AddressUtils } from '../../utils/address';
+import { useProvider } from '@fuels/react';
+import { Address, isB256 } from 'fuels';
+import { Suspense, useEffect, useState } from 'react';
+import { Controller, useForm, useWatch } from 'react-hook-form';
+import { AddressUtils, CHECKSUM_MESSAGE } from '../../utils/address';
+import { Alert } from '../alert';
+import { ProgressButton } from '../buttons/progressButton.tsx';
 import { Dialog } from '../dialog';
 import { BakoTooltip } from '../helpers';
 import { InfoIcon } from '../icons/infoIcon';
@@ -22,9 +26,11 @@ import { TextValue } from '../inputs';
 interface IEditResolverModal {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (resolver: string) => void;
+  onConfirm: (resolver: string) => Promise<void>;
   domain: string;
   resolver: string;
+  progress: number;
+  isLoading?: boolean;
 }
 
 interface IDetailStepModal {
@@ -35,6 +41,8 @@ interface IDetailStepModal {
   domain: string;
   resolver: string;
   newResolver: string;
+  progress: number;
+  isLoading?: boolean;
 }
 
 interface IEditResolverStepModal {
@@ -57,6 +65,8 @@ const DetailStepModal = ({
   onClose,
   onConfirm,
   onReturn,
+  progress,
+  isLoading,
 }: IDetailStepModal) => (
   <Dialog.Modal
     size="lg"
@@ -95,7 +105,16 @@ const DetailStepModal = ({
 
     <Dialog.Actions hideDivider mt={8} gap={2}>
       <Dialog.SecondaryAction onClick={onReturn}>Cancel</Dialog.SecondaryAction>
-      <Dialog.PrimaryAction onClick={onConfirm}>Confirm</Dialog.PrimaryAction>
+      <ProgressButton
+        w="full"
+        background="button.500"
+        progressColor="white"
+        isDisabled={isLoading}
+        progress={progress}
+        onClick={onConfirm}
+      >
+        Confirm
+      </ProgressButton>
     </Dialog.Actions>
   </Dialog.Modal>
 );
@@ -109,7 +128,8 @@ const EditResolverStepModal = ({
 }: IEditResolverStepModal) => {
   const {
     control,
-    formState: { errors },
+    formState: { errors, isValid },
+    setError,
   } = useForm<EditResolverValidation>({
     mode: 'all',
     reValidateMode: 'onChange',
@@ -117,6 +137,44 @@ const EditResolverStepModal = ({
       resolver: '',
     },
   });
+
+  const [isValidResolver, setIsValidResolver] = useState(false);
+  const [warningMessage, setWarningMessage] = useState<string | undefined>();
+  const { provider } = useProvider();
+
+  const resolver = useWatch({
+    control,
+    name: 'resolver',
+  });
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (isB256(resolver) && provider) {
+      provider
+        .getAddressType(resolver)
+        .then((type) => {
+          const validAccountType = ['Account', 'Contract'].includes(type);
+          setIsValidResolver(validAccountType);
+          if (!validAccountType) {
+            setError('resolver', {
+              type: 'manual',
+              message: 'The resolver address must be an Account or Contract.',
+            });
+          }
+        })
+        .catch(() => {
+          setIsValidResolver(false);
+        });
+
+      const checksumValid = Address.isChecksumValid(resolver);
+      setWarningMessage(checksumValid ? undefined : CHECKSUM_MESSAGE);
+
+      return;
+    }
+
+    setWarningMessage(undefined);
+    setIsValidResolver(false);
+  }, [resolver, provider]);
 
   return (
     <Dialog.Modal
@@ -197,7 +255,7 @@ const EditResolverStepModal = ({
                           </UnorderedList>
                         }
                       >
-                        <InfoIcon w={4} h={4} color="section.200" mb={0.5} />
+                        <InfoIcon w={4} h={4} color="error.500" mb={0.5} />
                       </BakoTooltip>
                     ) : (
                       <></>
@@ -208,6 +266,9 @@ const EditResolverStepModal = ({
               </Box>
             </FormControl>
           </VStack>
+          {warningMessage && isValidResolver && !errors.resolver?.message && (
+            <Alert.Warning message={warningMessage} />
+          )}
         </Dialog.Body>
       </Suspense>
 
@@ -215,7 +276,12 @@ const EditResolverStepModal = ({
         <Dialog.SecondaryAction onClick={onClose}>
           Cancel
         </Dialog.SecondaryAction>
-        <Dialog.PrimaryAction onClick={onOpen}>Save</Dialog.PrimaryAction>
+        <Dialog.PrimaryAction
+          isDisabled={!isValid || !isValidResolver || !!warningMessage}
+          onClick={onOpen}
+        >
+          Save
+        </Dialog.PrimaryAction>
       </Dialog.Actions>
     </Dialog.Modal>
   );
@@ -227,6 +293,8 @@ export const EditResolverModal = ({
   onConfirm,
   domain,
   resolver,
+  progress,
+  isLoading,
 }: IEditResolverModal) => {
   const {
     isOpen: isOpenDetailStep,
@@ -245,13 +313,14 @@ export const EditResolverModal = ({
       isOpen={isOpenDetailStep}
       onClose={closeAll}
       onReturn={onCloseDetailStep}
-      onConfirm={() => {
-        onConfirm(newResolver);
-        closeAll();
+      onConfirm={async () => {
+        onConfirm(newResolver).then(closeAll).catch(console.log);
       }}
+      isLoading={isLoading}
       domain={domain}
       resolver={resolver}
       newResolver={newResolver}
+      progress={progress}
     />
   ) : (
     <EditResolverStepModal

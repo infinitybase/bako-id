@@ -1,3 +1,5 @@
+import type { Identity } from '@/types';
+
 export const validateNetwork = (network: string) => {
   const networks: Record<string, { url: string; chainId: number }> = {
     mainnet: {
@@ -23,4 +25,18 @@ export const validateNetwork = (network: string) => {
   }
 
   return networkChainId;
+};
+
+export const identity = (identity: Identity) => {
+  if (identity.Address) {
+    return {
+      address: identity.Address.bits,
+      type: 'address',
+    };
+  }
+
+  return {
+    address: identity.ContractId.bits,
+    type: 'contract',
+  };
 };

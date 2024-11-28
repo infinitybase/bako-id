@@ -518,6 +518,52 @@ const abi = {
         {
           "name": "name",
           "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c"
+        },
+        {
+          "name": "owner",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        }
+      ],
+      "name": "set_owner",
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "write",
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "name",
+          "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c"
+        },
+        {
+          "name": "resolver",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        }
+      ],
+      "name": "set_resolver",
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "write",
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "name",
+          "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c"
         }
       ],
       "name": "timestamp",
@@ -735,6 +781,8 @@ export class RegistryInterface extends Interface {
   declare functions: {
     register: FunctionFragment;
     set_metadata_info: FunctionFragment;
+    set_owner: FunctionFragment;
+    set_resolver: FunctionFragment;
     timestamp: FunctionFragment;
     ttl: FunctionFragment;
     constructor: FunctionFragment;
@@ -755,6 +803,8 @@ export class Registry extends Contract {
   declare functions: {
     register: InvokeFunction<[name: StdString, resolver: IdentityInput, period: BigNumberish], void>;
     set_metadata_info: InvokeFunction<[name: StdString, key: StdString, value: MetadataInput], void>;
+    set_owner: InvokeFunction<[name: StdString, owner: IdentityInput], void>;
+    set_resolver: InvokeFunction<[name: StdString, resolver: IdentityInput], void>;
     timestamp: InvokeFunction<[name: StdString], Option<BN>>;
     ttl: InvokeFunction<[name: StdString], Option<BN>>;
     constructor: InvokeFunction<[owner: AddressInput, manager_id: ContractIdInput, token_id: ContractIdInput], void>;

@@ -15,6 +15,9 @@ abi Manager {
 
     #[storage(read, write)]
     fn set_resolver(name: String, resolver: Identity);
+
+    #[storage(read, write)]
+    fn set_owner(name: String, owner: Identity);
 }
 
 abi ManagerInfo {

@@ -61,6 +61,9 @@ const baseStyle = defineStyle({
   borderRadius: 8,
   fontWeight: 'semibold',
   color: 'black',
+  _disabled: {
+    _hover: {},
+  },
 });
 
 const Button = defineStyleConfig({

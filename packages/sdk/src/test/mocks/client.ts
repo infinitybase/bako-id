@@ -1,6 +1,10 @@
 import { type NetworkKeys, resolveNetwork } from '@bako-id/contracts';
-import { Address, type Provider, hashMessage } from 'fuels';
-import type { OffChainData, RegisterInput } from '../../methods';
+import { Address, type Provider, hashMessage, isB256 } from 'fuels';
+import type {
+  ChangeAddressInput,
+  OffChainData,
+  RegisterInput,
+} from '../../methods';
 
 export class BakoIDClientMock {
   static list: Map<string, OffChainData> = new Map();
@@ -30,17 +34,60 @@ export class BakoIDClientMock {
       resolverData.resolversAddress[params.resolver] = params.domain;
     }
 
-    if (!resolverData?.records?.[params.resolver]) {
-      resolverData.records[params.resolver] = [];
+    if (!resolverData?.records?.[params.owner]) {
+      resolverData.records[params.owner] = [];
     }
 
-    resolverData.records[params.resolver].push({
+    resolverData.records[params.owner].push({
       name: params.domain,
       resolver: params.resolver,
       owner: params.resolver,
       type: 'teste',
       assetId: hashMessage(params.domain),
     });
+
+    BakoIDClientMock.list.set(this.network, resolverData);
+  }
+
+  async changeOwner(params: ChangeAddressInput) {
+    const resolverData = this.getList();
+    params.domain = params.domain.replace('@', '');
+    params.address = Address.fromDynamicInput(params.address).toB256();
+
+    const records = Object.values(resolverData.records).flat();
+    const record = records.find((r) => r.name === params.domain);
+
+    if (!record) return;
+
+    const oldOwner = record.owner;
+    record.owner = params.address;
+    resolverData.records[params.address] =
+      resolverData.records[params.address] ?? [];
+    resolverData.records[params.address].push(record);
+    resolverData.records[oldOwner] = records.filter(
+      (r) => r.name !== params.domain
+    );
+
+    BakoIDClientMock.list.set(this.network, resolverData);
+  }
+
+  async changeResolver(params: ChangeAddressInput) {
+    const resolverData = this.getList();
+    params.domain = params.domain.replace('@', '');
+    params.address = Address.fromDynamicInput(params.address).toB256();
+
+    const records = Object.values(resolverData.records).flat();
+    const record = records.find((r) => r.name === params.domain);
+
+    if (!record) return;
+
+    record.resolver = params.address;
+    resolverData.resolversName[params.domain] = params.address;
+
+    if (!resolverData.resolversAddress[params.address]) {
+      delete resolverData.resolversAddress[record.resolver];
+      resolverData.resolversAddress[params.address] = params.domain;
+    }
 
     BakoIDClientMock.list.set(this.network, resolverData);
   }
@@ -59,9 +106,14 @@ export class BakoIDClientMock {
   }
 
   async records(owner: string) {
-    const records =
-      this.getList()?.records?.[Address.fromDynamicInput(owner).toB256()] || [];
-    return records;
+    if (isB256(owner)) {
+      const records =
+        this.getList()?.records?.[Address.fromDynamicInput(owner).toB256()] ||
+        [];
+      return records;
+    }
+
+    return [];
   }
 
   private getList(): OffChainData {
