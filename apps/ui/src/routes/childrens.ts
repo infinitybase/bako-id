@@ -5,7 +5,8 @@ import { LearnMore } from '../modules/home/components/learn-more/page.tsx';
 import { Home } from '../modules/home/page.tsx';
 import { MyHandles } from '../modules/myHandles/page.tsx';
 import { More } from '../modules/profile/components/more/page.tsx';
-import { Profile } from '../modules/profile/page.tsx';
+import { ProfileExternal } from '../modules/profile/pages/external-page.tsx';
+import { ProfileInternal } from '../modules/profile/pages/internal-page.tsx';
 import { rootRoute } from './__root.ts';
 
 export const homeRoute = createRoute({
@@ -32,9 +33,9 @@ export const buyRoute = createRoute({
   path: '/buy/$domain',
 });
 
-export const profileRoute = createRoute({
+export const profileInternalRoute = createRoute({
   getParentRoute: () => rootRoute,
-  component: Profile,
+  component: ProfileInternal,
   path: '/profile/$domain',
 });
 
@@ -48,4 +49,10 @@ export const myHandlesRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: MyHandles,
   path: '/my-handles',
+});
+
+export const profileRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  component: ProfileExternal,
+  path: '/$externalDomain',
 });

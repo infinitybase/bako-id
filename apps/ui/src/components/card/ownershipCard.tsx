@@ -11,7 +11,7 @@ import { useParams } from '@tanstack/react-router';
 import { format } from 'date-fns';
 import { Address } from 'fuels';
 import { useMemo } from 'react';
-import { Card, EditIcon, TextValue } from '..';
+import { Card, EditIcon, type ICardProps, TextValue } from '..';
 import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
 import { OwnershipDialog } from '../../modules/profile/components/ownershipDialog.tsx';
 import { ExplorerTypes } from '../../types';
@@ -19,13 +19,19 @@ import { formatAddress } from '../../utils/formatter';
 import { CopyText } from '../helpers/copy';
 import { Explorer } from '../helpers/explorer';
 
-interface IOwnershipCard {
+interface IOwnershipCard extends ICardProps {
   owner: string | null;
   explorerUrl: string;
 }
-export const OwnershipCard = ({ owner, explorerUrl }: IOwnershipCard) => {
-  const { domain } = useParams({ strict: false });
-  const { dates, isLoading } = useGetGracePeriod(domain.replace('@', ''));
+export const OwnershipCard = ({
+  owner,
+  explorerUrl,
+  ...rest
+}: IOwnershipCard) => {
+  const { internalDomain, externalDomain } = useParams({ strict: false });
+  const domain = externalDomain ?? internalDomain;
+
+  const { dates, isLoading } = useGetGracePeriod(domain?.replace('@', ''));
   const { account } = useAccount();
   const queryClient = useQueryClient();
 
@@ -54,6 +60,7 @@ export const OwnershipCard = ({ owner, explorerUrl }: IOwnershipCard) => {
       backdropFilter="blur(7px)"
       flexDirection="column"
       gap={6}
+      {...rest}
     >
       <Flex alignItems="center" justify="space-between">
         <Heading fontSize="lg">Ownership</Heading>

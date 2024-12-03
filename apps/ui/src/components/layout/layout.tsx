@@ -1,4 +1,4 @@
-import { Outlet, useRouterState } from '@tanstack/react-router';
+import { Outlet, useParams, useRouterState } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import '../../theme/global.css';
 import { Header } from '../header';
@@ -20,6 +20,13 @@ const Layout = () => (
   </Container>
 );
 
+const ExternalLayout = () => (
+  <Container>
+    <Outlet />
+    {import.meta.env.NODE_ENV === 'development' && <TanStackRouterDevtools />}
+  </Container>
+);
+
 const DashboardLayout = (props: DashboardLayoutProps) => (
   <ProfileLayout {...props}>
     <Outlet />
@@ -28,6 +35,11 @@ const DashboardLayout = (props: DashboardLayoutProps) => (
 
 const MainLayout = () => {
   const { location } = useRouterState();
+  const { externalDomain } = useParams({ strict: false });
+
+  if (externalDomain) {
+    return <ExternalLayout />;
+  }
 
   if (location.pathname.includes('/profile/')) {
     return <DashboardLayout />;
@@ -36,4 +48,4 @@ const MainLayout = () => {
   return <Layout />;
 };
 
-export { DashboardLayout, Layout, MainLayout };
+export { DashboardLayout, Layout, MainLayout, ExternalLayout };

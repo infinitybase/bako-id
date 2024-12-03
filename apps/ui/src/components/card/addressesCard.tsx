@@ -1,16 +1,16 @@
 import { Flex, Heading, Icon } from '@chakra-ui/react';
 import { Address } from 'fuels';
-import { Card, TextValue } from '..';
+import { Card, type ICardProps, TextValue } from '..';
 import { formatAddress } from '../../utils/formatter';
 import { CopyText } from '../helpers/copy';
 import { FuelIcon } from '../icons/fuelIcon';
 
-interface IAddressesCard {
+interface IAddressesCard extends ICardProps {
   domain: string | null;
   explorerUrl?: string;
 }
 
-export const AddressesCard = ({ domain }: IAddressesCard) => {
+export const AddressesCard = ({ domain, ...rest }: IAddressesCard) => {
   if (!domain) return null;
 
   return (
@@ -22,6 +22,7 @@ export const AddressesCard = ({ domain }: IAddressesCard) => {
       backdropFilter="blur(7px)"
       flexDirection="column"
       gap={6}
+      {...rest}
     >
       <Flex alignItems="center" justify="space-between">
         <Heading fontSize="lg">Addresses</Heading>

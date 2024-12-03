@@ -1,18 +1,21 @@
 import { Box, Center, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { ProfileDrawer } from '../../components/drawer/profile';
-import { useScreenSize } from '../../hooks/useScreenSize';
-import { ProfileCards } from './components/profileCards';
-import { useProfile } from './hooks/useProfile';
+import { ProfileDrawer } from '../../../components';
+import { useScreenSize } from '../../../hooks/useScreenSize';
+import { ProfileCards } from '../components/profileCards';
+import { useProfile } from '../hooks/useProfile';
 
-const Profile = () => {
-  const { domain, domainParam, isLoadingDomain, owner } = useProfile();
+const ProfileInternal = () => {
+  const { domain, domainParam, isLoadingDomain, owner, isExternal } =
+    useProfile();
   const { isMobile } = useScreenSize();
   const drawer = useDisclosure();
 
   return (
     <>
-      <ProfileDrawer isOpen={drawer.isOpen} onClose={() => drawer.onClose()} />
+      {!isExternal && (
+        <ProfileDrawer isOpen={drawer.isOpen} onClose={drawer.onClose} />
+      )}
 
       <Box
         w="full"
@@ -21,9 +24,10 @@ const Profile = () => {
         position="relative"
         display="flex"
         flexDirection={['column', 'column', 'column', 'row']}
+        px={isExternal ? [3, 0] : 0}
         gap={[4, 4, 4, 6]}
       >
-        {isMobile && (
+        {isMobile && !isExternal && (
           <Flex
             onClick={() => drawer.onOpen()}
             alignItems="center"
@@ -52,12 +56,12 @@ const Profile = () => {
           <Box
             w={['full', 'full', 'full', 'full']}
             h="full"
-            maxH={['80vh', '80vh', '75vh', '80vh']}
-            display="flex"
+            display={isExternal ? 'contents' : 'flex'}
             flexDirection="column"
-            gap={12}
+            gap={6}
           >
             <ProfileCards
+              isExternal={isExternal}
               domain={domain?.Address?.bits ?? domain?.ContractId?.bits ?? ''}
               domainParam={domainParam}
               isLoading={isLoadingDomain}
@@ -70,4 +74,4 @@ const Profile = () => {
   );
 };
 
-export { Profile };
+export { ProfileInternal };
