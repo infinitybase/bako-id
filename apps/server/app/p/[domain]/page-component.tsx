@@ -184,7 +184,7 @@ const NFTCard = (props: { asset: FuelAsset }) => {
           }}
           alignItems={{
             base: 'center',
-            lg: 'flex-start',
+            md: 'flex-start',
           }}
         >
           <Box
@@ -343,7 +343,15 @@ export const NFTCollections = ({
       <Flex mb={4} alignItems="center" justify="space-between">
         <Heading fontSize="lg">NFT</Heading>
       </Flex>
-      <Grid templateColumns="repeat(5, 1fr)" gap={6}>
+      <Grid
+        templateColumns={{
+          base: 'repeat(1, 1fr)',
+          sm: 'repeat(2, 1fr)',
+          md: 'repeat(4, 1fr)',
+          lg: 'repeat(5, 1fr)',
+        }}
+        gap={6}
+      >
         {data?.map((a) => (
           <NFTCard key={`${a.contractId}-${a.subId}`} asset={a} />
         ))}
