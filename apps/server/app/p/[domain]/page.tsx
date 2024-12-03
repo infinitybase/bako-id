@@ -16,6 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!resolver) {
     return {
       title: `Bako Identity - @${domain}`,
+      description: 'Embrace your digital legacy',
     };
   }
 
@@ -28,18 +29,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!bakoIdAsset) {
     return {
       title: `@${domain} | Bako Identity`,
+      description: 'Embrace your digital legacy',
     };
   }
 
   return {
     title: `@${domain} | Bako Identity`,
+    description:
+      bakoIdAsset.metadata?.['contact:bio'] ?? 'Embrace your digital legacy',
     openGraph: {
       images: [
         bakoIdAsset.metadata?.avatar ??
           bakoIdAsset.metadata?.['image:png'] ??
           '',
       ],
-      description: bakoIdAsset.metadata?.['contact:bio'] ?? '',
+      description:
+        bakoIdAsset.metadata?.['contact:bio'] ?? 'Embrace your digital legacy',
       username: bakoIdAsset.metadata?.['contact:nickname'] ?? domain,
       title: `@${bakoIdAsset.metadata?.['contact:nickname'] ?? domain} | Bako Identity`,
       url: bakoIdAsset.metadata?.['contact:website'] ?? '',
