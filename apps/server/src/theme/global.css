@@ -1,6 +1,6 @@
 body {
   background-image: url("../assets/bg-texture.svg") !important;
-  background-position: bottom;
-  background-size: contain;
-  background-repeat: no-repeat;
+  background-position: bottom !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
 }
