@@ -277,7 +277,9 @@ const EditResolverStepModal = ({
           Cancel
         </Dialog.SecondaryAction>
         <Dialog.PrimaryAction
-          isDisabled={!isValid || !isValidResolver || !!warningMessage}
+          isDisabled={
+            !isValid || !isValidResolver || (!!warningMessage && !isValid)
+          }
           onClick={onOpen}
         >
           Save
