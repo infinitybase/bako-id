@@ -407,6 +407,7 @@ export const NFTCollections = ({
       h={['fit-content', 'fit-content', 'fit-content', 'auto']}
       display="flex"
       backdropFilter="blur(6px)"
+      backgroundColor="rgb(35 34 34)"
       cursor="pointer"
       flexDirection="column"
       boxShadow="lg"
