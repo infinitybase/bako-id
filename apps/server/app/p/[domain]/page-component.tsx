@@ -43,6 +43,8 @@ import { useParams } from 'next/navigation';
 import { type ReactNode, Suspense, useMemo } from 'react';
 import { useProfile } from './hooks';
 
+const isUrl = (url: string) => url.startsWith('https');
+
 const NFTText = ({
   value,
   title,
@@ -63,6 +65,26 @@ const NFTText = ({
     alignItems="center"
     borderRadius="md"
     background="input.600"
+    position="relative"
+    _before={
+      isUrl(value)
+        ? {
+            content: '""',
+            display: 'block',
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: '100%',
+            height: '100%',
+            opacity: 0.2,
+            backgroundImage: `url('${value}')`,
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            borderRadius: 'md',
+          }
+        : ''
+    }
     {...rest}
   >
     {icon && <Icon fontSize={25}>{icon}</Icon>}
