@@ -38,8 +38,8 @@ export const ProfileCard = ({
       <Flex w="full">
         {avatar ? (
           <Box
-            w={32}
-            h={28}
+            minW={32}
+            minH={32}
             rounded="lg"
             mr={4}
             bgImage={`url(${avatar.value})`}
