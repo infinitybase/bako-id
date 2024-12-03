@@ -41,6 +41,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           '',
       ],
       description: bakoIdAsset.metadata?.['contact:bio'] ?? '',
+      username: bakoIdAsset.metadata?.['contact:nickname'] ?? domain,
+      title: bakoIdAsset.metadata?.['contact:nickname'] ?? domain,
     },
   };
 }
