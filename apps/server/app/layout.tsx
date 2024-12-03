@@ -1,5 +1,6 @@
 export const metadata = {
   title: 'Bako Identity',
+  description: 'Embrace your digital legacy',
 };
 
 export default function RootLayout({
