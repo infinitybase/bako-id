@@ -39,9 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       bakoIdAsset.metadata?.['contact:bio'] ?? 'Embrace your digital legacy',
     openGraph: {
       images: [
-        bakoIdAsset.metadata?.avatar ??
-          bakoIdAsset.metadata?.['image:png'] ??
-          '',
+        bakoIdAsset.metadata?.avatar ?? `https://api.bako.id/p/${domain}/image`,
       ],
       description:
         bakoIdAsset.metadata?.['contact:bio'] ?? 'Embrace your digital legacy',
