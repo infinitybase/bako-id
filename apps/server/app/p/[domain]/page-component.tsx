@@ -16,7 +16,7 @@ import { AccountsCardSkeleton } from '@/components/skeletons/accountsCardSkeleto
 import { AddressCardSkeleton } from '@/components/skeletons/addressCardSkeleton';
 import { OwnershipCardSkeleton } from '@/components/skeletons/ownershipCardSkeleton';
 import { type FuelAsset, FuelAssetService } from '@/services/fuel-assets';
-import { formatAddress } from '@/utils';
+import { formatAddress, parseURI } from '@/utils';
 import { MetadataKeys } from '@bako-id/sdk';
 import {
   Box,
@@ -43,7 +43,29 @@ import { useParams } from 'next/navigation';
 import { type ReactNode, Suspense, useMemo } from 'react';
 import { useProfile } from './hooks';
 
-const isUrl = (url: string) => url.startsWith('https');
+const metadataArrayToObject = (
+  metadata: Record<string, string>[],
+  key: string
+) => {
+  return metadata
+    .map((v) => {
+      const keyValue = Object.keys(v).find((k) => k !== 'value');
+      const keyName = v[keyValue!].toLowerCase().replace(' ', '-');
+      return {
+        key: `${key}:${keyName}`,
+        value: v.value,
+      };
+    })
+    .reduce(
+      (acc, curr) => {
+        acc[curr.key] = curr.value;
+        return acc;
+      },
+      {} as Record<string, string>
+    );
+};
+
+const isUrl = (url: string) => !!url?.startsWith?.('https');
 
 const NFTText = ({
   value,
@@ -67,7 +89,7 @@ const NFTText = ({
     background="input.600"
     position="relative"
     _before={
-      isUrl(value)
+      isUrl(value) && ['image', 'avatar'].includes(title.toLowerCase())
         ? {
             content: '""',
             display: 'block',
@@ -135,26 +157,63 @@ const ProfileCardLoadingSkeleton = () => (
   </Suspense>
 );
 
+const _blacklistMetadataKeys = ['name', 'image', 'description', 'uri'];
+
 const NFTCard = (props: { asset: FuelAsset }) => {
-  const { name, contractId, assetId, metadata, uri, symbol } = props.asset;
+  const {
+    name,
+    contractId,
+    assetId,
+    metadata: defaultMetadata,
+    uri,
+    symbol,
+  } = props.asset;
   const dialog = useDisclosure();
+
+  const { data: metadata } = useQuery({
+    queryKey: ['nft-metadata', assetId],
+    queryFn: async (): Promise<Record<string, string>> => {
+      const metadata = defaultMetadata ?? {};
+
+      if (uri?.endsWith('.json')) {
+        const res = await fetch(parseURI(uri));
+        const json = await res.json();
+
+        for (const [key, value] of Object.entries(json)) {
+          if (metadata[key]) continue;
+
+          if (Array.isArray(value)) {
+            const metadataValueRecord = metadataArrayToObject(value, key);
+            Object.assign(metadata, metadataValueRecord);
+            continue;
+          }
+
+          if (metadata[key] === undefined) {
+            const matadataValue = value as string;
+            metadata[key] = matadataValue as string;
+          }
+        }
+      }
+
+      return metadata;
+    },
+    enabled: !!assetId,
+  });
 
   const image = useMemo(() => {
     let imageUri = nftEmpty.src;
 
     if (metadata) {
-      const imageKeys = ['image', 'URI', 'uri'];
+      const imageKeys = ['image'];
       const imageKey = Object.keys(metadata).find((key) =>
         imageKeys.includes(key.split(':').at(0)!)
       );
+
       imageUri = metadata[imageKey!] ?? imageUri;
-    } else if (uri) {
-      // TODO: Check uri is an image
-      imageUri = uri;
     }
 
     return imageUri;
-  }, [uri, metadata]);
+  }, [metadata]);
 
   const metadataArray = useMemo(() => {
     return Object.entries(metadata ?? {}).map(([key, value]) => ({
@@ -168,14 +227,13 @@ const NFTCard = (props: { asset: FuelAsset }) => {
       <Dialog.Modal
         hideHeader
         size={{
-          base: 'full',
+          base: '5xl',
           md: '4xl',
         }}
         onClose={dialog.onClose}
         isOpen={dialog.isOpen}
       >
         <Dialog.Body
-          id="asdasdasd"
           h="full"
           display="flex"
           flexDirection={{
@@ -203,7 +261,7 @@ const NFTCard = (props: { asset: FuelAsset }) => {
                 base: 'auto',
                 md: '400px',
               }}
-              src={image}
+              src={parseURI(image)}
               alt="NFT image"
               borderRadius="xl"
             />
@@ -250,15 +308,28 @@ const NFTCard = (props: { asset: FuelAsset }) => {
               <Box mb={6}>
                 <Heading fontSize="md">Description</Heading>
                 <Text mt={3} fontSize="sm" color="section.500">
-                  Description not provided.
+                  {metadata?.description ?? 'Description not provided.'}
                 </Text>
               </Box>
               <Box mb={6}>
                 <Heading fontSize="md">Metadata</Heading>
-                <Flex direction="row" wrap="wrap" gap={3} mt={3}>
-                  {metadataArray?.map((m) => (
-                    <NFTText key={m.key} value={m.value ?? ''} title={m.key} />
-                  ))}
+                <Flex
+                  maxH="310px"
+                  overflowY="scroll"
+                  direction="row"
+                  wrap="wrap"
+                  gap={3}
+                  mt={3}
+                >
+                  {metadataArray
+                    ?.filter((m) => !_blacklistMetadataKeys.includes(m.key))
+                    .map((m) => (
+                      <NFTText
+                        key={m.key}
+                        value={m.value ?? ''}
+                        title={m.key}
+                      />
+                    ))}
                   {metadataArray.length === 0 && (
                     <Text fontSize="sm" color="section.500">
                       Empty metadata.
@@ -277,7 +348,7 @@ const NFTCard = (props: { asset: FuelAsset }) => {
         minW={133}
         p={0}
       >
-        <Image maxW="full" src={image} />
+        <Image maxW="full" src={parseURI(image)} />
         <Box p={2} w="full">
           <Text fontSize="sm">
             {symbol ?? ''} {name ?? formatAddress(assetId!)}
