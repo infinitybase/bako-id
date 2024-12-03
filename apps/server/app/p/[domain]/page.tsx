@@ -1,6 +1,6 @@
 import { FuelAssetService } from '@/services/fuel-assets';
-import { BakoIDClient } from '@bako-id/sdk';
 import type { Metadata } from 'next';
+import { getResolver } from '../../[network]/addr/[name]/route';
 import { ProfilePage } from './page-component';
 
 type Props = {
@@ -11,8 +11,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // read route params
   const domain = (await params).domain.replace('@', '');
-  const client = new BakoIDClient(process.env.NEXT_PUBLIC_PROVIDER_URL!);
-  const resolver = await client.resolver(domain);
+  const resolver = await getResolver(domain, 'mainnet');
 
   if (!resolver) {
     return {
