@@ -70,7 +70,7 @@ const svgTemplate = `
 </svg>
 `;
 
-export function GET(req: NextRequest, _res: NextResponse) {
+export function GET(req: NextRequest) {
   const [, name] = req.nextUrl.pathname.split('/').filter((a) => !!a);
 
   return new NextResponse(svgTemplate.replace('{{name}}', name), {
