@@ -13,7 +13,7 @@
   },
   "mainnet": {
     "manager": "0x3ca7ac3db222a740e1c89158d9255afc2c3591ee3f34aedcaaf7cfeceebd0833",
-    "registry": "0x3bb2e28713f05a171dbd193d3b86a358d259b5a94cda74a6ae16e4f20d32e1b8",
+    "registry": "0x4a62d08448e5e91c954dee7244cf2ac09e790de039e96283b2aded0e96d23ec9",
     "resolver": "0x3f12590e0fbd5fa29044b54fb3af17c1441c8eda1f1a74bdbf0f03ae489c448d",
     "nft": "0x6a209d27a050740dc2539dcc41914f07c35ecb21f0c02279e85777353b474801"
   }
