@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
   body.domain = body.domain.replace('@', '');
   body.address = Address.fromDynamicInput(body.address).toB256();
 
-  const [network] = req.nextUrl.pathname.split('/').filter((a) => !!a);
+  const [, network] = req.nextUrl.pathname.split('/').filter((a) => !!a);
 
   try {
     const { chainId, url: providerUrl } = validateNetwork(network);

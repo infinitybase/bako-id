@@ -1,6 +1,6 @@
 import { FuelAssetService } from '@/services/fuel-assets';
 import type { Metadata } from 'next';
-import { getResolver } from '../../[network]/addr/[name]/resolver';
+import { getResolver } from '../api/[network]/addr/[name]/resolver';
 import { ProfilePage } from './page-component';
 
 type Props = {

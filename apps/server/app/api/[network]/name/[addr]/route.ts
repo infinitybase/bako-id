@@ -4,7 +4,9 @@ import { validateNetwork } from '@/utils';
 import { type NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
-  const [network, , addr] = req.nextUrl.pathname.split('/').filter((a) => !!a);
+  const [, network, , addr] = req.nextUrl.pathname
+    .split('/')
+    .filter((a) => !!a);
 
   try {
     const { chainId } = validateNetwork(network);

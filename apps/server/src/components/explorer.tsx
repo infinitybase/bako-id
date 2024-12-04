@@ -26,7 +26,7 @@ const Explorer = ({
       onClick={() => {
         window.open(
           redirectLink ??
-            `${explorerUrl ?? process.env.NEXT_PUBLIC_EXPLORER_URL}${id}${type}`,
+            `${explorerUrl ?? process.env.NEXT_PUBLIC_EXPLORER_URL}/account/${id}${type}`,
           '_blank'
         );
       }}

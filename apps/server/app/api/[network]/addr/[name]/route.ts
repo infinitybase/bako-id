@@ -3,7 +3,9 @@ import { type NextRequest, NextResponse } from 'next/server';
 import { getResolver } from './resolver';
 
 export async function GET(req: NextRequest) {
-  const [network, , name] = req.nextUrl.pathname.split('/').filter((a) => !!a);
+  const [, network, , name] = req.nextUrl.pathname
+    .split('/')
+    .filter((a) => !!a);
 
   try {
     const address = await getResolver(

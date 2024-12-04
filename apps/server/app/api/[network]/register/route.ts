@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   const bodyJson = await req.json();
   const body = bodyJson as RegisterInput;
 
-  const [network, , _owner] = req.nextUrl.pathname
+  const [, network, , _owner] = req.nextUrl.pathname
     .split('/')
     .filter((a) => !!a);
 
