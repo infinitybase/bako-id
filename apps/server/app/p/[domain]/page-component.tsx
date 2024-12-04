@@ -19,10 +19,13 @@ import { queryClient } from '@/providers';
 import { type FuelAsset, FuelAssetService } from '@/services/fuel-assets';
 import { formatAddress, parseURI } from '@/utils';
 import { MetadataKeys } from '@bako-id/sdk';
+import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons';
 import {
   Box,
+  Button,
   Center,
   CloseButton,
+  Collapse,
   Flex,
   type FlexProps,
   Grid,
@@ -41,7 +44,7 @@ import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { Address, ZeroBytes32, isB256 } from 'fuels';
 import { useParams } from 'next/navigation';
-import { type ReactNode, Suspense, useMemo } from 'react';
+import { type ReactNode, Suspense, useMemo, useState } from 'react';
 import { useProfile } from './hooks';
 
 const metadataArrayToObject = (
@@ -507,6 +510,8 @@ export function ProfilePage() {
   const params = useParams();
   const domain = (params.domain as string).replace('@', '');
 
+  const [shouwAccounts, setShouwAccounts] = useState(false);
+
   const { metadata, owner, isLoading, explorerUrl, dates, resolver, provider } =
     useProfile(domain);
 
@@ -521,6 +526,10 @@ export function ProfilePage() {
 
     return <CopyText value={value} />;
   };
+
+  const metadataAccount =
+    metadata?.filter((data) => !avoidKeys.includes(data.key as MetadataKeys)) ??
+    [];
 
   return (
     <Center
@@ -567,12 +576,12 @@ export function ProfilePage() {
               base: 'column',
               sm: 'row',
             }}
+            h="full"
             gap={3}
-            alignItems="flex-start"
+            alignItems="stretch"
           >
             <Card
               w="full"
-              h="full"
               p={6}
               display="flex"
               backdropFilter="blur(7px)"
@@ -623,7 +632,6 @@ export function ProfilePage() {
             </Card>
             <Card
               w="full"
-              h="full"
               p={6}
               display="flex"
               backdropFilter="blur(7px)"
@@ -660,48 +668,84 @@ export function ProfilePage() {
             display="flex"
             backdropFilter="blur(6px)"
             flexDirection="column"
+            position="relative"
+            paddingBottom={(metadataAccount.length ?? 0) < 5 ? 0 : 8}
           >
             <Flex alignItems="center" justify="space-between">
               <Heading fontSize="lg">Accounts</Heading>
             </Flex>
 
-            {metadata?.filter(
-              (data) => !avoidKeys.includes(data.key as MetadataKeys)
-            ).length ? (
-              <VStack spacing={5} h="full" mt={6}>
-                {metadata?.map((m) => {
-                  const variant = {
-                    key: m.key as MetadataKeys,
-                    value: m.value,
-                  };
+            <Collapse startingHeight={334} in={shouwAccounts}>
+              {metadataAccount.length ? (
+                <VStack spacing={5} h="full" mt={6}>
+                  {metadata?.map((m) => {
+                    const variant = {
+                      key: m.key as MetadataKeys,
+                      value: m.value,
+                    };
 
-                  return (
-                    <VerifiedAccountInput
-                      key={m.key}
-                      value={m.value}
-                      variant={variant}
-                      isVerified
-                      rightAddon
-                      rightAddonName={getInputIcon(
-                        m.key as MetadataKeys,
-                        m.value ?? ''
-                      )}
-                    />
-                  );
-                })}
-              </VStack>
-            ) : (
-              <VStack w="full" h={'full'} justify={'center'} py={6} spacing={4}>
-                <Text
-                  color="grey.200"
-                  fontSize="xs"
-                  maxW="172px"
-                  textAlign={'center'}
+                    return (
+                      <VerifiedAccountInput
+                        key={m.key}
+                        value={m.value}
+                        variant={variant}
+                        isVerified
+                        rightAddon
+                        rightAddonName={getInputIcon(
+                          m.key as MetadataKeys,
+                          m.value ?? ''
+                        )}
+                      />
+                    );
+                  })}
+                </VStack>
+              ) : (
+                <VStack
+                  w="full"
+                  h={'full'}
+                  justify={'center'}
+                  py={6}
+                  spacing={4}
                 >
-                  It seems like this user hasn’t added any account yet
-                </Text>
-              </VStack>
-            )}
+                  <Text
+                    color="grey.200"
+                    fontSize="xs"
+                    maxW="172px"
+                    textAlign={'center'}
+                  >
+                    It seems like this user hasn’t added any account yet
+                  </Text>
+                </VStack>
+              )}
+            </Collapse>
+            <Button
+              leftIcon={
+                metadataAccount.length > 5 ? (
+                  shouwAccounts ? (
+                    <ArrowUpIcon />
+                  ) : (
+                    <ArrowDownIcon />
+                  )
+                ) : undefined
+              }
+              color="section.200"
+              bgColor="rgba(243, 242, 241, 0.02)"
+              backdropFilter="blur(6px)"
+              bottom={4}
+              left={0}
+              right={0}
+              margin="0 auto"
+              position="absolute"
+              // variant="solid"
+              w="min-content"
+              size="xs"
+              _hover={{}}
+              _active={{}}
+              onClick={() => setShouwAccounts((prevState) => !prevState)}
+              hidden={metadataAccount.length < 5}
+            >
+              {shouwAccounts ? 'Hide Accounts' : 'Show More Accounts'}
+            </Button>
           </Card>
         </Box>
       </Stack>
