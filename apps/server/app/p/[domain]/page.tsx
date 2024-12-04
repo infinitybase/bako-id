@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const assets = await FuelAssetService.byAddress({
+  const { data: assets } = await FuelAssetService.byAddress({
     address: resolver,
     chainId: 9889,
   });

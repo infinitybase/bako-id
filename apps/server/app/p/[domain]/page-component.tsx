@@ -15,6 +15,7 @@ import { ProfileCardSkeleton } from '@/components/skeletons';
 import { AccountsCardSkeleton } from '@/components/skeletons/accountsCardSkeleton';
 import { AddressCardSkeleton } from '@/components/skeletons/addressCardSkeleton';
 import { OwnershipCardSkeleton } from '@/components/skeletons/ownershipCardSkeleton';
+import { queryClient } from '@/providers';
 import { type FuelAsset, FuelAssetService } from '@/services/fuel-assets';
 import { formatAddress, parseURI } from '@/utils';
 import { MetadataKeys } from '@bako-id/sdk';
@@ -369,9 +370,51 @@ export const NFTCollections = ({
   const { data, isLoading, isError } = useQuery({
     queryKey: ['nfts', resolver],
     queryFn: async () => {
-      return FuelAssetService.byAddress({
+      const { data } = await FuelAssetService.byAddress({
         address: resolver,
         chainId: chainId!,
+      });
+
+      const nfts = data.filter((a) => !!a.isNFT) as (FuelAsset & {
+        image?: string;
+      })[];
+
+      //['nft-metadata', assetId]
+
+      for (const nft of nfts) {
+        const { metadata = {}, uri } = nft;
+        if (uri?.endsWith('.json')) {
+          const res = await fetch(parseURI(uri));
+          const json = await res.json();
+
+          for (const [key, value] of Object.entries(json)) {
+            if (metadata[key]) continue;
+
+            if (Array.isArray(value)) {
+              const metadataValueRecord = metadataArrayToObject(value, key);
+              Object.assign(metadata, metadataValueRecord);
+              continue;
+            }
+
+            if (metadata[key] === undefined) {
+              const matadataValue = value as string;
+              metadata[key] = matadataValue as string;
+            }
+          }
+
+          nft.metadata = metadata;
+        }
+
+        nft.image = Object.entries(metadata).find(([key]) =>
+          key.includes('image')
+        )?.[1];
+        queryClient.setQueryData(['nft-metadata', nft.assetId], nft.metadata);
+      }
+
+      return nfts.sort((a, b) => {
+        if (a.image && !b.image) return -1;
+        if (!a.image && b.image) return 1;
+        return 0;
       });
     },
     select: (data) => data?.filter((a) => !!a.isNFT),

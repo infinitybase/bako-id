@@ -34,6 +34,11 @@ export interface ByAddress {
   chainId: number;
 }
 
+export type ByAddressResponse = {
+  data: FuelAsset[];
+  pageInfo: { count: number };
+};
+
 const networks: Record<number, string> = {
   9889: 'https://mainnet-explorer.fuel.network',
   0: 'https://testnet-explorer.fuel.network',
@@ -43,7 +48,7 @@ export class FuelAssetService {
   static async byAddress({
     address,
     chainId,
-  }: ByAddress): Promise<FuelAsset[]> {
+  }: ByAddress): Promise<ByAddressResponse> {
     const networkUrl = FuelAssetService.networkUrl(chainId);
     const response = await fetch(`${networkUrl}/accounts/${address}/assets`);
     return response.json();
