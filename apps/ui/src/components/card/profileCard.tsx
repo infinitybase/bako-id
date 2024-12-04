@@ -1,5 +1,13 @@
-import { Box, Button, Flex, Icon, Text, useMediaQuery } from '@chakra-ui/react';
-
+import { CheckIcon } from '@chakra-ui/icons';
+import {
+  Box,
+  Button,
+  Flex,
+  Icon,
+  Text,
+  useClipboard,
+  useMediaQuery,
+} from '@chakra-ui/react';
 import { useProvider } from '@fuels/react';
 import { Card } from '.';
 import { ExplorerTypes } from '../../types';
@@ -12,6 +20,7 @@ import {
   ExploreIcon,
   // FarcasterBadgeIcon,
 } from '../icons';
+import { CopyIcon } from '../icons/copyIcon.tsx';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
 
 interface IProfileCard {
@@ -41,6 +50,8 @@ export const ProfileCard = ({
   const { provider } = useProvider();
 
   const explorerUrl = getExplorer(provider?.getChainId());
+
+  const { hasCopied, onCopy } = useClipboard(`https://bako.id/${domainName}`);
 
   return (
     <Card
@@ -110,6 +121,7 @@ export const ProfileCard = ({
             {/*)}*/}
             {isOwner && (
               <Button
+                w="full"
                 alignSelf={['inherit', 'flex-end']}
                 variant="ghosted"
                 color="grey.100"
@@ -117,6 +129,7 @@ export const ProfileCard = ({
                 fontWeight="normal"
                 fontSize={['sm', 'sm']}
                 h={9}
+                justifyContent="space-between"
                 rightIcon={<EditIcon w={5} h={5} />}
                 onClick={editAction}
               >
@@ -124,6 +137,7 @@ export const ProfileCard = ({
               </Button>
             )}
             <Button
+              w="full"
               alignSelf={['inherit', 'flex-end']}
               variant="ghosted"
               color="grey.100"
@@ -131,7 +145,8 @@ export const ProfileCard = ({
               fontWeight="normal"
               fontSize={['sm', 'sm']}
               h={9}
-              rightIcon={<ExploreIcon />}
+              justifyContent="space-between"
+              rightIcon={<ExploreIcon w={5} h={5} />}
               onClick={() =>
                 window.open(
                   `${explorerUrl}/account/${domain}${ExplorerTypes.ASSETS}`
@@ -140,6 +155,44 @@ export const ProfileCard = ({
             >
               Explorer
             </Button>
+            <Button
+              w="full"
+              alignSelf={['inherit', 'flex-end']}
+              variant="ghosted"
+              color="grey.100"
+              bgColor={isLowerThanMobile ? 'transparent' : undefined}
+              fontWeight="normal"
+              fontSize={['sm', 'sm']}
+              rightIcon={hasCopied ? <CheckIcon /> : <CopyIcon />}
+              h={9}
+              justifyContent="space-between"
+              onClick={onCopy}
+            >
+              Profile Link
+            </Button>
+            {/*<Menu strategy="absolute">*/}
+            {/*  <MenuButton*/}
+            {/*    as={Button}*/}
+            {/*    w="full"*/}
+            {/*    alignSelf={['inherit', 'flex-end']}*/}
+            {/*    variant="ghosted"*/}
+            {/*    color="grey.100"*/}
+            {/*    bgColor={isLowerThanMobile ? 'transparent' : undefined}*/}
+            {/*    fontWeight="normal"*/}
+            {/*    fontSize={['sm', 'sm']}*/}
+            {/*    h={9}*/}
+            {/*    rightIcon={<ShareIcon />}*/}
+            {/*  >*/}
+            {/*    More*/}
+            {/*  </MenuButton>*/}
+            {/*  <MenuList zIndex={100}>*/}
+            {/*    <MenuItem>Download</MenuItem>*/}
+            {/*    <MenuItem>Create a Copy</MenuItem>*/}
+            {/*    <MenuItem>Mark as Draft</MenuItem>*/}
+            {/*    <MenuItem>Delete</MenuItem>*/}
+            {/*    <MenuItem>Attend a Workshop</MenuItem>*/}
+            {/*  </MenuList>*/}
+            {/*</Menu>*/}
           </Flex>
         </Flex>
       </Flex>
