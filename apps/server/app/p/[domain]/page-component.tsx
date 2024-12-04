@@ -318,12 +318,26 @@ const NFTCard = (props: { asset: FuelAsset }) => {
               <Box mb={6}>
                 <Heading fontSize="md">Metadata</Heading>
                 <Flex
+                  w="full"
                   maxH="310px"
                   overflowY="scroll"
                   direction="row"
                   wrap="wrap"
                   gap={3}
                   mt={3}
+                  sx={{
+                    '&::-webkit-scrollbar': {
+                      width: '6px',
+                      maxHeight: '330px',
+                      backgroundColor: 'grey.900',
+                      borderRadius: '30px',
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                      backgroundColor: 'button.500',
+                      borderRadius: '30px',
+                      height: '10px',
+                    },
+                  }}
                 >
                   {metadataArray
                     ?.filter((m) => !_blacklistMetadataKeys.includes(m.key))
@@ -684,11 +698,23 @@ export function ProfilePage() {
                       value: m.value,
                     };
 
+                    const externalLink = getMetadataRedirects(
+                      variant.key,
+                      variant.value!
+                    );
+                    const onRedirect = () => {
+                      if (externalLink) {
+                        window.open(externalLink, '_blank');
+                      }
+                    };
+
                     return (
                       <VerifiedAccountInput
                         key={m.key}
+                        isExternal={!!externalLink}
                         value={m.value}
                         variant={variant}
+                        onClick={onRedirect}
                         isVerified
                         rightAddon
                         rightAddonName={getInputIcon(
@@ -738,6 +764,7 @@ export function ProfilePage() {
               position="absolute"
               // variant="solid"
               w="min-content"
+              boxShadow="lg"
               size="xs"
               _hover={{}}
               _active={{}}

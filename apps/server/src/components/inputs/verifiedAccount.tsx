@@ -24,6 +24,7 @@ import { ENSIcon } from '../icons/ensicon';
 interface CustomInputProps extends InputProps {
   value?: string;
   isVerified?: boolean;
+  isExternal?: boolean;
   rightAddon: boolean;
   rightAddonName: string | ReactNode;
   variant: { key: MetadataKeys; value: string | undefined };
@@ -32,8 +33,16 @@ interface CustomInputProps extends InputProps {
 const VerifiedAccountInput = (props: CustomInputProps) => {
   // const { isMyDomain } = useSidebar();
 
-  const { value, variant, isVerified, rightAddon, rightAddonName, ...rest } =
-    props;
+  const {
+    value,
+    variant,
+    isVerified,
+    isExternal,
+    rightAddon,
+    rightAddonName,
+    onClick,
+    ...rest
+  } = props;
 
   const variants = {
     [MetadataKeys.SOCIAL_X]: {
@@ -131,7 +140,14 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
 
   if (currentVariant) {
     return (
-      <Box w="full" display="flex" alignItems="flex-end" flexDirection="column">
+      <Box
+        onClick={onClick}
+        cursor={isExternal ? 'pointer' : undefined}
+        w="full"
+        display="flex"
+        alignItems="flex-end"
+        flexDirection="column"
+      >
         <InputGroup>
           <InputLeftAddon
             bgColor={currentVariant?.bgColor}
