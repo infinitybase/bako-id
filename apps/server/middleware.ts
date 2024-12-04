@@ -1,7 +1,15 @@
-import { NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 
-export function middleware() {
+const isProduction = process.env.NODE_ENV !== 'development';
+
+export function middleware(req: NextRequest) {
   const response = NextResponse.next();
+
+  const { pathname } = req.nextUrl;
+
+  if (pathname === '/' && isProduction) {
+    return NextResponse.rewrite('https://home.bako.id');
+  }
 
   response.headers.set('Access-Control-Allow-Origin', '*');
   response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
