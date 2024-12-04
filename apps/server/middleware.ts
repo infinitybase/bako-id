@@ -8,7 +8,7 @@ export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (pathname === '/' && isProduction) {
-    return NextResponse.rewrite('https://home.bako.id');
+    return NextResponse.redirect('https://www.bako.id/');
   }
 
   response.headers.set('Access-Control-Allow-Origin', '*');
