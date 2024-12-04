@@ -19,7 +19,6 @@ interface IProfileCard {
   domain: string;
   metadata: { key: string; value: string | undefined }[] | undefined;
   editAction: () => void;
-  isExternal?: boolean;
 }
 
 export const ProfileCard = ({

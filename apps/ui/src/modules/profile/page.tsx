@@ -1,21 +1,18 @@
 import { Box, Center, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { ProfileDrawer } from '../../../components';
-import { useScreenSize } from '../../../hooks/useScreenSize';
-import { ProfileCards } from '../components/profileCards';
-import { useProfile } from '../hooks/useProfile';
+import { ProfileDrawer } from '../../components/drawer/profile';
+import { useScreenSize } from '../../hooks/useScreenSize';
+import { ProfileCards } from './components/profileCards';
+import { useProfile } from './hooks/useProfile';
 
-const ProfileInternal = () => {
-  const { domain, domainParam, isLoadingDomain, owner, isExternal } =
-    useProfile();
+const Profile = () => {
+  const { domain, domainParam, isLoadingDomain, owner } = useProfile();
   const { isMobile } = useScreenSize();
   const drawer = useDisclosure();
 
   return (
     <>
-      {!isExternal && (
-        <ProfileDrawer isOpen={drawer.isOpen} onClose={drawer.onClose} />
-      )}
+      <ProfileDrawer isOpen={drawer.isOpen} onClose={() => drawer.onClose()} />
 
       <Box
         w="full"
@@ -24,10 +21,9 @@ const ProfileInternal = () => {
         position="relative"
         display="flex"
         flexDirection={['column', 'column', 'column', 'row']}
-        px={isExternal ? [3, 0] : 0}
         gap={[4, 4, 4, 6]}
       >
-        {isMobile && !isExternal && (
+        {isMobile && (
           <Flex
             onClick={() => drawer.onOpen()}
             alignItems="center"
@@ -56,12 +52,12 @@ const ProfileInternal = () => {
           <Box
             w={['full', 'full', 'full', 'full']}
             h="full"
-            display={isExternal ? 'contents' : 'flex'}
+            maxH={['80vh', '80vh', '75vh', '80vh']}
+            display="flex"
             flexDirection="column"
-            gap={6}
+            gap={12}
           >
             <ProfileCards
-              isExternal={isExternal}
               domain={domain?.Address?.bits ?? domain?.ContractId?.bits ?? ''}
               domainParam={domainParam}
               isLoading={isLoadingDomain}
@@ -74,4 +70,4 @@ const ProfileInternal = () => {
   );
 };
 
-export { ProfileInternal };
+export { Profile };

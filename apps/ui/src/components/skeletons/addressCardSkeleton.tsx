@@ -5,7 +5,7 @@ export const AddressCardSkeleton = () => {
   return (
     <Card
       w="full"
-      h="full"
+      h={['45%', '45%', 'full', 'auto']}
       p={6}
       display="flex"
       backdropFilter="blur(7px)"

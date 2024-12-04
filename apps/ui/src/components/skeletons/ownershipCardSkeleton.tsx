@@ -5,7 +5,7 @@ export const OwnershipCardSkeleton = () => {
   return (
     <Card
       w="full"
-      h="full"
+      h={['fit-content', 'fit-content', 'fit-content', 'full']}
       p={6}
       display="flex"
       backdropFilter="blur(7px)"

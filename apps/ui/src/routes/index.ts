@@ -7,7 +7,6 @@ import {
   learnMoreRoute,
   moreRoute,
   myHandlesRoute,
-  profileInternalRoute,
   profileRoute,
 } from './childrens.ts';
 
@@ -15,11 +14,10 @@ const routeTree = rootRoute.addChildren([
   homeRoute,
   connectRoute,
   buyRoute,
-  profileInternalRoute,
+  profileRoute,
   moreRoute,
   learnMoreRoute,
   myHandlesRoute,
-  profileRoute,
 ]);
 
 export const router = createRouter({

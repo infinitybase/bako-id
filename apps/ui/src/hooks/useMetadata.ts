@@ -31,16 +31,12 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
   const [updatedMetadata, setUpdatedMetadata] = useState<MetadataKeyValue[]>(
     []
   );
-  const { domain: internalDomain, externalDomain } = useParams({
-    strict: false,
-  });
+  const { domain } = useParams({ strict: false });
   const { provider } = useProvider();
   const { wallet } = useWallet();
   const metadataModal = useDisclosure();
   const transactionModal = useDisclosure();
   const { successToast, errorToast } = useCustomToast();
-
-  const domain = externalDomain ?? internalDomain;
 
   const handleListRequest = useQuery({
     queryKey: [
@@ -51,6 +47,7 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
     queryFn: async () => {
       try {
         let registryContract: RegistryContract;
+
         if (provider) {
           const client = new BakoIDClient(
             provider,

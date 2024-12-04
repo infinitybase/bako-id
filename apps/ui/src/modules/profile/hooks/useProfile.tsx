@@ -3,18 +3,15 @@ import { useQueryResolveDomainRequests } from '../../../hooks/useQueryResolveDom
 import { useResolveOwnerRequests } from '../../../hooks/useResolveOwnerRequests';
 
 export const useProfile = () => {
-  const { domain: domainParam, externalDomain } = useParams({ strict: false });
-  const resolveDomain = useQueryResolveDomainRequests(
-    domainParam ?? externalDomain
-  );
-  const resolveOwner = useResolveOwnerRequests(domainParam ?? externalDomain);
+  const { domain: domainParam } = useParams({ strict: false });
+  const resolveDomain = useQueryResolveDomainRequests(domainParam);
+  const resolveOwner = useResolveOwnerRequests(domainParam);
 
   return {
     owner: resolveOwner.data,
     domain: resolveDomain.data,
     domainMethods: resolveDomain,
     isLoadingDomain: resolveDomain.isPending,
-    domainParam: domainParam ?? externalDomain,
-    isExternal: !!externalDomain,
+    domainParam,
   };
 };

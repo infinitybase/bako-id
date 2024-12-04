@@ -1,9 +1,9 @@
-import { Flex, Stack } from '@chakra-ui/react';
 import { Suspense } from 'react';
 import { ProfileCardSkeleton } from '../../../components/skeletons';
 import { AccountsCardSkeleton } from '../../../components/skeletons/accountsCardSkeleton';
 import { AddressCardSkeleton } from '../../../components/skeletons/addressCardSkeleton';
 import { OwnershipCardSkeleton } from '../../../components/skeletons/ownershipCardSkeleton';
+import { Flex, Stack } from '@chakra-ui/react';
 
 const ProfileCardLoadingSkeleton = () => (
   <Suspense>
