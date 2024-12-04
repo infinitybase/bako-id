@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/",
-      "destination": "https://bako.id"
+      "destination": "https://home.bako.id"
     }
   ]
 }
