@@ -167,50 +167,52 @@ export const ProfileCard = ({
             >
               Explorer
             </Button>
-            <Menu closeOnSelect={false}>
-              <MenuButton
-                as={Button}
-                w="full"
-                alignSelf={['inherit', 'flex-end']}
-                variant="ghosted"
-                color="grey.100"
-                bgColor={isLowerThanMobile ? 'transparent' : undefined}
-                fontWeight="normal"
-                fontSize={['sm', 'sm']}
-                h={9}
-                justifyContent="space-between"
-                rightIcon={<ShareIcon />}
-              >
-                Actions
-              </MenuButton>
-              <MenuList>
-                <MenuItem
-                  onClick={() => {
-                    window.open(
-                      twitterLink(profileLink, {
-                        title: 'Check my Bako ID profile!',
-                        related: [],
-                      })
-                    );
-                  }}
-                  icon={<TwitterIcon w={15} h={15} />}
+            {isOwner && (
+              <Menu closeOnSelect={false}>
+                <MenuButton
+                  as={Button}
+                  w="full"
+                  alignSelf={['inherit', 'flex-end']}
+                  variant="ghosted"
+                  color="grey.100"
+                  bgColor={isLowerThanMobile ? 'transparent' : undefined}
+                  fontWeight="normal"
+                  fontSize={['sm', 'sm']}
+                  h={9}
+                  justifyContent="space-between"
+                  rightIcon={<ShareIcon />}
                 >
-                  Share on X
-                </MenuItem>
-                <MenuItem
-                  onClick={onCopy}
-                  icon={
-                    hasCopied ? (
-                      <CheckIcon w={15} h={15} />
-                    ) : (
-                      <CopyIcon w={15} h={15} />
-                    )
-                  }
-                >
-                  Copy profile link
-                </MenuItem>
-              </MenuList>
-            </Menu>
+                  Actions
+                </MenuButton>
+                <MenuList>
+                  <MenuItem
+                    onClick={() => {
+                      window.open(
+                        twitterLink(profileLink, {
+                          title: 'Check my Bako ID profile!',
+                          related: [],
+                        })
+                      );
+                    }}
+                    icon={<TwitterIcon w={15} h={15} />}
+                  >
+                    Share on X
+                  </MenuItem>
+                  <MenuItem
+                    onClick={onCopy}
+                    icon={
+                      hasCopied ? (
+                        <CheckIcon w={15} h={15} />
+                      ) : (
+                        <CopyIcon w={15} h={15} />
+                      )
+                    }
+                  >
+                    Copy profile link
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            )}
             {/*<Menu strategy="absolute">*/}
             {/*  <MenuButton*/}
             {/*    as={Button}*/}
