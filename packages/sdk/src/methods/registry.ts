@@ -27,6 +27,11 @@ export type RegisterPayload = {
   resolver: string;
 };
 
+export type ChangeAddressPayload = {
+  domain: string;
+  address: string;
+};
+
 export type SimulatePayload = {
   domain: string;
   period: number;
@@ -151,6 +156,60 @@ export class RegistryContract {
     };
   }
 
+  async changeOwner(payload: ChangeAddressPayload) {
+    const { domain, address } = payload;
+
+    if (!this.account) {
+      throw new Error('Account is required to change the owner');
+    }
+
+    const domainName = assertValidDomain(domain);
+    const newOwner = await this.getIdentity(address);
+
+    const changeOwnerCall = await this.contract.functions
+      .set_owner(domainName, newOwner)
+      .addContracts([this.managerContract])
+      .call();
+    const { transactionResult } = await changeOwnerCall.waitForResult();
+
+    if (transactionResult.status === TransactionStatus.success) {
+      await this.bakoIDClient.changeOwner({
+        address,
+        domain: domainName,
+        transactionId: changeOwnerCall.transactionId,
+      });
+    }
+
+    return transactionResult;
+  }
+
+  async changeResolver(payload: ChangeAddressPayload) {
+    const { domain, address } = payload;
+
+    if (!this.account) {
+      throw new Error('Account is required to change the resolver');
+    }
+
+    const domainName = assertValidDomain(domain);
+    const newResolver = await this.getIdentity(address);
+
+    const changeResolverCall = await this.contract.functions
+      .set_resolver(domainName, newResolver)
+      .addContracts([this.managerContract])
+      .call();
+    const { transactionResult } = await changeResolverCall.waitForResult();
+
+    if (transactionResult.status === TransactionStatus.success) {
+      await this.bakoIDClient.changeResolver({
+        domain: domainName,
+        address: address,
+        transactionId: changeResolverCall.transactionId,
+      });
+    }
+
+    return transactionResult;
+  }
+
   async simulate(params: SimulatePayload) {
     const { domain, period } = params;
 
@@ -197,19 +256,6 @@ export class RegistryContract {
       image: image?.String,
       contractId: this.contract.id.toB256(),
     };
-  }
-
-  private async getIdentity(resolver: string) {
-    let resolverInput: Enum<Identity>;
-    const type = await this.provider.getAddressType(resolver);
-    if (type === 'Contract') {
-      resolverInput = { ContractId: { bits: resolver } };
-    } else if (type === 'Account') {
-      resolverInput = { Address: { bits: resolver } };
-    } else {
-      throw new Error('Invalid resolver type');
-    }
-    return resolverInput;
   }
 
   async setMetadata(
@@ -301,5 +347,18 @@ export class RegistryContract {
       ttl: formatTAI64toDate(ttl.toString()),
       timestamp: formatTAI64toDate(timestamp.toString()),
     };
+  }
+
+  private async getIdentity(resolver: string) {
+    let resolverInput: Enum<Identity>;
+    const type = await this.provider.getAddressType(resolver);
+    if (type === 'Contract') {
+      resolverInput = { ContractId: { bits: resolver } };
+    } else if (type === 'Account') {
+      resolverInput = { Address: { bits: resolver } };
+    } else {
+      throw new Error('Invalid resolver type');
+    }
+    return resolverInput;
   }
 }

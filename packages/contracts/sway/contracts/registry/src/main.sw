@@ -64,6 +64,23 @@ fn mint_token(name: String, receiver: Identity) -> AssetId {
     asset_id
 }
 
+#[storage(read)]
+fn require_is_record_owner(name: String) {
+    let manager_id = get_manager_id();
+    let manager_contract = abi(ManagerInfo, manager_id.into());
+    let register = manager_contract.get_record(name);
+
+    require(
+        register.is_some(),
+        RegistryContractError::NotFoundName,
+    );
+
+    require(
+        register.unwrap().owner == msg_sender().unwrap(),
+        RegistryContractError::NotOwner,
+    );
+}
+
 enum RegistryContractError {
     IncorrectAssetId: (),
     InvalidAmount: (),
@@ -125,25 +142,31 @@ impl Registry for Contract {
     
     #[storage(write, read)]
     fn set_metadata_info(name: String, key: String, value: Metadata) {
-        let manager_id = get_manager_id();
-        let manager_contract = abi(ManagerInfo, manager_id.into());
-        let register = manager_contract.get_record(name);
-        
-        require(
-            register.is_some(),
-            RegistryContractError::NotFoundName,
-        );
-
-        require(
-            register.unwrap().owner == msg_sender().unwrap(),
-            RegistryContractError::NotOwner,
-        );
+        require_is_record_owner(name);
 
         let token_id = storage.token_id.read();
         let asset_id = AssetId::new(token_id, sha256(name));
 
         let nft_contract = abi(SetAssetMetadata, token_id.into());
         nft_contract.set_metadata(asset_id, key, value);
+    }
+
+    #[storage(write, read)]
+    fn set_owner(name: String, owner: Identity) {
+        require_is_record_owner(name);
+
+        let manager_id = get_manager_id();
+        let manager_contract = abi(Manager, manager_id.into());
+        manager_contract.set_owner(name, owner);
+    }
+
+    #[storage(write, read)]
+    fn set_resolver(name: String, resolver: Identity) {
+        require_is_record_owner(name);
+
+        let manager_id = get_manager_id();
+        let manager_contract = abi(Manager, manager_id.into());
+        manager_contract.set_resolver(name, resolver);
     }
 }
 

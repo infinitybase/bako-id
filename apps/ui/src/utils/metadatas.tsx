@@ -14,7 +14,7 @@ import {
 
 export const getMetadataRedirects = (
   key: MetadataKeys,
-  value: string
+  value: string,
 ): string | null => {
   const metaDatas: Partial<Record<MetadataKeys, string>> = {
     'social:x': `https://x.com/${value}`,
@@ -27,7 +27,19 @@ export const getMetadataRedirects = (
   return metaDatas[key] || null;
 };
 
-export const Metadatas = {
+export type MetadataItem = {
+  key: MetadataKeys;
+  title: string;
+  icon: JSX.Element;
+  description: string;
+  validated: boolean | null;
+};
+
+type Metadatas = {
+  [key: string]: MetadataItem[];
+};
+
+export const Metadatas: Metadatas = {
   General: [
     {
       key: MetadataKeys.CONTACT_NICKNAME,

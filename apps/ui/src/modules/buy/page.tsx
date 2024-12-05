@@ -40,6 +40,7 @@ export const Buy = () => {
     handlePeriodChange,
     buyError,
     totalPrice,
+    totalPriceETH,
     handleBuyDomain,
     isLoadingBalance,
     signInLoad,
@@ -67,9 +68,9 @@ export const Buy = () => {
       handleBuyDomain={() =>
         !agreed ? setShowTerms(true) : handleBuyDomain(resolverAddress)
       }
+      totalPriceETH={totalPriceETH}
       isLoadingBalance={isLoadingBalance}
       signInLoad={signInLoad}
-      totalPrice={totalPrice}
       wallet={!!wallet}
       walletBalance={walletBalance}
       isDisabled={
@@ -181,6 +182,7 @@ export const Buy = () => {
         </CardBody>
         <BuyError
           totalPrice={totalPrice}
+          totalPriceETH={totalPriceETH}
           walletBalance={walletBalance}
           buyError={buyError}
           selectedCoin={buy.selectedCoin}

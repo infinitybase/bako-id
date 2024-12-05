@@ -54,6 +54,12 @@ export type RegisterInput = {
   transactionId: string;
 };
 
+export type ChangeAddressInput = {
+  domain: string;
+  address: string;
+  transactionId: string;
+};
+
 /**
  * Class representing a client for interacting with the BakoID API.
  */
@@ -86,6 +92,32 @@ export class BakoIDClient {
       domain: params.domain.replace('@', ''),
       owner: Address.fromDynamicInput(params.owner).toB256(),
       resolver: Address.fromDynamicInput(params.resolver).toB256(),
+    });
+  }
+
+  /**
+   * @hidden
+   * Changes the owner of a domain.
+   * @param {ChangeAddressInput} params - The change owner parameters.
+   * @returns {Promise<any>} A promise that resolves to the change owner response.
+   */
+  async changeOwner(params: ChangeAddressInput) {
+    return this.httpClient.post('/owner', {
+      ...params,
+      domain: params.domain.replace('@', ''),
+    });
+  }
+
+  /**
+   * @hidden
+   * Changes the resolver of a domain.
+   * @param {ChangeAddressInput} params - The change owner parameters.
+   * @returns {Promise<any>} A promise that resolves to the change owner response.
+   */
+  async changeResolver(params: ChangeAddressInput) {
+    return this.httpClient.post('/resolver', {
+      ...params,
+      domain: params.domain.replace('@', ''),
     });
   }
 

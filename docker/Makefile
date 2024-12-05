@@ -1,8 +1,8 @@
 up:
-	docker compose -p bako-id_dev --env-file .env up -d --build
+	docker compose -p dev --env-file .env up -d --build 
 
 down:
-	docker compose -p bako-id_dev stop
+	docker compose -p dev stop
 
 clean:
-	docker compose -p bako-id_dev down --rmi local -v --remove-orphans
+	docker compose -p dev down --rmi local -v --remove-orphans

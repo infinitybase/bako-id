@@ -1,5 +1,8 @@
 import { isB256, isBech32 } from 'fuels';
 
+export const CHECKSUM_MESSAGE =
+  "We couldn't verify the address. Please ensure that the resolver is set to a valid address.";
+
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 class AddressUtils {
   static isValid(address: string) {

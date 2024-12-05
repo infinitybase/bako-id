@@ -10,8 +10,11 @@ abi Registry {
     #[storage(write, read)]
     fn set_metadata_info(name: String, key: String, value: Metadata);
 
-    // renew
-    // transfer
+    #[storage(write, read)]
+    fn set_owner(name: String, owner: Identity);
+
+    #[storage(write, read)]
+    fn set_resolver(name: String, resolver: Identity);
 }
 
 abi RegistryInfo {

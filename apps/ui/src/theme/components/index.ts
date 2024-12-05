@@ -4,6 +4,7 @@ import { Card } from './card';
 import { Drawer, Modal } from './drawer';
 import { Form } from './form';
 import { Input, Textarea } from './input';
+import { Menu } from './menu';
 import { Skeleton } from './skeleton';
 
 const components = {
@@ -16,6 +17,7 @@ const components = {
   Textarea,
   Form,
   Skeleton,
+  Menu,
 };
 
 export { components };

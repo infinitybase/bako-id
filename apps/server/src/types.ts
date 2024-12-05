@@ -9,3 +9,12 @@ export type AttestationData = {
   handle: string;
   address: string;
 };
+
+export type Identity = {
+  Address: {
+    bits: string;
+  };
+  ContractId: {
+    bits: string;
+  };
+};

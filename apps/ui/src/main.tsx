@@ -45,24 +45,12 @@ const wagmiConfig = createConfig({
   ],
 });
 
-const NETWORKS = [
-  {
-    chainId: CHAIN_IDS.fuel.testnet,
-    url: 'https://testnet.fuel.network/v1/graphql',
-  },
-  {
-    chainId: CHAIN_IDS.fuel.mainnet,
-    url: 'https://mainnet.fuel.network/v1/graphql',
-  },
-];
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ChakraProvider theme={defaultTheme}>
       <QueryClientProvider client={queryClient}>
         <FuelProvider
           theme="dark"
-          networks={NETWORKS}
           uiConfig={{ suggestBridge: false }}
           fuelConfig={{
             connectors: defaultConnectors({

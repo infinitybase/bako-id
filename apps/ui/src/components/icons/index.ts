@@ -21,6 +21,7 @@ export * from './githubIcon';
 export * from './homeIcon';
 export * from './howToSendCrypto';
 export * from './keyIcon';
+export * from './importDataIcon';
 export * from './locationIcon';
 export * from './logoutIcon';
 export * from './mailIcon';

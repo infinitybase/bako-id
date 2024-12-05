@@ -9,7 +9,7 @@ interface IBuyOrConnectProps {
   wallet: boolean;
   handleBuyDomain: () => void;
   walletBalance: BN | null;
-  totalPrice: BN | string;
+  totalPriceETH: BN;
   isLoadingBalance: boolean;
   signInLoad: boolean;
   isDisabled: boolean;
@@ -20,7 +20,7 @@ export const BuyOrConnectButton = ({
   handleBuyDomain,
   isLoadingBalance,
   signInLoad,
-  totalPrice,
+  totalPriceETH,
   wallet,
   walletBalance,
   isDisabled,
@@ -61,7 +61,7 @@ export const BuyOrConnectButton = ({
           progress={progress}
           w="full"
           isLoading={isLoadingBalance}
-          isDisabled={!wallet || walletBalance?.lt(totalPrice) || isDisabled}
+          isDisabled={!wallet || walletBalance?.lt(totalPriceETH) || isDisabled}
           onClick={handleBuyDomain}
           color="background.500"
           bg="button.500"
