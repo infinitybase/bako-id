@@ -30,7 +30,7 @@ const baseStyle = definePartsStyle({
     fontSize: 'sm',
     borderBottom: '1px solid',
     borderColor: 'grey.600',
-    '.chakra-menu__icon-wrapper': {
+    '& .chakra-menu__icon-wrapper': {
       mr: 4,
     },
   },
