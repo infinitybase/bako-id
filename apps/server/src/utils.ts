@@ -3,7 +3,7 @@ import type { Identity } from '@/types';
 export const validateNetwork = (network: string) => {
   const networks: Record<string, { url: string; chainId: number }> = {
     mainnet: {
-      url: 'https://app-mainnet.fuel.network/',
+      url: 'https://mainnet.fuel.network/v1/graphql',
       chainId: 9889,
     },
     testnet: {
