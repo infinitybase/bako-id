@@ -4,7 +4,7 @@ import { createMultiStyleConfigHelpers } from '@chakra-ui/react';
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(menuAnatomy.keys);
 
-const baseStyle = definePartsStyle({
+const buttonDropdown = definePartsStyle({
   button: {
     fontWeight: 'medium',
     borderColor: 'grey.600',
@@ -48,4 +48,8 @@ const baseStyle = definePartsStyle({
   },
 });
 // export the base styles in the component theme
-export const Menu = defineMultiStyleConfig({ baseStyle });
+export const Menu = defineMultiStyleConfig({
+  variants: {
+    buttonDropdown,
+  },
+});

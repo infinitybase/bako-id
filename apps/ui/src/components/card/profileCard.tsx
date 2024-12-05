@@ -128,7 +128,7 @@ export const ProfileCard = ({
         </Box>
       </ButtonAction>
       {isOwner && (
-        <Menu closeOnSelect={false}>
+        <Menu variant="buttonDropdown" closeOnSelect={false}>
           <MenuButton
             as={Button}
             w="full"
