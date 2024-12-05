@@ -23,4 +23,43 @@ const formatTimeWithTimeZone = (date: Date): string => {
   return `${time} ${formattedTimezone}`;
 };
 
+export const isIPFS = (url: string) => url.startsWith('ipfs://');
+
+export const isHTTPS = (url: string) => url.startsWith('https://');
+
+export const IPFStoHTTP = (url: string) =>
+  isIPFS(url) ? `https://ipfs.io/ipfs/${url.slice(7)}` : url;
+
+export const parseURI = (uri: string) => {
+  if (isHTTPS(uri)) return uri;
+
+  if (isIPFS(uri)) return IPFStoHTTP(uri);
+
+  return uri;
+};
+
+export const isUrl = (url: string) => !!url?.startsWith?.('https');
+
+export const metadataArrayToObject = (
+  metadata: Record<string, string>[],
+  key: string
+) => {
+  return metadata
+    .map((v) => {
+      const keyValue = Object.keys(v).find((k) => k !== 'value');
+      const keyName = v[keyValue!].toLowerCase().replace(' ', '-');
+      return {
+        key: `${key}:${keyName}`,
+        value: v.value,
+      };
+    })
+    .reduce(
+      (acc, curr) => {
+        acc[curr.key] = curr.value;
+        return acc;
+      },
+      {} as Record<string, string>
+    );
+};
+
 export { formatAddress, formatTimeWithTimeZone };

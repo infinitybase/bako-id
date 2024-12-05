@@ -1,5 +1,4 @@
 import {
-  Button,
   CardBody,
   CardHeader,
   Flex,
@@ -13,16 +12,12 @@ import { Suspense } from 'react';
 import { TextValue } from '../..';
 import { useEditResolver } from '../../../hooks/useEditResolver';
 import { useProfile } from '../../../modules/profile/hooks/useProfile';
-
-import { EditIcon } from '../../icons/editIcon';
 import { EditResolverModal } from '../../modal/editResolver';
-
-import { useSidebar } from '../../sidebar/hooks/useSidebar';
 
 export const ResolverCard = () => {
   const { wallet } = useWallet();
   const action = useDisclosure();
-  const { isMyDomain } = useSidebar();
+  // const { isMyDomain } = useSidebar();
   const { domain, domainParam } = useProfile();
   const {
     handleChangeResolver,
@@ -49,23 +44,23 @@ export const ResolverCard = () => {
               <Heading fontSize="lg" color="grey.100">
                 Resolver
               </Heading>
-              <Button
-                variant="ghost"
-                mr={1}
-                px={0}
-                color="grey.100"
-                _hover={{
-                  bgColor: 'transparent',
-                  // color: 'button.500',
-                  color: 'grey.100"',
-                }}
-                rightIcon={<EditIcon w={5} h={5} />}
-                isDisabled={!isMyDomain}
-                // isDisabled
-                onClick={action.onOpen}
-              >
-                Edit
-              </Button>
+              {/*<Button*/}
+              {/*  variant="ghost"*/}
+              {/*  mr={1}*/}
+              {/*  px={0}*/}
+              {/*  color="grey.100"*/}
+              {/*  _hover={{*/}
+              {/*    bgColor: 'transparent',*/}
+              {/*    // color: 'button.500',*/}
+              {/*    color: 'grey.100"',*/}
+              {/*  }}*/}
+              {/*  rightIcon={<EditIcon w={5} h={5} />}*/}
+              {/*  isDisabled={!isMyDomain}*/}
+              {/*  // isDisabled*/}
+              {/*  onClick={action.onOpen}*/}
+              {/*>*/}
+              {/*  Edit*/}
+              {/*</Button>*/}
             </Flex>
           </CardHeader>
           <CardBody mt={4}>
