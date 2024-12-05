@@ -56,9 +56,11 @@ export const IPFStoHTTP = (url: string) =>
   isIPFS(url) ? `https://ipfs.io/ipfs/${url.slice(7)}` : url;
 
 export const parseURI = (uri: string) => {
-  if (isHTTPS(uri)) return uri;
+  const now = Date.now();
 
-  if (isIPFS(uri)) return IPFStoHTTP(uri);
+  if (isHTTPS(uri)) return `${uri}?t=${now}`;
+
+  if (isIPFS(uri)) return `${IPFStoHTTP(uri)}?t=${now}`;
 
   return uri;
 };

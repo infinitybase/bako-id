@@ -1,4 +1,5 @@
 import { FuelAssetService } from '@/services/fuel-assets';
+import { parseURI } from '@/utils';
 import type { Metadata } from 'next';
 import { getResolver } from '../api/[network]/addr/[name]/resolver';
 import { ProfilePage } from './page-component';
@@ -39,15 +40,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       bakoIdAsset.metadata?.['contact:bio'] ?? 'Embrace your digital legacy',
     openGraph: {
       images: [
-        bakoIdAsset.metadata?.avatar ??
-          bakoIdAsset.metadata?.['image:png'] ??
-          '',
+        parseURI(
+          bakoIdAsset.metadata?.avatar ??
+            bakoIdAsset.metadata?.['image:png'] ??
+            ''
+        ),
       ],
       description:
         bakoIdAsset.metadata?.['contact:bio'] ?? 'Embrace your digital legacy',
       username: bakoIdAsset.metadata?.['contact:nickname'] ?? domain,
       title: `@${bakoIdAsset.metadata?.['contact:nickname'] ?? domain} | Bako Identity`,
-      url: bakoIdAsset.metadata?.['contact:website'] ?? '',
+      url: `https://bako.id/${domain}`,
     },
   };
 }
