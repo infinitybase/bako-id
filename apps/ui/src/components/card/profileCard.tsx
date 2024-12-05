@@ -182,7 +182,7 @@ export const ProfileCard = ({
                   justifyContent="space-between"
                   rightIcon={<ShareIcon />}
                 >
-                  Actions
+                  More
                 </MenuButton>
                 <MenuList>
                   <MenuItem
