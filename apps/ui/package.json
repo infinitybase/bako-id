@@ -10,18 +10,20 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@wagmi/connectors": "5.1.7",
-    "@wagmi/core": "2.13.4",
     "@bako-id/sdk": "workspace:*",
+    "@chakra-ui/anatomy": "^2.3.4",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
+    "@ensdomains/ensjs": "4.0.2",
     "@fuels/connectors": "0.36.1",
     "@fuels/react": "0.36.1",
     "@tanstack/react-query": "^5.59.16",
     "@tanstack/react-router": "^1.77.8",
     "@tanstack/router-devtools": "^1.77.8",
+    "@wagmi/connectors": "5.1.7",
+    "@wagmi/core": "2.13.4",
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.11",
     "framer-motion": "^11.3.4",
@@ -34,7 +36,6 @@
     "react-share": "^5.1.0",
     "tai64": "^1.0.0",
     "validator": "^13.12.0",
-    "@ensdomains/ensjs": "4.0.2",
     "viem": "2.21.45"
   },
   "devDependencies": {

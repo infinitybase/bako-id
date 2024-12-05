@@ -165,7 +165,6 @@ export const Purchased = ({
               }}
               url={window.location.origin}
               title={'I just minted my own Handle on'}
-              hashtags={['web3', 'bakoid', 'fuelnetwork']}
               related={[]}
             >
               <TwitterIcon w={4} h={4} mr={2} />

@@ -16,18 +16,16 @@ import {
   VStack,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useProvider } from '@fuels/react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { isB256 } from 'fuels';
 import { type ReactNode, Suspense, useMemo } from 'react';
 import nftEmpty from '../../../assets/nft-empty.png';
+import { Card, Dialog } from '../../../components';
 import { AccountsCard } from '../../../components/card/accountsCard.tsx';
 import { AddressesCard } from '../../../components/card/addressesCard.tsx';
 import { OwnershipCard } from '../../../components/card/ownershipCard.tsx';
 import { ProfileCard } from '../../../components/card/profileCard.tsx';
-import { ProfileCardLoadingSkeleton } from './profileCardLoadingSkeleton.tsx';
-
-import { useProvider } from '@fuels/react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { isB256 } from 'fuels';
-import { Card, Dialog } from '../../../components';
 import { CopyText } from '../../../components/helpers/copy.tsx';
 import { BTCIcon } from '../../../components/icons/btcicon.tsx';
 import { ContractIcon } from '../../../components/icons/contracticon.tsx';
@@ -44,6 +42,7 @@ import {
   parseURI,
 } from '../../../utils/formatter.ts';
 import { getExplorer } from '../../../utils/getExplorer.ts';
+import { ProfileCardLoadingSkeleton } from './profileCardLoadingSkeleton.tsx';
 
 type ProfileCardsProps = {
   domainParam: string;

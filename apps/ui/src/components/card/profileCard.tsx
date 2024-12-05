@@ -4,6 +4,10 @@ import {
   Button,
   Flex,
   Icon,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Text,
   useClipboard,
   useMediaQuery,
@@ -11,6 +15,7 @@ import {
 import { useProvider } from '@fuels/react';
 import { Card } from '.';
 import { ExplorerTypes } from '../../types';
+import { twitterLink } from '../../utils/formatter.ts';
 import { getExplorer } from '../../utils/getExplorer';
 import { MetadataKeys } from '../../utils/metadataKeys';
 import {
@@ -18,9 +23,11 @@ import {
   // DisabledXBadgeIcon,
   EditIcon,
   ExploreIcon,
+  TwitterIcon,
   // FarcasterBadgeIcon,
 } from '../icons';
 import { CopyIcon } from '../icons/copyIcon.tsx';
+import { ShareIcon } from '../icons/shareicon.tsx';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
 
 interface IProfileCard {
@@ -51,7 +58,11 @@ export const ProfileCard = ({
 
   const explorerUrl = getExplorer(provider?.getChainId());
 
-  const { hasCopied, onCopy } = useClipboard(`https://bako.id/${domainName}`);
+  const {
+    hasCopied,
+    onCopy,
+    value: profileLink,
+  } = useClipboard(`https://bako.id/${domainName}`);
 
   return (
     <Card
@@ -61,6 +72,7 @@ export const ProfileCard = ({
       backdropFilter="blur(7px)"
       justifyContent="space-between"
       gap={4}
+      zIndex="popover"
     >
       <Flex w="full">
         {avatar ? (
@@ -155,21 +167,50 @@ export const ProfileCard = ({
             >
               Explorer
             </Button>
-            <Button
-              w="full"
-              alignSelf={['inherit', 'flex-end']}
-              variant="ghosted"
-              color="grey.100"
-              bgColor={isLowerThanMobile ? 'transparent' : undefined}
-              fontWeight="normal"
-              fontSize={['sm', 'sm']}
-              rightIcon={hasCopied ? <CheckIcon /> : <CopyIcon />}
-              h={9}
-              justifyContent="space-between"
-              onClick={onCopy}
-            >
-              Profile Link
-            </Button>
+            <Menu closeOnSelect={false}>
+              <MenuButton
+                as={Button}
+                w="full"
+                alignSelf={['inherit', 'flex-end']}
+                variant="ghosted"
+                color="grey.100"
+                bgColor={isLowerThanMobile ? 'transparent' : undefined}
+                fontWeight="normal"
+                fontSize={['sm', 'sm']}
+                h={9}
+                justifyContent="space-between"
+                rightIcon={<ShareIcon />}
+              >
+                Actions
+              </MenuButton>
+              <MenuList>
+                <MenuItem
+                  onClick={() => {
+                    window.open(
+                      twitterLink(profileLink, {
+                        title: 'Check my Bako ID profile!',
+                        related: [],
+                      })
+                    );
+                  }}
+                  icon={<TwitterIcon w={15} h={15} />}
+                >
+                  Share on X
+                </MenuItem>
+                <MenuItem
+                  onClick={onCopy}
+                  icon={
+                    hasCopied ? (
+                      <CheckIcon w={15} h={15} />
+                    ) : (
+                      <CopyIcon w={15} h={15} />
+                    )
+                  }
+                >
+                  Copy profile link
+                </MenuItem>
+              </MenuList>
+            </Menu>
             {/*<Menu strategy="absolute">*/}
             {/*  <MenuButton*/}
             {/*    as={Button}*/}
