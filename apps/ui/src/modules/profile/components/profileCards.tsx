@@ -116,7 +116,6 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
     contractId,
     assetId,
     metadata: defaultMetadata,
-    uri,
     symbol,
   } = props.asset;
   const dialog = useDisclosure();
@@ -126,23 +125,17 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
     queryFn: async (): Promise<Record<string, string>> => {
       const metadata = defaultMetadata ?? {};
 
-      if (uri?.endsWith('.json')) {
-        const res = await fetch(parseURI(uri));
-        const json = await res.json();
+      for (const [key, value] of Object.entries(metadata)) {
+        if (Array.isArray(value)) {
+          const metadataValueRecord = metadataArrayToObject(value, key);
+          Object.assign(metadata, metadataValueRecord);
+          delete metadata[key];
+          continue;
+        }
 
-        for (const [key, value] of Object.entries(json)) {
-          if (metadata[key]) continue;
-
-          if (Array.isArray(value)) {
-            const metadataValueRecord = metadataArrayToObject(value, key);
-            Object.assign(metadata, metadataValueRecord);
-            continue;
-          }
-
-          if (metadata[key] === undefined) {
-            const matadataValue = value as string;
-            metadata[key] = matadataValue as string;
-          }
+        if (metadata[key] === undefined) {
+          const matadataValue = value as string;
+          metadata[key] = matadataValue as string;
         }
       }
 
@@ -348,28 +341,23 @@ export const NFTCollections = ({
       //['nft-metadata', assetId]
 
       for (const nft of nfts) {
-        const { metadata = {}, uri } = nft;
-        if (uri?.endsWith('.json')) {
-          const res = await fetch(parseURI(uri));
-          const json = await res.json();
+        const { metadata = {} } = nft;
 
-          for (const [key, value] of Object.entries(json)) {
-            if (metadata[key]) continue;
-
-            if (Array.isArray(value)) {
-              const metadataValueRecord = metadataArrayToObject(value, key);
-              Object.assign(metadata, metadataValueRecord);
-              continue;
-            }
-
-            if (metadata[key] === undefined) {
-              const matadataValue = value as string;
-              metadata[key] = matadataValue as string;
-            }
+        for (const [key, value] of Object.entries(metadata)) {
+          if (Array.isArray(value)) {
+            const metadataValueRecord = metadataArrayToObject(value, key);
+            Object.assign(metadata, metadataValueRecord);
+            delete metadata[key];
+            continue;
           }
 
-          nft.metadata = metadata;
+          if (metadata[key] === undefined) {
+            const matadataValue = value as string;
+            metadata[key] = matadataValue as string;
+          }
         }
+
+        nft.metadata = metadata;
 
         const image = Object.entries(metadata).find(([key]) =>
           key.includes('image')
@@ -387,8 +375,6 @@ export const NFTCollections = ({
     select: (data) => data?.filter((a) => !!a.isNFT),
     enabled: !!chainId,
   });
-
-  console.log(data?.length === 0, data?.length);
 
   if (isLoading) {
     return (
