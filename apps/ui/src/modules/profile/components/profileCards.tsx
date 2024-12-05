@@ -334,7 +334,7 @@ export const NFTCollections = ({
   chainId?: number;
 }) => {
   const queryClient = useQueryClient();
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['nfts', resolver],
     queryFn: async () => {
       const { data } = await FuelAssetService.byAddress({
@@ -389,6 +389,8 @@ export const NFTCollections = ({
     enabled: !!chainId,
   });
 
+  console.log(data?.length === 0, data?.length);
+
   if (isLoading) {
     return (
       <Card
@@ -437,19 +439,18 @@ export const NFTCollections = ({
         {data?.map((a) => (
           <NFTCard key={`${a.contractId}-${a.subId}`} asset={a} />
         ))}
-        {data?.length === 0 ||
-          (isError && (
-            <GridItem as={Center} colSpan={5} gridArea="5fr">
-              <Text
-                color="grey.200"
-                fontSize="xs"
-                maxW="172px"
-                textAlign={'center'}
-              >
-                It appears this user does not own any NFTs yet.
-              </Text>
-            </GridItem>
-          ))}
+        {data?.length === 0 && (
+          <GridItem as={Center} py={10} colSpan={5} gridArea="5fr">
+            <Text
+              color="grey.200"
+              fontSize="xs"
+              maxW="172px"
+              textAlign={'center'}
+            >
+              It appears this user does not own any NFTs yet.
+            </Text>
+          </GridItem>
+        )}
       </Grid>
     </Card>
   );

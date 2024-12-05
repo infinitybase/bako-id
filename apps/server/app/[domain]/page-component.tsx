@@ -384,7 +384,7 @@ export const NFTCollections = ({
   resolver: string;
   chainId?: number;
 }) => {
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['nfts', resolver],
     queryFn: async () => {
       const { data } = await FuelAssetService.byAddress({
@@ -467,8 +467,6 @@ export const NFTCollections = ({
       h={['fit-content', 'fit-content', 'fit-content', 'auto']}
       display="flex"
       backdropFilter="blur(6px)"
-      backgroundColor="rgb(35 34 34)"
-      cursor="pointer"
       flexDirection="column"
       boxShadow="lg"
     >
@@ -487,19 +485,18 @@ export const NFTCollections = ({
         {data?.map((a) => (
           <NFTCard key={`${a.contractId}-${a.subId}`} asset={a} />
         ))}
-        {data?.length === 0 ||
-          (isError && (
-            <GridItem as={Center} colSpan={5} gridArea="5fr">
-              <Text
-                color="grey.200"
-                fontSize="xs"
-                maxW="172px"
-                textAlign={'center'}
-              >
-                It appears this user does not own any NFTs yet.
-              </Text>
-            </GridItem>
-          ))}
+        {data?.length === 0 && (
+          <GridItem as={Center} py={10} colSpan={5} gridArea="5fr">
+            <Text
+              color="grey.200"
+              fontSize="xs"
+              maxW="172px"
+              textAlign={'center'}
+            >
+              It appears this user does not own any NFTs yet.
+            </Text>
+          </GridItem>
+        )}
       </Grid>
     </Card>
   );
@@ -689,7 +686,14 @@ export function ProfilePage() {
               <Heading fontSize="lg">Accounts</Heading>
             </Flex>
 
-            <Collapse startingHeight={334} in={shouwAccounts}>
+            <Collapse
+              startingHeight={
+                metadataAccount.length === 0 || metadataAccount.length >= 6
+                  ? 330
+                  : metadataAccount.length * 80
+              }
+              in={shouwAccounts}
+            >
               {metadataAccount.length ? (
                 <VStack spacing={5} h="full" mt={6}>
                   {metadata?.map((m) => {
