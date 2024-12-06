@@ -38,6 +38,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `@${domain} | Bako Identity`,
     description:
       bakoIdAsset.metadata?.['contact:bio'] ?? 'Embrace your digital legacy',
+    twitter: {
+      card: 'summary_large_image',
+      description:
+        bakoIdAsset.metadata?.['contact:bio'] ?? 'Embrace your digital legacy',
+      title: `@${domain} | Bako Identity`,
+      images: [
+        parseURI(
+          bakoIdAsset.metadata?.avatar ??
+            bakoIdAsset.metadata?.['image:png'] ??
+            ''
+        ),
+      ],
+    },
     openGraph: {
       images: [
         parseURI(
