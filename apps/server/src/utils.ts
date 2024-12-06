@@ -48,9 +48,9 @@ export const formatAddress = (address: string, factor?: number) => {
   return `${address.slice(0, size)}...${address.slice(-1 * (size / 2))}`;
 };
 
-export const isIPFS = (url: string) => url.startsWith('ipfs://');
+export const isIPFS = (url: string) => Boolean(url?.startsWith('ipfs://'));
 
-export const isHTTPS = (url: string) => url.startsWith('https://');
+export const isHTTPS = (url: string) => Boolean(url?.startsWith('https://'));
 
 export const IPFStoHTTP = (url: string) =>
   isIPFS(url) ? `https://ipfs.io/ipfs/${url.slice(7)}` : url;
