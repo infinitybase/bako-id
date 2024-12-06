@@ -692,7 +692,7 @@ export function ProfilePage() {
             backdropFilter="blur(6px)"
             flexDirection="column"
             position="relative"
-            paddingBottom={(metadataAccount.length ?? 0) < 5 ? 0 : 8}
+            paddingBottom={(metadataAccount.length ?? 0) < 6 ? 0 : 8}
           >
             <Flex alignItems="center" justify="space-between">
               <Heading fontSize="lg">Accounts</Heading>
@@ -700,7 +700,7 @@ export function ProfilePage() {
 
             <Collapse
               startingHeight={
-                metadataAccount.length === 0 || metadataAccount.length >= 6
+                metadataAccount.length === 0 || metadataAccount.length >= 5
                   ? 330
                   : metadataAccount.length * 80
               }
@@ -762,7 +762,7 @@ export function ProfilePage() {
             </Collapse>
             <Button
               leftIcon={
-                metadataAccount.length > 5 ? (
+                metadataAccount.length > 6 ? (
                   shouwAccounts ? (
                     <ArrowUpIcon />
                   ) : (
@@ -785,7 +785,7 @@ export function ProfilePage() {
               _hover={{}}
               _active={{}}
               onClick={() => setShouwAccounts((prevState) => !prevState)}
-              hidden={metadataAccount.length < 5}
+              hidden={metadataAccount.length < 6}
             >
               {shouwAccounts ? 'Hide Accounts' : 'Show More Accounts'}
             </Button>
