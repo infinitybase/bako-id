@@ -1,3 +1,8 @@
+enum Network {
+    MAINNET
+    TESTNET
+}
+
 type Records {
     id: ID!
     name: String!
@@ -6,10 +11,12 @@ type Records {
     name_hash: String!
     timestamp: String!
     period: Int!
+    network: Network!
 }
 
 type AddressResolver {
     id: ID!
     name: String!
     resolver: String!
+    record: Records! @index
 }

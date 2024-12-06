@@ -1,19 +1,25 @@
-# yaml-language-server: $schema=./node_modules/envio/fuel.schema.json
 name: envio-indexer
 ecosystem: fuel
-networks:
-- id: 0
-  start_block: 0
-  contracts:
+contracts:
   - name: manager
-    address:
-    - 0x39140d7233297276196c49bf13c78ce056083ca8bf61af2698ee3fdeb8af1a8b
     abi_file_path: abis/manager-abi.json
     handler: src/EventHandlers.ts
     events:
-    - name: ManagerLogEvent
-      logId: '11146364172429795543'
-    - name: OwnerChangedEvent
-      logId: '4160095253491321915'
-    - name: ResolverChangedEvent
-      logId: '2059351015524214332'
+      - name: ManagerLogEvent
+        logId: '11146364172429795543'
+      - name: OwnerChangedEvent
+        logId: '4160095253491321915'
+      - name: ResolverChangedEvent
+        logId: '2059351015524214332'
+networks:
+- id: 0 # Testnet
+  start_block: 15417128
+  contracts:
+    - name: manager
+      address: 0x39140d7233297276196c49bf13c78ce056083ca8bf61af2698ee3fdeb8af1a8b
+- id: 9889 # Mainnet
+  start_block: 6522181
+  contracts:
+    - name: manager
+      address: 0x3ca7ac3db222a740e1c89158d9255afc2c3591ee3f34aedcaaf7cfeceebd0833
+
