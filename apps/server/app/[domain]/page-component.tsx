@@ -353,6 +353,8 @@ const NFTCard = (props: { asset: FuelAsset }) => {
         </Dialog.Body>
       </Dialog.Modal>
       <Card
+        // backdropFilter="blur(6px)"
+        bgColor="#272726"
         borderRadius="5px"
         overflow={'hidden'}
         onClick={dialog.onOpen}

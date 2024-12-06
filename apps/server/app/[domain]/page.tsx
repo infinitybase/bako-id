@@ -50,6 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             ''
         ),
       ],
+      siteId: `@${domain}`,
     },
     openGraph: {
       images: [
