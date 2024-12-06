@@ -170,13 +170,24 @@ const NFTCard = (props: { asset: FuelAsset }) => {
     assetId,
     metadata: defaultMetadata,
     symbol,
+    uri,
   } = props.asset;
   const dialog = useDisclosure();
 
   const { data: metadata } = useQuery({
     queryKey: ['nft-metadata', assetId],
     queryFn: async (): Promise<Record<string, string>> => {
-      const metadata = defaultMetadata ?? {};
+      let metadata: Record<string, string> = defaultMetadata ?? {};
+      const metadataEntries = Object.entries(metadata).filter(
+        ([key]) => !key.toLowerCase().includes('uri')
+      );
+
+      if (metadataEntries.length === 0 && uri?.endsWith('.json')) {
+        const json: Record<string, string> = await fetch(parseURI(uri))
+          .then((res) => res.json())
+          .catch(() => ({}));
+        metadata = json;
+      }
 
       for (const [key, value] of Object.entries(metadata)) {
         if (Array.isArray(value)) {
@@ -205,8 +216,8 @@ const NFTCard = (props: { asset: FuelAsset }) => {
       const imageKey = Object.keys(metadata).find((key) =>
         imageKeys.includes(key.split(':').at(0)!)
       );
-
-      imageUri = metadata[imageKey!] ?? imageUri;
+      const nftImageURI = parseURI(metadata[imageKey!]);
+      imageUri = nftImageURI || imageUri;
     }
 
     return imageUri;
@@ -394,7 +405,17 @@ export const NFTCollections = ({
       //['nft-metadata', assetId]
 
       for (const nft of nfts) {
-        const { metadata = {} } = nft;
+        let metadata: Record<string, string> = nft.metadata ?? {};
+        const metadataEntries = Object.entries(metadata).filter(
+          ([key]) => !key.toLowerCase().includes('uri')
+        );
+
+        if (metadataEntries.length === 0 && nft.uri?.endsWith('.json')) {
+          const json: Record<string, string> = await fetch(parseURI(nft.uri))
+            .then((res) => res.json())
+            .catch(() => ({}));
+          metadata = json;
+        }
 
         for (const [key, value] of Object.entries(metadata)) {
           if (Array.isArray(value)) {
