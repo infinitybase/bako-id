@@ -12,7 +12,7 @@ contracts:
       - name: ResolverChangedEvent
         logId: '2059351015524214332'
 networks:
-- id: 9889 # Mainnet
+- id: 9889
   start_block: 0
   contracts:
     - name: manager
