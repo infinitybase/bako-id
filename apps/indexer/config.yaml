@@ -22,4 +22,3 @@ networks:
   contracts:
     - name: manager
       address: 0x3ca7ac3db222a740e1c89158d9255afc2c3591ee3f34aedcaaf7cfeceebd0833
-
