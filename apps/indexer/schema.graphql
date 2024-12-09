@@ -11,6 +11,7 @@ type Records {
     name_hash: String!
     timestamp: String!
     period: Int!
+    network: Network!
 }
 
 type AddressResolver {
