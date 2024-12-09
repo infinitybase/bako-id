@@ -1,27 +1,8 @@
 import { Manager } from 'generated';
 
-const parseNetworkName = (chainId: number): 'MAINNET' | 'TESTNET' => {
-  switch (chainId) {
-    case 0:
-      return 'TESTNET';
-    case 9889:
-      return 'MAINNET';
-    default:
-      throw new Error(`Unknown chainId: ${chainId}`);
-  }
-};
-
-const parseSchemaId = (nameHash: string, chain: string) =>
-  `${nameHash}-${chain}`;
-
 Manager.ManagerLogEvent.handler(async ({ event, context }) => {
-  const networkName = parseNetworkName(event.chainId);
-
-  const recordId = parseSchemaId(event.params.name_hash, networkName);
-  const resolverId = parseSchemaId(
-    event.params.resolver.payload.bits,
-    networkName
-  );
+  const recordId = event.params.name_hash;
+  const resolverId = event.params.resolver.payload.bits;
 
   context.Records.set({
     id: recordId,
@@ -31,7 +12,6 @@ Manager.ManagerLogEvent.handler(async ({ event, context }) => {
     period: event.params.period,
     resolver: event.params.resolver.payload.bits,
     timestamp: String(event.params.timestamp),
-    network: networkName,
   });
 
   const resolver = await context.AddressResolver.get(resolverId);
@@ -46,8 +26,7 @@ Manager.ManagerLogEvent.handler(async ({ event, context }) => {
 });
 
 Manager.OwnerChangedEvent.handler(async ({ event, context }) => {
-  const networkName = parseNetworkName(event.chainId);
-  const recordId = parseSchemaId(event.params.name_hash, networkName);
+  const recordId = event.params.name_hash;
   const record = await context.Records.get(recordId);
 
   if (!record) return;
@@ -59,27 +38,19 @@ Manager.OwnerChangedEvent.handler(async ({ event, context }) => {
 });
 
 Manager.ResolverChangedEvent.handler(async ({ event, context }) => {
-  const networkName = parseNetworkName(event.chainId);
-
-  const recordId = parseSchemaId(event.params.name_hash, networkName);
+  const recordId = event.params.name_hash;
   const record = await context.Records.get(recordId);
 
   if (!record) return;
 
-  const oldResolverId = parseSchemaId(
-    event.params.old_resolver.payload.bits,
-    networkName
-  );
+  const oldResolverId = event.params.old_resolver.payload.bits;
   const oldResolver = await context.AddressResolver.get(oldResolverId);
 
   if (oldResolver && oldResolver.record_id === recordId) {
     context.AddressResolver.deleteUnsafe(oldResolverId);
   }
 
-  const newResolverId = parseSchemaId(
-    event.params.new_resolver.payload.bits,
-    networkName
-  );
+  const newResolverId = event.params.new_resolver.payload.bits;
   const newResolver = await context.AddressResolver.get(newResolverId);
 
   if (!newResolver) {
