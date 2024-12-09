@@ -38,6 +38,19 @@ export type ChangeAddressInput = {
   transactionId: string;
 };
 
+export type NetworkName = 'MAINNET' | 'TESTNET';
+
+const resolveNetwork = (chainId: number): NetworkName => {
+  switch (chainId) {
+    case Networks.MAINNET:
+      return 'MAINNET';
+    case Networks.TESTNET:
+      return 'TESTNET';
+    default:
+      return 'MAINNET';
+  }
+};
+
 /**
  * Class representing a client for interacting with the BakoID API.
  */
@@ -55,11 +68,13 @@ export class BakoIDClient {
   /**
    * Retrieves records associated with a given owner.
    * @param {string} owner - The owner's identifier.
+   * @param {number} chainId - The network to resolve on.
    * @returns {Promise<IDRecord[]>} A promise that resolves to the records.
    */
-  async records(owner: string): Promise<IDRecord[]> {
+  async records(owner: string, chainId: number): Promise<IDRecord[]> {
     const { data } = await this.client.sdk.records({
       owner: Address.fromString(owner).toB256(),
+      network: resolveNetwork(chainId),
     });
 
     return data.Records.map((r) => ({
@@ -75,11 +90,13 @@ export class BakoIDClient {
   /**
    * Retrieves the resolver address for a given name.
    * @param {string} name - The name to resolve.
+   * @param {number} chainId - The network to resolve on.
    * @returns {Promise<string | null>} A promise that resolves to the resolver address.
    */
-  async resolver(name: string) {
+  async resolver(name: string, chainId: number) {
     const { data } = await this.client.sdk.resolver({
       name: name.replace('@', ''),
+      network: resolveNetwork(chainId),
     });
     const record = data.AddressResolver.at(0);
     return record?.resolver ?? null;
@@ -88,11 +105,13 @@ export class BakoIDClient {
   /**
    * Retrieves the name associated with a given address.
    * @param {string} addr - The address to resolve.
+   * @param {number} chainId - The network to resolve on.
    * @returns {Promise<{ name: string }>} A promise that resolves to the name.
    */
-  async name(addr: string) {
+  async name(addr: string, chainId: number) {
     const { data } = await this.client.sdk.name({
       address: Address.fromString(addr).toB256(),
+      network: resolveNetwork(chainId),
     });
     const record = data.Records.at(0);
     return record?.name ?? null;

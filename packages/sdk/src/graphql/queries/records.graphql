@@ -1,6 +1,9 @@
-query records($owner: String) {
+query records($owner: String, $network: network) {
     Records(
-        where: { owner: { _eq: $owner } }
+        where: {
+            owner: { _eq: $owner },
+            network: { _eq: $network }
+        }
     ) {
         id
         name

@@ -12,7 +12,10 @@ const useGetAllDomainRequests = () => {
     queryKey: ['getAllDomains', wallet?.address.toB256() ?? ZeroBytes32],
     queryFn: async () => {
       const bakoIDClient = new BakoIDClient(import.meta.env.VITE_API_URL);
-      return bakoIDClient.records(wallet!.address.toB256());
+      return bakoIDClient.records(
+        wallet!.address.toB256(),
+        wallet!.provider.getChainId()
+      );
     },
     enabled: !!wallet,
   });

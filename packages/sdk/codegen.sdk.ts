@@ -6,7 +6,7 @@ const config: CodegenConfig = {
     './src/graphql/generated/sdk-provider.ts': {
       schema:
         process.env.API_URL ??
-        'https://indexer.dev.hyperindex.xyz/c2c199e/v1/graphql',
+        'https://indexer.dev.hyperindex.xyz/ddda882/v1/graphql',
       documents: 'src/graphql/queries/*.graphql',
       plugins: [
         'typescript',
