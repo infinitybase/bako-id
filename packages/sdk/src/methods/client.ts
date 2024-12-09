@@ -10,10 +10,12 @@ export enum Networks {
 
 export type IDRecord = {
   name: string;
-  resolver: string;
   owner: string;
+  resolver: string;
+  nameHash: string;
+  timestamp: string;
+  period: number;
   type?: string;
-  assetId: string;
 };
 
 export type OffChainData = {
@@ -55,7 +57,7 @@ export class BakoIDClient {
    * @param {string} owner - The owner's identifier.
    * @returns {Promise<IDRecord[]>} A promise that resolves to the records.
    */
-  async records(owner: string) {
+  async records(owner: string): Promise<IDRecord[]> {
     const { data } = await this.client.sdk.records({
       owner: Address.fromString(owner).toB256(),
     });

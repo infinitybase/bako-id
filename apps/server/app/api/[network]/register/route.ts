@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { getJsonFile, putJsonFile } from '@/s3';
 import { validateNetwork } from '@/utils';
-import type { OffChainData } from '@bako-id/sdk';
+import type { IDRecord, OffChainData } from '@bako-id/sdk';
 import { Provider, TransactionResponse, hashMessage } from 'fuels';
 import { type NextRequest, NextResponse } from 'next/server';
 
@@ -58,7 +58,10 @@ export async function POST(req: NextRequest) {
             resolver: body.resolver,
             owner: body.owner,
             assetId: r.mintedAssets[0].assetId,
-          },
+            period: 0,
+            nameHash: '',
+            timestamp: '',
+          } as IDRecord,
         ],
       },
     };
