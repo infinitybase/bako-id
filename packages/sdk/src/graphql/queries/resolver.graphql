@@ -1,0 +1,8 @@
+query resolver($name: String) {
+    AddressResolver(
+        limit: 1
+        where: { name: { _eq: $name } }
+    ) {
+        resolver
+    }
+}

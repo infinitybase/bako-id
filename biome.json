@@ -56,7 +56,8 @@
       ".next",
       ".serverless",
       "artifacts/**",
-      "routeTree.gen.ts"
+      "routeTree.gen.ts",
+      "generated/**"
     ]
   }
 }

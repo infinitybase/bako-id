@@ -2,3 +2,4 @@ dist
 .env
 .env.prod
 src/types/sway/contracts
+src/graphql/generated

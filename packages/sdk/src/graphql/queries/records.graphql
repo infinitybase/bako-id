@@ -1,0 +1,13 @@
+query records($owner: String) {
+    Records(
+        where: { owner: { _eq: $owner } }
+    ) {
+        id
+        name
+        owner
+        resolver
+        name_hash
+        timestamp
+        period
+    }
+}

@@ -1,5 +1,4 @@
-import { type NetworkKeys, resolveNetwork } from '@bako-id/contracts';
-import { Address, type Provider, hashMessage, isB256 } from 'fuels';
+import { Address, hashMessage, isB256 } from 'fuels';
 import type {
   ChangeAddressInput,
   OffChainData,
@@ -8,11 +7,10 @@ import type {
 
 export class BakoIDClientMock {
   static list: Map<string, OffChainData> = new Map();
-  private network: NetworkKeys;
+  private network: string;
 
-  constructor(provider: Provider | string, _apiURL = '') {
-    const providerUrl = typeof provider === 'string' ? provider : provider.url;
-    this.network = resolveNetwork(providerUrl);
+  constructor(_apiURL = '') {
+    this.network = 'test';
     BakoIDClientMock.list.set(this.network, {
       records: {},
       resolversAddress: {},

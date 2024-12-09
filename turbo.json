@@ -6,7 +6,7 @@
       "cache": true
     },
     "build": {
-      "dependsOn": ["^build:sway", "^build"],
+      "dependsOn": ["^build:sway", "^codegen:sdk", "^build"],
       "outputs": ["dist/**", ".next/**"],
       "cache": true
     },
@@ -22,6 +22,7 @@
       "dependsOn": ["^build", "^test", "pretest"],
       "outputLogs": "new-only",
       "cache": false
-    }
+    },
+    "codegen:sdk": {}
   }
 }

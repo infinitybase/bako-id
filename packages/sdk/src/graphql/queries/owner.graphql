@@ -1,0 +1,14 @@
+query owner($name: String) {
+    Records(
+        limit: 1
+        where: { name: { _eq: $name } }
+    ) {
+        id
+        name
+        owner
+        resolver
+        name_hash
+        timestamp
+        period
+    }
+}

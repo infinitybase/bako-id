@@ -1,7 +1,5 @@
-import { type NetworkKeys, resolveNetwork } from '@bako-id/contracts';
-import { Address, type Provider } from 'fuels';
-
-const { API_URL } = process.env;
+import { Address } from 'fuels';
+import { BakoIDGraphQLSDK } from '../graphql/sdk';
 
 const UI_URL = 'https://app.bako.id';
 
@@ -24,28 +22,6 @@ export type OffChainData = {
   records: Record<string, IDRecord[]>;
 };
 
-type HTTPClient = ReturnType<typeof httpClient>;
-type HTTPClientConfig = {
-  url: string;
-  network: string;
-};
-
-const httpClient = (config: HTTPClientConfig) => {
-  const apiUrl = `${config.url}/${config.network}`;
-  return {
-    get: async <R>(endpoint: string) =>
-      fetch(`${apiUrl}${endpoint}`).then((res) => res.json() as Promise<R>),
-    post: async <T>(endpoint: string, body: T) =>
-      fetch(`${apiUrl}${endpoint}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-      }).then((res) => res.json()),
-  };
-};
-
 export type RegisterInput = {
   owner: string;
   domain: string;
@@ -64,61 +40,14 @@ export type ChangeAddressInput = {
  * Class representing a client for interacting with the BakoID API.
  */
 export class BakoIDClient {
-  private network: NetworkKeys;
-  private httpClient: HTTPClient;
+  private client: BakoIDGraphQLSDK;
 
   /**
    * Creates an instance of BakoIDClient.
-   * @param {Provider | string} provider - The provider instance or URL.
-   * @param {string} [apiURL] - The API URL.
+   * @param {string} [apiURL] - The RPC URL.
    */
-  constructor(provider: Provider | string, apiURL?: string) {
-    const providerUrl = typeof provider === 'string' ? provider : provider.url;
-    this.network = resolveNetwork(providerUrl);
-    this.httpClient = httpClient({
-      url: apiURL ?? API_URL!,
-      network: this.network,
-    });
-  }
-
-  /**
-   * Registers a new domain.
-   * @param {RegisterInput} params - The registration parameters.
-   * @returns {Promise<any>} A promise that resolves to the registration response.
-   */
-  async register(params: RegisterInput) {
-    return this.httpClient.post('/register', {
-      ...params,
-      domain: params.domain.replace('@', ''),
-      owner: Address.fromDynamicInput(params.owner).toB256(),
-      resolver: Address.fromDynamicInput(params.resolver).toB256(),
-    });
-  }
-
-  /**
-   * @hidden
-   * Changes the owner of a domain.
-   * @param {ChangeAddressInput} params - The change owner parameters.
-   * @returns {Promise<any>} A promise that resolves to the change owner response.
-   */
-  async changeOwner(params: ChangeAddressInput) {
-    return this.httpClient.post('/owner', {
-      ...params,
-      domain: params.domain.replace('@', ''),
-    });
-  }
-
-  /**
-   * @hidden
-   * Changes the resolver of a domain.
-   * @param {ChangeAddressInput} params - The change owner parameters.
-   * @returns {Promise<any>} A promise that resolves to the change owner response.
-   */
-  async changeResolver(params: ChangeAddressInput) {
-    return this.httpClient.post('/resolver', {
-      ...params,
-      domain: params.domain.replace('@', ''),
-    });
+  constructor(apiURL?: string) {
+    this.client = new BakoIDGraphQLSDK(apiURL);
   }
 
   /**
@@ -127,10 +56,18 @@ export class BakoIDClient {
    * @returns {Promise<IDRecord[]>} A promise that resolves to the records.
    */
   async records(owner: string) {
-    const { records } = await this.httpClient.get<{ records: IDRecord[] }>(
-      `/records/${Address.fromDynamicInput(owner).toB256()}`
-    );
-    return records || [];
+    const { data } = await this.client.sdk.records({
+      owner: Address.fromString(owner).toB256(),
+    });
+
+    return data.Records.map((r) => ({
+      name: r.name,
+      owner: r.owner,
+      period: r.period,
+      resolver: r.resolver,
+      nameHash: r.name_hash,
+      timestamp: r.timestamp,
+    }));
   }
 
   /**
@@ -139,11 +76,11 @@ export class BakoIDClient {
    * @returns {Promise<string | null>} A promise that resolves to the resolver address.
    */
   async resolver(name: string) {
-    const { address } = await this.httpClient.get<{ address: string | null }>(
-      `/addr/${name}`
-    );
-
-    return address ? Address.fromDynamicInput(address).toString() : null;
+    const { data } = await this.client.sdk.resolver({
+      name: name.replace('@', ''),
+    });
+    const record = data.AddressResolver.at(0);
+    return record?.resolver ?? null;
   }
 
   /**
@@ -152,10 +89,11 @@ export class BakoIDClient {
    * @returns {Promise<{ name: string }>} A promise that resolves to the name.
    */
   async name(addr: string) {
-    const { name } = await this.httpClient.get<{ name: string | null }>(
-      `/name/${Address.fromDynamicInput(addr).toB256()}`
-    );
-    return name ?? null;
+    const { data } = await this.client.sdk.name({
+      address: Address.fromString(addr).toB256(),
+    });
+    const record = data.Records.at(0);
+    return record?.name ?? null;
   }
 
   /**
@@ -164,6 +102,6 @@ export class BakoIDClient {
    * @returns {string} The profile URL.
    */
   profile(name: string) {
-    return `${UI_URL}/profile/${name.replace('@', '')}?network=${this.network}`;
+    return `${UI_URL}/profile/${name.replace('@', '')}`;
   }
 }

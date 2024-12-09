@@ -1,0 +1,8 @@
+query name($address: String) {
+    Records(
+        limit: 1
+        where: { resolver: { _eq: $address } }
+    ) {
+        name
+    }
+}
