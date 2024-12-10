@@ -1,6 +1,5 @@
-import { FILENAME, getJsonFile } from '@/s3';
-import { validateNetwork } from '@/utils';
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { graphqlClient } from '@/services/graphql';
+import { Address } from 'fuels';
 import { type NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -9,11 +8,13 @@ export async function GET(req: NextRequest) {
     .filter((a) => !!a);
 
   try {
-    const { chainId } = validateNetwork(network);
-    const resovlerFileName = `${chainId}/${FILENAME}`;
-    const offChainData = await getJsonFile(resovlerFileName);
-    const name = offChainData.resolversAddress[addr as string];
-    return NextResponse.json({ name: name ?? null });
+    const { data } = await graphqlClient.sdk.name({
+      address: Address.fromString(addr).toB256(),
+      network: network.toUpperCase(),
+    });
+
+    const record = data.Records.at(0);
+    return NextResponse.json({ name: record?.name ?? null });
   } catch (e) {
     return NextResponse.json(
       // @ts-ignore

@@ -1,7 +1,8 @@
 import { Address } from 'fuels';
-import { BakoIDGraphQLSDK } from '../graphql/sdk';
 
 const UI_URL = 'https://app.bako.id';
+
+const { API_URL } = process.env;
 
 export enum Networks {
   MAINNET = 9889,
@@ -51,18 +52,43 @@ const resolveNetwork = (chainId: number): NetworkName => {
   }
 };
 
+type HTTPClient = ReturnType<typeof httpClient>;
+type HTTPClientConfig = {
+  url: string;
+};
+
+const httpClient = (config: HTTPClientConfig) => {
+  const apiUrl = `${config.url}`;
+  return {
+    get: async <R>(network: string, endpoint: string) =>
+      fetch(`${apiUrl}/${network}${endpoint}`).then(
+        (res) => res.json() as Promise<R>
+      ),
+    post: async <T>(network: string, endpoint: string, body: T) =>
+      fetch(`${apiUrl}/${network}${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      }).then((res) => res.json()),
+  };
+};
+
 /**
  * Class representing a client for interacting with the BakoID API.
  */
 export class BakoIDClient {
-  private client: BakoIDGraphQLSDK;
+  private httpClient: HTTPClient;
 
   /**
    * Creates an instance of BakoIDClient.
    * @param {string} [apiURL] - The RPC URL.
    */
   constructor(apiURL?: string) {
-    this.client = new BakoIDGraphQLSDK(apiURL);
+    this.httpClient = httpClient({
+      url: apiURL ?? API_URL!,
+    });
   }
 
   /**
@@ -72,19 +98,11 @@ export class BakoIDClient {
    * @returns {Promise<IDRecord[]>} A promise that resolves to the records.
    */
   async records(owner: string, chainId: number): Promise<IDRecord[]> {
-    const { data } = await this.client.sdk.records({
-      owner: Address.fromString(owner).toB256(),
-      network: resolveNetwork(chainId),
-    });
-
-    return data.Records.map((r) => ({
-      name: r.name,
-      owner: r.owner,
-      period: r.period,
-      resolver: r.resolver,
-      nameHash: r.name_hash,
-      timestamp: r.timestamp,
-    }));
+    const { records } = await this.httpClient.get<{ records: IDRecord[] }>(
+      resolveNetwork(chainId),
+      `/records/${Address.fromDynamicInput(owner).toB256()}`
+    );
+    return records || [];
   }
 
   /**
@@ -94,12 +112,12 @@ export class BakoIDClient {
    * @returns {Promise<string | null>} A promise that resolves to the resolver address.
    */
   async resolver(name: string, chainId: number) {
-    const { data } = await this.client.sdk.resolver({
-      name: name.replace('@', ''),
-      network: resolveNetwork(chainId),
-    });
-    const record = data.AddressResolver.at(0);
-    return record?.resolver ?? null;
+    const { address } = await this.httpClient.get<{ address: string | null }>(
+      resolveNetwork(chainId),
+      `/addr/${name}`
+    );
+
+    return address ? Address.fromDynamicInput(address).toString() : null;
   }
 
   /**
@@ -109,12 +127,11 @@ export class BakoIDClient {
    * @returns {Promise<{ name: string }>} A promise that resolves to the name.
    */
   async name(addr: string, chainId: number) {
-    const { data } = await this.client.sdk.name({
-      address: Address.fromString(addr).toB256(),
-      network: resolveNetwork(chainId),
-    });
-    const record = data.Records.at(0);
-    return record?.name ?? null;
+    const { name } = await this.httpClient.get<{ name: string | null }>(
+      resolveNetwork(chainId),
+      `/name/${Address.fromDynamicInput(addr).toB256()}`
+    );
+    return name ?? null;
   }
 
   /**

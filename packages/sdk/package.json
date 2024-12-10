@@ -20,8 +20,7 @@
     "build": "tsup",
     "test": "NODE_OPTIONS=--experimental-vm-modules pnpm exec jest",
     "test:registry": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js src/methods/registry.test.ts --runInBand",
-    "test:watch": "jest --verbose --runInBand --watch",
-    "codegen:sdk": "gql-gen -r dotenv/config --config codegen.sdk.ts"
+    "test:watch": "jest --verbose --runInBand --watch"
   },
   "keywords": [],
   "author": "",
