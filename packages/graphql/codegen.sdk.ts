@@ -1,12 +1,14 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
 const config: CodegenConfig = {
   overwrite: true,
   generates: {
     './src/graphql/generated/sdk-provider.ts': {
-      schema:
-        process.env.API_URL ??
-        'https://indexer.dev.hyperindex.xyz/ddda882/v1/graphql',
+      schema: process.env.GRAPHQL_API_URL ?? 'http://localhost:8080/graphql',
       documents: 'src/graphql/queries/*.graphql',
       plugins: [
         'typescript',

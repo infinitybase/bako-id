@@ -6,7 +6,7 @@
       "cache": true
     },
     "build": {
-      "dependsOn": ["^build:sway", "^codegen:sdk", "^build"],
+      "dependsOn": ["^build:sway", "codegen:sdk", "^build"],
       "outputs": ["dist/**", ".next/**"],
       "env": ["API_URL", "VITE_API_URL", "NEXT_PUBLIC_API_URL"],
       "cache": true
@@ -24,6 +24,10 @@
       "outputLogs": "new-only",
       "cache": false
     },
-    "codegen:sdk": {}
+    "codegen:sdk": {
+      "env": ["GRAPHQL_API_URL"],
+      "outputs": ["src/generated/**/*.ts"],
+      "cache": true
+    }
   }
 }
