@@ -9,7 +9,7 @@
       "dependsOn": ["^build:sway", "codegen:sdk", "^build"],
       "outputs": ["dist/**", ".next/**"],
       "env": ["API_URL", "VITE_API_URL", "NEXT_PUBLIC_API_URL"],
-      "cache": true
+      "cache": false
     },
     "docs:build": {
       "dependsOn": ["^docs:build"],
