@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "packageManager": "pnpm@9",
   "scripts": {
     "build": "turbo run build",
     "build:doc": "turbo run docs:build",
