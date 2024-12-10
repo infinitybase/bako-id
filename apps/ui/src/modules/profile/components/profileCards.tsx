@@ -338,7 +338,7 @@ export const NFTCollections = ({
 }) => {
   const queryClient = useQueryClient();
   const { data, isLoading } = useQuery({
-    queryKey: ['nfts', resolver],
+    queryKey: ['nfts', chainId, resolver],
     queryFn: async () => {
       const { data } = await FuelAssetService.byAddress({
         address: resolver,
@@ -394,7 +394,7 @@ export const NFTCollections = ({
       });
     },
     select: (data) => data?.filter((a) => !!a.isNFT),
-    enabled: !!chainId,
+    enabled: chainId !== undefined || chainId !== null,
   });
 
   if (isLoading) {
