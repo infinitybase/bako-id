@@ -1,5 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalPassThroughEnv": ["COREPACK_HOME"],
   "tasks": {
     "build:sway": {
       "outputs": ["dist/**", "**/artifacts/**"],
