@@ -1,0 +1,11 @@
+query name($address: String, $network: network) {
+    Records(
+        limit: 1
+        where: {
+            resolver: { _eq: $address },
+            network: { _eq: $network }
+        }
+    ) {
+        name
+    }
+}

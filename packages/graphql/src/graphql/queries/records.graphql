@@ -1,0 +1,16 @@
+query records($owner: String, $network: network) {
+    Records(
+        where: {
+            owner: { _eq: $owner },
+            network: { _eq: $network }
+        }
+    ) {
+        id
+        name
+        owner
+        resolver
+        name_hash
+        timestamp
+        period
+    }
+}

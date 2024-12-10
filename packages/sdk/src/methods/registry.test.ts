@@ -1,10 +1,3 @@
-jest.mock('../methods/client', () => {
-  const { BakoIDClientMock } = require('../test/mocks/client');
-  return {
-    BakoIDClient: BakoIDClientMock,
-  };
-});
-
 import {
   ManagerFactory,
   NftFactory,
@@ -18,9 +11,8 @@ import {
   hashMessage,
 } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
-import { RegistryContract } from '../index';
+import { RegistryContract } from '../methods/registry';
 import { InvalidDomainError, NotFoundBalanceError, randomName } from '../utils';
-import { BakoIDClient } from './client';
 import { MetadataKeys } from './types';
 
 jest.mock('@bako-id/contracts', () => ({
@@ -96,11 +88,7 @@ describe('Test Registry', () => {
         contracts: [registry],
         wallets: [wallet],
       } = node;
-      const contract = new RegistryContract(
-        registry.id.toB256(),
-        wallet,
-        new BakoIDClient(wallet.provider)
-      );
+      const contract = new RegistryContract(registry.id.toB256(), wallet);
       const invalidSuffix = contract.register({
         domain,
         period: 1,
@@ -115,14 +103,10 @@ describe('Test Registry', () => {
       contracts: [registry],
       wallets: [wallet],
     } = node;
-    const client = new BakoIDClient(wallet.provider);
-    const contract = new RegistryContract(registry.id.toB256(), wallet, client);
+    const contract = new RegistryContract(registry.id.toB256(), wallet);
 
     const resolver = wallet.address.toB256();
     const domain = `bako_${randomName(3)}`;
-
-    expect(await client.name(resolver)).toBeNull();
-    expect(await client.resolver(domain)).toBeNull();
 
     const result = await contract.register({
       domain,
@@ -133,9 +117,6 @@ describe('Test Registry', () => {
 
     expect(mintedToken).toBeDefined();
     expect(mintedToken.subId).toBe(hashMessage(domain));
-    expect(await client.name(resolver)).toBe(domain);
-    expect(await client.resolver(domain)).toBe(resolver);
-    expect(await client.records(resolver)).toHaveLength(1);
 
     const { image } = await contract.token(domain);
     expect(image).toBeDefined();
@@ -154,8 +135,7 @@ describe('Test Registry', () => {
       [MetadataKeys.LINK_BLOG]: 'https://random.com',
     };
 
-    const client = new BakoIDClient(wallet.provider);
-    const contract = new RegistryContract(registry.id.toB256(), wallet, client);
+    const contract = new RegistryContract(registry.id.toB256(), wallet);
 
     const resolver = wallet.address.toB256();
     const domain = `bako_${randomName(3)}`;
@@ -178,14 +158,11 @@ describe('Test Registry', () => {
       contracts: [registry],
       wallets: [wallet],
     } = node;
-    const client = new BakoIDClient(wallet.provider);
-    const contract = new RegistryContract(registry.id.toB256(), wallet, client);
+    const contract = new RegistryContract(registry.id.toB256(), wallet);
 
-    const sync = new BakoIDClient(wallet.provider);
     const domain1 = `bako_${randomName(3)}`;
     const domain2 = `bako_${randomName(3)}`;
     const resolver = getRandomB256();
-    const ownerAddress = wallet.address.toB256();
     const result1 = await contract.register({
       domain: domain1,
       period: 1,
@@ -195,9 +172,6 @@ describe('Test Registry', () => {
     const mintedToken_1 = result1.transactionResult.mintedAssets[0];
 
     expect(mintedToken_1).toBeDefined();
-    expect(await sync.records(ownerAddress)).toHaveLength(1);
-    expect(await sync.name(resolver)).toBe(domain1);
-    expect(await sync.resolver(domain1)).toBe(resolver);
     expect(mintedToken_1.subId).toBe(hashMessage(domain1));
 
     const result2 = await contract.register({
@@ -208,9 +182,6 @@ describe('Test Registry', () => {
     const mintedToken_2 = result2.transactionResult.mintedAssets[0];
 
     expect(mintedToken_2).toBeDefined();
-    expect(await sync.name(resolver)).toBe(domain1);
-    expect(await sync.records(ownerAddress)).toHaveLength(2);
-    expect(await sync.resolver(domain2)).toBe(resolver);
     expect(mintedToken_2.subId).toBe(hashMessage(domain2));
   });
 
@@ -219,8 +190,7 @@ describe('Test Registry', () => {
       contracts: [registry],
       wallets: [wallet],
     } = node;
-    const client = new BakoIDClient(wallet.provider);
-    const contract = new RegistryContract(registry.id.toB256(), wallet, client);
+    const contract = new RegistryContract(registry.id.toB256(), wallet);
     const result = await contract.register({
       domain: `bako_${randomName(3)}`,
       period: 1,
@@ -236,8 +206,7 @@ describe('Test Registry', () => {
     } = node;
 
     const wallet = WalletUnlocked.generate({ provider });
-    const client = new BakoIDClient(wallet.provider);
-    const contract = new RegistryContract(registry.id.toB256(), wallet, client);
+    const contract = new RegistryContract(registry.id.toB256(), wallet);
     const registerResult = contract.register({
       domain: `bako_${randomName(3)}`,
       period: 1,
@@ -255,8 +224,7 @@ describe('Test Registry', () => {
     } = node;
 
     const domain = randomName();
-    const client = new BakoIDClient(wallet.provider);
-    const contract = new RegistryContract(registry.id.toB256(), wallet, client);
+    const contract = new RegistryContract(registry.id.toB256(), wallet);
     await contract.register({
       domain,
       period: 1,
@@ -268,8 +236,7 @@ describe('Test Registry', () => {
 
     const contractWithoutAccount = new RegistryContract(
       registry.id.toB256(),
-      provider,
-      client
+      provider
     );
 
     const { fee, price } = await contractWithoutAccount.simulate({
@@ -310,8 +277,7 @@ describe('Test Registry', () => {
 
     const domain = randomName();
     const period = 1;
-    const client = new BakoIDClient(wallet.provider);
-    const contract = new RegistryContract(registry.id.toB256(), wallet, client);
+    const contract = new RegistryContract(registry.id.toB256(), wallet);
     const {
       transactionResult: { date },
     } = await contract.register({
@@ -344,8 +310,7 @@ describe('Test Registry', () => {
     } = node;
 
     const domain = randomName();
-    const client = new BakoIDClient(owner.provider);
-    const contract = new RegistryContract(registry.id.toB256(), owner, client);
+    const contract = new RegistryContract(registry.id.toB256(), owner);
     await contract.register({
       domain,
       period: 1,
@@ -359,9 +324,6 @@ describe('Test Registry', () => {
     });
 
     expect(result.status).toBe(TransactionStatus.success);
-
-    const offChainRecord = await client.records(newAddress);
-    expect(offChainRecord).toHaveLength(1);
 
     const { value: onChainRecord } = await manager.functions
       .get_owner(domain)
@@ -383,8 +345,7 @@ describe('Test Registry', () => {
     } = node;
 
     const domain = randomName();
-    const client = new BakoIDClient(owner.provider);
-    let contract = new RegistryContract(registry.id.toB256(), owner, client);
+    let contract = new RegistryContract(registry.id.toB256(), owner);
     await contract.register({
       domain,
       period: 1,
@@ -399,9 +360,6 @@ describe('Test Registry', () => {
 
     expect(result.status).toBe(TransactionStatus.success);
 
-    const offChainRecord = await client.resolver(domain);
-    expect(offChainRecord).toBe(newAddress);
-
     const { value: onChainRecord } = await manager.functions
       .get_resolver(domain)
       .get();
@@ -414,7 +372,7 @@ describe('Test Registry', () => {
       })
     ).rejects.toThrow(/ResolverAlreadyInUse/);
 
-    contract = new RegistryContract(registry.id.toB256(), newResolver, client);
+    contract = new RegistryContract(registry.id.toB256(), newResolver);
 
     await expect(() =>
       contract.changeResolver({

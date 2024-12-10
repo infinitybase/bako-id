@@ -1,4 +1,4 @@
-import { BakoIDClient, RegistryContract } from '@bako-id/sdk';
+import { RegistryContract } from '@bako-id/sdk';
 import { useWallet } from '@fuels/react';
 import { useMemo } from 'react';
 
@@ -7,11 +7,7 @@ export const useRegistryContract = () => {
 
   const contract = useMemo(() => {
     if (!wallet) return null;
-    const client = new BakoIDClient(
-      wallet.provider,
-      import.meta.env.VITE_API_URL
-    );
-    return RegistryContract.create(wallet, client);
+    return RegistryContract.create(wallet);
   }, [wallet]);
 
   return contract;

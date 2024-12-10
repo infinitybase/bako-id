@@ -1,6 +1,6 @@
 'use client';
 
-import { BakoIDClient, RegistryContract, ResolverContract } from '@bako-id/sdk';
+import { RegistryContract, ResolverContract } from '@bako-id/sdk';
 import { useQuery } from '@tanstack/react-query';
 import { Provider } from 'fuels';
 
@@ -60,11 +60,7 @@ export const useProfile = (domainName: string) => {
   const { data: registry, isLoading: isLoadingMetadata } = useQuery({
     queryKey: ['metadata', domainName],
     queryFn: async () => {
-      const client = new BakoIDClient(
-        provider!,
-        process.env.NEXT_PUBLIC_API_URL
-      );
-      const contract = RegistryContract.create(provider!, client);
+      const contract = RegistryContract.create(provider!);
       const metadata = await contract.getMetadata(domainName);
       const { ttl, timestamp } = await contract.getDates(domainName);
       const gracePeriod = new Date(ttl);
