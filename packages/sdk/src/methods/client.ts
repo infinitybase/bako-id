@@ -1,6 +1,6 @@
 import { Address } from 'fuels';
 
-const UI_URL = 'https://app.bako.id';
+const UI_URL = 'https://bako.id';
 
 const { API_URL } = process.env;
 
@@ -76,7 +76,7 @@ const httpClient = (config: HTTPClientConfig) => {
 };
 
 /**
- * Class representing a client for interacting with the BakoID API.
+ * Class representing a client for interacting with the Bako Identity.
  */
 export class BakoIDClient {
   private httpClient: HTTPClient;
@@ -140,6 +140,6 @@ export class BakoIDClient {
    * @returns {string} The profile URL.
    */
   profile(name: string) {
-    return `${UI_URL}/profile/${name.replace('@', '')}`;
+    return `${UI_URL}/${name.replace('@', '')}`;
   }
 }

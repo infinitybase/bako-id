@@ -41,7 +41,9 @@ export class BakoIDClientMock {
       resolver: params.resolver,
       owner: params.resolver,
       type: 'teste',
-      assetId: hashMessage(params.domain),
+      nameHash: hashMessage(params.domain),
+      period: params.period,
+      timestamp: new Date().toISOString(),
     });
 
     BakoIDClientMock.list.set(this.network, resolverData);
