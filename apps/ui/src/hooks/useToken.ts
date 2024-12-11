@@ -1,4 +1,4 @@
-import { BakoIDClient, RegistryContract } from '@bako-id/sdk';
+import { RegistryContract } from '@bako-id/sdk';
 import { useProvider } from '@fuels/react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
@@ -15,20 +15,12 @@ export const useToken = () => {
         let registryContract: RegistryContract;
 
         if (provider) {
-          const client = new BakoIDClient(
-            provider,
-            import.meta.env.VITE_API_URL
-          );
-          registryContract = RegistryContract.create(provider, client);
+          registryContract = RegistryContract.create(provider);
         } else {
           const provider = await Provider.create(
             import.meta.env.VITE_PROVIDER_URL
           );
-          const client = new BakoIDClient(
-            provider,
-            import.meta.env.VITE_API_URL
-          );
-          registryContract = RegistryContract.create(provider, client);
+          registryContract = RegistryContract.create(provider);
         }
 
         return registryContract.token(domain);

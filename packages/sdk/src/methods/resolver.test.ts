@@ -8,7 +8,6 @@ import {
 import { type Account, ZeroBytes32, getRandomB256 } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
 import { randomName } from '../utils';
-import { BakoIDClient } from './client';
 import { RegistryContract } from './registry';
 import { ResolverContract } from './resolver';
 
@@ -105,8 +104,7 @@ describe('Test resolver', () => {
     const owner = account ?? wallet;
     const resolverAddress =
       accountResolver ?? contractId ?? owner.address.toB256();
-    const client = new BakoIDClient(wallet.provider);
-    const contract = new RegistryContract(registry.id.toB256(), owner, client);
+    const contract = new RegistryContract(registry.id.toB256(), owner);
     await contract.register({
       domain,
       period: 1,

@@ -18,7 +18,6 @@ import {
   domainPrices,
   getFakeAccount,
 } from '../utils';
-import type { BakoIDClient } from './client';
 import { MetadataKeys } from './types';
 
 export type RegisterPayload = {
@@ -71,13 +70,8 @@ export class RegistryContract {
   private managerContract: Manager;
   private account: Account | undefined;
   private provider: Provider;
-  private bakoIDClient: BakoIDClient;
 
-  constructor(
-    id: string,
-    accountOrProvider: Account | Provider,
-    bakoIDClient: BakoIDClient
-  ) {
+  constructor(id: string, accountOrProvider: Account | Provider) {
     if ('address' in accountOrProvider && !!accountOrProvider.address) {
       this.account = accountOrProvider;
       this.provider = accountOrProvider.provider;
@@ -94,13 +88,9 @@ export class RegistryContract {
       getContractId(this.provider.url, 'manager'),
       accountOrProvider
     );
-    this.bakoIDClient = bakoIDClient;
   }
 
-  static create(
-    accountOrProvider: Account | Provider,
-    bakoIDClient: BakoIDClient
-  ) {
+  static create(accountOrProvider: Account | Provider) {
     let provider: Provider;
 
     if (accountOrProvider instanceof Account) {
@@ -110,7 +100,7 @@ export class RegistryContract {
     }
 
     const contractId = getContractId(provider.url, 'registry');
-    return new RegistryContract(contractId, accountOrProvider, bakoIDClient);
+    return new RegistryContract(contractId, accountOrProvider);
   }
 
   async register(params: RegisterPayload) {
@@ -133,16 +123,6 @@ export class RegistryContract {
 
     const { transactionResult, transactionResponse, gasUsed, transactionId } =
       await registerCall.waitForResult();
-
-    if (transactionResult.status === TransactionStatus.success) {
-      await this.bakoIDClient.register({
-        period,
-        resolver,
-        transactionId,
-        domain: domainName,
-        owner: this.account.address.toB256(),
-      });
-    }
 
     return {
       gasUsed,
@@ -172,14 +152,6 @@ export class RegistryContract {
       .call();
     const { transactionResult } = await changeOwnerCall.waitForResult();
 
-    if (transactionResult.status === TransactionStatus.success) {
-      await this.bakoIDClient.changeOwner({
-        address,
-        domain: domainName,
-        transactionId: changeOwnerCall.transactionId,
-      });
-    }
-
     return transactionResult;
   }
 
@@ -198,14 +170,6 @@ export class RegistryContract {
       .addContracts([this.managerContract])
       .call();
     const { transactionResult } = await changeResolverCall.waitForResult();
-
-    if (transactionResult.status === TransactionStatus.success) {
-      await this.bakoIDClient.changeResolver({
-        domain: domainName,
-        address: address,
-        transactionId: changeResolverCall.transactionId,
-      });
-    }
 
     return transactionResult;
   }

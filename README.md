@@ -30,9 +30,9 @@ import { BakoIDClient } from '@bako-id/sdk';
 import { Provider } from 'fuels';
 
 const provider = await Provider.create('https://testnet.fuel.network/v1/graphql');
-const client = new BakoIDClient(provider.url);
+const client = new BakoIDClient();
 
-const resolverAddress = await client.resolver('bakoid'); 
+const resolverAddress = await client.resolver('bakoid', provider.getChainId()); 
 console.log(resolverAddress); // 0x000000...
 ```
 
@@ -43,10 +43,21 @@ import { BakoIDClient } from '@bako-id/sdk';
 import { Provider } from 'fuels';
 
 const provider = await Provider.create('https://testnet.fuel.network/v1/graphql');
-const client = new BakoIDClient(provider.url);
+const client = new BakoIDClient();
 
-const name = await client.name('0x000000...'); 
+const name = await client.name('0x000000...', provider.getChainId()); 
 console.log(name); // @bakoid
+```
+
+### Profile URL
+
+```ts
+import { BakoIDClient } from '@bako-id/sdk';
+import { Provider } from 'fuels';
+
+const client = new BakoIDClient();
+const profileUrl = await client.profile('@bakoid'); 
+console.log(profileUrl); // https://bako.id/bakoid
 ```
 
 ## 📜 License

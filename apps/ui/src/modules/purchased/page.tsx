@@ -163,7 +163,7 @@ export const Purchased = ({
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              url={window.location.origin}
+              url={`https://bako.id/${domain}`}
               title={'I just minted my own Handle on'}
               related={[]}
             >

@@ -41,7 +41,7 @@ export type ByAddressResponse = {
 
 const networks: Record<number, string> = {
   9889: 'https://mainnet-explorer.fuel.network',
-  0: 'https://testnet-explorer.fuel.network',
+  0: 'https://explorer-indexer-testnet.fuel.network',
 };
 
 export class FuelAssetService {
