@@ -1,0 +1,16 @@
+query names($addresses:  [String!], $network: network) {
+    Records(
+        where: {
+            network: {_eq: $network},
+            _and: {
+                resolver: {
+                    _in: $addresses
+                }
+            }
+        }
+        distinct_on: [resolver]
+    ) {
+        name
+        resolver
+    }
+}

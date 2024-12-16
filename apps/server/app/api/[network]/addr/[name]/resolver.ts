@@ -6,6 +6,6 @@ export const getResolver = async (name: string, network: string) => {
     network: network.toUpperCase(),
   });
 
-  const record = data.AddressResolver.at(0);
+  const record = data.Records.at(0);
   return record?.resolver ?? null;
 };

@@ -135,6 +135,23 @@ export class BakoIDClient {
   }
 
   /**
+   * Retrieves the resolver addresses associated with a given names
+   * @param {string[]} addresses - The addresses to resolve.
+   * @param {number} chainId - The network to resolve on.
+   * @returns {Promise<{ name: string; resolver: string }[]>} A promise that resolves to the resolver addresses.
+   */
+  async names(addresses: string[], chainId: number) {
+    const params = new URLSearchParams();
+    for (const addr of addresses) {
+      params.append('address', Address.fromDynamicInput(addr).toB256());
+    }
+    const { names } = await this.httpClient.get<{
+      names: { name: string; resolver: string }[];
+    }>(resolveNetwork(chainId), `/name?${params.toString()}`);
+    return names || [];
+  }
+
+  /**
    * Retrieves the profile URL for a given name.
    * @param {string} name - The name to resolve.
    * @returns {string} The profile URL.
