@@ -6,12 +6,6 @@ query owner($name: String, $network: network) {
             network: { _eq: $network }
         }
     ) {
-        id
-        name
         owner
-        resolver
-        name_hash
-        timestamp
-        period
     }
 }

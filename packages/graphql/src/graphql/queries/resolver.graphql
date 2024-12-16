@@ -1,11 +1,9 @@
 query resolver($name: String, $network: network) {
-    AddressResolver(
+    Records(
         limit: 1
         where: {
             name: { _eq: $name },
-            record: {
-                network: { _eq: $network }
-            }
+            network: { _eq: $network }
         }
     ) {
         resolver

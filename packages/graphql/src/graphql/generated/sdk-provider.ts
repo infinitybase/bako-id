@@ -1762,13 +1762,21 @@ export type GQLNameQueryVariables = Exact<{
 
 export type GQLNameQuery = { __typename: 'query_root', Records: Array<{ __typename: 'Records', name: string }> };
 
+export type GQLNamesQueryVariables = Exact<{
+  addresses?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+  network?: InputMaybe<Scalars['network']['input']>;
+}>;
+
+
+export type GQLNamesQuery = { __typename: 'query_root', Records: Array<{ __typename: 'Records', name: string, resolver: string }> };
+
 export type GQLOwnerQueryVariables = Exact<{
   name?: InputMaybe<Scalars['String']['input']>;
   network?: InputMaybe<Scalars['network']['input']>;
 }>;
 
 
-export type GQLOwnerQuery = { __typename: 'query_root', Records: Array<{ __typename: 'Records', id: string, name: string, owner: string, resolver: string, name_hash: string, timestamp: string, period: number }> };
+export type GQLOwnerQuery = { __typename: 'query_root', Records: Array<{ __typename: 'Records', owner: string }> };
 
 export type GQLRecordsQueryVariables = Exact<{
   owner?: InputMaybe<Scalars['String']['input']>;
@@ -1784,7 +1792,7 @@ export type GQLResolverQueryVariables = Exact<{
 }>;
 
 
-export type GQLResolverQuery = { __typename: 'query_root', AddressResolver: Array<{ __typename: 'AddressResolver', resolver: string }> };
+export type GQLResolverQuery = { __typename: 'query_root', Records: Array<{ __typename: 'Records', resolver: string }> };
 
 
 export const NameDocument = gql`
@@ -1794,16 +1802,21 @@ export const NameDocument = gql`
   }
 }
     `;
+export const NamesDocument = gql`
+    query names($addresses: [String!], $network: network) {
+  Records(
+    where: {network: {_eq: $network}, _and: {resolver: {_in: $addresses}}}
+    distinct_on: [resolver]
+  ) {
+    name
+    resolver
+  }
+}
+    `;
 export const OwnerDocument = gql`
     query owner($name: String, $network: network) {
   Records(limit: 1, where: {name: {_eq: $name}, network: {_eq: $network}}) {
-    id
-    name
     owner
-    resolver
-    name_hash
-    timestamp
-    period
   }
 }
     `;
@@ -1822,10 +1835,7 @@ export const RecordsDocument = gql`
     `;
 export const ResolverDocument = gql`
     query resolver($name: String, $network: network) {
-  AddressResolver(
-    limit: 1
-    where: {name: {_eq: $name}, record: {network: {_eq: $network}}}
-  ) {
+  Records(limit: 1, where: {name: {_eq: $name}, network: {_eq: $network}}) {
     resolver
   }
 }
@@ -1836,6 +1846,7 @@ export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, str
 
 const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType, _variables) => action();
 const NameDocumentString = print(NameDocument);
+const NamesDocumentString = print(NamesDocument);
 const OwnerDocumentString = print(OwnerDocument);
 const RecordsDocumentString = print(RecordsDocument);
 const ResolverDocumentString = print(ResolverDocument);
@@ -1843,6 +1854,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
   return {
     name(variables?: GQLNameQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLNameQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLNameQuery>(NameDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'name', 'query', variables);
+    },
+    names(variables?: GQLNamesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLNamesQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLNamesQuery>(NamesDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'names', 'query', variables);
     },
     owner(variables?: GQLOwnerQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLOwnerQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLOwnerQuery>(OwnerDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'owner', 'query', variables);
