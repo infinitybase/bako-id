@@ -1,11 +1,20 @@
 import { Box, Button, Icon, Text } from '@chakra-ui/react';
-import { useConnectUI } from '@fuels/react';
+import { useAccount, useConnectUI, useIsConnected } from '@fuels/react';
+import { useEffect } from 'react';
 import { useScreenSize } from '../../hooks/useScreenSize';
 import { WalletIcon } from '../icons/wallet';
 
 export const Connect = () => {
   const { isMobile } = useScreenSize();
-  const { connect, isConnected, isConnecting } = useConnectUI();
+  const { connect, isConnecting } = useConnectUI();
+  const { account, refetch } = useAccount();
+  const { isConnected } = useIsConnected();
+
+  useEffect(() => {
+    if (!account && isConnected) {
+      refetch();
+    }
+  }, [account, isConnected, refetch]);
 
   // if (isConnecting) {
   //   return (
@@ -14,10 +23,6 @@ export const Connect = () => {
   //     </Skeleton>
   //   );
   // }
-
-  if (isConnected) {
-    return null;
-  }
 
   return (
     <>
@@ -35,7 +40,7 @@ export const Connect = () => {
         className="transition-all-05"
       >
         {isConnecting && <Text>Connecting...</Text>}
-        {!isConnecting && !isConnected && (
+        {!isConnecting && !account && (
           <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
             {!isMobile && (
               <Icon
