@@ -27,6 +27,7 @@ export interface FuelAsset {
   uri?: string;
   contractId?: string;
   subId?: string;
+  collection?: string;
 }
 
 export interface ByAddress {

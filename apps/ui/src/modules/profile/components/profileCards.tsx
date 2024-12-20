@@ -1,3 +1,4 @@
+import { contractsId } from '@bako-id/sdk';
 import {
   Box,
   Center,
@@ -65,6 +66,7 @@ const NFTText = ({
 } & FlexProps) => (
   <Flex
     flex={1}
+    minW="fit-content"
     w="full"
     p={3}
     gap={3}
@@ -177,6 +179,16 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
     }));
   }, [metadata]);
 
+  const hasSrc20Name = name && symbol;
+
+  const nftName = (
+    <>
+      {hasSrc20Name && `${symbol} ${name}`}
+      {!hasSrc20Name && metadata?.name && metadata.name}
+      {!hasSrc20Name && !metadata?.name && formatAddress(assetId)}
+    </>
+  );
+
   return (
     <>
       <Dialog.Modal
@@ -213,10 +225,6 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
           >
             <Image
               w="full"
-              minW={{
-                base: 'auto',
-                md: '400px',
-              }}
               src={parseURI(image)}
               alt="NFT image"
               borderRadius="xl"
@@ -238,7 +246,8 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
             </Flex>
           </Box>
           <VStack
-            w="full"
+            maxW="full"
+            flex={1}
             justifyContent="space-between"
             alignItems="flex-start"
             ml={{
@@ -247,10 +256,7 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
             }}
           >
             <Box w="full" position="relative">
-              <Heading fontSize="xl">
-                {name && symbol && `${symbol} ${name}`}
-                {!name && formatAddress(assetId)}
-              </Heading>
+              <Heading fontSize="xl">{nftName}</Heading>
               <CloseButton
                 onClick={dialog.onClose}
                 w="min-content"
@@ -320,9 +326,7 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
       >
         <Image maxW="full" src={props.asset.image ?? image} />
         <Box p={2} w="full">
-          <Text fontSize="sm">
-            {symbol ?? ''} {name ?? formatAddress(assetId!)}
-          </Text>
+          <Text fontSize="sm">{nftName}</Text>
         </Box>
       </Card>
     </>
@@ -384,6 +388,11 @@ export const NFTCollections = ({
           key.includes('image')
         )?.[1];
         nft.image = image ? parseURI(image) : undefined;
+
+        if (nft.contractId === contractsId.mainnet.nft) {
+          nft.collection = 'Bako ID';
+        }
+
         queryClient.setQueryData(['nft-metadata', nft.assetId], nft.metadata);
       }
 
@@ -396,6 +405,53 @@ export const NFTCollections = ({
     select: (data) => data?.filter((a) => !!a.isNFT),
     enabled: chainId !== undefined || chainId !== null,
   });
+
+  const desiredOrder = ['Bako ID', 'Executoors'];
+  const nftCollections = useMemo(
+    () =>
+      data
+        ?.reduce(
+          (acc, curr) => {
+            const collectionName = curr?.collection ?? 'Other';
+            const collectionAssets = acc.find((c) => c.name === collectionName);
+            if (collectionAssets) {
+              collectionAssets.assets.push(curr);
+            } else {
+              acc.push({
+                name: collectionName,
+                assets: [curr],
+              });
+            }
+
+            return acc;
+          },
+          [] as {
+            name: string;
+            assets: (FuelAsset & {
+              image?: string;
+            })[];
+          }[]
+        )
+        .sort((a, b) => {
+          if (a.name === 'Other') return 1;
+          if (b.name === 'Other') return -1;
+
+          const indexA = desiredOrder.indexOf(a.name);
+          const indexB = desiredOrder.indexOf(b.name);
+
+          if (indexA !== -1 && indexB !== -1) {
+            return indexA - indexB;
+          }
+          if (indexA !== -1) {
+            return -1;
+          }
+          if (indexB !== -1) {
+            return 1;
+          }
+          return a.name.localeCompare(b.name);
+        }) ?? [],
+    [data]
+  );
 
   if (isLoading) {
     return (
@@ -430,34 +486,41 @@ export const NFTCollections = ({
       flexDirection="column"
       boxShadow="lg"
     >
-      <Flex mb={4} alignItems="center" justify="space-between">
+      <Flex mb={6} alignItems="center" justify="space-between">
         <Heading fontSize="lg">NFT</Heading>
       </Flex>
-      <Grid
-        templateColumns={{
-          base: 'repeat(1, 1fr)',
-          sm: 'repeat(2, 1fr)',
-          md: 'repeat(4, 1fr)',
-          lg: 'repeat(5, 1fr)',
-        }}
-        gap={6}
-      >
-        {data?.map((a) => (
-          <NFTCard key={`${a.contractId}-${a.subId}`} asset={a} />
-        ))}
-        {data?.length === 0 && (
-          <GridItem as={Center} py={10} colSpan={5} gridArea="5fr">
-            <Text
-              color="grey.200"
-              fontSize="xs"
-              maxW="172px"
-              textAlign={'center'}
-            >
-              It appears this user does not own any NFTs yet.
-            </Text>
-          </GridItem>
-        )}
-      </Grid>
+      {nftCollections.map((collection) => (
+        <Box key={collection.name} mb={5}>
+          <Heading fontSize="md" mb={3}>
+            {collection.name}
+          </Heading>
+          <Grid
+            templateColumns={{
+              base: 'repeat(1, 1fr)',
+              sm: 'repeat(2, 1fr)',
+              md: 'repeat(4, 1fr)',
+              lg: 'repeat(5, 1fr)',
+            }}
+            gap={6}
+          >
+            {collection.assets.map((a) => (
+              <NFTCard key={a.assetId} asset={a} />
+            ))}
+          </Grid>
+        </Box>
+      ))}
+      {!nftCollections?.length && (
+        <GridItem as={Center} py={10} colSpan={5} gridArea="5fr">
+          <Text
+            color="grey.200"
+            fontSize="xs"
+            maxW="172px"
+            textAlign={'center'}
+          >
+            It appears this user does not own any NFTs yet.
+          </Text>
+        </GridItem>
+      )}
     </Card>
   );
 };

@@ -230,6 +230,16 @@ const NFTCard = (props: { asset: FuelAsset }) => {
     }));
   }, [metadata]);
 
+  const hasSrc20Name = name && symbol;
+
+  const nftName = (
+    <>
+      {hasSrc20Name && `${symbol} ${name}`}
+      {!hasSrc20Name && metadata?.name && metadata.name}
+      {!hasSrc20Name && !metadata?.name && formatAddress(assetId)}
+    </>
+  );
+
   return (
     <>
       <Dialog.Modal
@@ -296,10 +306,7 @@ const NFTCard = (props: { asset: FuelAsset }) => {
             }}
           >
             <Box w="full" position="relative">
-              <Heading fontSize="xl">
-                {name && symbol && `${symbol} ${name}`}
-                {!name && formatAddress(assetId)}
-              </Heading>
+              <Heading fontSize="xl">{nftName}</Heading>
               <CloseButton
                 onClick={dialog.onClose}
                 w="min-content"
@@ -371,9 +378,7 @@ const NFTCard = (props: { asset: FuelAsset }) => {
       >
         <Image maxW="full" src={parseURI(image)} />
         <Box p={2} w="full">
-          <Text fontSize="sm">
-            {symbol ?? ''} {name ?? formatAddress(assetId!)}
-          </Text>
+          <Text fontSize="sm">{nftName}</Text>
         </Box>
       </Card>
     </>
