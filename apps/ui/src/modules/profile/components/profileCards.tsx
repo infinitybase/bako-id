@@ -128,7 +128,7 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
     queryFn: async (): Promise<Record<string, string>> => {
       let metadata: Record<string, string> = defaultMetadata ?? {};
       const metadataEntries = Object.entries(metadata).filter(
-        ([key]) => !key.toLowerCase().includes('uri')
+        ([key]) => !key.toLowerCase().includes('uri'),
       );
 
       if (metadataEntries.length === 0 && uri?.endsWith('.json')) {
@@ -163,7 +163,7 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
     if (metadata) {
       const imageKeys = ['image'];
       const imageKey = Object.keys(metadata).find((key) =>
-        imageKeys.includes(key.split(':').at(0)!)
+        imageKeys.includes(key.split(':').at(0)!),
       );
       const nftImageURI = parseURI(metadata[imageKey!]);
       imageUri = nftImageURI || imageUri;
@@ -202,26 +202,16 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
         isOpen={dialog.isOpen}
       >
         <Dialog.Body
-          h="full"
-          display="flex"
-          flexDirection={{
-            base: 'column-reverse',
-            md: 'row',
-          }}
-          alignItems={{
-            base: 'center',
-            md: 'flex-start',
-          }}
+          display="grid"
+          gridTemplateRows={{ base: 'auto 1fr', sm: '1fr' }}
+          gridTemplateColumns={{ sm: '400px 1fr' }}
+          gap={6}
         >
-          <Box
-            w={{
-              base: 'full',
-              md: 'auto',
-            }}
-            maxW={{
-              base: 'full',
-              sm: '400px',
-            }}
+          <Flex
+            gridRow={{ base: 2, sm: 'auto' }}
+            flexDir="column"
+            justifyContent="space-between"
+            h="97%"
           >
             <Image
               w="full"
@@ -244,16 +234,12 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
                 isCopy
               />
             </Flex>
-          </Box>
+          </Flex>
           <VStack
             maxW="full"
             flex={1}
             justifyContent="space-between"
             alignItems="flex-start"
-            ml={{
-              base: 0,
-              md: 6,
-            }}
           >
             <Box w="full" position="relative">
               <Heading fontSize="xl">{nftName}</Heading>
@@ -266,10 +252,15 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
                 right="0"
               />
             </Box>
-            <Box flex={1} mt={6} maxH="full" overflowY="hidden">
+            <Box flex={1} mt={6} maxH="full" overflowY="hidden" maxW="xl">
               <Box mb={6}>
                 <Heading fontSize="md">Description</Heading>
-                <Text mt={3} fontSize="sm" color="section.500">
+                <Text
+                  mt={3}
+                  fontSize="sm"
+                  color="section.500"
+                  wordBreak="break-all"
+                >
                   {metadata?.description ?? 'Description not provided.'}
                 </Text>
               </Box>
@@ -319,7 +310,8 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
       </Dialog.Modal>
       <Card
         borderRadius="5px"
-        overflow={'hidden'}
+        overflow="hidden"
+        maxW={['full', 'sm']}
         onClick={dialog.onOpen}
         minW={133}
         p={0}
@@ -353,12 +345,10 @@ export const NFTCollections = ({
         image?: string;
       })[];
 
-      //['nft-metadata', assetId]
-
       for (const nft of nfts) {
         let metadata: Record<string, string> = nft.metadata ?? {};
         const metadataEntries = Object.entries(metadata).filter(
-          ([key]) => !key.toLowerCase().includes('uri')
+          ([key]) => !key.toLowerCase().includes('uri'),
         );
 
         if (metadataEntries.length === 0 && nft.uri?.endsWith('.json')) {
@@ -385,7 +375,7 @@ export const NFTCollections = ({
         nft.metadata = metadata;
 
         const image = Object.entries(metadata).find(([key]) =>
-          key.includes('image')
+          key.includes('image'),
         )?.[1];
         nft.image = image ? parseURI(image) : undefined;
 
@@ -430,7 +420,7 @@ export const NFTCollections = ({
             assets: (FuelAsset & {
               image?: string;
             })[];
-          }[]
+          }[],
         )
         .sort((a, b) => {
           if (a.name === 'Other') return 1;
@@ -450,7 +440,7 @@ export const NFTCollections = ({
           }
           return a.name.localeCompare(b.name);
         }) ?? [],
-    [data]
+    [data],
   );
 
   if (isLoading) {
