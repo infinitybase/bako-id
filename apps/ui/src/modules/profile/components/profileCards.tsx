@@ -10,7 +10,6 @@ import {
   HStack,
   Heading,
   Icon,
-  Image,
   Skeleton,
   Stack,
   Text,
@@ -44,6 +43,7 @@ import {
 } from '../../../utils/formatter.ts';
 import { getExplorer } from '../../../utils/getExplorer.ts';
 import { ProfileCardLoadingSkeleton } from './profileCardLoadingSkeleton.tsx';
+import { TokenImage } from '../../../components/helpers/tokenImage.tsx';
 
 type ProfileCardsProps = {
   domainParam: string;
@@ -212,14 +212,16 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
             flexDir="column"
             justifyContent="space-between"
             h="97%"
+            minH={{ base: '445px', sm: '470x' }}
           >
-            <Image
+            <TokenImage
+              src={parseURI(image)}
               w="full"
               maxW={{ base: '400px', md: 'auto' }}
               mx={{ base: 'auto', md: 'auto' }}
-              src={parseURI(image)}
               alt="NFT image"
               borderRadius="xl"
+              spinnerTopPosition={{ base: '20', md: '32' }}
             />
             <Flex direction="row" wrap="wrap" gap={3} mt={3}>
               <NFTText
@@ -321,11 +323,16 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
         overflow="hidden"
         w={{ base: '250px', sm: '280px' }}
         minW="200px"
+        minH="315px"
         onClick={dialog.onOpen}
         p={0}
       >
-        <Image maxW="full" src={props.asset.image ?? image} />
-        <Box p={2} w="full">
+        <TokenImage
+          src={props.asset.image ?? image}
+          w="full"
+          spinnerTopPosition="24"
+        />
+        <Box p={2} w="full" mt="auto">
           <Text fontSize="sm">{nftName}</Text>
         </Box>
       </Card>
