@@ -203,18 +203,20 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
       >
         <Dialog.Body
           display="grid"
-          gridTemplateRows={{ base: 'auto 1fr', sm: '1fr' }}
-          gridTemplateColumns={{ sm: '400px 1fr' }}
+          gridTemplateRows={{ base: 'auto 1fr', md: '1fr' }}
+          gridTemplateColumns={{ md: '400px 1fr' }}
           gap={6}
         >
           <Flex
-            gridRow={{ base: 2, sm: 'auto' }}
+            gridRow={{ base: 2, md: 'auto' }}
             flexDir="column"
             justifyContent="space-between"
             h="97%"
           >
             <Image
               w="full"
+              maxW={{ base: '400px', md: 'auto' }}
+              mx={{ base: 'auto', md: 'auto' }}
               src={parseURI(image)}
               alt="NFT image"
               borderRadius="xl"
@@ -252,7 +254,13 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
                 right="0"
               />
             </Box>
-            <Box flex={1} mt={6} maxH="full" overflowY="hidden" maxW="xl">
+            <Box
+              flex={1}
+              mt={6}
+              maxH="full"
+              overflowY="hidden"
+              maxW={{ base: 'full', md: 'xl' }}
+            >
               <Box mb={6}>
                 <Heading fontSize="md">Description</Heading>
                 <Text
@@ -311,9 +319,9 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
       <Card
         borderRadius="5px"
         overflow="hidden"
-        maxW={['full', 'sm']}
+        w={{ base: '250px', sm: '280px' }}
+        minW="200px"
         onClick={dialog.onOpen}
-        minW={133}
         p={0}
       >
         <Image maxW="full" src={props.asset.image ?? image} />
@@ -486,12 +494,14 @@ export const NFTCollections = ({
           </Heading>
           <Grid
             templateColumns={{
-              base: 'repeat(1, 1fr)',
-              sm: 'repeat(2, 1fr)',
-              md: 'repeat(4, 1fr)',
-              lg: 'repeat(5, 1fr)',
+              base: 'repeat(auto-fit, minmax(250px, 1fr))',
+              sm: 'repeat(auto-fit, minmax(280px, 1fr))',
             }}
-            gap={6}
+            gap={4}
+            justifyItems={{
+              base: 'center',
+              md: 'flex-start',
+            }}
           >
             {collection.assets.map((a) => (
               <NFTCard key={a.assetId} asset={a} />

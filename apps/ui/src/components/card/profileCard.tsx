@@ -70,7 +70,7 @@ export const ProfileCard = ({
   const { isMyDomain: isOwner } = useSidebar();
 
   const nickname = metadata?.find(
-    (m) => m.key === MetadataKeys.CONTACT_NICKNAME
+    (m) => m.key === MetadataKeys.CONTACT_NICKNAME,
   );
   const shortBio = metadata?.find((m) => m.key === MetadataKeys.CONTACT_BIO);
   const avatar = metadata?.find((m) => m.key === MetadataKeys.AVATAR);
@@ -156,7 +156,7 @@ export const ProfileCard = ({
                   twitterLink(profileLink, {
                     title: 'Check my Bako ID profile!',
                     related: [],
-                  })
+                  }),
                 );
               }}
               icon={<TwitterIcon w={15} h={15} />}
@@ -244,7 +244,12 @@ export const ProfileCard = ({
             </Text>
 
             {nickname?.value && (
-              <Text fontSize={['sm', 'md']} color="grey.200" ml={0.5}>
+              <Text
+                fontSize={['sm', 'md']}
+                color="grey.200"
+                ml={0.5}
+                maxW={{ base: '80%', sm: 'full' }}
+              >
                 {nickname.value}
               </Text>
             )}
