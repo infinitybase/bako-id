@@ -9,7 +9,7 @@ const useGetPrimaryHandleName = () => {
   const { wallet } = useWallet();
 
   return useQuery({
-    queryKey: ['getAllDomains', wallet?.address.toB256() ?? ZeroBytes32],
+    queryKey: ['getPrimaryHandle', wallet?.address.toB256() ?? ZeroBytes32],
     queryFn: async () => {
       const bakoIDClient = new BakoIDClient(import.meta.env.VITE_API_URL);
       return bakoIDClient.name(
