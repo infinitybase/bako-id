@@ -33,7 +33,7 @@ import {
 import { type MetadataItem, Metadatas } from '../../utils/metadatas';
 import { MetadataCard } from '../card/metadataCard';
 import { Dialog } from '../dialog';
-import { AvatarIcon } from '../icons';
+import { AvatarIcon, EditIcon } from '../icons';
 import { EditProfileFieldsModal } from './editProfileFieldsModal';
 import { EditProfilePicModal } from './editProfilePicModal';
 import { TransactionsDetailsModal } from './transactionDetails';
@@ -164,17 +164,31 @@ const ModalTitle = ({
             borderColor={'button.500'}
           />
         ) : (
-          <Icon
-            w={[16, 16, 16, 20]}
-            h={[16, 16, 16, 20]}
-            rounded="lg"
+          <Box
+            position="relative"
+            as="button"
             mr={3}
-            as={AvatarIcon}
-            // _hover={{
-            //   cursor: 'pointer',
-            // }}
-            // onClick={modalTitle.onOpen}
-          />
+            onClick={modalTitle.onOpen}
+          >
+            <Icon
+              w={[14, 14, 20]}
+              h={[14, 14, 20]}
+              rounded="lg"
+              as={AvatarIcon}
+            />
+            <Flex
+              alignItems="center"
+              position="absolute"
+              left={3}
+              bottom={1}
+              w="fit-content"
+              color="gray.200"
+              fontSize={{ base: '10px', md: 'sm' }}
+            >
+              <EditIcon w={{ base: 3, md: 6 }} h={{ base: 3, md: 6 }} />
+              Edit
+            </Flex>
+          </Box>
         )}
         <Flex
           gap={4}
