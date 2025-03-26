@@ -10,7 +10,6 @@ import {
   HStack,
   Heading,
   Icon,
-  Image,
   Skeleton,
   Stack,
   Text,
@@ -44,6 +43,7 @@ import {
 } from '../../../utils/formatter.ts';
 import { getExplorer } from '../../../utils/getExplorer.ts';
 import { ProfileCardLoadingSkeleton } from './profileCardLoadingSkeleton.tsx';
+import { TokenImage } from '../../../components/helpers/tokenImage.tsx';
 
 type ProfileCardsProps = {
   domainParam: string;
@@ -128,7 +128,7 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
     queryFn: async (): Promise<Record<string, string>> => {
       let metadata: Record<string, string> = defaultMetadata ?? {};
       const metadataEntries = Object.entries(metadata).filter(
-        ([key]) => !key.toLowerCase().includes('uri')
+        ([key]) => !key.toLowerCase().includes('uri'),
       );
 
       if (metadataEntries.length === 0 && uri?.endsWith('.json')) {
@@ -163,7 +163,7 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
     if (metadata) {
       const imageKeys = ['image'];
       const imageKey = Object.keys(metadata).find((key) =>
-        imageKeys.includes(key.split(':').at(0)!)
+        imageKeys.includes(key.split(':').at(0)!),
       );
       const nftImageURI = parseURI(metadata[imageKey!]);
       imageUri = nftImageURI || imageUri;
@@ -202,32 +202,26 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
         isOpen={dialog.isOpen}
       >
         <Dialog.Body
-          h="full"
-          display="flex"
-          flexDirection={{
-            base: 'column-reverse',
-            md: 'row',
-          }}
-          alignItems={{
-            base: 'center',
-            md: 'flex-start',
-          }}
+          display="grid"
+          gridTemplateRows={{ base: 'auto 1fr', md: '1fr' }}
+          gridTemplateColumns={{ md: '400px 1fr' }}
+          gap={6}
         >
-          <Box
-            w={{
-              base: 'full',
-              md: 'auto',
-            }}
-            maxW={{
-              base: 'full',
-              sm: '400px',
-            }}
+          <Flex
+            gridRow={{ base: 2, md: 'auto' }}
+            flexDir="column"
+            justifyContent="space-between"
+            h="97%"
+            minH={{ base: '445px', sm: '470x' }}
           >
-            <Image
-              w="full"
+            <TokenImage
               src={parseURI(image)}
+              w="full"
+              maxW={{ base: '400px', md: 'auto' }}
+              mx={{ base: 'auto', md: 'auto' }}
               alt="NFT image"
               borderRadius="xl"
+              spinnerTopPosition={{ base: '20', md: '32' }}
             />
             <Flex direction="row" wrap="wrap" gap={3} mt={3}>
               <NFTText
@@ -244,16 +238,12 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
                 isCopy
               />
             </Flex>
-          </Box>
+          </Flex>
           <VStack
             maxW="full"
             flex={1}
             justifyContent="space-between"
             alignItems="flex-start"
-            ml={{
-              base: 0,
-              md: 6,
-            }}
           >
             <Box w="full" position="relative">
               <Heading fontSize="xl">{nftName}</Heading>
@@ -266,10 +256,21 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
                 right="0"
               />
             </Box>
-            <Box flex={1} mt={6} maxH="full" overflowY="hidden">
+            <Box
+              flex={1}
+              mt={6}
+              maxH="full"
+              overflowY="hidden"
+              maxW={{ base: 'full', md: 'xl' }}
+            >
               <Box mb={6}>
                 <Heading fontSize="md">Description</Heading>
-                <Text mt={3} fontSize="sm" color="section.500">
+                <Text
+                  mt={3}
+                  fontSize="sm"
+                  color="section.500"
+                  wordBreak="break-all"
+                >
                   {metadata?.description ?? 'Description not provided.'}
                 </Text>
               </Box>
@@ -319,13 +320,19 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
       </Dialog.Modal>
       <Card
         borderRadius="5px"
-        overflow={'hidden'}
+        overflow="hidden"
+        w={{ base: '250px', sm: '280px' }}
+        minW="200px"
+        minH="315px"
         onClick={dialog.onOpen}
-        minW={133}
         p={0}
       >
-        <Image maxW="full" src={props.asset.image ?? image} />
-        <Box p={2} w="full">
+        <TokenImage
+          src={props.asset.image ?? image}
+          w="full"
+          spinnerTopPosition="24"
+        />
+        <Box p={2} w="full" mt="auto">
           <Text fontSize="sm">{nftName}</Text>
         </Box>
       </Card>
@@ -353,12 +360,10 @@ export const NFTCollections = ({
         image?: string;
       })[];
 
-      //['nft-metadata', assetId]
-
       for (const nft of nfts) {
         let metadata: Record<string, string> = nft.metadata ?? {};
         const metadataEntries = Object.entries(metadata).filter(
-          ([key]) => !key.toLowerCase().includes('uri')
+          ([key]) => !key.toLowerCase().includes('uri'),
         );
 
         if (metadataEntries.length === 0 && nft.uri?.endsWith('.json')) {
@@ -385,7 +390,7 @@ export const NFTCollections = ({
         nft.metadata = metadata;
 
         const image = Object.entries(metadata).find(([key]) =>
-          key.includes('image')
+          key.includes('image'),
         )?.[1];
         nft.image = image ? parseURI(image) : undefined;
 
@@ -430,7 +435,7 @@ export const NFTCollections = ({
             assets: (FuelAsset & {
               image?: string;
             })[];
-          }[]
+          }[],
         )
         .sort((a, b) => {
           if (a.name === 'Other') return 1;
@@ -450,7 +455,7 @@ export const NFTCollections = ({
           }
           return a.name.localeCompare(b.name);
         }) ?? [],
-    [data]
+    [data],
   );
 
   if (isLoading) {
@@ -496,12 +501,14 @@ export const NFTCollections = ({
           </Heading>
           <Grid
             templateColumns={{
-              base: 'repeat(1, 1fr)',
-              sm: 'repeat(2, 1fr)',
-              md: 'repeat(4, 1fr)',
-              lg: 'repeat(5, 1fr)',
+              base: 'repeat(auto-fit, minmax(250px, 1fr))',
+              sm: 'repeat(auto-fit, minmax(280px, 1fr))',
             }}
-            gap={6}
+            gap={4}
+            justifyItems={{
+              base: 'center',
+              md: 'flex-start',
+            }}
           >
             {collection.assets.map((a) => (
               <NFTCard key={a.assetId} asset={a} />
