@@ -44,7 +44,7 @@ describe('[PRICES] Registry Contract', () => {
     const nftCall = await nft.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } }
+        { ContractId: { bits: registry.id.toB256() } },
       )
       .call();
     await nftCall.waitForResult();
@@ -53,7 +53,7 @@ describe('[PRICES] Registry Contract', () => {
       .constructor(
         { bits: owner.address.toB256() },
         { bits: manager.id.toB256() },
-        { bits: nftAbi.id.toB256() }
+        { bits: nftAbi.id.toB256() },
       )
       .call();
     await waitForResult();
@@ -61,7 +61,7 @@ describe('[PRICES] Registry Contract', () => {
     const managerCall = await manager.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } }
+        { ContractId: { bits: registry.id.toB256() } },
       )
       .call();
     await managerCall.waitForResult();
@@ -84,11 +84,11 @@ describe('[PRICES] Registry Contract', () => {
           {
             Address: { bits: owner.address.toB256() },
           },
-          bn(1)
+          bn(1),
         )
         .callParams({
           forward: {
-            assetId: provider.getBaseAssetId(),
+            assetId: await provider.getBaseAssetId(),
             amount: price.sub(10),
           },
         })
@@ -118,17 +118,17 @@ describe('[PRICES] Registry Contract', () => {
           {
             Address: { bits: owner.address.toB256() },
           },
-          bn(1)
+          bn(1),
         )
         .callParams({
-          forward: { assetId: provider.getBaseAssetId(), amount: price },
+          forward: { assetId: await provider.getBaseAssetId(), amount: price },
         })
         .addContracts([manager, nft])
         .call();
       const { transactionResult } = await waitForRegister();
 
       expect(transactionResult.status).toBe(TransactionStatus.success);
-    }
+    },
   );
 
   it.each([
@@ -144,6 +144,6 @@ describe('[PRICES] Registry Contract', () => {
       const domain = randomName(domainLength);
       const testPrice = domainPrices(domain, years);
       expect(bn.parseUnits(price).toString()).toBe(testPrice.toString());
-    }
+    },
   );
 });
