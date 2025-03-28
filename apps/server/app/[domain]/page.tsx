@@ -73,6 +73,5 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Page() {
   const provider = new Provider(process.env.NEXT_PUBLIC_PROVIDER_URL!);
   const chainId = await provider.getChainId();
-  console.log(chainId);
   return <ProfilePage chainId={chainId} />;
 }
