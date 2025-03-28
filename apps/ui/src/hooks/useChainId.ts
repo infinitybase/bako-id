@@ -20,7 +20,6 @@ export const useChainId = (
         const currentFuelChain = await provider?.getChainId();
         return currentFuelChain ?? null;
       } catch (_error: unknown) {
-        console.log(_error);
         return null;
       }
     },
