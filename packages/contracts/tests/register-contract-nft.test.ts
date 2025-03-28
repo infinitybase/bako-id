@@ -45,7 +45,7 @@ describe('[NFT] Registry Contract', () => {
     const nftCall = await nft.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } }
+        { ContractId: { bits: registry.id.toB256() } },
       )
       .call();
     await nftCall.waitForResult();
@@ -54,7 +54,7 @@ describe('[NFT] Registry Contract', () => {
       .constructor(
         { bits: owner.address.toB256() },
         { bits: manager.id.toB256() },
-        { bits: nftAbi.id.toB256() }
+        { bits: nftAbi.id.toB256() },
       )
       .call();
     await waitForResult();
@@ -62,7 +62,7 @@ describe('[NFT] Registry Contract', () => {
     const { waitForResult: waitForManager } = await manager.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } }
+        { ContractId: { bits: registry.id.toB256() } },
       )
       .call();
     await waitForManager();
@@ -85,10 +85,10 @@ describe('[NFT] Registry Contract', () => {
         {
           Address: { bits: deployer.address.toB256() },
         },
-        bn(1)
+        bn(1),
       )
       .callParams({
-        forward: { assetId: provider.getBaseAssetId(), amount: price },
+        forward: { assetId: await provider.getBaseAssetId(), amount: price },
       })
       .addContracts([manager, nft])
       .call();
@@ -97,7 +97,7 @@ describe('[NFT] Registry Contract', () => {
 
     const assetId = getMintedAssetId(
       nft.id.toB256(),
-      sha256(toUtf8Bytes(name))
+      sha256(toUtf8Bytes(name)),
     );
 
     const mintedNFT = await deployer.getBalance(assetId);
@@ -136,10 +136,10 @@ describe('[NFT] Registry Contract', () => {
         {
           Address: { bits: deployer.address.toB256() },
         },
-        bn(1)
+        bn(1),
       )
       .callParams({
-        forward: { assetId: provider.getBaseAssetId(), amount: price },
+        forward: { assetId: await provider.getBaseAssetId(), amount: price },
       })
       .addContracts([manager, nft])
       .call();
@@ -147,7 +147,7 @@ describe('[NFT] Registry Contract', () => {
 
     const assetId = getMintedAssetId(
       nft.id.toB256(),
-      sha256(toUtf8Bytes(name))
+      sha256(toUtf8Bytes(name)),
     );
     const assetIdInput = { bits: assetId };
     const { value: assetImage } = await nft.functions
@@ -172,10 +172,10 @@ describe('[NFT] Registry Contract', () => {
         {
           Address: { bits: deployer.address.toB256() },
         },
-        bn(1)
+        bn(1),
       )
       .callParams({
-        forward: { assetId: provider.getBaseAssetId(), amount: price },
+        forward: { assetId: await provider.getBaseAssetId(), amount: price },
       })
       .addContracts([manager, nft])
       .call();
@@ -222,10 +222,10 @@ describe('[NFT] Registry Contract', () => {
         {
           Address: { bits: deployer.address.toB256() },
         },
-        bn(1)
+        bn(1),
       )
       .callParams({
-        forward: { assetId: provider.getBaseAssetId(), amount: price },
+        forward: { assetId: await provider.getBaseAssetId(), amount: price },
       })
       .addContracts([manager, nft])
       .call();
@@ -283,10 +283,10 @@ describe('[NFT] Registry Contract', () => {
         {
           Address: { bits: deployer.address.toB256() },
         },
-        bn(1)
+        bn(1),
       )
       .callParams({
-        forward: { assetId: provider.getBaseAssetId(), amount: price },
+        forward: { assetId: await provider.getBaseAssetId(), amount: price },
       })
       .addContracts([manager, nft])
       .call();
@@ -332,10 +332,10 @@ describe('[NFT] Registry Contract', () => {
         {
           Address: { bits: deployer.address.toB256() },
         },
-        bn(1)
+        bn(1),
       )
       .callParams({
-        forward: { assetId: provider.getBaseAssetId(), amount: price },
+        forward: { assetId: await provider.getBaseAssetId(), amount: price },
       })
       .addContracts([manager, nft])
       .call();

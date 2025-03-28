@@ -49,7 +49,7 @@ describe('[METHODS] Resolver Contract', () => {
     const nftCall = await nft.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } }
+        { ContractId: { bits: registry.id.toB256() } },
       )
       .call();
     await nftCall.waitForResult();
@@ -58,7 +58,7 @@ describe('[METHODS] Resolver Contract', () => {
       .constructor(
         { bits: owner.address.toB256() },
         { bits: manager.id.toB256() },
-        { bits: nft.id.toB256() }
+        { bits: nft.id.toB256() },
       )
       .call();
     await registryContructor.waitForResult();
@@ -71,7 +71,7 @@ describe('[METHODS] Resolver Contract', () => {
     const managerConstructor = await manager.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } }
+        { ContractId: { bits: registry.id.toB256() } },
       )
       .call();
     await managerConstructor.waitForResult();
@@ -139,10 +139,10 @@ describe('[METHODS] Resolver Contract', () => {
         {
           Address: { bits: owner.address.toB256() },
         },
-        bn(1)
+        bn(1),
       )
       .callParams({
-        forward: { assetId: provider.getBaseAssetId(), amount: price },
+        forward: { assetId: await provider.getBaseAssetId(), amount: price },
       })
       .addContracts([manager, nft])
       .call();

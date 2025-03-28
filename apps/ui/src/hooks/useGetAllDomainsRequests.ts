@@ -14,7 +14,7 @@ const useGetAllDomainRequests = () => {
       const bakoIDClient = new BakoIDClient(import.meta.env.VITE_API_URL);
       return bakoIDClient.records(
         wallet!.address.toB256(),
-        wallet!.provider.getChainId()
+        await wallet!.provider.getChainId(),
       );
     },
     enabled: !!wallet,

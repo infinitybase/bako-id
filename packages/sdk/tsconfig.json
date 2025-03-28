@@ -12,6 +12,6 @@
       "module": "commonjs"
     }
   },
-  "include": ["**/*.ts", "../../apps/server/src/s3.ts"],
+  "include": ["**/*.ts"],
   "exclude": ["**/*.test.ts", "dist", "node_modules/**/*"]
 }

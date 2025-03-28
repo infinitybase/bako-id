@@ -8,7 +8,7 @@ const config: CodegenConfig = {
   overwrite: true,
   generates: {
     './src/graphql/generated/sdk-provider.ts': {
-      schema: process.env.GRAPHQL_API_URL ?? 'http://localhost:8080/graphql',
+      schema: process.env.GRAPHQL_API_URL ?? 'http://localhost:8080/v1/graphql',
       documents: 'src/graphql/queries/*.graphql',
       plugins: [
         'typescript',

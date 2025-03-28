@@ -31,7 +31,7 @@ export const WALLET_PRIVATE_KEYS = {
 
 export function createWallet(
   provider: Provider,
-  privateKey = WALLET_PRIVATE_KEYS.MAIN
+  privateKey = WALLET_PRIVATE_KEYS.MAIN,
 ) {
   return Wallet.fromPrivateKey(privateKey, provider);
 }
@@ -39,12 +39,13 @@ export function createWallet(
 export async function fundWallet(wallet: Account) {
   const genesisWallet = Wallet.fromPrivateKey(
     WALLET_PRIVATE_KEYS.MAIN,
-    wallet.provider
+    wallet.provider,
   );
+  const baseAssetId = await wallet.provider.getBaseAssetId();
   const transactionResponse = await genesisWallet.transfer(
     wallet.address,
     bn(10000000),
-    wallet.provider.getBaseAssetId()
+    baseAssetId,
   );
   await transactionResponse.waitForResult();
 }

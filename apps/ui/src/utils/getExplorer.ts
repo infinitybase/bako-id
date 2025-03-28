@@ -23,7 +23,7 @@ export const networkByChainId = Object.fromEntries(
   Object.values(availableNetworks).map((network) => [network.chainId, network]),
 );
 
-export const getExplorer = (chainId?: number) => {
+export const getExplorer = (chainId?: number | null) => {
   const defaultExplorer = availableNetworks[NetworkType.MAINNET].explorer;
 
   return networkByChainId[chainId!]?.explorer ?? defaultExplorer;

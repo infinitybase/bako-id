@@ -10,7 +10,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useProvider, useWallet } from '@fuels/react';
+import { useWallet } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
 import { type TransactionResult, bn } from 'fuels';
 import { TwitterShareButton } from 'react-share';
@@ -27,6 +27,7 @@ import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
 import { useScreenSize } from '../../hooks/useScreenSize';
 import { calculatePeriodYears } from '../../utils/calculator';
 import { getExplorer } from '../../utils/getExplorer';
+import { useChainId } from '../../hooks/useChainId';
 
 interface IPurchased {
   domain: string;
@@ -45,13 +46,13 @@ export const Purchased = ({
   const { isMobile } = useScreenSize();
   const navigate = useNavigate();
 
-  const { provider } = useProvider();
-  const explorerUrl = getExplorer(provider?.getChainId());
+  const { chainId } = useChainId();
+  const explorerUrl = getExplorer(chainId);
 
   const year = calculatePeriodYears(dates?.timestamp, dates?.gracePeriod);
 
   const mainOperation = transaction.operations.find(
-    (op) => op.assetsSent && op.from?.address === wallet?.address.toB256()
+    (op) => op.assetsSent && op.from?.address === wallet?.address.toB256(),
   );
 
   const totalAmountPaidForNFT =

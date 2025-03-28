@@ -26,7 +26,7 @@ const availableNetworks = {
 };
 
 export const networkByChainId = Object.fromEntries(
-  Object.values(availableNetworks).map((network) => [network.chainId, network])
+  Object.values(availableNetworks).map((network) => [network.chainId, network]),
 );
 
 export const getExplorer = (chainId?: number) => {
@@ -38,7 +38,7 @@ export const getExplorer = (chainId?: number) => {
 export const useProfile = (domainName: string) => {
   const { data: provider, isLoading: isLoadingProvider } = useQuery({
     queryKey: ['provider', domainName],
-    queryFn: async () => Provider.create(process.env.NEXT_PUBLIC_PROVIDER_URL!),
+    queryFn: async () => new Provider(process.env.NEXT_PUBLIC_PROVIDER_URL!),
   });
 
   const { data: addresses, isLoading: isLoadingAddresses } = useQuery({
@@ -79,7 +79,6 @@ export const useProfile = (domainName: string) => {
     enabled: !!provider,
   });
 
-  const explorerUrl = getExplorer(provider?.getChainId());
   const { owner, resolver } = addresses ?? {};
 
   const { metadata, ...dates } = registry ?? {};
@@ -94,6 +93,5 @@ export const useProfile = (domainName: string) => {
     dates,
     owner,
     resolver,
-    explorerUrl,
   };
 };
