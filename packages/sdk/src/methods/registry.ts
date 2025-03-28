@@ -8,6 +8,10 @@ import {
   getRandomB256,
   sha256,
   toUtf8Bytes,
+  type BN,
+  type ScriptTransactionRequest,
+  type TransactionResult,
+  type TransactionResponse,
 } from 'fuels';
 
 import {
@@ -103,7 +107,13 @@ export class RegistryContract {
     return new RegistryContract(contractId, accountOrProvider);
   }
 
-  async register(params: RegisterPayload) {
+  async register(params: RegisterPayload): Promise<{
+    gasUsed: BN;
+    transactionId: string;
+    transactionResult: TransactionResult;
+    transactionResponse: TransactionResponse;
+    assetId: string;
+  }> {
     const { domain, period, resolver } = params;
 
     if (!this.account) {
@@ -137,7 +147,7 @@ export class RegistryContract {
     };
   }
 
-  async changeOwner(payload: ChangeAddressPayload) {
+  async changeOwner(payload: ChangeAddressPayload): Promise<TransactionResult> {
     const { domain, address } = payload;
 
     if (!this.account) {
@@ -156,7 +166,9 @@ export class RegistryContract {
     return transactionResult;
   }
 
-  async changeResolver(payload: ChangeAddressPayload) {
+  async changeResolver(
+    payload: ChangeAddressPayload,
+  ): Promise<TransactionResult> {
     const { domain, address } = payload;
 
     if (!this.account) {
@@ -175,7 +187,11 @@ export class RegistryContract {
     return transactionResult;
   }
 
-  async simulate(params: SimulatePayload) {
+  async simulate(params: SimulatePayload): Promise<{
+    fee: BN;
+    price: BN;
+    transactionRequest: ScriptTransactionRequest;
+  }> {
     const { domain, period } = params;
 
     const account = getFakeAccount(this.provider);
