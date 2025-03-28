@@ -1,5 +1,6 @@
 import { FuelAssetService } from '@/services/fuel-assets';
 import { parseURI } from '@/utils';
+import { Provider } from 'fuels';
 import type { Metadata } from 'next';
 import { getResolver } from '../api/[network]/addr/[name]/resolver';
 import { ProfilePage } from './page-component';
@@ -47,7 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         parseURI(
           bakoIdAsset.metadata?.avatar ??
             bakoIdAsset.metadata?.['image:png'] ??
-            ''
+            '',
         ),
       ],
       siteId: `@${domain}`,
@@ -57,7 +58,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         parseURI(
           bakoIdAsset.metadata?.avatar ??
             bakoIdAsset.metadata?.['image:png'] ??
-            ''
+            '',
         ),
       ],
       description:
@@ -69,6 +70,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function Page() {
-  return <ProfilePage />;
+export default async function Page() {
+  const provider = new Provider(process.env.NEXT_PUBLIC_PROVIDER_URL!);
+  const chainId = await provider.getChainId();
+  console.log(chainId);
+  return <ProfilePage chainId={chainId} />;
 }
