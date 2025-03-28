@@ -17,9 +17,7 @@ export const useToken = () => {
         if (provider) {
           registryContract = RegistryContract.create(provider);
         } else {
-          const provider = await Provider.create(
-            import.meta.env.VITE_PROVIDER_URL
-          );
+          const provider = new Provider(import.meta.env.VITE_PROVIDER_URL);
           registryContract = RegistryContract.create(provider);
         }
 
