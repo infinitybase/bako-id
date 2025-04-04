@@ -2,16 +2,29 @@ import { Box, Button, Flex, Input, Text } from '@chakra-ui/react';
 import { Dialog } from '../dialog';
 
 import { FileUploadIcon } from '../icons/fileUploadIcon';
-import { ChangeEvent, DragEvent, useRef, useState } from 'react';
+import { type ChangeEvent, type DragEvent, useRef, useState } from 'react';
 import { useCustomToast } from '../toast';
+import { useParams } from '@tanstack/react-router';
+import { useUpdateFile } from '../../hooks/useUploadFile';
+
+import { ProgressButton } from '../buttons/progressButton';
+import { TrashIcon } from '../icons/trashIcon';
 
 interface EditProfilePicModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const EditProfilePicBox = () => {
+const EditProfilePicBox = ({
+  setUploadedFile,
+  isSigning,
+}: {
+  setUploadedFile: React.Dispatch<React.SetStateAction<File | undefined>>;
+  isSigning: boolean;
+}) => {
   const [isDragging, setIsDragging] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { errorToast } = useCustomToast();
 
@@ -38,10 +51,16 @@ const EditProfilePicBox = () => {
     setIsDragging(false);
 
     const files = e.dataTransfer.files;
-    console.log('_files', files);
 
-    if (files && files.length > 0) {
-      handleVerifyFile(files[0]);
+    handleVerifyFile(files[0]);
+  };
+
+  const handleDeleteUploadedFile = () => {
+    setUploadedFile(undefined);
+    setPreviewUrl(null);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -70,11 +89,16 @@ const EditProfilePicBox = () => {
       });
       return;
     }
+
+    setUploadedFile(file);
+    const imageUrl = URL.createObjectURL(file);
+    setPreviewUrl(imageUrl);
   };
 
-  const handleButtonClick = () => {
+  const handleBrowseFileClick = () => {
     fileInputRef?.current?.click();
   };
+
   return (
     <Box
       w="full"
@@ -92,6 +116,22 @@ const EditProfilePicBox = () => {
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       transition="all 0.2s ease"
+      pointerEvents={isSigning ? 'none' : 'unset'}
+      position="relative"
+      _before={{
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundImage: previewUrl ? `url(${previewUrl})` : 'none',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        opacity: isSigning ? 0.5 : 'none',
+        borderRadius: '0.75rem',
+      }}
     >
       <Input
         type="file"
@@ -100,23 +140,43 @@ const EditProfilePicBox = () => {
         accept="image/jpeg,image/png"
         display="none"
       />
-      <Flex
-        flexDir="column"
-        alignItems="center"
-        justifyContent="center"
-        gap={4}
-        pointerEvents={isDragging ? 'none' : 'unset'}
-      >
-        <FileUploadIcon h={14} w={14} />
 
-        <Box textAlign="center">
-          <Text color="section.200">Choose a file or drag & drop it here</Text>
-          <Text color="section.500">JPEG and PNG formats, up to 3MB</Text>
-        </Box>
-        <Button bgColor="grey.100" onClick={handleButtonClick}>
-          Browse file
+      {previewUrl ? (
+        <Button
+          position="absolute"
+          bg="error.500"
+          _hover={{
+            bg: 'error.600',
+          }}
+          p={1}
+          size="sm"
+          bottom={4}
+          right={4}
+          onClick={handleDeleteUploadedFile}
+        >
+          <TrashIcon w={5} h={5} color="input.600" />
         </Button>
-      </Flex>
+      ) : (
+        <Flex
+          flexDir="column"
+          alignItems="center"
+          justifyContent="center"
+          gap={4}
+          pointerEvents={isDragging ? 'none' : 'unset'}
+        >
+          <FileUploadIcon h={14} w={14} />
+
+          <Box textAlign="center">
+            <Text color="section.200">
+              Choose a file or drag & drop it here
+            </Text>
+            <Text color="section.500">JPEG and PNG formats, up to 3MB</Text>
+          </Box>
+          <Button bgColor="grey.100" onClick={handleBrowseFileClick}>
+            Browse file
+          </Button>
+        </Flex>
+      )}
     </Box>
   );
 };
@@ -126,6 +186,15 @@ export const EditProfilePicModal = ({
   onClose,
 }: EditProfilePicModalProps) => {
   const [inputValue, setInputValue] = useState('');
+  const { domain } = useParams({ strict: false });
+  const {
+    isSigning,
+    signProgress,
+    handleSignAvatarTransaction,
+    handleClose,
+    setUploadedFile,
+    uploadedFile,
+  } = useUpdateFile(domain ?? '', onClose);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value.substring(0));
@@ -137,9 +206,12 @@ export const EditProfilePicModal = ({
       modalTitle="Upload avatar"
       modalSubtitle="You can import an file from your device or import NFT."
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       size="xl"
+      hideCloseButton={isSigning}
       gapBetweenBodyAndHeader="6"
+      closeOnOverlayClick={false}
+      closeOnEsc={!isSigning}
     >
       <Dialog.Body
         bgColor="input.900"
@@ -148,7 +220,10 @@ export const EditProfilePicModal = ({
         w="full"
         h={80}
       >
-        <EditProfilePicBox />
+        <EditProfilePicBox
+          setUploadedFile={setUploadedFile}
+          isSigning={isSigning}
+        />
         <Input
           placeholder="Import NFT Address"
           mt={6}
@@ -170,10 +245,25 @@ export const EditProfilePicModal = ({
         />
       </Dialog.Body>
       <Dialog.Actions hideDivider mt={24}>
-        <Dialog.SecondaryAction onClick={onClose}>
+        <Dialog.SecondaryAction onClick={handleClose} isDisabled={isSigning}>
           Cancel
         </Dialog.SecondaryAction>
-        <Dialog.PrimaryAction onClick={onClose}>Upload</Dialog.PrimaryAction>
+
+        <ProgressButton
+          progress={signProgress}
+          w="full"
+          isDisabled={isSigning || !uploadedFile}
+          onClick={handleSignAvatarTransaction}
+          color="background.500"
+          bg="button.500"
+          fontSize={14}
+          _hover={{ bgColor: 'button.600' }}
+          progressColor="white"
+        >
+          <Flex align="center" gap={2}>
+            {isSigning ? <Text>Signing...</Text> : <Text>Upload</Text>}
+          </Flex>
+        </ProgressButton>
       </Dialog.Actions>
     </Dialog.Modal>
   );

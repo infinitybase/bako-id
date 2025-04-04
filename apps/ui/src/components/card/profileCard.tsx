@@ -9,6 +9,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Spinner,
   Text,
   useClipboard,
   useMediaQuery,
@@ -19,17 +20,11 @@ import { ExplorerTypes } from '../../types';
 import { twitterLink } from '../../utils/formatter.ts';
 import { getExplorer } from '../../utils/getExplorer';
 import { MetadataKeys } from '../../utils/metadataKeys';
-import {
-  AvatarIcon,
-  // DisabledXBadgeIcon,
-  EditIcon,
-  ExploreIcon,
-  TwitterIcon,
-  // FarcasterBadgeIcon,
-} from '../icons';
+import { AvatarIcon, EditIcon, ExploreIcon, TwitterIcon } from '../icons';
 import { CopyIcon } from '../icons/copyIcon.tsx';
 import { ShareIcon } from '../icons/shareicon.tsx';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
+import { useGetHandleAvatar } from '../../hooks/useGetHandleAvatar.ts';
 
 interface IProfileCard {
   domainName: string | null;
@@ -47,7 +42,6 @@ const ButtonAction = ({ rightIcon, ...props }: ButtonProps) => (
     fontWeight="normal"
     fontSize={['sm', 'sm']}
     position="relative"
-    // h={9}
     justifyContent={{
       base: 'center',
       md: 'space-between',
@@ -73,9 +67,9 @@ export const ProfileCard = ({
     (m) => m.key === MetadataKeys.CONTACT_NICKNAME
   );
   const shortBio = metadata?.find((m) => m.key === MetadataKeys.CONTACT_BIO);
-  const avatar = metadata?.find((m) => m.key === MetadataKeys.AVATAR);
+  const { data: avatar, isLoading, isFetching } = useGetHandleAvatar();
 
-  // const handle = handles?.find((handle) => handle.name === domainName);
+  const isAvatarLoading = isLoading || isFetching;
 
   const { provider } = useProvider();
 
@@ -138,7 +132,6 @@ export const ProfileCard = ({
             fontWeight="normal"
             fontSize={['sm', 'sm']}
             position="relative"
-            // h={9}
             flexDir="row"
             bgColor={isLowerThanMobile ? 'transparent' : undefined}
           >
@@ -215,13 +208,26 @@ export const ProfileCard = ({
       zIndex={1}
     >
       <Flex w="full">
-        {avatar ? (
+        {isAvatarLoading ? (
+          <Flex
+            alignItems="center"
+            justifyContent="center"
+            minW={32}
+            h={32}
+            rounded="lg"
+            mr={4}
+            border="1.5px solid"
+            borderColor={'button.500'}
+          >
+            <Spinner w={6} h={6} />
+          </Flex>
+        ) : avatar ? (
           <Box
             minW={32}
             h={32}
             rounded="lg"
             mr={4}
-            bgImage={`url(${avatar.value})`}
+            bgImage={`url(${avatar})`}
             bgSize="cover"
             bgPosition="center"
             bgRepeat="no-repeat"

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@bako-id/sdk": "workspace:*",
+    "@bako-id/contracts": "workspace:*",
     "@chakra-ui/anatomy": "^2.3.4",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
