@@ -1,14 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { getContractId } from '@bako-id/sdk';
+import { getContractId, RegistryContract } from '@bako-id/sdk';
 import { useProvider, useWallet } from '@fuels/react';
 import { useState } from 'react';
 import { useCustomToast } from '../components';
 import { sha256 } from 'fuels';
 import { Manager, Nft, UploaderValidatorScript } from '@bako-id/contracts';
 import { Networks, resolveNetwork } from '../utils/resolverNetwork';
+import { MetadataQueryKey } from './useMetadata';
 
-const { VITE_API_URL } = import.meta.env;
+const { VITE_API_URL, VITE_PROVIDER_URL } = import.meta.env;
 
 const useUpdateFile = (domain: string, onClose: () => void) => {
   const queryClient = useQueryClient();
@@ -18,6 +19,7 @@ const useUpdateFile = (domain: string, onClose: () => void) => {
   const [uploadedFileHash, setUploadedFileHash] = useState<string | undefined>(
     undefined
   );
+  const [inputValue, setInputValue] = useState('');
 
   const { provider } = useProvider();
   const [signProgress, setSignProgress] = useState(0);
@@ -31,6 +33,42 @@ const useUpdateFile = (domain: string, onClose: () => void) => {
     setUploadedFile(undefined);
     setSignProgress(0);
     onClose();
+  };
+
+  const handleSuccess = () => {
+    setSignProgress(100);
+    successToast({
+      title: 'Success!',
+      description: 'Your avatar was successfully updated.',
+    });
+    setIsSigning(false);
+    setUploadedFile(undefined);
+    queryClient.invalidateQueries({
+      queryKey: [
+        MetadataQueryKey.HANDLE_LIST,
+        provider?.url ?? VITE_PROVIDER_URL,
+        domain,
+      ],
+    });
+    handleClose();
+  };
+
+  const handleSignError = (error: Error) => {
+    setSignProgress(0);
+    console.error(error.message);
+
+    const errorTitle =
+      error.message?.includes('rejected') ||
+      error.message?.includes('disconnected') ||
+      error.message?.includes('cancelled')
+        ? 'Signature Failed'
+        : 'Profile Update Failed';
+
+    errorToast({
+      title: errorTitle,
+      description: 'There was an error updating your avatar, please try again',
+    });
+    setIsSigning(false);
   };
 
   const { mutate: saveOnServer } = useMutation<
@@ -69,17 +107,7 @@ const useUpdateFile = (domain: string, onClose: () => void) => {
       }
     },
     onSuccess: () => {
-      setSignProgress(100);
-      successToast({
-        title: 'Success!',
-        description: 'Your avatar was successfully updated.',
-      });
-      setIsSigning(false);
-      setUploadedFile(undefined);
-      queryClient.invalidateQueries({
-        queryKey: ['getHandleAvatar'],
-      });
-      handleClose();
+      handleSuccess();
     },
     onError: (error) => {
       setSignProgress(0);
@@ -133,11 +161,9 @@ const useUpdateFile = (domain: string, onClose: () => void) => {
 
       await waitForResult();
 
-      return {
-        transactionId,
-      };
+      return transactionId;
     },
-    onSuccess: ({ transactionId }) => {
+    onSuccess: (transactionId) => {
       setSignProgress(66);
       saveOnServer({
         file: uploadedFile!,
@@ -145,26 +171,37 @@ const useUpdateFile = (domain: string, onClose: () => void) => {
       });
     },
     onError: (error) => {
-      setSignProgress(0);
-      console.error(error.message);
-
-      const errorTitle =
-        error.message?.includes('rejected') ||
-        error.message?.includes('disconnected') ||
-        error.message?.includes('cancelled')
-          ? 'Signature Failed'
-          : 'Profile Update Failed';
-
-      errorToast({
-        title: errorTitle,
-        description:
-          'There was an error updating your avatar, please try again',
-      });
-      setIsSigning(false);
+      handleSignError(error);
     },
   });
 
-  const handleSignAvatarTransaction = async () => {
+  const { mutate: setMetadataAvatar } = useMutation({
+    mutationKey: ['setMetadata', domain],
+    mutationFn: async (nftImageUrl: string) => {
+      setIsSigning(true);
+      setTimeout(() => {
+        setSignProgress(33);
+      }, 1000);
+      if (nftImageUrl && wallet) {
+        const setContract = RegistryContract.create(wallet!);
+        setTimeout(() => {
+          setSignProgress(66);
+        }, 3000);
+        return await setContract.setMetadata(domain, {
+          avatar: nftImageUrl,
+        });
+      }
+    },
+    onSuccess: () => {
+      setInputValue('');
+      handleSuccess();
+    },
+    onError: (error) => {
+      handleSignError(error);
+    },
+  });
+
+  const handleUploadFile = async () => {
     setIsSigning(true);
     registry(uploadedFile!);
   };
@@ -177,8 +214,11 @@ const useUpdateFile = (domain: string, onClose: () => void) => {
     signProgress,
     uploadedFile,
     setUploadedFile,
-    handleSignAvatarTransaction,
+    handleUploadFile,
     handleClose,
+    setMetadataAvatar,
+    inputValue,
+    setInputValue,
   };
 };
 

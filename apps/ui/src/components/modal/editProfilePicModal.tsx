@@ -9,6 +9,12 @@ import { useUpdateFile } from '../../hooks/useUploadFile';
 
 import { ProgressButton } from '../buttons/progressButton';
 import { TrashIcon } from '../icons/trashIcon';
+import { useQuery } from '@tanstack/react-query';
+import { useProvider, useWallet } from '@fuels/react';
+import { parseURI } from '../../utils/formatter';
+import { FuelAssetService } from '../../services/fuel-assets';
+import { isB256 } from 'fuels';
+import { B256HashLength } from '../../utils/b256HashLength';
 
 interface EditProfilePicModalProps {
   isOpen: boolean;
@@ -18,9 +24,11 @@ interface EditProfilePicModalProps {
 const EditProfilePicBox = ({
   setUploadedFile,
   isSigning,
+  nftImagePreview,
 }: {
   setUploadedFile: React.Dispatch<React.SetStateAction<File | undefined>>;
   isSigning: boolean;
+  nftImagePreview: string | null | undefined;
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -101,8 +109,9 @@ const EditProfilePicBox = ({
 
   return (
     <Box
-      w="full"
-      h="full"
+      mx="auto"
+      w="400px"
+      h="400px"
       display="flex"
       justifyContent="center"
       alignItems="center"
@@ -125,7 +134,11 @@ const EditProfilePicBox = ({
         left: 0,
         width: '100%',
         height: '100%',
-        backgroundImage: previewUrl ? `url(${previewUrl})` : 'none',
+        backgroundImage: previewUrl
+          ? `url(${previewUrl})`
+          : nftImagePreview
+            ? `url(${nftImagePreview})`
+            : 'none',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
@@ -141,7 +154,7 @@ const EditProfilePicBox = ({
         display="none"
       />
 
-      {previewUrl ? (
+      {nftImagePreview ? null : previewUrl ? (
         <Button
           position="absolute"
           bg="error.500"
@@ -185,21 +198,80 @@ export const EditProfilePicModal = ({
   isOpen,
   onClose,
 }: EditProfilePicModalProps) => {
-  const [inputValue, setInputValue] = useState('');
+  const { errorToast } = useCustomToast();
+
   const { domain } = useParams({ strict: false });
+  const { provider } = useProvider();
   const {
     isSigning,
     signProgress,
-    handleSignAvatarTransaction,
+    handleUploadFile,
     handleClose,
     setUploadedFile,
     uploadedFile,
+    setMetadataAvatar,
+    setInputValue,
+    inputValue,
   } = useUpdateFile(domain ?? '', onClose);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value.substring(0));
-    console.log('Event', e);
+  const { wallet } = useWallet();
+  const chainId = provider?.getChainId();
+
+  const isValidAssetId =
+    inputValue.length === B256HashLength && isB256(inputValue);
+  const enableNFTRequest =
+    !!wallet && (chainId !== undefined || chainId !== null) && isValidAssetId;
+
+  const { data: nftImage, isLoading: isNftImageLoading } = useQuery({
+    queryKey: ['nft-image', chainId, inputValue],
+    queryFn: async () => {
+      try {
+        const nft = await FuelAssetService.byAssetId({
+          assetId: inputValue,
+          chainId: chainId!,
+        });
+
+        let metadata: Record<string, string> = nft.metadata ?? {};
+        const metadataEntries = Object.entries(metadata).filter(
+          ([key]) => !key.toLowerCase().includes('uri')
+        );
+        if (metadataEntries.length === 0 && nft.uri?.endsWith('.json')) {
+          const metadataFormUri: Record<string, string> = await fetch(
+            parseURI(nft.uri)
+          )
+            .then((res) => res.json())
+            .catch(() => ({}));
+
+          metadata = metadataFormUri;
+        }
+
+        const image = Object.entries(metadata).find(([key]) =>
+          key.includes('image')
+        )?.[1];
+
+        return image ? parseURI(image) : null;
+      } catch (error) {
+        console.error(error);
+        errorToast({
+          title: 'Invalid NFT address',
+          description: 'Please try again',
+        });
+        return null;
+      }
+    },
+
+    enabled: enableNFTRequest,
+  });
+
+  const handleAvatarUpload = () => {
+    if (isValidAssetId && nftImage) {
+      setMetadataAvatar(nftImage);
+      return;
+    }
+    handleUploadFile();
   };
+
+  const isUploadDisabled = isSigning || (nftImage ? false : !uploadedFile);
 
   return (
     <Dialog.Modal
@@ -223,6 +295,7 @@ export const EditProfilePicModal = ({
         <EditProfilePicBox
           setUploadedFile={setUploadedFile}
           isSigning={isSigning}
+          nftImagePreview={nftImage ?? undefined}
         />
         <Input
           placeholder="Import NFT Address"
@@ -234,17 +307,25 @@ export const EditProfilePicModal = ({
           background="input.600"
           type="text"
           errorBorderColor="error.500"
-          onChange={handleChange}
+          onChange={(e) => {
+            const alphanumericValue = e.target.value.replace(
+              /[^a-zA-Z0-9]/g,
+              ''
+            );
+            setInputValue(alphanumericValue.trim());
+          }}
+          maxLength={B256HashLength}
           border="1px solid"
           borderColor="grey.500"
           borderRadius={10}
           sx={{ _placeholder: { color: 'grey.200' } }}
+          isDisabled={isSigning || isNftImageLoading}
           _focus={{}}
           _hover={{}}
           _focusVisible={{}}
         />
       </Dialog.Body>
-      <Dialog.Actions hideDivider mt={24}>
+      <Dialog.Actions hideDivider mt={44}>
         <Dialog.SecondaryAction onClick={handleClose} isDisabled={isSigning}>
           Cancel
         </Dialog.SecondaryAction>
@@ -252,8 +333,8 @@ export const EditProfilePicModal = ({
         <ProgressButton
           progress={signProgress}
           w="full"
-          isDisabled={isSigning || !uploadedFile}
-          onClick={handleSignAvatarTransaction}
+          isDisabled={isUploadDisabled}
+          onClick={handleAvatarUpload}
           color="background.500"
           bg="button.500"
           fontSize={14}

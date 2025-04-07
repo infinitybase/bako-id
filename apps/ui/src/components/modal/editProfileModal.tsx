@@ -4,13 +4,10 @@
 //   type Metadata,
 // } from '@bako-id/sdk';
 import {
-  Box,
   Button,
   Center,
   CloseButton,
   Flex,
-  Icon,
-  Spinner,
   Tab,
   TabIndicator,
   TabList,
@@ -30,15 +27,15 @@ import {
 import { type MetadataItem, Metadatas } from '../../utils/metadatas';
 import { MetadataCard } from '../card/metadataCard';
 import { Dialog } from '../dialog';
-import { AvatarIcon, EditIcon } from '../icons';
 import { EditProfileFieldsModal } from './editProfileFieldsModal';
 import { EditProfilePicModal } from './editProfilePicModal';
 import { TransactionsDetailsModal } from './transactionDetails';
 
 import { useParams } from '@tanstack/react-router';
 import { useWallet } from '@fuels/react';
-import { useGetHandleAvatar } from '../../hooks/useGetHandleAvatar';
 import type { Account } from 'fuels';
+import { MetadataKeys } from '@bako-id/sdk';
+import { UserAvatar } from '../user/userAvatar';
 
 interface Metadata {
   key: string;
@@ -94,27 +91,6 @@ const TabsTypes = [
   // { key: 'Other', name: 'Other' },
 ];
 
-const AvatarGradientBox = () => {
-  return (
-    <Box
-      position="absolute"
-      top={0}
-      left={0}
-      w="full"
-      h="full"
-      rounded="lg"
-      background="linear-gradient(
-      to top,
-      rgba(0, 0, 0, 0.9) 0%,
-      rgba(0, 0, 0, 0.85) 15%,
-      rgba(0, 0, 0, 0.75) 25%,
-      rgba(0, 0, 0, 0.5) 50%,
-      rgba(0, 0, 0, 0.1) 100%
-    )"
-    />
-  );
-};
-
 const ModalEmptyState = () => {
   return (
     <Center
@@ -142,6 +118,7 @@ const ModalTitle = ({
 }) => {
   const modalTitle = useDisclosure();
   const { domain } = useParams({ strict: false });
+
   // const { data: handles, refetch: refetchHandles } = useMyHandles();
   // const { successToast } = useCustomToast();
 
@@ -175,90 +152,13 @@ const ModalTitle = ({
   return (
     <Flex w="full" justify="space-between">
       <Flex>
-        {isAvatarLoading ? (
-          <Flex
-            alignItems="center"
-            justifyContent="center"
-            w={[14, 14, 20]}
-            h={[14, 14, 20]}
-            rounded="lg"
-            mr={4}
-            border="1.5px solid"
-            borderColor={'button.500'}
-          >
-            <Spinner w={6} h={6} />
-          </Flex>
-        ) : avatar ? (
-          <Box
-            position="relative"
-            as="button"
-            mr="1.1rem"
-            onClick={modalTitle.onOpen}
-          >
-            <Box
-              w={[14, 14, 20]}
-              h={[14, 14, 20]}
-              rounded="lg"
-              position="relative"
-              border="1.5px solid"
-              borderColor={'button.500'}
-            >
-              <Box
-                position="absolute"
-                top={0}
-                left={0}
-                w="full"
-                h="full"
-                bgImage={`url(${avatar})`}
-                bgSize="cover"
-                bgPosition="center"
-                bgRepeat="no-repeat"
-                rounded="lg"
-              />
-              <AvatarGradientBox />
-            </Box>
+        <UserAvatar
+          isAvatarLoading={isAvatarLoading}
+          isEditProfilePicModalOpen={true}
+          onClick={modalTitle.onOpen}
+          avatar={avatar}
+        />
 
-            <Flex
-              alignItems="center"
-              position="absolute"
-              left={3}
-              bottom={1}
-              w="fit-content"
-              color="gray.200"
-              fontSize={{ base: '10px', md: 'sm' }}
-            >
-              <EditIcon w={{ base: 3, md: 6 }} h={{ base: 3, md: 6 }} />
-              Edit
-            </Flex>
-          </Box>
-        ) : (
-          <Box
-            position="relative"
-            as="button"
-            mr="1.1rem"
-            onClick={modalTitle.onOpen}
-          >
-            <AvatarGradientBox />
-            <Icon
-              w={[14, 14, 20]}
-              h={[14, 14, 20]}
-              rounded="lg"
-              as={AvatarIcon}
-            />
-            <Flex
-              alignItems="center"
-              position="absolute"
-              left={3}
-              bottom={1}
-              w="fit-content"
-              color="gray.200"
-              fontSize={{ base: '10px', md: 'sm' }}
-            >
-              <EditIcon w={{ base: 3, md: 6 }} h={{ base: 3, md: 6 }} />
-              Edit
-            </Flex>
-          </Box>
-        )}
         <Flex
           gap={4}
           alignItems="flex-start"
@@ -602,11 +502,13 @@ export const EditMetadataModal = ({
     transactionModal,
     updatedMetadata,
     setUpdatedMetadata,
+    fetchingMetadata,
+    loadingMetadata,
   } = useMetadata(handleOnSuccess);
 
-  const { data: avatar, isLoading, isFetching } = useGetHandleAvatar();
+  const avatar = metadata?.find((m) => m.key === MetadataKeys.AVATAR);
 
-  const isAvatarLoading = isLoading || isFetching;
+  const isAvatarLoading = fetchingMetadata || loadingMetadata;
 
   const [filter, setFilter] = useState(FilterButtonTypes.ALL);
 
@@ -624,7 +526,7 @@ export const EditMetadataModal = ({
         size={['full', '2xl', '2xl', '2xl']}
         modalTitle={
           <ModalTitle
-            avatar={avatar}
+            avatar={avatar?.value}
             isAvatarLoading={isAvatarLoading}
             onClose={onClose}
             wallet={wallet!}

@@ -4,12 +4,10 @@ import {
   Button,
   type ButtonProps,
   Flex,
-  Icon,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
-  Spinner,
   Text,
   useClipboard,
   useMediaQuery,
@@ -20,16 +18,17 @@ import { ExplorerTypes } from '../../types';
 import { twitterLink } from '../../utils/formatter.ts';
 import { getExplorer } from '../../utils/getExplorer';
 import { MetadataKeys } from '../../utils/metadataKeys';
-import { AvatarIcon, EditIcon, ExploreIcon, TwitterIcon } from '../icons';
+import { EditIcon, ExploreIcon, TwitterIcon } from '../icons';
 import { CopyIcon } from '../icons/copyIcon.tsx';
 import { ShareIcon } from '../icons/shareicon.tsx';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
-import { useGetHandleAvatar } from '../../hooks/useGetHandleAvatar.ts';
+import { UserAvatar } from '../user/userAvatar.tsx';
 
 interface IProfileCard {
   domainName: string | null;
   domain: string;
   metadata: { key: string; value: string | undefined }[] | undefined;
+  isMetadataLoading: boolean;
   editAction: () => void;
 }
 
@@ -59,6 +58,7 @@ export const ProfileCard = ({
   domainName,
   metadata,
   editAction,
+  isMetadataLoading,
 }: IProfileCard) => {
   const [isLowerThanMobile] = useMediaQuery('(max-width: 25em)');
   const { isMyDomain: isOwner } = useSidebar();
@@ -67,9 +67,7 @@ export const ProfileCard = ({
     (m) => m.key === MetadataKeys.CONTACT_NICKNAME
   );
   const shortBio = metadata?.find((m) => m.key === MetadataKeys.CONTACT_BIO);
-  const { data: avatar, isLoading, isFetching } = useGetHandleAvatar();
-
-  const isAvatarLoading = isLoading || isFetching;
+  const avatar = metadata?.find((m) => m.key === MetadataKeys.AVATAR);
 
   const { provider } = useProvider();
 
@@ -208,35 +206,11 @@ export const ProfileCard = ({
       zIndex={1}
     >
       <Flex w="full">
-        {isAvatarLoading ? (
-          <Flex
-            alignItems="center"
-            justifyContent="center"
-            minW={32}
-            h={32}
-            rounded="lg"
-            mr={4}
-            border="1.5px solid"
-            borderColor={'button.500'}
-          >
-            <Spinner w={6} h={6} />
-          </Flex>
-        ) : avatar ? (
-          <Box
-            minW={32}
-            h={32}
-            rounded="lg"
-            mr={4}
-            bgImage={`url(${avatar})`}
-            bgSize="cover"
-            bgPosition="center"
-            bgRepeat="no-repeat"
-            border="1.5px solid"
-            borderColor={'button.500'}
-          />
-        ) : (
-          <Icon w={32} h={32} rounded="lg" mr={4} as={AvatarIcon} />
-        )}
+        <UserAvatar
+          avatar={avatar?.value}
+          isAvatarLoading={isMetadataLoading}
+        />
+
         <Flex
           gap={4}
           alignItems={isLowerThanMobile ? 'flex-start' : 'flex-start'}
