@@ -8,7 +8,7 @@
     "build": {
       "dependsOn": ["^build:sway", "codegen:sdk", "^build"],
       "outputs": ["dist/**", ".next/**"],
-      "env": ["API_URL", "VITE_API_URL", "NEXT_PUBLIC_API_URL"],
+      "env": ["API_URL", "VITE_API_URL", "NEXT_PUBLIC_API_URL", "AWS_REGION", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"],
       "cache": false
     },
     "docs:build": {

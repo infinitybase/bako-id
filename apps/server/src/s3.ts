@@ -13,6 +13,12 @@ export const s3Client = new S3Client({
   },
 });
 
+console.log('ENV', {
+  region: process.env.AWS_REGION,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+});
+
 export class S3Service {
   static async uploadImageToS3(key: string, file: File) {
     try {
