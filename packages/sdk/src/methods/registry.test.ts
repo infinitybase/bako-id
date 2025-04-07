@@ -149,7 +149,8 @@ describe('Test Registry', () => {
     const metadataSet = await contract.setMetadata(domain, metadata);
     const metadatasResult = await contract.getMetadata(domain);
 
-    expect(metadataSet).toBe(true);
+    expect(metadataSet).toBeDefined();
+    expect(metadataSet.status).toBe(TransactionStatus.success);
     expect(metadatasResult).toEqual(metadata);
   });
 

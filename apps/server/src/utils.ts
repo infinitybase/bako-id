@@ -1,4 +1,5 @@
 import type { Identity } from '@/types';
+import { Provider } from 'fuels';
 
 export const validateNetwork = (network: string) => {
   const networks: Record<string, { url: string; chainId: number }> = {
@@ -20,7 +21,7 @@ export const validateNetwork = (network: string) => {
 
   if (networkChainId === undefined) {
     throw new Error(
-      `Invalid network ${network}, expected one of ${Object.keys(networks).join(', ')}`
+      `Invalid network ${network}, expected one of ${Object.keys(networks).join(', ')}`,
     );
   }
 
@@ -63,4 +64,19 @@ export const parseURI = (uri: string) => {
   if (isIPFS(uri)) return `${IPFStoHTTP(uri)}?t=${now}`;
 
   return uri;
+};
+
+export enum Networks {
+  MAINNET = 'MAINNET',
+  TESTNET = 'TESTNET',
+}
+export type NetworkName = 'MAINNET' | 'TESTNET';
+
+export const resolveNetwork = {
+  [Networks.TESTNET]: Provider.create(
+    'https://testnet.fuel.network/v1/graphql',
+  ),
+  [Networks.MAINNET]: Provider.create(
+    'https://mainnet.fuel.network/v1/graphql',
+  ),
 };

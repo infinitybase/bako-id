@@ -3,7 +3,6 @@ import {
   Account,
   DateTime,
   type Provider,
-  TransactionStatus,
   getMintedAssetId,
   getRandomB256,
   sha256,
@@ -249,7 +248,7 @@ export class RegistryContract {
       )
       .call();
     const { transactionResult } = await multiCall.waitForResult();
-    return transactionResult.status === TransactionStatus.success;
+    return transactionResult;
   }
 
   async getMetadata(domain: string) {

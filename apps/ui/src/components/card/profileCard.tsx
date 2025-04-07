@@ -4,7 +4,6 @@ import {
   Button,
   type ButtonProps,
   Flex,
-  Icon,
   Menu,
   MenuButton,
   MenuItem,
@@ -19,22 +18,17 @@ import { ExplorerTypes } from '../../types';
 import { twitterLink } from '../../utils/formatter.ts';
 import { getExplorer } from '../../utils/getExplorer';
 import { MetadataKeys } from '../../utils/metadataKeys';
-import {
-  AvatarIcon,
-  // DisabledXBadgeIcon,
-  EditIcon,
-  ExploreIcon,
-  TwitterIcon,
-  // FarcasterBadgeIcon,
-} from '../icons';
+import { EditIcon, ExploreIcon, TwitterIcon } from '../icons';
 import { CopyIcon } from '../icons/copyIcon.tsx';
 import { ShareIcon } from '../icons/shareicon.tsx';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
+import { UserAvatar } from '../user/userAvatar.tsx';
 
 interface IProfileCard {
   domainName: string | null;
   domain: string;
   metadata: { key: string; value: string | undefined }[] | undefined;
+  isMetadataLoading: boolean;
   editAction: () => void;
 }
 
@@ -47,7 +41,6 @@ const ButtonAction = ({ rightIcon, ...props }: ButtonProps) => (
     fontWeight="normal"
     fontSize={['sm', 'sm']}
     position="relative"
-    // h={9}
     justifyContent={{
       base: 'center',
       md: 'space-between',
@@ -65,6 +58,7 @@ export const ProfileCard = ({
   domainName,
   metadata,
   editAction,
+  isMetadataLoading,
 }: IProfileCard) => {
   const [isLowerThanMobile] = useMediaQuery('(max-width: 25em)');
   const { isMyDomain: isOwner } = useSidebar();
@@ -74,8 +68,6 @@ export const ProfileCard = ({
   );
   const shortBio = metadata?.find((m) => m.key === MetadataKeys.CONTACT_BIO);
   const avatar = metadata?.find((m) => m.key === MetadataKeys.AVATAR);
-
-  // const handle = handles?.find((handle) => handle.name === domainName);
 
   const { provider } = useProvider();
 
@@ -138,7 +130,6 @@ export const ProfileCard = ({
             fontWeight="normal"
             fontSize={['sm', 'sm']}
             position="relative"
-            // h={9}
             flexDir="row"
             bgColor={isLowerThanMobile ? 'transparent' : undefined}
           >
@@ -215,22 +206,11 @@ export const ProfileCard = ({
       zIndex={1}
     >
       <Flex w="full">
-        {avatar ? (
-          <Box
-            minW={32}
-            h={32}
-            rounded="lg"
-            mr={4}
-            bgImage={`url(${avatar.value})`}
-            bgSize="cover"
-            bgPosition="center"
-            bgRepeat="no-repeat"
-            border="1.5px solid"
-            borderColor={'button.500'}
-          />
-        ) : (
-          <Icon w={32} h={32} rounded="lg" mr={4} as={AvatarIcon} />
-        )}
+        <UserAvatar
+          avatar={avatar?.value}
+          isAvatarLoading={isMetadataLoading}
+        />
+
         <Flex
           gap={4}
           alignItems={isLowerThanMobile ? 'flex-start' : 'flex-start'}
