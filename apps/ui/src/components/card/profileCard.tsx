@@ -47,7 +47,6 @@ const ButtonAction = ({ rightIcon, ...props }: ButtonProps) => (
     fontWeight="normal"
     fontSize={['sm', 'sm']}
     position="relative"
-    // h={9}
     justifyContent={{
       base: 'center',
       md: 'space-between',
@@ -106,18 +105,13 @@ export const ProfileCard = ({
       {/*  </Box>*/}
       {/*)}*/}
       {isOwner && (
-        <ButtonAction
-          bgColor={isLowerThanMobile ? 'transparent' : undefined}
-          rightIcon={<EditIcon w={5} h={5} />}
-          onClick={editAction}
-        >
+        <ButtonAction rightIcon={<EditIcon w={5} h={5} />} onClick={editAction}>
           <Box mr={2} flex={1}>
             Edit Profile
           </Box>
         </ButtonAction>
       )}
       <ButtonAction
-        bgColor={isLowerThanMobile ? 'transparent' : undefined}
         rightIcon={<ExploreIcon w={5} h={5} />}
         onClick={() =>
           window.open(`${explorerUrl}/account/${domain}${ExplorerTypes.ASSETS}`)
@@ -138,9 +132,7 @@ export const ProfileCard = ({
             fontWeight="normal"
             fontSize={['sm', 'sm']}
             position="relative"
-            // h={9}
             flexDir="row"
-            bgColor={isLowerThanMobile ? 'transparent' : undefined}
           >
             <Flex alignItems="center" w="full">
               <Box mr={2} flex={1}>

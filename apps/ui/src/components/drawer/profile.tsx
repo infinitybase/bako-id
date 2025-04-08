@@ -58,7 +58,10 @@ const ProfileDrawer = ({ ...props }: ProfileDrawerProps) => {
                   <FormHelperText color="section.200" fontWeight="semibold">
                     More handles?
                   </FormHelperText>
-                  <Autocomplete key="profile-sidebar-autocomplete" />
+                  <Autocomplete
+                    key="profile-sidebar-autocomplete"
+                    actionOnContinue={props.onClose}
+                  />
                 </FormControl>
               </Box>
               <Divider bgColor="grey.600" w="full" zIndex={1} />
