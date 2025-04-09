@@ -29,6 +29,7 @@ import {
   Flex,
   type FlexProps,
   Grid,
+  GridItem,
   HStack,
   Heading,
   Icon,
@@ -561,6 +562,18 @@ export const NFTCollections = ({
           </Grid>
         </Box>
       ))}
+      {!nftCollections?.length && (
+        <GridItem as={Center} py={10} colSpan={5} gridArea="5fr">
+          <Text
+            color="grey.200"
+            fontSize="xs"
+            maxW="172px"
+            textAlign={'center'}
+          >
+            It appears this user does not own any NFTs yet.
+          </Text>
+        </GridItem>
+      )}
     </Card>
   );
 };
