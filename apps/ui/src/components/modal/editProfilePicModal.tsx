@@ -13,8 +13,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useProvider, useWallet } from '@fuels/react';
 import { parseURI } from '../../utils/formatter';
 import { FuelAssetService } from '../../services/fuel-assets';
-import { isB256 } from 'fuels';
 import { B256HashLength } from '../../utils/b256HashLength';
+import { isB256 } from 'fuels';
 
 interface EditProfilePicModalProps {
   isOpen: boolean;
@@ -179,13 +179,18 @@ const EditProfilePicBox = ({
         >
           <FileUploadIcon h={14} w={14} />
 
-          <Box textAlign="center">
+          <Box textAlign="center" fontSize="xs">
             <Text color="section.200">
               Choose a file or drag & drop it here
             </Text>
             <Text color="section.500">JPEG and PNG formats, up to 3MB</Text>
           </Box>
-          <Button bgColor="grey.100" onClick={handleBrowseFileClick}>
+          <Button
+            bgColor="grey.100"
+            w="101px"
+            onClick={handleBrowseFileClick}
+            fontSize="sm"
+          >
             Browse file
           </Button>
         </Flex>
@@ -276,7 +281,7 @@ export const EditProfilePicModal = ({
   return (
     <Dialog.Modal
       modalTitle="Upload avatar"
-      modalSubtitle="You can import an file from your device or import NFT."
+      modalSubtitle="Recommended image size is 500x500 pixels, 3Mb maximum"
       isOpen={isOpen}
       onClose={handleClose}
       size="xl"
@@ -284,6 +289,8 @@ export const EditProfilePicModal = ({
       gapBetweenBodyAndHeader="6"
       closeOnOverlayClick={false}
       closeOnEsc={!isSigning}
+      subtitleFontSize="xs"
+      titleFontSize="sm"
     >
       <Dialog.Body
         bgColor="input.900"
@@ -297,6 +304,9 @@ export const EditProfilePicModal = ({
           isSigning={isSigning}
           nftImagePreview={nftImage ?? undefined}
         />
+        <Text color="grey.subtitle" mt={6} fontSize="xs">
+          Or insert NFT Asset ID:
+        </Text>
         <Input
           placeholder="Import NFT Address"
           mt={6}
@@ -307,6 +317,7 @@ export const EditProfilePicModal = ({
           background="input.600"
           type="text"
           errorBorderColor="error.500"
+          _placeholder={{ color: 'grey.200', fontSize: 'sm' }}
           onChange={(e) => {
             const alphanumericValue = e.target.value.replace(
               /[^a-zA-Z0-9]/g,
@@ -318,14 +329,13 @@ export const EditProfilePicModal = ({
           border="1px solid"
           borderColor="grey.500"
           borderRadius={10}
-          sx={{ _placeholder: { color: 'grey.200' } }}
           isDisabled={isSigning || isNftImageLoading}
           _focus={{}}
           _hover={{}}
           _focusVisible={{}}
         />
       </Dialog.Body>
-      <Dialog.Actions hideDivider mt={44}>
+      <Dialog.Actions hideDivider mt={56}>
         <Dialog.SecondaryAction onClick={handleClose} isDisabled={isSigning}>
           Cancel
         </Dialog.SecondaryAction>
