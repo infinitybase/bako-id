@@ -1,22 +1,43 @@
 enum Network {
-    MAINNET
-    TESTNET
+  MAINNET
+  TESTNET
 }
 
 type Records {
-    id: ID!
-    name: String!
-    owner: String!
-    resolver: String!
-    name_hash: String!
-    timestamp: String!
-    period: Int!
-    network: Network!
+  id: ID!
+  name: String!
+  owner: String!
+  resolver: String!
+  name_hash: String!
+  timestamp: String!
+  period: Int!
+  network: Network!
 }
 
 type AddressResolver {
-    id: ID!
-    name: String!
-    resolver: String!
-    record: Records! @index
+  id: ID!
+  name: String!
+  resolver: String!
+  record: Records! @index
+}
+
+enum OrderStatus {
+  CREATED
+  COMPLETED
+  CANCELLED
+}
+
+type Order {
+  id: ID!
+  asset: String!
+  amount: BigInt!
+  seller: String!
+  itemPrice: BigInt!
+  itemAsset: String!
+  status: OrderStatus!
+}
+
+type Asset {
+  id: ID!
+  fee: BigInt!
 }

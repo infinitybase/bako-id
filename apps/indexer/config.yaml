@@ -11,14 +11,32 @@ contracts:
         logId: '4160095253491321915'
       - name: ResolverChangedEvent
         logId: '2059351015524214332'
+  - name: marketplace
+    abi_file_path: abis/marketplace-abi.json
+    handler: src/marketplace/EventHandlers.ts
+    events:
+      - name: AssetFeeAdjustedEvent
+        logId: '4301657011093725525'
+      - name: AssetAddedEvent
+        logId: '3662932439294713466'
+      - name: OrderCreatedEvent
+        logId: '15458517000380414752'
+      - name: OrderExecutedEvent
+        logId: '2943374294718531242'
+      - name: OrderCancelledEvent
+        logId: '15201348229666385490'
+      - name: OrderEditedEvent
+        logId: '10370690131512931516'
 networks:
-- id: 0
-  start_block: 0
-  contracts:
-    - name: manager
-      address: 0x39140d7233297276196c49bf13c78ce056083ca8bf61af2698ee3fdeb8af1a8b
-- id: 9889
-  start_block: 0
-  contracts:
-    - name: manager
-      address: 0x3ca7ac3db222a740e1c89158d9255afc2c3591ee3f34aedcaaf7cfeceebd0833
+  - id: 0
+    start_block: 0
+    contracts:
+      - name: manager
+        address: 0x39140d7233297276196c49bf13c78ce056083ca8bf61af2698ee3fdeb8af1a8b
+      - name: marketplace
+        address: 0x6575b7666cd5aef892357e4cf927c1998322c13c4232638519970a8b68b20c6e
+  - id: 9889
+    start_block: 0
+    contracts:
+      - name: manager
+        address: 0x3ca7ac3db222a740e1c89158d9255afc2c3591ee3f34aedcaaf7cfeceebd0833
