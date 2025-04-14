@@ -38,8 +38,8 @@ export enum NameValidationErrorInput { InvalidLenght = 'InvalidLenght', InvalidC
 export enum NameValidationErrorOutput { InvalidLenght = 'InvalidLenght', InvalidChars = 'InvalidChars', IsEmpty = 'IsEmpty' };
 export enum PauseErrorInput { Paused = 'Paused', NotPaused = 'NotPaused' };
 export enum PauseErrorOutput { Paused = 'Paused', NotPaused = 'NotPaused' };
-export enum RegistryContractErrorInput { IncorrectAssetId = 'IncorrectAssetId', InvalidAmount = 'InvalidAmount', AlreadyMinted = 'AlreadyMinted', AlreadyInitialized = 'AlreadyInitialized', ContractNotBeZero = 'ContractNotBeZero', ContractNotInitialized = 'ContractNotInitialized', NotOwner = 'NotOwner', NotFoundName = 'NotFoundName' };
-export enum RegistryContractErrorOutput { IncorrectAssetId = 'IncorrectAssetId', InvalidAmount = 'InvalidAmount', AlreadyMinted = 'AlreadyMinted', AlreadyInitialized = 'AlreadyInitialized', ContractNotBeZero = 'ContractNotBeZero', ContractNotInitialized = 'ContractNotInitialized', NotOwner = 'NotOwner', NotFoundName = 'NotFoundName' };
+export enum RegistryContractErrorInput { IncorrectAssetId = 'IncorrectAssetId', InvalidAmount = 'InvalidAmount', AlreadyMinted = 'AlreadyMinted', AlreadyInitialized = 'AlreadyInitialized', ContractNotBeZero = 'ContractNotBeZero', ContractNotInitialized = 'ContractNotInitialized', NotOwner = 'NotOwner', NotFoundName = 'NotFoundName', AlreadyPrimaryHandle = 'AlreadyPrimaryHandle' };
+export enum RegistryContractErrorOutput { IncorrectAssetId = 'IncorrectAssetId', InvalidAmount = 'InvalidAmount', AlreadyMinted = 'AlreadyMinted', AlreadyInitialized = 'AlreadyInitialized', ContractNotBeZero = 'ContractNotBeZero', ContractNotInitialized = 'ContractNotInitialized', NotOwner = 'NotOwner', NotFoundName = 'NotFoundName', AlreadyPrimaryHandle = 'AlreadyPrimaryHandle' };
 export type StateInput = Enum<{ Uninitialized: undefined, Initialized: IdentityInput, Revoked: undefined }>;
 export type StateOutput = Enum<{ Uninitialized: void, Initialized: IdentityOutput, Revoked: void }>;
 
@@ -200,6 +200,10 @@ const abi = {
         },
         {
           "name": "NotFoundName",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "AlreadyPrimaryHandle",
           "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
         }
       ]
@@ -541,6 +545,25 @@ const abi = {
         {
           "name": "name",
           "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c"
+        }
+      ],
+      "name": "set_primary_handle",
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "write",
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "name",
+          "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c"
         },
         {
           "name": "resolver",
@@ -782,6 +805,7 @@ export class RegistryInterface extends Interface {
     register: FunctionFragment;
     set_metadata_info: FunctionFragment;
     set_owner: FunctionFragment;
+    set_primary_handle: FunctionFragment;
     set_resolver: FunctionFragment;
     timestamp: FunctionFragment;
     ttl: FunctionFragment;
@@ -804,6 +828,7 @@ export class Registry extends Contract {
     register: InvokeFunction<[name: StdString, resolver: IdentityInput, period: BigNumberish], void>;
     set_metadata_info: InvokeFunction<[name: StdString, key: StdString, value: MetadataInput], void>;
     set_owner: InvokeFunction<[name: StdString, owner: IdentityInput], void>;
+    set_primary_handle: InvokeFunction<[name: StdString], void>;
     set_resolver: InvokeFunction<[name: StdString, resolver: IdentityInput], void>;
     timestamp: InvokeFunction<[name: StdString], Option<BN>>;
     ttl: InvokeFunction<[name: StdString], Option<BN>>;

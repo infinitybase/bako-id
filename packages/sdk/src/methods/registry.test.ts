@@ -381,4 +381,91 @@ describe('Test Registry', () => {
       })
     ).rejects.toThrow(/NotOwner/);
   });
+
+  it('should change primary handle correctly', async () => {
+    const {
+      contracts: [registry, manager],
+      wallets: [wallet],
+    } = node;
+
+    const contract = new RegistryContract(registry.id.toB256(), wallet);
+
+    const domain2 = randomName();
+    const resolver2 = getRandomB256();
+
+    await contract.register({
+      domain: domain2,
+      period: 1,
+      resolver: resolver2,
+    });
+
+    const result = await contract.changePrimaryHandle(domain2);
+    expect(result.status).toBe(TransactionStatus.success);
+
+    const { value: domain1 } = await manager.functions
+      .get_record(wallet.address.toB256())
+      .get();
+
+    const { value: newPrimaryHandle } = await manager.functions
+      .get_name({ Address: { bits: wallet.address.toB256() } })
+      .get();
+
+    expect(newPrimaryHandle).not.toBe(domain1);
+    expect(newPrimaryHandle).toBe(domain2);
+  });
+
+  it('should error when change primary handle to the same domain', async () => {
+    const {
+      contracts: [registry, manager],
+      wallets: [wallet],
+    } = node;
+
+    const contract = new RegistryContract(registry.id.toB256(), wallet);
+
+    const domain = randomName();
+    const resolver = wallet.address.toB256();
+
+    await contract.register({
+      domain,
+      period: 1,
+      resolver,
+    });
+
+    const { value: primaryHandle } = await manager.functions
+      .get_name({ Address: { bits: resolver } })
+      .get();
+
+    await expect(() =>
+      contract.changePrimaryHandle(primaryHandle)
+    ).rejects.toThrow(/This is already the primary handle/);
+  });
+
+  it('should error when change primary handle and it is not the owner', async () => {
+    const {
+      contracts: [registry, manager],
+      wallets: [owner, notOwner],
+    } = node;
+
+    const notOwnerContract = new RegistryContract(
+      registry.id.toB256(),
+      notOwner
+    );
+
+    const domain = randomName();
+    const notOwnerResolver = notOwner.address.toB256();
+
+    await notOwnerContract.register({
+      domain,
+      period: 1,
+      resolver: notOwnerResolver,
+    });
+
+    const { value: ownerPrimaryHandle } = await manager.functions
+      .get_name({ Address: { bits: owner.address.toB256() } })
+      .get();
+
+    await expect(() =>
+      notOwnerContract.changePrimaryHandle(ownerPrimaryHandle)
+    ).rejects.toThrow(/NotOwner/);
+  });
 });

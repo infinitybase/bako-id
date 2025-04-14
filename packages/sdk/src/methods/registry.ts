@@ -174,6 +174,30 @@ export class RegistryContract {
     return transactionResult;
   }
 
+  async changePrimaryHandle(newDomain: string) {
+    if (!this.account) {
+      throw new Error('Account is required to change the resolver');
+    }
+
+    const newDomainName = assertValidDomain(newDomain);
+
+    const { value: currentPrimaryHandle } = await this.managerContract.functions
+      .get_name({ Address: { bits: this.account.address.toB256() } })
+      .get();
+
+    if (currentPrimaryHandle === newDomainName) {
+      throw new Error('This is already the primary handle');
+    }
+
+    const changePrimaryHandleCall = await this.contract.functions
+      .set_primary_handle(newDomainName)
+      .addContracts([this.managerContract])
+      .call();
+    const { transactionResult } = await changePrimaryHandleCall.waitForResult();
+
+    return transactionResult;
+  }
+
   async simulate(params: SimulatePayload) {
     const { domain, period } = params;
 

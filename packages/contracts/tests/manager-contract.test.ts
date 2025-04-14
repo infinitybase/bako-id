@@ -273,4 +273,75 @@ describe('[METHODS] Resolver Contract', () => {
       TransactionStatus.success
     );
   });
+
+  it('should change the primary handle correctly', async () => {
+    const [owner] = node.wallets;
+    const firstDomain = randomName();
+    const secondDomain = randomName();
+    const resolverAddress1 = { Address: { bits: getRandomB256() } };
+    const resolverAddress2 = { Address: { bits: getRandomB256() } };
+
+    // create first record
+    const firstRecordInput = {
+      owner: { Address: { bits: owner.address.toB256() } },
+      resolver: resolverAddress1,
+      period: bn(1),
+      timestamp: bn(1),
+    };
+
+    const { waitForResult: waitForFirstRecord } = await manager.functions
+      .set_record(firstDomain, firstRecordInput)
+      .call();
+    await waitForFirstRecord();
+
+    // create second record
+    const secondRecordInput = {
+      owner: { Address: { bits: owner.address.toB256() } },
+      resolver: resolverAddress2,
+      period: bn(1),
+      timestamp: bn(1),
+    };
+    const { waitForResult: waitForSecondRecord } = await manager.functions
+      .set_record(secondDomain, secondRecordInput)
+      .call();
+    await waitForSecondRecord();
+
+    // set the second domain as primary handle
+    const { waitForResult: awaitChangePrimaryHandle } = await manager.functions
+      .set_primary_handle(secondDomain)
+      .call();
+    await awaitChangePrimaryHandle();
+
+    const { value: resolverAddress } = await manager.functions
+      .get_resolver(secondDomain)
+      .get();
+    expect(resolverAddress?.Address?.bits).toBe(owner.address.toB256());
+
+    const { value: newPrimaryHandle } = await manager.functions
+      .get_name({ Address: { bits: owner.address.toB256() } })
+      .get();
+
+    expect(newPrimaryHandle).toBe(secondDomain);
+    expect(newPrimaryHandle).not.toBe(firstDomain);
+  });
+
+  it('should error when trying to change the primary handle if it is not the owner', async () => {
+    const { wallets } = node;
+    const [owner, notOwner] = wallets;
+
+    const notOwnerManager = new Manager(manager.id, notOwner);
+
+    const { value: actualOwnerPrimaryHandle } = await manager.functions
+      .get_name({
+        Address: { bits: owner.address.toB256() },
+      })
+      .get();
+
+    await expect(async () => {
+      await notOwnerManager.functions
+        .set_primary_handle(actualOwnerPrimaryHandle!)
+        .addContracts([manager])
+        .call();
+    }).rejects.toThrow(/OnlyOwner/);
+  });
 });

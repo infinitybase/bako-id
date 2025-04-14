@@ -1,4 +1,4 @@
-import { TransactionStatus, Wallet, bn } from 'fuels';
+import { TransactionStatus, Wallet, bn, getRandomB256 } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
 import {
   Manager,
@@ -443,6 +443,85 @@ describe('[METHODS] Registry Contract', () => {
         .addContracts([manager])
         .call();
       await changeOwnerCall.waitForResult();
+    }).rejects.toThrow(/NotOwner/);
+  });
+
+  it('should change the primary handle correctly', async () => {
+    const { provider, wallets } = node;
+    const [owner] = wallets;
+
+    const secondDomain = randomName();
+
+    const actualPrimaryResolver = { Address: { bits: owner.address.toB256() } };
+    const resolverAddress = { Address: { bits: getRandomB256() } };
+
+    const price2 = domainPrices(secondDomain);
+
+    const { value: firstDomain } = await manager.functions
+      .get_name(actualPrimaryResolver)
+      .get();
+
+    // register the second domain
+    const { waitForResult: registerCall2 } = await registry.functions
+      .register(secondDomain, resolverAddress, bn(1))
+      .addContracts([manager, nft])
+      .callParams({
+        forward: { assetId: provider.getBaseAssetId(), amount: price2 },
+      })
+      .call();
+    await registerCall2();
+
+    // set the second domain as the primary handle
+    const { waitForResult: awaitChangePrimaryHandle } = await registry.functions
+      .set_primary_handle(secondDomain)
+      .addContracts([manager])
+      .call();
+    await awaitChangePrimaryHandle();
+
+    const { value: newPrimaryHandle } = await manager.functions
+      .get_name(actualPrimaryResolver)
+      .get();
+
+    expect(newPrimaryHandle).not.toBe(firstDomain);
+    expect(newPrimaryHandle).toBe(secondDomain);
+  });
+
+  it('should error when trying to change the primary handle to the same domain', async () => {
+    const { wallets } = node;
+    const [owner] = wallets;
+
+    const actualPrimaryResolver = { Address: { bits: owner.address.toB256() } };
+
+    const { value: firstDomain } = await manager.functions
+      .get_name(actualPrimaryResolver)
+      .get();
+
+    // set the primary handle again, which should fail
+    await expect(async () => {
+      await registry.functions
+        .set_primary_handle(firstDomain!)
+        .addContracts([manager])
+        .call();
+    }).rejects.toThrow(/AlreadyPrimaryHandle/);
+  });
+
+  it('should error when trying to change the primary handle if it is not the owner', async () => {
+    const { wallets } = node;
+    const [owner, notOwner] = wallets;
+
+    const notOwnerRegistry = new Registry(registry.id, notOwner);
+
+    const { value: actualOwnerPrimaryHandle } = await manager.functions
+      .get_name({
+        Address: { bits: owner.address.toB256() },
+      })
+      .get();
+
+    await expect(async () => {
+      await notOwnerRegistry.functions
+        .set_primary_handle(actualOwnerPrimaryHandle!)
+        .addContracts([manager])
+        .call();
     }).rejects.toThrow(/NotOwner/);
   });
 

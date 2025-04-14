@@ -6,6 +6,7 @@ import { useParams } from '@tanstack/react-router';
 import { Provider } from 'fuels';
 import { useState } from 'react';
 import { useCustomToast } from '../components';
+import { getWalletSignatureErrorTitle } from '../utils/walletSignatureErrorsTitle';
 
 const { VITE_PROVIDER_URL } = import.meta.env;
 
@@ -99,12 +100,10 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
     onError: (error) => {
       console.error(error.message);
 
-      const errorTitle =
-        error.message?.includes('rejected') ||
-        error.message?.includes('disconnected') ||
-        error.message?.includes('cancelled')
-          ? 'Signature Failed'
-          : 'Profile Update Failed';
+      const errorTitle = getWalletSignatureErrorTitle(
+        error,
+        'Profile Update Failed'
+      );
 
       errorToast({
         title: errorTitle,

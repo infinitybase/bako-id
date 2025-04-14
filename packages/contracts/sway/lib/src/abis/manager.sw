@@ -18,6 +18,9 @@ abi Manager {
 
     #[storage(read, write)]
     fn set_owner(name: String, owner: Identity);
+
+    #[storage(read, write)]
+    fn set_primary_handle(name: String);
 }
 
 abi ManagerInfo {

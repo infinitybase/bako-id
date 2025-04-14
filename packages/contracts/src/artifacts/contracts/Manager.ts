@@ -476,6 +476,25 @@ const abi = {
         {
           "name": "name",
           "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c"
+        }
+      ],
+      "name": "set_primary_handle",
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read",
+            "write"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "name",
+          "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c"
         },
         {
           "name": "data",
@@ -693,12 +712,12 @@ const abi = {
       "concreteTypeId": "39bba09788238c3baa4c4b8b27b80b5233e43c9ec834a34db38a901a76a9f13c"
     },
     {
-      "logId": "11146364172429795543",
-      "concreteTypeId": "9aafd728aad1a0d76d5874a850f257bf49c6d7b6979517e19b53496080e902e9"
-    },
-    {
       "logId": "2059351015524214332",
       "concreteTypeId": "1c9448d67429263ce86f33b8c35db64a7aaf74d408d085047883f527427b6ad0"
+    },
+    {
+      "logId": "11146364172429795543",
+      "concreteTypeId": "9aafd728aad1a0d76d5874a850f257bf49c6d7b6979517e19b53496080e902e9"
     },
     {
       "logId": "2161305517876418151",
@@ -730,6 +749,7 @@ export class ManagerInterface extends Interface {
 
   declare functions: {
     set_owner: FunctionFragment;
+    set_primary_handle: FunctionFragment;
     set_record: FunctionFragment;
     set_resolver: FunctionFragment;
     get_name: FunctionFragment;
@@ -751,6 +771,7 @@ export class Manager extends Contract {
   declare interface: ManagerInterface;
   declare functions: {
     set_owner: InvokeFunction<[name: StdString, owner: IdentityInput], void>;
+    set_primary_handle: InvokeFunction<[name: StdString], void>;
     set_record: InvokeFunction<[name: StdString, data: RecordDataInput], void>;
     set_resolver: InvokeFunction<[name: StdString, resolver: IdentityInput], void>;
     get_name: InvokeFunction<[resolver: IdentityInput], Option<StdString>>;

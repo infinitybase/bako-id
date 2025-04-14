@@ -47,7 +47,7 @@ fn mint_token(name: String, receiver: Identity) -> AssetId {
     src3_contract.mint(receiver, Some(sub_id), 1);
 
     let nft_contract = abi(SetAssetMetadata, token_id.into());
-    nft_contract.set_metadata(
+      nft_contract.set_metadata(
         asset_id, 
         String::from_ascii_str("image:png"), 
         Metadata::String(
@@ -90,6 +90,7 @@ enum RegistryContractError {
     ContractNotInitialized: (),
     NotOwner: (),
     NotFoundName: (),
+    AlreadyPrimaryHandle: (),
 }
 
 impl Registry for Contract {
@@ -100,13 +101,13 @@ impl Registry for Contract {
         require(
             msg_asset_id() == AssetId::base(),
             RegistryContractError::IncorrectAssetId,
-        );     
+        );
 
         let name = assert_name_validity(name);
         let manager_id = get_manager_id();
         let manager = abi(ManagerInfo, manager_id.into());
 
-        require(
+         require(
             manager.get_record(name).is_none(),
             RegistryContractError::AlreadyMinted,
         );
@@ -124,7 +125,7 @@ impl Registry for Contract {
 
         let asset_id = mint_token(name, owner);
         let manager = abi(Manager, manager_id.into());
-        manager.set_record(name, RecordData {
+          manager.set_record(name, RecordData {
             owner,
             period,
             resolver,
@@ -139,7 +140,7 @@ impl Registry for Contract {
             name_hash,
         });
     }
-    
+
     #[storage(write, read)]
     fn set_metadata_info(name: String, key: String, value: Metadata) {
         require_is_record_owner(name);
@@ -168,8 +169,20 @@ impl Registry for Contract {
         let manager_contract = abi(Manager, manager_id.into());
         manager_contract.set_resolver(name, resolver);
     }
-}
 
+    #[storage(write, read)]
+        fn set_primary_handle(name: String) {
+            require_is_record_owner(name);
+
+            let manager_id = get_manager_id();
+            let manager_contract = abi(Manager, manager_id.into());
+            let manager_info_contract = abi(ManagerInfo, manager_id.into());
+            let sender = msg_sender().unwrap();
+            let current_primary_handle = manager_info_contract.get_name(sender);
+            require(current_primary_handle != Some(name), RegistryContractError::AlreadyPrimaryHandle);
+            manager_contract.set_primary_handle(name);
+        }
+    }
 impl RegistryInfo for Contract {
     #[storage(read)]
     fn ttl(name: String) -> Option<u64> {
@@ -194,7 +207,7 @@ impl RegistryInfo for Contract {
         let manager_id = get_manager_id();
         let manager_contract = abi(ManagerInfo, manager_id.into());
         let register = manager_contract.get_record(name);
-        
+
         match register {
             None => None,
             Some(record) => Some(record.timestamp),
@@ -204,7 +217,7 @@ impl RegistryInfo for Contract {
 
 impl Constructor for Contract {
     #[storage(read, write)]
-    fn constructor(owner: Address, manager_id: ContractId, token_id: ContractId) {
+       fn constructor(owner: Address, manager_id: ContractId, token_id: ContractId) {
         initialize_ownership(Identity::Address(owner));
 
         require(manager_id != ContractId::zero(), RegistryContractError::ContractNotBeZero);
@@ -250,20 +263,20 @@ impl SRC5 for Contract {
         _owner()
     }
 }
- 
+
 impl Pausable for Contract {
     #[storage(write)]
     fn pause() {
         only_owner();
         _pause();
     }
- 
+
     #[storage(write)]
     fn unpause() {
         only_owner();
         _unpause();
     }
- 
+
     #[storage(read)]
     fn is_paused() -> bool {
         _is_paused()

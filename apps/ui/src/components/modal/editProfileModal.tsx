@@ -10,6 +10,7 @@ import {
   CloseButton,
   Flex,
   Icon,
+  Spinner,
   Tab,
   TabIndicator,
   TabList,
@@ -33,10 +34,13 @@ import {
 import { type MetadataItem, Metadatas } from '../../utils/metadatas';
 import { MetadataCard } from '../card/metadataCard';
 import { Dialog } from '../dialog';
-import { AvatarIcon } from '../icons';
+import { AvatarIcon, FlagIcon } from '../icons';
 import { EditProfileFieldsModal } from './editProfileFieldsModal';
 import { EditProfilePicModal } from './editProfilePicModal';
 import { TransactionsDetailsModal } from './transactionDetails';
+import { useGetPrimaryHandleName } from '../../hooks';
+import { useSidebar } from '../sidebar/hooks/useSidebar';
+import { useSetPrimaryHandle } from '../../hooks/useSetPrimaryHandle';
 
 interface Metadata {
   key: string;
@@ -117,35 +121,12 @@ const ModalTitle = ({
 }) => {
   const modalTitle = useDisclosure();
   const { domain } = useParams({ strict: false });
-  // const { data: handles, refetch: refetchHandles } = useMyHandles();
-  // const { successToast } = useCustomToast();
+  const { data: primaryHandleName } = useGetPrimaryHandleName();
 
-  // const _handle = handles?.find((handle) => handle.name === domain);
+  const { handleSetPrimaryHandle, isLoading } = useSetPrimaryHandle(domain);
+  const { isMyDomain: isOwner } = useSidebar();
 
-  // const setPrimaryHandleMutation = useMutation({
-  //   mutationKey: ['setPrimaryHandle'],
-  //   mutationFn: async () => {
-  //     // await setPrimaryHandle({
-  //     //   account: wallet,
-  //     //   domain: handle?.name ?? domain,
-  //     // })
-  //   },
-  //   onSuccess: () => {
-  //     successToast({
-  //       title: 'Primary Handle Set',
-  //       description:
-  //         'You have successfully set this handle as your primary handle',
-  //     });
-  //     refetchHandles();
-  //   },
-  //   onError: (error) => {
-  //     console.error(error.message);
-  //   },
-  // });
-
-  // const _handleSetPrimaryHandle = async () => {
-  //   await setPrimaryHandleMutation.mutate();
-  // };
+  const isPrimaryHandle = isOwner && primaryHandleName === domain;
 
   return (
     <Flex w="full" justify="space-between">
@@ -191,33 +172,19 @@ const ModalTitle = ({
             >
               {domain?.startsWith('@') ? domain : `@${domain}`}
             </Text>
-
-            {/*{handle?.isPrimary ? (*/}
-            {/*  <Button*/}
-            {/*    variant="ghosted"*/}
-            {/*    h={[8, 8, 8, 10]}*/}
-            {/*    _hover={{*/}
-            {/*      cursor: 'inherit',*/}
-            {/*    }}*/}
-            {/*    color="button.500"*/}
-            {/*    bg="warning.750"*/}
-            {/*    fontSize={['sm', 'sm', 'sm', 'md']}*/}
-            {/*    leftIcon={<FlagIconFilled w={5} h={5} color="button.500" />}*/}
-            {/*  >*/}
-            {/*    Your primary Handles*/}
-            {/*  </Button>*/}
-            {/*) : (*/}
-            {/*  <Button*/}
-            {/*    variant="ghosted"*/}
-            {/*    h={[8, 8, 8, 10]}*/}
-            {/*    color="grey.100"*/}
-            {/*    fontSize={['sm', 'sm', 'sm', 'md']}*/}
-            {/*    leftIcon={<FlagIcon />}*/}
-            {/*    onClick={handleSetPrimaryHandle}*/}
-            {/*  >*/}
-            {/*    Set as primary Handles*/}
-            {/*  </Button>*/}
-            {/*)}*/}
+            {!isPrimaryHandle && (
+              <Button
+                variant="ghosted"
+                h={[8, 8, 8, 10]}
+                color="grey.100"
+                fontSize={['sm', 'sm', 'sm', 'md']}
+                leftIcon={isLoading ? <Spinner h={4} w={4} /> : <FlagIcon />}
+                onClick={handleSetPrimaryHandle}
+                isDisabled={isLoading}
+              >
+                Set as primary Handle
+              </Button>
+            )}
           </Flex>
         </Flex>
       </Flex>
@@ -325,7 +292,7 @@ const MetadataTabPanel = ({
 
               const isEmpty = !userMetadata[metadata.key];
               const isUpdated = !!updates.find(
-                ({ key }) => key === metadata.key,
+                ({ key }) => key === metadata.key
               );
 
               return (

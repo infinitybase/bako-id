@@ -1,8 +1,9 @@
 import { Provider, Wallet } from 'fuels';
+import path from 'path';
 import dotenv from 'dotenv';
 
 dotenv.config({
-  path: '../.env',
+  path: path.resolve(__dirname, '../.env'),
 });
 
 export const logger = {

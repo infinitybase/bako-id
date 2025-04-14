@@ -123,6 +123,30 @@ impl Manager for Contract {
             new_owner: owner,
         });
     }
+
+    #[storage(read, write)]
+    fn set_primary_handle(name: String) {
+        only_owner_or_admin();
+        let name_hash = sha256(name);
+        let record_data = storage.records_data.get(name_hash).try_read();
+        require(record_data.is_some(), ManagerError::RecordNotFound);
+
+        let mut record = record_data.unwrap();
+        let old_resolver = record.resolver;
+        record.resolver = record.owner;
+    
+        storage.records_resolver.remove(old_resolver);
+        storage.records_resolver.insert(record.resolver, name_hash);
+        storage.records_data.insert(name_hash, record);
+
+        log(ResolverChangedEvent {
+            name,
+            name_hash,
+            old_resolver,
+            new_resolver: record.resolver,
+        });
+
+    }
 }
 
 impl ManagerInfo for Contract {

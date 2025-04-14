@@ -15,14 +15,17 @@ abi Registry {
 
     #[storage(write, read)]
     fn set_resolver(name: String, resolver: Identity);
+
+    #[storage(write, read)]
+    fn set_primary_handle(name: String);
 }
 
 abi RegistryInfo {
-  #[storage(read)]
-  fn ttl(name: String) -> Option<u64>;
+    #[storage(read)]
+    fn ttl(name: String) -> Option<u64>;
 
-  #[storage(read)]
-  fn timestamp(name: String) -> Option<u64>;
+    #[storage(read)]
+    fn timestamp(name: String) -> Option<u64>;
 }
 
 abi Ownership {
