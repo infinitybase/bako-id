@@ -12,11 +12,11 @@ import { Card, GoBack } from '../../../../components';
 import { useScreenSize } from '../../../../hooks/useScreenSize';
 
 export const LearnMore = () => {
-  const { isMobile } = useScreenSize();
+  const { isMobile, isLessThan820 } = useScreenSize();
   return (
     <>
       {!isMobile && <GoBack />}
-      <VStack h="90vh" pb={14}>
+      <VStack h="90vh" pb={isLessThan820 ? 24 : 14}>
         <Box
           w="full"
           h="full"
@@ -38,7 +38,6 @@ export const LearnMore = () => {
         >
           <Center
             w={['80%', '38rem']}
-            h={['90%', 'xl']}
             display="flex"
             flexDirection="column"
             justifyContent="space-between"
