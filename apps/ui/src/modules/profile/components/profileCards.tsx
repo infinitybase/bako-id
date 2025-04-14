@@ -128,7 +128,7 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
     queryFn: async (): Promise<Record<string, string>> => {
       let metadata: Record<string, string> = defaultMetadata ?? {};
       const metadataEntries = Object.entries(metadata).filter(
-        ([key]) => !key.toLowerCase().includes('uri'),
+        ([key]) => !key.toLowerCase().includes('uri')
       );
 
       if (metadataEntries.length === 0 && uri?.endsWith('.json')) {
@@ -163,7 +163,7 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
     if (metadata) {
       const imageKeys = ['image'];
       const imageKey = Object.keys(metadata).find((key) =>
-        imageKeys.includes(key.split(':').at(0)!),
+        imageKeys.includes(key.split(':').at(0)!)
       );
       const nftImageURI = parseURI(metadata[imageKey!]);
       imageUri = nftImageURI || imageUri;
@@ -353,12 +353,10 @@ export const NFTCollections = ({
         image?: string;
       })[];
 
-      //['nft-metadata', assetId]
-
       for (const nft of nfts) {
         let metadata: Record<string, string> = nft.metadata ?? {};
         const metadataEntries = Object.entries(metadata).filter(
-          ([key]) => !key.toLowerCase().includes('uri'),
+          ([key]) => !['uri', 'image'].includes(key.toLowerCase())
         );
 
         if (metadataEntries.length === 0 && nft.uri?.endsWith('.json')) {
@@ -385,7 +383,7 @@ export const NFTCollections = ({
         nft.metadata = metadata;
 
         const image = Object.entries(metadata).find(([key]) =>
-          key.includes('image'),
+          key.includes('image')
         )?.[1];
         nft.image = image ? parseURI(image) : undefined;
 
@@ -430,7 +428,7 @@ export const NFTCollections = ({
             assets: (FuelAsset & {
               image?: string;
             })[];
-          }[],
+          }[]
         )
         .sort((a, b) => {
           if (a.name === 'Other') return 1;
@@ -450,7 +448,7 @@ export const NFTCollections = ({
           }
           return a.name.localeCompare(b.name);
         }) ?? [],
-    [data],
+    [data]
   );
 
   if (isLoading) {
