@@ -18,5 +18,3 @@ export { Resolver } from './Resolver';
 export { ResolverFactory } from './ResolverFactory';
 export { Nft } from './Nft';
 export { NftFactory } from './NftFactory';
-export { Marketplace } from './Marketplace';
-export { MarketplaceFactory } from './MarketplaceFactory';

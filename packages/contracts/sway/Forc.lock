@@ -21,14 +21,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "marketplace"
-source = "member"
-dependencies = [
-    "std",
-    "sway_libs",
-]
-
-[[package]]
 name = "nft"
 source = "member"
 dependencies = [
