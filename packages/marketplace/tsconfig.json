@@ -4,9 +4,5 @@
     "outDir": "./dist",
     "types": ["jest", "@types/jest"]
   },
-  "include": [
-    "src",
-    "**/*.test.ts",
-    "../marketplace/tests/marketplace-contract-fees.test.ts"
-  ]
+  "include": ["src", "**/*.test.ts"]
 }

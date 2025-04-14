@@ -1,14 +1,14 @@
 import { TestAssetId } from 'fuels/test-utils';
 
 import { bn } from 'fuels';
-import type { Marketplace } from '../../contracts/src/artifacts/contracts/Marketplace';
+import type { Marketplace } from '../src/artifacts/contracts';
 import {
   adjustFee,
   callAndWait,
   createOrder,
   registerAsset,
   setup,
-} from '../../contracts/tests/utils';
+} from '../src/utils/marketplace';
 
 describe('Marketplace (Fee)', () => {
   let node: Awaited<ReturnType<typeof setup>>['node'];

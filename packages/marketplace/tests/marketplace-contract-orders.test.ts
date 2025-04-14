@@ -4,8 +4,8 @@ import { type Provider, bn } from 'fuels';
 import type {
   Marketplace,
   OrderCreatedEventOutput,
-} from '../../contracts/src/artifacts/contracts/Marketplace';
-import { callAndWait, createOrder, setup } from '../../contracts/tests/utils';
+} from '../src/artifacts/contracts/Marketplace';
+import { callAndWait, createOrder, setup } from '../src/utils/marketplace';
 
 describe('Marketplace (Orders)', () => {
   let node: Awaited<ReturnType<typeof setup>>['node'];
