@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "types": ["jest", "@types/jest"]
+  },
+  "include": [
+    "src",
+    "**/*.test.ts",
+    "../marketplace/tests/marketplace-contract-fees.test.ts"
+  ]
+}
