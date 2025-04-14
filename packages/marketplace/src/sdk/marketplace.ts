@@ -1,5 +1,5 @@
 import { type Account, type BN, Provider } from 'fuels';
-import type { GraphQLClient } from 'graphql-request';
+import { GraphQLClient } from 'graphql-request';
 import { Marketplace } from '../artifacts';
 import {
   type GQLAssetsQueryVariables,
@@ -218,13 +218,15 @@ export class MarketplaceContract {
  */
 export class MarketplaceClient {
   private readonly sdk: ReturnType<typeof getSdk>;
+  private readonly client: GraphQLClient;
 
   /**
    * @description Constructor
-   * @param {GraphQLClient} client - The client
+   * @param {string} url - The url of the GraphQL API
    */
-  constructor(private readonly client: GraphQLClient) {
-    this.sdk = getSdk(client);
+  constructor(url?: string) {
+    this.client = new GraphQLClient(url ?? process.env.GRAPHQL_API_URL!);
+    this.sdk = getSdk(this.client);
   }
 
   /**
