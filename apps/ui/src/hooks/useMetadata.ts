@@ -25,7 +25,7 @@ export type MetadataResponse =
 
 export const useMetadata = (handleOnSuccess?: () => void) => {
   const [updatedMetadata, setUpdatedMetadata] = useState<MetadataKeyValue[]>(
-    []
+    [],
   );
   const { domain } = useParams({ strict: false });
   const { provider } = useProvider();
@@ -47,9 +47,7 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
         if (provider) {
           registryContract = RegistryContract.create(provider);
         } else {
-          const provider = await Provider.create(
-            import.meta.env.VITE_PROVIDER_URL
-          );
+          const provider = new Provider(import.meta.env.VITE_PROVIDER_URL);
           registryContract = RegistryContract.create(provider);
         }
 
@@ -77,7 +75,7 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
         ...updatedMetadata.reduce(
           // biome-ignore lint/performance/noAccumulatingSpread: <explanation>
           (acc, { key, value }) => ({ ...acc, [key]: value }),
-          {}
+          {},
         ),
       };
 

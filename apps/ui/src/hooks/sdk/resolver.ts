@@ -12,7 +12,7 @@ export const useResolverContract = () => {
   const providerQuery = useQuery({
     queryKey: ['resolverProvider', provider?.url ?? VITE_PROVIDER_URL],
     queryFn: async () => {
-      return provider || Provider.create(VITE_PROVIDER_URL);
+      return provider || new Provider(VITE_PROVIDER_URL);
     },
     staleTime: Number.POSITIVE_INFINITY,
   });

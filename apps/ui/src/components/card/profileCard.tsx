@@ -12,7 +12,6 @@ import {
   useClipboard,
   useMediaQuery,
 } from '@chakra-ui/react';
-import { useProvider } from '@fuels/react';
 import { Card } from '.';
 import { ExplorerTypes } from '../../types';
 import { twitterLink } from '../../utils/formatter.ts';
@@ -23,6 +22,7 @@ import { CopyIcon } from '../icons/copyIcon.tsx';
 import { ShareIcon } from '../icons/shareicon.tsx';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
 import { UserAvatar } from '../user/userAvatar.tsx';
+import { useChainId } from '../../hooks/useChainId.ts';
 
 interface IProfileCard {
   domainName: string | null;
@@ -69,9 +69,8 @@ export const ProfileCard = ({
   const shortBio = metadata?.find((m) => m.key === MetadataKeys.CONTACT_BIO);
   const avatar = metadata?.find((m) => m.key === MetadataKeys.AVATAR);
 
-  const { provider } = useProvider();
-
-  const explorerUrl = getExplorer(provider?.getChainId());
+  const { chainId } = useChainId();
+  const explorerUrl = getExplorer(chainId);
 
   const {
     hasCopied,
