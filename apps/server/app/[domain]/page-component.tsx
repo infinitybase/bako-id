@@ -179,7 +179,7 @@ const NFTCard = (props: { asset: FuelAsset }) => {
     queryFn: async (): Promise<Record<string, string>> => {
       let metadata: Record<string, string> = defaultMetadata ?? {};
       const metadataEntries = Object.entries(metadata).filter(
-        ([key]) => !key.toLowerCase().includes('uri')
+        ([key]) => !['uri', 'image'].includes(key.toLowerCase())
       );
 
       if (metadataEntries.length === 0 && uri?.endsWith('.json')) {
@@ -503,8 +503,6 @@ export const NFTCollections = ({
         }) ?? [],
     [data]
   );
-
-  console.log({ nftCollections });
 
   if (isLoading) {
     return (
