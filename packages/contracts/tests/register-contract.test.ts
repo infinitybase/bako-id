@@ -45,7 +45,7 @@ describe('[METHODS] Registry Contract', () => {
     const nftCall = await nft.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } }
+        { ContractId: { bits: registry.id.toB256() } },
       )
       .call();
     await nftCall.waitForResult();
@@ -54,7 +54,7 @@ describe('[METHODS] Registry Contract', () => {
       .constructor(
         { bits: owner.address.toB256() },
         { bits: manager.id.toB256() },
-        { bits: nftAbi.id.toB256() }
+        { bits: nftAbi.id.toB256() },
       )
       .call();
     await registerCall.waitForResult();
@@ -62,7 +62,7 @@ describe('[METHODS] Registry Contract', () => {
     const managerCall = await manager.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } }
+        { ContractId: { bits: registry.id.toB256() } },
       )
       .call();
     await managerCall.waitForResult();
@@ -91,7 +91,7 @@ describe('[METHODS] Registry Contract', () => {
       const callFn = await registry.functions
         .register(domain, { Address: { bits: owner.address.toB256() } }, bn(1))
         .callParams({
-          forward: { assetId: provider.getBaseAssetId(), amount: price },
+          forward: { assetId: await provider.getBaseAssetId(), amount: price },
         })
         .addContracts([manager])
         .txParams(txParams)
@@ -112,7 +112,7 @@ describe('[METHODS] Registry Contract', () => {
         .constructor(
           { bits: owner.address.toB256() },
           { bits: manager.id.toB256() },
-          { bits: manager.id.toB256() }
+          { bits: manager.id.toB256() },
         )
         .call();
       const { transactionResult } = await waitForResult();
@@ -135,7 +135,7 @@ describe('[METHODS] Registry Contract', () => {
         .register(domain, { Address: { bits: owner.address.toB256() } }, bn(1))
         .addContracts([manager, nft])
         .callParams({
-          forward: { assetId: provider.getBaseAssetId(), amount: price },
+          forward: { assetId: await provider.getBaseAssetId(), amount: price },
         })
         .call();
 
@@ -143,7 +143,7 @@ describe('[METHODS] Registry Contract', () => {
         .register(domain, { Address: { bits: owner.address.toB256() } }, bn(1))
         .addContracts([manager, nft])
         .callParams({
-          forward: { assetId: provider.getBaseAssetId(), amount: price },
+          forward: { assetId: await provider.getBaseAssetId(), amount: price },
         })
         .call();
       const { transactionResult } = await waitForResult();
@@ -166,7 +166,7 @@ describe('[METHODS] Registry Contract', () => {
       .register(domain, { Address: { bits: owner.address.toB256() } }, bn(1))
       .addContracts([manager, nft])
       .callParams({
-        forward: { assetId: provider.getBaseAssetId(), amount: price },
+        forward: { assetId: await provider.getBaseAssetId(), amount: price },
       })
       .call();
 
@@ -179,7 +179,7 @@ describe('[METHODS] Registry Contract', () => {
     const [owner] = wallets;
     const domain = randomName(3);
 
-    const baseAssetId = provider.getBaseAssetId();
+    const baseAssetId = await provider.getBaseAssetId();
     const price = domainPrices(domain);
     const recipient = Wallet.generate({ provider });
 
@@ -198,7 +198,7 @@ describe('[METHODS] Registry Contract', () => {
       .transfer_funds(
         contractBalance,
         { bits: baseAssetId },
-        { bits: recipient.address.toB256() }
+        { bits: recipient.address.toB256() },
       )
       .call();
     await transferCall.waitForResult();
@@ -215,7 +215,7 @@ describe('[METHODS] Registry Contract', () => {
 
     const domain = randomName(3);
 
-    const baseAssetId = provider.getBaseAssetId();
+    const baseAssetId = await provider.getBaseAssetId();
     const price = domainPrices(domain);
     const recipient = Wallet.generate({ provider });
 
@@ -235,7 +235,7 @@ describe('[METHODS] Registry Contract', () => {
         .transfer_funds(
           contractBalance,
           { bits: baseAssetId },
-          { bits: recipient.address.toB256() }
+          { bits: recipient.address.toB256() },
         )
         .call();
       await transferCall.waitForResult();
@@ -244,7 +244,7 @@ describe('[METHODS] Registry Contract', () => {
 
   it('should transfer ownership correctly', async () => {
     const [owner, newOwner] = node.wallets;
-    const baseAssetId = node.provider.getBaseAssetId();
+    const baseAssetId = await node.provider.getBaseAssetId();
 
     const registryDeploy = await RegistryFactory.deploy(owner);
     const { contract: registry } = await registryDeploy.waitForResult();
@@ -252,7 +252,7 @@ describe('[METHODS] Registry Contract', () => {
     const contractFund = await owner.transferToContract(
       registry.id,
       bn(100),
-      baseAssetId
+      baseAssetId,
     );
     await contractFund.waitForResult();
 
@@ -260,7 +260,7 @@ describe('[METHODS] Registry Contract', () => {
       .constructor(
         { bits: owner.address.toB256() },
         { bits: manager.id.toB256() },
-        { bits: manager.id.toB256() }
+        { bits: manager.id.toB256() },
       )
       .call();
     const { transactionResult } = await constructCall.waitForResult();
@@ -271,7 +271,7 @@ describe('[METHODS] Registry Contract', () => {
       .call();
     const transferOwnershipResult = await transferOwnerShipCall.waitForResult();
     expect(transferOwnershipResult.transactionResult.status).toBe(
-      TransactionStatus.success
+      TransactionStatus.success,
     );
 
     await expect(async () => {
@@ -279,7 +279,7 @@ describe('[METHODS] Registry Contract', () => {
         .transfer_funds(
           bn(100),
           { bits: baseAssetId },
-          { bits: newOwner.address.toB256() }
+          { bits: newOwner.address.toB256() },
         )
         .call();
       await waitForResult();
@@ -307,7 +307,7 @@ describe('[METHODS] Registry Contract', () => {
     const nftCall = await nft.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } }
+        { ContractId: { bits: registry.id.toB256() } },
       )
       .call();
     await nftCall.waitForResult();
@@ -316,7 +316,7 @@ describe('[METHODS] Registry Contract', () => {
       .constructor(
         { bits: owner.address.toB256() },
         { bits: manager.id.toB256() },
-        { bits: nft.id.toB256() }
+        { bits: nft.id.toB256() },
       )
       .call();
     await registerCall.waitForResult();
@@ -324,7 +324,7 @@ describe('[METHODS] Registry Contract', () => {
     const managerCall = await manager.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } }
+        { ContractId: { bits: registry.id.toB256() } },
       )
       .call();
     await managerCall.waitForResult();
@@ -343,12 +343,12 @@ describe('[METHODS] Registry Contract', () => {
         .register(
           '@domainn',
           { Address: { bits: owner.address.toB256() } },
-          bn(1)
+          bn(1),
         )
         .addContracts([manager, nft])
         .callParams({
           forward: {
-            assetId: node.provider.getBaseAssetId(),
+            assetId: await node.provider.getBaseAssetId(),
             amount: domainPrices('@domainn'),
           },
         })
@@ -369,7 +369,10 @@ describe('[METHODS] Registry Contract', () => {
       .register(domain, { Address: { bits: owner.address.toB256() } }, bn(1))
       .addContracts([manager, nft])
       .callParams({
-        forward: { assetId: node.provider.getBaseAssetId(), amount: price },
+        forward: {
+          assetId: await node.provider.getBaseAssetId(),
+          amount: price,
+        },
       })
       .call();
     await registerCallFn.waitForResult();
@@ -419,7 +422,10 @@ describe('[METHODS] Registry Contract', () => {
       .register(domain, { Address: { bits: owner.address.toB256() } }, bn(1))
       .addContracts([manager, nft])
       .callParams({
-        forward: { assetId: node.provider.getBaseAssetId(), amount: price },
+        forward: {
+          assetId: await node.provider.getBaseAssetId(),
+          amount: price,
+        },
       })
       .call();
     await registerCallFn.waitForResult();
@@ -532,12 +538,15 @@ describe('[METHODS] Registry Contract', () => {
       const [owner] = wallets;
       const price = domainPrices(handle);
 
-      const register = (name: string) =>
+      const register = async (name: string) =>
         registry.functions
           .register(name, { Address: { bits: owner.address.toB256() } }, bn(1))
           .addContracts([manager])
           .callParams({
-            forward: { assetId: provider.getBaseAssetId(), amount: price },
+            forward: {
+              assetId: await provider.getBaseAssetId(),
+              amount: price,
+            },
           })
           .call();
 
@@ -553,6 +562,6 @@ describe('[METHODS] Registry Contract', () => {
       } catch (error) {
         expectErrors(error);
       }
-    }
+    },
   );
 });
