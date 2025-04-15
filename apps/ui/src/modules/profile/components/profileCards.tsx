@@ -17,7 +17,6 @@ import {
   VStack,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useProvider } from '@fuels/react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { isB256 } from 'fuels';
 import { type ReactNode, Suspense, useMemo } from 'react';
@@ -32,6 +31,7 @@ import { BTCIcon } from '../../../components/icons/btcicon.tsx';
 import { ContractIcon } from '../../../components/icons/contracticon.tsx';
 import { EditMetadataModal } from '../../../components/modal/editProfileModal.tsx';
 import { useMetadata } from '../../../hooks/useMetadata.ts';
+import { useChainId } from '../../../hooks/useChainId';
 import {
   type FuelAsset,
   FuelAssetService,
@@ -128,7 +128,7 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
     queryFn: async (): Promise<Record<string, string>> => {
       let metadata: Record<string, string> = defaultMetadata ?? {};
       const metadataEntries = Object.entries(metadata).filter(
-        ([key]) => !key.toLowerCase().includes('uri')
+        ([key]) => !key.toLowerCase().includes('uri'),
       );
 
       if (metadataEntries.length === 0 && uri?.endsWith('.json')) {
@@ -163,7 +163,7 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
     if (metadata) {
       const imageKeys = ['image'];
       const imageKey = Object.keys(metadata).find((key) =>
-        imageKeys.includes(key.split(':').at(0)!)
+        imageKeys.includes(key.split(':').at(0)!),
       );
       const nftImageURI = parseURI(metadata[imageKey!]);
       imageUri = nftImageURI || imageUri;
@@ -338,7 +338,7 @@ export const NFTCollections = ({
   chainId = 9889,
 }: {
   resolver: string;
-  chainId?: number;
+  chainId?: number | null;
 }) => {
   const queryClient = useQueryClient();
   const { data, isLoading } = useQuery({
@@ -358,7 +358,7 @@ export const NFTCollections = ({
       for (const nft of nfts) {
         let metadata: Record<string, string> = nft.metadata ?? {};
         const metadataEntries = Object.entries(metadata).filter(
-          ([key]) => !key.toLowerCase().includes('uri')
+          ([key]) => !key.toLowerCase().includes('uri'),
         );
 
         if (metadataEntries.length === 0 && nft.uri?.endsWith('.json')) {
@@ -385,7 +385,7 @@ export const NFTCollections = ({
         nft.metadata = metadata;
 
         const image = Object.entries(metadata).find(([key]) =>
-          key.includes('image')
+          key.includes('image'),
         )?.[1];
         nft.image = image ? parseURI(image) : undefined;
 
@@ -430,7 +430,7 @@ export const NFTCollections = ({
             assets: (FuelAsset & {
               image?: string;
             })[];
-          }[]
+          }[],
         )
         .sort((a, b) => {
           if (a.name === 'Other') return 1;
@@ -450,7 +450,7 @@ export const NFTCollections = ({
           }
           return a.name.localeCompare(b.name);
         }) ?? [],
-    [data]
+    [data],
   );
 
   if (isLoading) {
@@ -540,9 +540,8 @@ export const ProfileCards = ({
     metadataModal.onClose();
     setUpdatedMetadata([]);
   };
-
-  const { provider } = useProvider();
-  const explorerUrl = getExplorer(provider?.getChainId());
+  const { chainId } = useChainId();
+  const explorerUrl = getExplorer(chainId);
 
   return loading || !owner ? (
     <ProfileCardLoadingSkeleton />
@@ -592,7 +591,7 @@ export const ProfileCards = ({
         </Flex>
         <AccountsCard metadata={metadata} addAction={metadataModal.onOpen} />
       </Stack>
-      <NFTCollections resolver={domain!} chainId={provider?.getChainId()} />
+      <NFTCollections resolver={domain!} chainId={chainId} />
     </Suspense>
   );
 };

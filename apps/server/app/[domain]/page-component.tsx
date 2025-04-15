@@ -15,6 +15,7 @@ import { ProfileCardSkeleton } from '@/components/skeletons';
 import { AccountsCardSkeleton } from '@/components/skeletons/accountsCardSkeleton';
 import { AddressCardSkeleton } from '@/components/skeletons/addressCardSkeleton';
 import { OwnershipCardSkeleton } from '@/components/skeletons/ownershipCardSkeleton';
+import { getExplorer } from '@/getExplorer';
 import { queryClient } from '@/providers';
 import { type FuelAsset, FuelAssetService } from '@/services/fuel-assets';
 import { formatAddress, parseURI } from '@/utils';
@@ -578,14 +579,14 @@ const getMetadataRedirects = (
   return metaDatas[key] || null;
 };
 
-export function ProfilePage() {
+export function ProfilePage({ chainId }: { chainId: number | null }) {
   const params = useParams();
   const domain = (params.domain as string).replace('@', '');
 
   const [shouwAccounts, setShouwAccounts] = useState(false);
 
-  const { metadata, owner, isLoading, explorerUrl, dates, resolver, provider } =
-    useProfile(domain);
+  const { metadata, owner, isLoading, dates, resolver } = useProfile(domain);
+  const explorerUrl = getExplorer(chainId);
 
   const avoidKeys = [MetadataKeys.CONTACT_BIO, MetadataKeys.CONTACT_NICKNAME];
 
@@ -842,10 +843,7 @@ export function ProfilePage() {
         </Box>
       </Stack>
       <Box maxW={1019} w="full">
-        <NFTCollections
-          chainId={provider?.getChainId()}
-          resolver={resolver ?? ''}
-        />
+        <NFTCollections chainId={chainId!} resolver={resolver ?? ''} />
       </Box>
     </Center>
   );
