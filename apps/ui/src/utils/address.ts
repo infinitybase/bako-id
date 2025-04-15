@@ -1,4 +1,4 @@
-import { isB256, isBech32 } from 'fuels';
+import { isB256 } from 'fuels';
 
 export const CHECKSUM_MESSAGE =
   "We couldn't verify the address. Please ensure that the resolver is set to a valid address.";
@@ -7,7 +7,7 @@ export const CHECKSUM_MESSAGE =
 class AddressUtils {
   static isValid(address: string) {
     try {
-      return isBech32(address) || isB256(address);
+      return isB256(address);
     } catch (_e) {
       return false;
     }
