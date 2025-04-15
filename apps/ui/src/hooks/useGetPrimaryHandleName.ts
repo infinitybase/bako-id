@@ -11,11 +11,9 @@ const useGetPrimaryHandleName = () => {
   return useQuery({
     queryKey: ['getPrimaryHandle', wallet?.address.toB256() ?? ZeroBytes32],
     queryFn: async () => {
+      const chainId = await wallet!.provider.getChainId();
       const bakoIDClient = new BakoIDClient(import.meta.env.VITE_API_URL);
-      return bakoIDClient.name(
-        wallet!.address.toB256(),
-        wallet!.provider.getChainId()
-      );
+      return bakoIDClient.name(wallet!.address.toB256(), chainId);
     },
     enabled: !!wallet,
   });

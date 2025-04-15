@@ -187,7 +187,7 @@ export class RegistryContract {
     return transactionResult;
   }
 
-  async changePrimaryHandle(newDomain: string) {
+  async changePrimaryHandle(newDomain: string): Promise<TransactionResult> {
     if (!this.account) {
       throw new Error('Account is required to change the resolver');
     }

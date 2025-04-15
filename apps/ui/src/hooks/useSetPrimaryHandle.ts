@@ -18,7 +18,7 @@ const useSetPrimaryHandle = (domain: string) => {
     },
     onSuccess: () => {
       successToast({
-        title: 'Your primary handle has been set successfully',
+        title: 'Successfully set primary handle',
       });
       setIsSigning(false);
     },
