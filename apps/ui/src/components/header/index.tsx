@@ -7,20 +7,63 @@ import {
   Image,
   useMediaQuery,
 } from '@chakra-ui/react';
-import { useAccount, useWallet } from '@fuels/react';
+import {
+  useAccount,
+  useConnectUI,
+  useDisconnect,
+  useIsConnected,
+  useWallet,
+} from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
-import { formatAddress } from '../../utils/formatter';
 import { Connect } from '../helpers';
 import { QuestionIcon } from '../icons/question';
-import { Info } from '../user';
 import { FileIcon } from '../icons';
+import { useEffect, useMemo, useState } from 'react';
+import { useGetPrimaryHandleName } from '../../hooks';
+import { formatAddress } from '../../utils/formatter';
 
 export const Header = () => {
+  const [initialLoadState, setInitialLoadState] = useState(true);
+
   const [isMobile] = useMediaQuery('(max-width: 48em)');
   const navigate = useNavigate();
 
-  const { account: accountAddress } = useAccount();
-  const { wallet } = useWallet({ account: accountAddress });
+  const { isConnecting, connectors, isConnected } = useConnectUI();
+  const { account } = useAccount();
+
+  const { isPending: disconnectLoading } = useDisconnect();
+
+  const { isFetching } = useIsConnected();
+
+  const { wallet } = useWallet({
+    account,
+  });
+
+  const isAdapterLoading = useMemo(() => {
+    return isFetching && connectors.length === 0 && !account;
+  }, [isFetching, connectors, account]);
+
+  const isWalletLoading = useMemo(() => {
+    return isConnecting || disconnectLoading || isAdapterLoading;
+  }, [isConnecting, disconnectLoading, isAdapterLoading]);
+
+  const { data: primaryHandle, isLoading: isPrimaryHandleLoading } =
+    useGetPrimaryHandleName();
+
+  useEffect(() => {
+    if (!isWalletLoading && wallet && !isPrimaryHandleLoading) {
+      setInitialLoadState(false);
+    }
+
+    // This is necessary to turn the state to false when users refresh the page in the home and aren't connected,
+    // due the wallet request only happens when user is actually connected.
+    // We can't depends on the isPrimaryHandleLoading state either, because it also needs the wallet to complete the request.
+    if (!isConnected && !isWalletLoading) {
+      setInitialLoadState(false);
+    }
+  }, [isWalletLoading, wallet, isPrimaryHandleLoading, isConnected]);
+
+  const domain = primaryHandle ?? formatAddress(wallet?.address.toB256() ?? '');
 
   const goHome = () => {
     navigate({ to: '/' }).then();
@@ -49,7 +92,7 @@ export const Header = () => {
 
       <Flex w="fit-content" align="center" justify="flex-end" gap={2}>
         <Flex w="full" gap={2}>
-          {!isMobile && wallet !== null && (
+          {!isMobile && wallet !== null && !initialLoadState && (
             <Button
               w="fit-content"
               bgColor="transparent"
@@ -66,16 +109,7 @@ export const Header = () => {
               My Handles
             </Button>
           )}
-          {wallet ? (
-            <Info
-              name={formatAddress(wallet.address.toB256())!}
-              account={wallet.address}
-            />
-          ) : (
-            <Box>
-              <Connect />
-            </Box>
-          )}
+          <Connect isLoading={initialLoadState} domain={domain!} />
         </Flex>
         {!isMobile && (
           <Box w="fit-content">
