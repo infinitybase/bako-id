@@ -21,7 +21,7 @@ export const validateNetwork = (network: string) => {
 
   if (networkChainId === undefined) {
     throw new Error(
-      `Invalid network ${network}, expected one of ${Object.keys(networks).join(', ')}`,
+      `Invalid network ${network}, expected one of ${Object.keys(networks).join(', ')}`
     );
   }
 
@@ -73,10 +73,6 @@ export enum Networks {
 export type NetworkName = 'MAINNET' | 'TESTNET';
 
 export const resolveNetwork = {
-  [Networks.TESTNET]: Provider.create(
-    'https://testnet.fuel.network/v1/graphql',
-  ),
-  [Networks.MAINNET]: Provider.create(
-    'https://mainnet.fuel.network/v1/graphql',
-  ),
+  [Networks.TESTNET]: new Provider('https://testnet.fuel.network/v1/graphql'),
+  [Networks.MAINNET]: new Provider('https://mainnet.fuel.network/v1/graphql'),
 };

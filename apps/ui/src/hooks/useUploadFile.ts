@@ -79,6 +79,7 @@ const useUpdateFile = (domain: string, onClose: () => void) => {
     mutationKey: ['saveFile', domain],
     mutationFn: async ({ file, transactionId }) => {
       const formData = new FormData();
+      const chainId = await provider?.getChainId();
 
       const data = {
         file,
@@ -94,7 +95,7 @@ const useUpdateFile = (domain: string, onClose: () => void) => {
       }
 
       const response = await fetch(
-        `${VITE_API_URL}/${resolveNetwork(provider?.getChainId() ?? Networks.TESTNET)}/upload?handle=${domain}`,
+        `${VITE_API_URL}/${resolveNetwork(chainId ?? Networks.TESTNET)}/upload?handle=${domain}`,
         {
           method: 'POST',
           body: formData,
@@ -127,6 +128,7 @@ const useUpdateFile = (domain: string, onClose: () => void) => {
   const { mutate: registry } = useMutation({
     mutationKey: ['uploadFileTransaction', domain],
     mutationFn: async (file: File) => {
+      const chainId = await provider?.getChainId();
       const managerId = getContractId(provider!.url, 'manager');
       const registryId = getContractId(provider!.url, 'registry');
       const nftId = getContractId(provider?.url ?? '', 'nft');
@@ -148,9 +150,7 @@ const useUpdateFile = (domain: string, onClose: () => void) => {
 
       setUploadedFileHash(fileHash);
 
-      const network = resolveNetwork(
-        provider?.getChainId() ?? Networks.TESTNET
-      );
+      const network = resolveNetwork(chainId ?? Networks.TESTNET);
 
       const baseUrl = `${VITE_API_URL}/${network}/avatar/`;
 

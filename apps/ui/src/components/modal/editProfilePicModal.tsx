@@ -220,16 +220,15 @@ export const EditProfilePicModal = ({
   } = useUpdateFile(domain ?? '', onClose);
 
   const { wallet } = useWallet();
-  const chainId = provider?.getChainId();
 
   const isValidAssetId =
     inputValue.length === B256HashLength && isB256(inputValue);
-  const enableNFTRequest =
-    !!wallet && (chainId !== undefined || chainId !== null) && isValidAssetId;
+  const enableNFTRequest = !!wallet && isValidAssetId;
 
   const { data: nftImage, isLoading: isNftImageLoading } = useQuery({
-    queryKey: ['nft-image', chainId, inputValue],
+    queryKey: ['nft-image', inputValue],
     queryFn: async () => {
+      const chainId = await provider?.getChainId();
       try {
         const nft = await FuelAssetService.byAssetId({
           assetId: inputValue,
