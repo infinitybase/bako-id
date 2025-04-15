@@ -21,11 +21,19 @@ export interface DialogModalProps extends ModalProps {
   modalSubtitle?: string;
   titleFontSize?: string;
   subtitleFontSize?: string;
+  gapBetweenBodyAndHeader?: string;
 }
 
 const DialogModal = (props: DialogModalProps) => {
-  const { children, modalTitle, modalSubtitle, onClose, hideHeader, ...rest } =
-    props;
+  const {
+    children,
+    modalTitle,
+    modalSubtitle,
+    onClose,
+    hideHeader,
+    gapBetweenBodyAndHeader,
+    ...rest
+  } = props;
 
   const hideCloseButton = props?.hideCloseButton ?? false;
 
@@ -40,7 +48,12 @@ const DialogModal = (props: DialogModalProps) => {
     >
       <ModalOverlay />
       <ModalContent rounded="xl" p={6}>
-        <VStack spacing={2} w="full" align="flex-start" mb={8}>
+        <VStack
+          spacing={2}
+          w="full"
+          align="flex-start"
+          mb={gapBetweenBodyAndHeader ?? 8}
+        >
           <Flex w="full" align="center" justifyContent="space-between">
             {!hideHeader && (
               <ModalHeader

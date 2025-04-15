@@ -1,4 +1,5 @@
 import type { Identity } from '@/types';
+import { Provider } from 'fuels';
 
 export const validateNetwork = (network: string) => {
   const networks: Record<string, { url: string; chainId: number }> = {
@@ -63,4 +64,15 @@ export const parseURI = (uri: string) => {
   if (isIPFS(uri)) return `${IPFStoHTTP(uri)}?t=${now}`;
 
   return uri;
+};
+
+export enum Networks {
+  MAINNET = 'MAINNET',
+  TESTNET = 'TESTNET',
+}
+export type NetworkName = 'MAINNET' | 'TESTNET';
+
+export const resolveNetwork = {
+  [Networks.TESTNET]: new Provider('https://testnet.fuel.network/v1/graphql'),
+  [Networks.MAINNET]: new Provider('https://mainnet.fuel.network/v1/graphql'),
 };
