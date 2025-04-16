@@ -9,7 +9,7 @@ export const useGetProviderRequest = () => {
     queryKey: ['uniqueProvider', provider],
     queryFn: async () => {
       if (provider) return provider;
-      return Provider.create(import.meta.env.VITE_PROVIDER_URL);
+      return new Provider(import.meta.env.VITE_PROVIDER_URL);
     },
   });
 
