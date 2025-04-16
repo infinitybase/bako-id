@@ -13,7 +13,7 @@
     }
   },
   "scripts": {
-    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand --silent",
+    "test": "vitest",
     "build": "tsup",
     "build:sway": "pnpm fuels build",
     "contracts:start": "ts-node scripts/construct-contracts.ts",
@@ -27,13 +27,11 @@
     "graphql-tag": "^2.12.6"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.11",
-    "jest": "^29.6.4",
-    "ts-jest": "^29.1.1",
-    "@shared/tsup": "workspace:*",
     "@graphql-codegen/cli": "^5.0.3",
     "@graphql-codegen/typescript": "^4.1.2",
     "@graphql-codegen/typescript-graphql-request": "^6.2.0",
-    "@graphql-codegen/typescript-operations": "^4.4.0"
+    "@graphql-codegen/typescript-operations": "^4.4.0",
+    "@shared/tsup": "workspace:*",
+    "vitest": "^3.1.1"
   }
 }

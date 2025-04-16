@@ -31,11 +31,11 @@
       "metadataTypeId": 4
     },
     {
-      "type": "enum std::option::Option<struct Order>",
-      "concreteTypeId": "146cb9fe9ce85be257517f6fe476e8032a64aae116ab741848892715af9abccd",
+      "type": "enum std::option::Option<struct events::Order>",
+      "concreteTypeId": "395d142e041abd0df6b3980a7e635e939083f5745370d78b72316697b0a016e2",
       "metadataTypeId": 5,
       "typeArguments": [
-        "f076fbf8966667055510f6e3fbee8c85f623618b555e022ace0fd458ed38862d"
+        "c55cab7602d3f15cab0c13a68816b8dbb16c2921df2b8a3aa62c26bbb1424fd8"
       ]
     },
     {
@@ -49,38 +49,38 @@
       "metadataTypeId": 7
     },
     {
-      "type": "struct AssetAddedEvent",
-      "concreteTypeId": "32d559a5806a9e7a4b37062cec4d2206522ec365381ca2c17841304d49640e35",
+      "type": "struct events::AssetAddedEvent",
+      "concreteTypeId": "91f28e6b71df131de051f19a1f8cb58ece2165f4a5f9108fbb85471538446fa9",
       "metadataTypeId": 9
     },
     {
-      "type": "struct AssetFeeAdjustedEvent",
-      "concreteTypeId": "3bb28e42abcf6155108e23965713338f3d9fff4eba71c4d3ac5b7d8a48402f8d",
+      "type": "struct events::AssetFeeAdjustedEvent",
+      "concreteTypeId": "8ec71dbeaa645b2b14b88caffc532ebdbbb161e6c75c27bb98b4409a6cb4755a",
       "metadataTypeId": 10
     },
     {
-      "type": "struct Order",
-      "concreteTypeId": "f076fbf8966667055510f6e3fbee8c85f623618b555e022ace0fd458ed38862d",
+      "type": "struct events::Order",
+      "concreteTypeId": "c55cab7602d3f15cab0c13a68816b8dbb16c2921df2b8a3aa62c26bbb1424fd8",
       "metadataTypeId": 11
     },
     {
-      "type": "struct OrderCancelledEvent",
-      "concreteTypeId": "d2f609acb8472e52f04b1caabb800d2f7c724d8992969fbd2c94d7eead183242",
+      "type": "struct events::OrderCancelledEvent",
+      "concreteTypeId": "2992862e9a561d761b74985c9333d79e22836314eed6bc983c25dcf096c755c8",
       "metadataTypeId": 12
     },
     {
-      "type": "struct OrderCreatedEvent",
-      "concreteTypeId": "d687af4f2202fb204844b4ce0c858e43ae75b03a9ac7c1b052e8a570ab1f69ce",
+      "type": "struct events::OrderCreatedEvent",
+      "concreteTypeId": "7b55a88023a1041ba857dbda5e33dc9793daf8f5e3fa5bffcdb82aa634ceff43",
       "metadataTypeId": 13
     },
     {
-      "type": "struct OrderEditedEvent",
-      "concreteTypeId": "8fec17ba747a34bcae866b01360d4133c11ad9432f5cbb761f1fc4beb24b1a36",
+      "type": "struct events::OrderEditedEvent",
+      "concreteTypeId": "4daae82842de101195b6ec681faea04e30e9dad318f1c643d114671a812e5ad3",
       "metadataTypeId": 14
     },
     {
-      "type": "struct OrderExecutedEvent",
-      "concreteTypeId": "28d8f7538db6c6aae966d1f387d1da697d697715c32abdc7ca13211670495d30",
+      "type": "struct events::OrderExecutedEvent",
+      "concreteTypeId": "1ba4a8db83f7ac89d556b54bc6c30eafef4a476bb9660db5e0857a105906547b",
       "metadataTypeId": 15
     },
     {
@@ -250,7 +250,7 @@
       "metadataTypeId": 8
     },
     {
-      "type": "struct AssetAddedEvent",
+      "type": "struct events::AssetAddedEvent",
       "metadataTypeId": 9,
       "components": [
         {
@@ -264,7 +264,7 @@
       ]
     },
     {
-      "type": "struct AssetFeeAdjustedEvent",
+      "type": "struct events::AssetFeeAdjustedEvent",
       "metadataTypeId": 10,
       "components": [
         {
@@ -278,7 +278,7 @@
       ]
     },
     {
-      "type": "struct Order",
+      "type": "struct events::Order",
       "metadataTypeId": 11,
       "components": [
         {
@@ -304,7 +304,7 @@
       ]
     },
     {
-      "type": "struct OrderCancelledEvent",
+      "type": "struct events::OrderCancelledEvent",
       "metadataTypeId": 12,
       "components": [
         {
@@ -314,7 +314,7 @@
       ]
     },
     {
-      "type": "struct OrderCreatedEvent",
+      "type": "struct events::OrderCreatedEvent",
       "metadataTypeId": 13,
       "components": [
         {
@@ -328,7 +328,7 @@
       ]
     },
     {
-      "type": "struct OrderEditedEvent",
+      "type": "struct events::OrderEditedEvent",
       "metadataTypeId": 14,
       "components": [
         {
@@ -346,7 +346,7 @@
       ]
     },
     {
-      "type": "struct OrderExecutedEvent",
+      "type": "struct events::OrderExecutedEvent",
       "metadataTypeId": 15,
       "components": [
         {
@@ -528,10 +528,6 @@
         {
           "name": "storage",
           "arguments": ["read", "write"]
-        },
-        {
-          "name": "payable",
-          "arguments": []
         }
       ]
     },
@@ -563,7 +559,7 @@
         }
       ],
       "name": "get_order",
-      "output": "146cb9fe9ce85be257517f6fe476e8032a64aae116ab741848892715af9abccd",
+      "output": "395d142e041abd0df6b3980a7e635e939083f5745370d78b72316697b0a016e2",
       "attributes": [
         {
           "name": "storage",
@@ -643,36 +639,36 @@
       "concreteTypeId": "3f702ea3351c9c1ece2b84048006c8034a24cbc2bad2e740d0412b4172951d3d"
     },
     {
-      "logId": "3662932439294713466",
-      "concreteTypeId": "32d559a5806a9e7a4b37062cec4d2206522ec365381ca2c17841304d49640e35"
+      "logId": "10516624671986619165",
+      "concreteTypeId": "91f28e6b71df131de051f19a1f8cb58ece2165f4a5f9108fbb85471538446fa9"
     },
     {
-      "logId": "4301657011093725525",
-      "concreteTypeId": "3bb28e42abcf6155108e23965713338f3d9fff4eba71c4d3ac5b7d8a48402f8d"
+      "logId": "10288224578490882859",
+      "concreteTypeId": "8ec71dbeaa645b2b14b88caffc532ebdbbb161e6c75c27bb98b4409a6cb4755a"
     },
     {
       "logId": "9380741853358249135",
       "concreteTypeId": "822f1703ab0ed4af1dc35ef9e0ca4958c06eef96d7e0dd9fa8b1a48316ac39cb"
     },
     {
-      "logId": "15201348229666385490",
-      "concreteTypeId": "d2f609acb8472e52f04b1caabb800d2f7c724d8992969fbd2c94d7eead183242"
+      "logId": "2995604236870753654",
+      "concreteTypeId": "2992862e9a561d761b74985c9333d79e22836314eed6bc983c25dcf096c755c8"
     },
     {
       "logId": "10032608944051208538",
       "concreteTypeId": "8b3afcadf894415a10b09fc3717487e33802c8ffbb030edafe84ca4a71b280bc"
     },
     {
-      "logId": "15458517000380414752",
-      "concreteTypeId": "d687af4f2202fb204844b4ce0c858e43ae75b03a9ac7c1b052e8a570ab1f69ce"
+      "logId": "8887194707992577051",
+      "concreteTypeId": "7b55a88023a1041ba857dbda5e33dc9793daf8f5e3fa5bffcdb82aa634ceff43"
     },
     {
-      "logId": "10370690131512931516",
-      "concreteTypeId": "8fec17ba747a34bcae866b01360d4133c11ad9432f5cbb761f1fc4beb24b1a36"
+      "logId": "5596540746579447825",
+      "concreteTypeId": "4daae82842de101195b6ec681faea04e30e9dad318f1c643d114671a812e5ad3"
     },
     {
-      "logId": "2943374294718531242",
-      "concreteTypeId": "28d8f7538db6c6aae966d1f387d1da697d697715c32abdc7ca13211670495d30"
+      "logId": "1991902595969952905",
+      "concreteTypeId": "1ba4a8db83f7ac89d556b54bc6c30eafef4a476bb9660db5e0857a105906547b"
     },
     {
       "logId": "2161305517876418151",

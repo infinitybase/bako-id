@@ -16,17 +16,17 @@ contracts:
     handler: src/marketplace/EventHandlers.ts
     events:
       - name: AssetFeeAdjustedEvent
-        logId: '4301657011093725525'
+        logId: '10288224578490882859'
       - name: AssetAddedEvent
-        logId: '3662932439294713466'
+        logId: '10516624671986619165'
       - name: OrderCreatedEvent
-        logId: '15458517000380414752'
+        logId: '8887194707992577051'
       - name: OrderExecutedEvent
-        logId: '2943374294718531242'
+        logId: '1991902595969952905'
       - name: OrderCancelledEvent
-        logId: '15201348229666385490'
+        logId: '2995604236870753654'
       - name: OrderEditedEvent
-        logId: '10370690131512931516'
+        logId: '5596540746579447825'
 networks:
   - id: 0
     start_block: 0
@@ -34,7 +34,7 @@ networks:
       - name: manager
         address: 0x39140d7233297276196c49bf13c78ce056083ca8bf61af2698ee3fdeb8af1a8b
       - name: marketplace
-        address: 0x6575b7666cd5aef892357e4cf927c1998322c13c4232638519970a8b68b20c6e
+        address: 0x3f1ec560123a1bbd929c03e4fde1cd54d4c3071a1efd00b427e4ad4b9ac730bb
   - id: 9889
     start_block: 0
     contracts:

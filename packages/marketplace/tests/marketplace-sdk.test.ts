@@ -5,6 +5,7 @@ import {
   bn,
 } from 'fuels';
 import { TestAssetId, launchTestNode } from 'fuels/test-utils';
+import { beforeAll, describe, expect, it } from 'vitest';
 import type { Marketplace } from '../src/artifacts';
 import { MarketplaceFactory } from '../src/artifacts';
 import { MarketplaceContract } from '../src/sdk';

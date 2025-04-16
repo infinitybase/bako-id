@@ -1,6 +1,6 @@
-import { TestAssetId } from 'fuels/test-utils';
-
 import { bn } from 'fuels';
+import { TestAssetId } from 'fuels/test-utils';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Marketplace } from '../src/artifacts/contracts';
 import {
   adjustFee,

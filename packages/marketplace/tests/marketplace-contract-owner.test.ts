@@ -1,6 +1,7 @@
 import { TestAssetId } from 'fuels/test-utils';
 
 import { type Account, type WalletUnlocked, bn } from 'fuels';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Marketplace } from '../src/artifacts/contracts';
 import {
   adjustFee,
