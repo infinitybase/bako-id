@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { ensCheckRegister } from '../modules/ens/services';
+import { getEnsMetadata } from '../modules/ens/services';
 
 const useGetENSData = (ensName: string) => {
   const { data, ...rest } = useQuery({
     queryKey: ['get-ens', ensName],
     queryFn: async () => {
       try {
-        const result = await ensCheckRegister(ensName);
+        const result = await getEnsMetadata(ensName);
         if (!result) {
           // Need to throw this error to activate the "retry" method.
           throw new Error('Expected null value. Activating Retry method');
