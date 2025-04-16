@@ -1,0 +1,26 @@
+query assets($count: Int, $offset: Int, $where: Asset_bool_exp) {
+  Asset(limit: $count, offset: $offset, where: $where) {
+    ...Asset
+  }
+}
+
+fragment Asset on Asset {
+  id
+  fee
+}
+
+query orders($count: Int, $offset: Int, $where: Order_bool_exp) {
+  Order(limit: $count, offset: $offset, where: $where) {
+    ...Order
+  }
+}
+
+fragment Order on Order {
+  id
+  asset
+  amount
+  seller
+  itemPrice
+  itemAsset
+  status
+}
