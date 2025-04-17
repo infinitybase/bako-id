@@ -7,9 +7,9 @@ import {
   type FlexProps,
   Grid,
   GridItem,
-  HStack,
   Heading,
   Icon,
+  Image,
   Skeleton,
   Stack,
   Text,
@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { isB256 } from 'fuels';
-import { type ReactNode, Suspense, useMemo } from 'react';
+import { type ReactNode, Suspense, useMemo, useState } from 'react';
 import nftEmpty from '../../../assets/nft-empty.png';
 import { Card, Dialog } from '../../../components';
 import { AccountsCard } from '../../../components/card/accountsCard.tsx';
@@ -43,7 +43,7 @@ import {
 } from '../../../utils/formatter.ts';
 import { getExplorer } from '../../../utils/getExplorer.ts';
 import { ProfileCardLoadingSkeleton } from './profileCardLoadingSkeleton.tsx';
-import { TokenImage } from '../../../components/helpers/tokenImage.tsx';
+import { NFTCollectionSkeleton } from '../../../components/skeletons/nftCollectionSkeleton.tsx';
 
 type ProfileCardsProps = {
   domainParam: string;
@@ -122,6 +122,8 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
     uri,
   } = props.asset;
   const dialog = useDisclosure();
+
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const { data: metadata } = useQuery({
     queryKey: ['nft-metadata', assetId],
@@ -202,27 +204,38 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
         isOpen={dialog.isOpen}
       >
         <Dialog.Body
-          display="grid"
-          gridTemplateRows={{ base: 'auto 1fr', md: '1fr' }}
-          gridTemplateColumns={{ md: '400px 1fr' }}
-          gap={6}
+          h="full"
+          display="flex"
+          flexDirection={{
+            base: 'column-reverse',
+            md: 'row',
+          }}
+          alignItems={{
+            base: 'center',
+            md: 'flex-start',
+          }}
         >
           <Flex
-            gridRow={{ base: 2, md: 'auto' }}
             flexDir="column"
             justifyContent="space-between"
             h="97%"
             minH={{ base: '445px', sm: '470x' }}
           >
-            <TokenImage
-              src={parseURI(image)}
-              w="full"
-              maxW={{ base: '400px', md: 'auto' }}
-              mx={{ base: 'auto', md: 'auto' }}
-              alt="NFT image"
+            <Skeleton
+              h="full"
               borderRadius="xl"
-              spinnerTopPosition={{ base: '20', md: '32' }}
-            />
+              isLoaded={isLoaded}
+              w={['auto', '398px']}
+              minH={['375px', '398px']}
+              mx="auto"
+            >
+              <Image
+                w="full"
+                src={parseURI(image)}
+                alt="NFT image"
+                borderRadius="xl"
+              />
+            </Skeleton>
             <Flex direction="row" wrap="wrap" gap={3} mt={3}>
               <NFTText
                 icon={<BTCIcon />}
@@ -244,6 +257,10 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
             flex={1}
             justifyContent="space-between"
             alignItems="flex-start"
+            ml={{
+              base: 0,
+              md: 6,
+            }}
           >
             <Box w="full" position="relative">
               <Heading fontSize="xl">{nftName}</Heading>
@@ -318,20 +335,22 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
           </VStack>
         </Dialog.Body>
       </Dialog.Modal>
-      <Card
-        borderRadius="5px"
-        overflow="hidden"
-        minH="216px"
-        onClick={dialog.onOpen}
-        p={0}
-      >
-        <TokenImage
-          src={props.asset.image ?? image}
+      <Card borderRadius="5px" overflow="hidden" onClick={dialog.onOpen} p={0}>
+        <Skeleton
           w="full"
-          spinnerTopPosition="34"
-        />
+          h="full"
+          isLoaded={isLoaded}
+          minH={['333px', '321px', '124px', '177px']}
+        >
+          <Image
+            maxW="full"
+            src={props.asset.image ?? image}
+            onLoad={() => setIsLoaded(true)}
+          />
+        </Skeleton>
         <Box p={2} w="full" mt="auto">
-          <Text fontSize="sm">{nftName}</Text>
+          {/* <Text fontSize="sm">{nftName}</Text> */}
+          <Text fontSize="sm">@testador</Text>
         </Box>
       </Card>
     </>
@@ -457,26 +476,7 @@ export const NFTCollections = ({
   );
 
   if (isLoading) {
-    return (
-      <Card
-        w="full"
-        h="fit-content"
-        display="block"
-        alignItems="center"
-        backdropFilter="blur(7px)"
-      >
-        <Flex mb={3} alignItems="center" justify="space-between">
-          <Skeleton height="8" width="32" rounded="md" />
-        </Flex>
-        <HStack overflow="hidden" gap={3}>
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-        </HStack>
-      </Card>
-    );
+    return <NFTCollectionSkeleton />;
   }
 
   return (
