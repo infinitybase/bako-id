@@ -1,77 +1,42 @@
 import { MetadataKeys } from '@bako-id/sdk';
-import { createEnsPublicClient } from '@ensdomains/ensjs';
-import { http } from 'viem';
-import { mainnet } from 'viem/chains';
-import { type ENSMetadataKeys, ensToMetadataMap } from './types';
 
-const { VITE_ENS_API_KEY } = import.meta.env;
+import { ENSMetadataKeys, ensToMetadataMap } from './types';
+import { ethers } from 'ethers';
 
-const client = createEnsPublicClient({
-  chain: mainnet,
-  transport: http('https://web3.ens.domains/v1/mainnet'),
-  key: VITE_ENS_API_KEY,
-});
+const ethersProvider = new ethers.JsonRpcProvider(
+  'https://mainnet.infura.io/v3/a44094c3208b48f5bbdd76c7c83212fc'
+);
 
-const graphql_url = `https://gateway.thegraph.com/api/${VITE_ENS_API_KEY}/subgraphs/id/5XqPmWe6gjyrJtFn9cLy237i4cWw2j9HcUJEXsP5qGtH`;
+export async function getEnsMetadata(name: string) {
+  const resolver = await ethersProvider.getResolver(name);
 
-export const ensCheckRegister = async (name: string) => {
-  const records = await fetchEnsData(name);
-  if (!records) return null;
-
-  const keys = records.resolver.texts;
-
-  const request = await client.getRecords({
-    name,
-    texts: [...keys],
-  });
-
-  const mappedResult: Record<string, string> = {};
-
-  for (const { key, value } of request.texts) {
-    const ensKey = key as ENSMetadataKeys;
-    const metadataKey = ensToMetadataMap[ensKey];
-
-    if (metadataKey) {
-      mappedResult[metadataKey] = value;
+  try {
+    if (!resolver) {
+      return null;
     }
+
+    const metadata: Record<string, string> = {};
+
+    for (const key of Object.keys(ENSMetadataKeys)) {
+      const enumKey = key as keyof typeof ENSMetadataKeys;
+      const recordKey = ENSMetadataKeys[enumKey];
+      const metadataKey = ensToMetadataMap[recordKey];
+
+      try {
+        const value = await resolver.getText(recordKey);
+        if (value) {
+          metadata[metadataKey] = value;
+        }
+      } catch (error) {
+        console.error(`Error fetching ${recordKey} for ${name}:`, error);
+      }
+    }
+
+    metadata[MetadataKeys.ENS_DOMAIN] = name;
+
+    return metadata;
+  } catch (error) {
+    console.error(`Error fetching metadata for ${name}:`, error);
+    return null;
   }
-
-  mappedResult[MetadataKeys.ENS_DOMAIN] = name;
-
-  return mappedResult;
-};
-
-async function fetchEnsData(name: string) {
-  const ensQuery = `query {
-    domains(
-      where: {
-          name: "${name}"
-      }
-    ) {
-      name
-      expiryDate
-      registration {
-        expiryDate
-        registrationDate
-      }
-      resolver {
-        texts
-        contentHash
-        id
-        
-      }
-    }
-  }`;
-  const response = await fetch(graphql_url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ query: ensQuery }),
-  });
-
-  const lklk = await response.json();
-  const d = lklk.data?.domains[0] ?? undefined;
-
-  return d;
 }

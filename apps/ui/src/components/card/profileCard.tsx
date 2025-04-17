@@ -9,6 +9,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Skeleton,
   Text,
   useClipboard,
   useMediaQuery,
@@ -35,6 +36,7 @@ interface IProfileCard {
   domain: string;
   metadata: { key: string; value: string | undefined }[] | undefined;
   editAction: () => void;
+  isMetadataLoading: boolean;
 }
 
 const ButtonAction = ({ rightIcon, ...props }: ButtonProps) => (
@@ -64,12 +66,13 @@ export const ProfileCard = ({
   domainName,
   metadata,
   editAction,
+  isMetadataLoading,
 }: IProfileCard) => {
   const [isLowerThanMobile] = useMediaQuery('(max-width: 25em)');
   const { isMyDomain: isOwner } = useSidebar();
 
   const nickname = metadata?.find(
-    (m) => m.key === MetadataKeys.CONTACT_NICKNAME,
+    (m) => m.key === MetadataKeys.CONTACT_NICKNAME
   );
   const shortBio = metadata?.find((m) => m.key === MetadataKeys.CONTACT_BIO);
   const avatar = metadata?.find((m) => m.key === MetadataKeys.AVATAR);
@@ -152,7 +155,7 @@ export const ProfileCard = ({
                   twitterLink(profileLink, {
                     title: 'Check my Bako ID profile!',
                     related: [],
-                  }),
+                  })
                 );
               }}
               icon={<TwitterIcon w={15} h={15} />}
@@ -212,7 +215,8 @@ export const ProfileCard = ({
     >
       <Flex w="full">
         {avatar ? (
-          <Box
+          <Skeleton
+            isLoaded={!isMetadataLoading}
             minW={32}
             h={32}
             rounded="lg"

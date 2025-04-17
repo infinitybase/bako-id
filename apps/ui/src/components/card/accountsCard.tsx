@@ -19,6 +19,7 @@ import { NSDialog } from '../../modules/ens/components/dialog';
 interface AccountsCardProps {
   metadata: { key: string; value: string | undefined }[] | undefined;
   addAction: () => void;
+  isMetadataLoading: boolean;
 }
 
 const EmptyAccounts = ({ ensAction }: { ensAction: () => void }) => {
@@ -49,7 +50,11 @@ const EmptyAccounts = ({ ensAction }: { ensAction: () => void }) => {
   );
 };
 
-export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
+export const AccountsCard = ({
+  metadata,
+  addAction,
+  isMetadataLoading,
+}: AccountsCardProps) => {
   const { isMyDomain } = useSidebar();
   const ensDialogState = useDisclosure();
 
@@ -93,7 +98,7 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
         </Flex>
 
         {metadata?.filter(
-          (data) => !avoidKeys.includes(data.key as MetadataKeys),
+          (data) => !avoidKeys.includes(data.key as MetadataKeys)
         ).length ? (
           <VStack spacing={5} h="full" mt={6}>
             {metadata?.map((m) => {
@@ -104,11 +109,12 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
                   key={m.key}
                   value={m.value}
                   variant={variant}
+                  isMetadataLoading={isMetadataLoading}
                   isVerified
                   rightAddon
                   rightAddonName={getInputIcon(
                     m.key as MetadataKeys,
-                    m.value ?? '',
+                    m.value ?? ''
                   )}
                 />
               );

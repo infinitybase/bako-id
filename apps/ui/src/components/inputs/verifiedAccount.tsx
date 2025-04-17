@@ -6,6 +6,7 @@ import {
   InputLeftAddon,
   type InputProps,
   InputRightAddon,
+  Skeleton,
   Text,
 } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
@@ -29,6 +30,7 @@ interface CustomInputProps extends InputProps {
   rightAddon: boolean;
   rightAddonName: string | ReactNode;
   variant: { key: MetadataKeys; value: string | undefined };
+  isMetadataLoading: boolean;
 }
 
 const VerifiedAccountInput = (props: CustomInputProps) => {
@@ -133,7 +135,15 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
 
   if (currentVariant) {
     return (
-      <Box w="full" display="flex" alignItems="flex-end" flexDirection="column">
+      <Skeleton
+        w="full"
+        rounded="xl"
+        isLoaded={!props.isMetadataLoading}
+        h="fit-content"
+        display="flex"
+        alignItems="flex-end"
+        flexDirection="column"
+      >
         <InputGroup>
           <InputLeftAddon
             bgColor={currentVariant?.bgColor}
@@ -246,7 +256,7 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
             Verify now
           </Text>
         )}
-      </Box>
+      </Skeleton>
     );
   }
 };
