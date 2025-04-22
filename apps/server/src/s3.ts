@@ -1,60 +1,80 @@
-import type { OffChainData } from '@bako-id/sdk';
-import AWS from 'aws-sdk';
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} from '@aws-sdk/client-s3';
+import type { Readable } from 'node:stream';
 
-const { AWS_REGION, AWS_KEY_ID, AWS_SECRET_ACCESS_KEY } = process.env;
-
-const BUCKET_NAME = process.env.BUCKET_NAME ?? 'bako-id';
-
-AWS.config.update({
-  region: AWS_REGION,
-  accessKeyId: AWS_KEY_ID,
-  secretAccessKey: AWS_SECRET_ACCESS_KEY,
+export const s3Client = new S3Client({
+  region: process.env.AWS_REGION || '',
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+  },
 });
 
-const resulverEmpty: OffChainData = {
-  resolversName: {},
-  resolversAddress: {},
-  records: {},
-};
+export class S3Service {
+  static async uploadImageToS3(key: string, file: File) {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const command = new PutObjectCommand({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: key,
+        Body: buffer,
+        ContentType: file.type,
+      });
 
-export const FILENAME = 'resolver.json';
+      const response = await s3Client.send(command);
 
-export const s3 = new AWS.S3();
+      return response;
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      throw error;
+    }
+  }
 
-export const getJsonFile = async (filename: string): Promise<OffChainData> => {
-  return await s3
-    .getObject({
-      Bucket: BUCKET_NAME,
-      Key: filename,
-    })
-    .promise()
-    .then((data) => {
-      if (!data.Body) {
-        return resulverEmpty;
+  static async getFileFromS3(key: string) {
+    try {
+      const command = new GetObjectCommand({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: key,
+      });
+
+      const response = await s3Client.send(command);
+
+      const chunks: Uint8Array[] = [];
+
+      for await (const chunk of response.Body as Readable) {
+        chunks.push(chunk);
       }
-      return JSON.parse(data.Body.toString('utf-8'));
-    })
-    .catch(() => {
-      return resulverEmpty;
-    });
-};
 
-export const putJsonFile = async (
-  filename: string,
-  jsonContent: OffChainData
-) => {
-  await s3
-    .putObject({
-      Bucket: BUCKET_NAME,
-      Key: filename,
-      Body: JSON.stringify(jsonContent, null, 2),
-      ContentType: 'application/json',
-    })
-    .promise()
-    .then(() => {
+      const fileContent = Buffer.concat(chunks);
+      const blob = new Blob([fileContent], { type: response.ContentType });
+      const file = new File([blob], key, { type: response.ContentType });
+
+      return file;
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      throw error;
+    }
+  }
+
+  static async fileExistsInS3(key: string): Promise<boolean> {
+    try {
+      const command = new GetObjectCommand({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: key,
+      });
+
+      await s3Client.send(command);
       return true;
-    })
-    .catch((_) => {
-      return false;
-    });
-};
+    } catch (error) {
+      if ((error as Error).name === 'NoSuchKey') {
+        return false;
+      }
+
+      throw error;
+    }
+  }
+}
