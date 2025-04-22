@@ -24,9 +24,12 @@ export type MetadataResponse =
   | { key: string; value: string | undefined }[]
   | undefined;
 
-export const useMetadata = (handleOnSuccess?: () => void) => {
+export const useMetadata = (
+  handleOnSuccess?: () => void,
+  handleName?: string
+) => {
   const [updatedMetadata, setUpdatedMetadata] = useState<MetadataKeyValue[]>(
-    [],
+    []
   );
   const { domain } = useParams({ strict: false });
   const { provider } = useProvider();
@@ -39,7 +42,7 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
     queryKey: [
       MetadataQueryKey.HANDLE_LIST,
       provider?.url ?? VITE_PROVIDER_URL,
-      domain,
+      handleName ?? domain,
     ],
     queryFn: async () => {
       try {
@@ -52,7 +55,9 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
           registryContract = RegistryContract.create(provider);
         }
 
-        const metadata = await registryContract.getMetadata(domain);
+        const metadata = await registryContract.getMetadata(
+          handleName ?? domain
+        );
 
         return Object.entries(metadata).map(([key, value]) => ({
           key,
@@ -63,7 +68,7 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
         throw e;
       }
     },
-    enabled: !!domain,
+    enabled: !!domain || !!handleName,
   });
 
   const handleSaveRequest = useMutation({
@@ -75,7 +80,7 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
         ...updatedMetadata.reduce(
           // biome-ignore lint/performance/noAccumulatingSpread: <explanation>
           (acc, { key, value }) => ({ ...acc, [key]: value }),
-          {},
+          {}
         ),
       };
 

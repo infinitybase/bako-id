@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { HandleCard } from './handleCard';
 import { useNavigate } from '@tanstack/react-router';
+import { useGetPrimaryHandleName } from '../../../hooks';
 
 interface MyHandlesCard {
   handles?: IDRecord[];
@@ -20,6 +21,9 @@ interface MyHandlesCard {
 }
 
 export const MyHandlesCard = ({ handles, isLoading }: MyHandlesCard) => {
+  const { data: primaryHandle, isLoading: isPrimaryHandleRequestLoading } =
+    useGetPrimaryHandleName();
+
   const navigate = useNavigate();
   return (
     <Center w="full" h={['auto', '70%', 'xl', '3xl']} alignItems="center">
@@ -65,7 +69,12 @@ export const MyHandlesCard = ({ handles, isLoading }: MyHandlesCard) => {
           <Skeleton isLoaded={!isLoading} minH="200px" rounded="lg">
             {handles?.length ? (
               handles.map((handle) => (
-                <HandleCard key={handle.name} handle={handle} />
+                <HandleCard
+                  key={handle.name}
+                  handle={handle}
+                  primaryHandle={primaryHandle ?? ''}
+                  isPrimaryHandleRequestLoading={isPrimaryHandleRequestLoading}
+                />
               ))
             ) : (
               <VStack mt={4} h="282px" placeContent="center">
