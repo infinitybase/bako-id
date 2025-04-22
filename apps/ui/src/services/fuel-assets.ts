@@ -34,6 +34,10 @@ export interface ByAddress {
   address: string;
   chainId: number;
 }
+export interface ByAssetId {
+  assetId: string;
+  chainId: number;
+}
 
 export type ByAddressResponse = {
   data: FuelAsset[];
@@ -52,6 +56,12 @@ export class FuelAssetService {
   }: ByAddress): Promise<ByAddressResponse> {
     const networkUrl = FuelAssetService.networkUrl(chainId);
     const response = await fetch(`${networkUrl}/accounts/${address}/assets`);
+    return response.json();
+  }
+
+  static async byAssetId({ assetId, chainId }: ByAssetId): Promise<FuelAsset> {
+    const networkUrl = FuelAssetService.networkUrl(chainId);
+    const response = await fetch(`${networkUrl}/assets/${assetId}`);
     return response.json();
   }
 
