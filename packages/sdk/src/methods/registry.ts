@@ -97,7 +97,7 @@ export class RegistryContract {
   static create(accountOrProvider: Account | Provider) {
     let provider: Provider;
 
-    if (accountOrProvider instanceof Account) {
+    if ('provider' in accountOrProvider) {
       provider = accountOrProvider.provider;
     } else {
       provider = accountOrProvider;
