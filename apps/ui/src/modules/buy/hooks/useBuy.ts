@@ -80,7 +80,7 @@ export const useBuy = () => {
           setBuyError((error as Error).message);
           setSignInLoad(false);
         },
-      },
+      }
     );
   };
 
@@ -89,7 +89,7 @@ export const useBuy = () => {
   };
 
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
+    let timeoutId: ReturnType<typeof setTimeout>;
 
     if (buyError) {
       timeoutId = setTimeout(() => {
