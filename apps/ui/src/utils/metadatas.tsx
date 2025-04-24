@@ -11,10 +11,11 @@ import {
   UserIcon,
   WebsiteIcon,
 } from '../components/icons/';
+import { ENSIcon } from '../components/icons/ensicon';
 
 export const getMetadataRedirects = (
   key: MetadataKeys,
-  value: string,
+  value: string
 ): string | null => {
   const metaDatas: Partial<Record<MetadataKeys, string>> = {
     'social:x': `https://x.com/${value}`,
@@ -111,6 +112,13 @@ export const Metadatas: Metadatas = {
       title: 'E-mail',
       icon: <MailIcon w={7} h={7} />,
       description: 'Your email address',
+      validated: false,
+    },
+    {
+      key: MetadataKeys.ENS_DOMAIN,
+      title: 'ENS',
+      icon: <ENSIcon w={7} h={7} />,
+      description: 'Your ENS domain',
       validated: false,
     },
   ],
