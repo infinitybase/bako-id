@@ -324,6 +324,7 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
         minW={133}
         p={0}
         bg="#272726"
+        backdropFilter="none"
       >
         <Image maxW="full" src={props.asset.image ?? image} />
         <Box p={2} w="full">
