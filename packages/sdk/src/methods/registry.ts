@@ -3,7 +3,6 @@ import {
   Account,
   DateTime,
   type Provider,
-  TransactionStatus,
   getMintedAssetId,
   getRandomB256,
   sha256,
@@ -49,14 +48,14 @@ const formatTAI64toDate = (value: string) => {
     0,
     0,
     0,
-    0,
+    0
   );
 };
 
 async function checkAccountBalance(
   account: Account,
   domain: string,
-  period?: number,
+  period?: number
 ) {
   const amount = domainPrices(domain, period);
   const accountBalance = await account.getBalance();
@@ -86,18 +85,18 @@ export class RegistryContract {
     this.contract = new Registry(id, accountOrProvider);
     this.nftContract = new Nft(
       getContractId(this.provider.url, 'nft'),
-      accountOrProvider,
+      accountOrProvider
     );
     this.managerContract = new Manager(
       getContractId(this.provider.url, 'manager'),
-      accountOrProvider,
+      accountOrProvider
     );
   }
 
   static create(accountOrProvider: Account | Provider) {
     let provider: Provider;
 
-    if (accountOrProvider instanceof Account) {
+    if ('provider' in accountOrProvider) {
       provider = accountOrProvider.provider;
     } else {
       provider = accountOrProvider;
@@ -142,7 +141,7 @@ export class RegistryContract {
       transactionResponse,
       assetId: getMintedAssetId(
         this.contract.id.toB256(),
-        sha256(toUtf8Bytes(domainName)),
+        sha256(toUtf8Bytes(domainName))
       ),
     };
   }
@@ -167,7 +166,7 @@ export class RegistryContract {
   }
 
   async changeResolver(
-    payload: ChangeAddressPayload,
+    payload: ChangeAddressPayload
   ): Promise<TransactionResult> {
     const { domain, address } = payload;
 
@@ -243,8 +242,8 @@ export class RegistryContract {
 
   async setMetadata(
     domain: string,
-    metadata: Partial<Record<MetadataKeys, string>>,
-  ) {
+    metadata: Partial<Record<MetadataKeys, string>>
+  ): Promise<TransactionResult> {
     if (!this.account) {
       throw new Error('Account is required to setMetadata');
     }
@@ -263,12 +262,12 @@ export class RegistryContract {
             .set_metadata_info(domainName, key, {
               String: value,
             })
-            .addContracts([this.managerContract, this.nftContract]),
-        ),
+            .addContracts([this.managerContract, this.nftContract])
+        )
       )
       .call();
     const { transactionResult } = await multiCall.waitForResult();
-    return transactionResult.status === TransactionStatus.success;
+    return transactionResult;
   }
 
   async getMetadata(domain: string) {
@@ -284,15 +283,15 @@ export class RegistryContract {
     const mintedAssetId = {
       bits: getMintedAssetId(
         this.nftContract.id.toB256(),
-        sha256(toUtf8Bytes(domain)),
+        sha256(toUtf8Bytes(domain))
       ),
     };
 
     const result = await this.contract
       .multiCall(
         Object.entries(MetadataKeys).map(([_, value]) =>
-          this.nftContract.functions.metadata(mintedAssetId, value),
-        ),
+          this.nftContract.functions.metadata(mintedAssetId, value)
+        )
       )
       .get();
 
@@ -304,7 +303,7 @@ export class RegistryContract {
         }
         return acc;
       },
-      {} as Record<MetadataKeys, string | undefined>,
+      {} as Record<MetadataKeys, string | undefined>
     );
   }
 
