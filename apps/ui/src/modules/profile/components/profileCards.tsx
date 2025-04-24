@@ -349,8 +349,7 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
           />
         </Skeleton>
         <Box p={2} w="full" mt="auto">
-          {/* <Text fontSize="sm">{nftName}</Text> */}
-          <Text fontSize="sm">@testador</Text>
+          <Text fontSize="sm">{nftName}</Text>
         </Box>
       </Card>
     </>
