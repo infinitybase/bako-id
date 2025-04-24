@@ -4,7 +4,6 @@ import {
   Button,
   type ButtonProps,
   Flex,
-  Icon,
   Menu,
   MenuButton,
   MenuItem,
@@ -19,13 +18,7 @@ import { ExplorerTypes } from '../../types';
 import { twitterLink } from '../../utils/formatter.ts';
 import { getExplorer } from '../../utils/getExplorer';
 import { MetadataKeys } from '../../utils/metadataKeys';
-import {
-  AvatarIcon,
-  // DisabledXBadgeIcon,
-  EditIcon,
-  ExploreIcon,
-  TwitterIcon,
-} from '../icons';
+import { EditIcon, ExploreIcon, TwitterIcon } from '../icons';
 import { CopyIcon } from '../icons/copyIcon.tsx';
 import { ShareIcon } from '../icons/shareicon.tsx';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
@@ -35,6 +28,7 @@ interface IProfileCard {
   domainName: string | null;
   domain: string;
   metadata: { key: string; value: string | undefined }[] | undefined;
+  isMetadataLoading: boolean;
   editAction: () => void;
   isMetadataLoading: boolean;
 }
@@ -48,7 +42,6 @@ const ButtonAction = ({ rightIcon, ...props }: ButtonProps) => (
     fontWeight="normal"
     fontSize={['sm', 'sm']}
     position="relative"
-    // h={9}
     justifyContent={{
       base: 'center',
       md: 'space-between',
@@ -137,7 +130,6 @@ export const ProfileCard = ({
             fontWeight="normal"
             fontSize={['sm', 'sm']}
             position="relative"
-            // h={9}
             flexDir="row"
             bgColor={isLowerThanMobile ? 'transparent' : undefined}
           >
