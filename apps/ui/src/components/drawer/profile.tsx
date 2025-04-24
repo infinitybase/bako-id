@@ -40,6 +40,8 @@ const ProfileDrawer = ({ ...props }: ProfileDrawerProps) => {
         display="flex"
         flexDirection="column"
         justifyContent="space-between"
+        h="100%"
+        overflowY="scroll"
       >
         <DrawerCloseButton onClick={props.onClose} />
         <VStack mt={4}>
