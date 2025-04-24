@@ -19,12 +19,10 @@ import { SidebarButton } from '../buttons/sidebarButton';
 import { BakoSafeLogo } from '../icons/bakoSafeLogo';
 import { UserIcon } from '../icons/userIcon';
 import { Autocomplete } from '../inputs/autocomplete';
-import { useSidebar } from '../sidebar/hooks/useSidebar';
 
 interface ProfileDrawerProps extends Omit<DrawerProps, 'children'> {}
 
 const ProfileDrawer = ({ ...props }: ProfileDrawerProps) => {
-  const { isMyDomain } = useSidebar();
   const [active, setActive] = useState<string>('');
 
   return (
@@ -45,28 +43,25 @@ const ProfileDrawer = ({ ...props }: ProfileDrawerProps) => {
       >
         <DrawerCloseButton onClick={props.onClose} />
         <VStack mt={4}>
-          {isMyDomain && (
-            <>
-              <Box w="100%" mb={6}>
-                <FormControl
-                  display="flex"
-                  flexDir="column"
-                  alignItems="flex-start"
-                  justifyContent="center"
-                  gap={4}
-                >
-                  <FormHelperText color="section.200" fontWeight="semibold">
-                    More handles?
-                  </FormHelperText>
-                  <Autocomplete
-                    key="profile-sidebar-autocomplete"
-                    actionOnContinue={props.onClose}
-                  />
-                </FormControl>
-              </Box>
-              <Divider bgColor="grey.600" w="full" zIndex={1} />
-            </>
-          )}
+          <Box w="100%" mb={6}>
+            <FormControl
+              display="flex"
+              flexDir="column"
+              alignItems="flex-start"
+              justifyContent="center"
+              gap={4}
+            >
+              <FormHelperText color="section.200" fontWeight="semibold">
+                More handles?
+              </FormHelperText>
+              <Autocomplete
+                key="profile-sidebar-autocomplete"
+                actionOnContinue={props.onClose}
+              />
+            </FormControl>
+          </Box>
+          <Divider bgColor="grey.600" w="full" zIndex={1} />
+
           <SidebarButton
             setActive={setActive}
             active={active}

@@ -72,7 +72,7 @@ export const Header = () => {
               account={wallet.address}
             />
           ) : (
-            <Box>
+            <Box mr={isMobile ? 3 : 0}>
               <Connect />
             </Box>
           )}
