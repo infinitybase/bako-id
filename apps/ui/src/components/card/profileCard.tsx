@@ -4,6 +4,7 @@ import {
   Button,
   type ButtonProps,
   Flex,
+  Icon,
   Menu,
   MenuButton,
   MenuItem,
@@ -18,7 +19,7 @@ import { ExplorerTypes } from '../../types';
 import { twitterLink } from '../../utils/formatter.ts';
 import { getExplorer } from '../../utils/getExplorer';
 import { MetadataKeys } from '../../utils/metadataKeys';
-import { EditIcon, ExploreIcon, TwitterIcon } from '../icons';
+import { AvatarIcon, EditIcon, ExploreIcon, TwitterIcon } from '../icons';
 import { CopyIcon } from '../icons/copyIcon.tsx';
 import { ShareIcon } from '../icons/shareicon.tsx';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
@@ -30,7 +31,6 @@ interface IProfileCard {
   metadata: { key: string; value: string | undefined }[] | undefined;
   isMetadataLoading: boolean;
   editAction: () => void;
-  isMetadataLoading: boolean;
 }
 
 const ButtonAction = ({ rightIcon, ...props }: ButtonProps) => (
