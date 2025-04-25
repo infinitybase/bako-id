@@ -28,6 +28,7 @@ export interface FuelAsset {
   contractId?: string;
   subId?: string;
   collection?: string;
+  rate: number;
 }
 
 export interface ByAddress {
@@ -53,6 +54,19 @@ export class FuelAssetService {
     const networkUrl = FuelAssetService.networkUrl(chainId);
     const response = await fetch(`${networkUrl}/accounts/${address}/assets`);
     return response.json();
+  }
+
+  static async byAssetId({
+    assetId,
+    chainId,
+  }: { assetId: string; chainId: number }): Promise<FuelAsset | null> {
+    try {
+      const networkUrl = FuelAssetService.networkUrl(chainId);
+      const response = await fetch(`${networkUrl}/assets/${assetId}`);
+      return response.json();
+    } catch {
+      return null;
+    }
   }
 
   private static networkUrl(chainId: number): string {
