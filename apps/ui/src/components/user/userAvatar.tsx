@@ -124,6 +124,8 @@ const EditProfilePicAvatar = ({
           <Box position="relative" w="full" h="full">
             <Image
               src={avatar}
+              referrerPolicy="no-referrer"
+              fetchPriority="high"
               alt="Profile avatar"
               w="full"
               h="full"
@@ -170,6 +172,8 @@ const ProfileAvatar = ({
       {avatar && !noAvatarFromUrl ? (
         <Image
           src={avatar}
+          referrerPolicy="no-referrer"
+          fetchPriority="high"
           alt="Profile avatar"
           w="full"
           h="full"
