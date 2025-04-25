@@ -30,7 +30,6 @@ import {
   Flex,
   type FlexProps,
   Grid,
-  HStack,
   Heading,
   Icon,
   Image,
@@ -46,6 +45,7 @@ import { Address, ZeroBytes32, isB256 } from 'fuels';
 import { useParams } from 'next/navigation';
 import { type ReactNode, Suspense, useMemo, useState } from 'react';
 import { useProfile } from './hooks';
+import { NFTCollectionSkeleton } from '@/components/skeletons/nftCollectionSkeleton';
 
 const metadataArrayToObject = (
   metadata: Record<string, string>[],
@@ -140,6 +140,7 @@ const ProfileCardLoadingSkeleton = () => (
         md: 'row',
       }}
       w="full"
+      mb={3}
     >
       <Flex w="full" h="full" flexDirection="column" gap={[4, 4, 4, 6]}>
         <ProfileCardSkeleton />
@@ -159,6 +160,7 @@ const ProfileCardLoadingSkeleton = () => (
       </Flex>
       <AccountsCardSkeleton />
     </Stack>
+    <NFTCollectionSkeleton />
   </Suspense>
 );
 
@@ -174,6 +176,7 @@ const NFTCard = (props: { asset: FuelAsset }) => {
     uri,
   } = props.asset;
   const dialog = useDisclosure();
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const { data: metadata } = useQuery({
     queryKey: ['nft-metadata', assetId],
@@ -264,22 +267,27 @@ const NFTCard = (props: { asset: FuelAsset }) => {
             md: 'flex-start',
           }}
         >
-          <Box
-            w={{
-              base: 'full',
-              md: 'auto',
-            }}
-            maxW={{
-              base: 'full',
-              sm: '400px',
-            }}
+          <Flex
+            flexDir="column"
+            justifyContent="space-between"
+            h="97%"
+            minH={{ base: '445px', sm: '470x' }}
+            maxW="398px"
           >
-            <Image
-              w="full"
-              src={parseURI(image)}
-              alt="NFT image"
+            <Skeleton
+              h="full"
               borderRadius="xl"
-            />
+              isLoaded={isLoaded}
+              w={['auto', '398px']}
+              minH={['375px', '398px']}
+            >
+              <Image
+                w="full"
+                src={parseURI(image)}
+                alt="NFT image"
+                borderRadius="xl"
+              />
+            </Skeleton>
             <Flex direction="row" wrap="wrap" gap={3} mt={3}>
               <NFTText
                 icon={<BTCIcon />}
@@ -295,7 +303,7 @@ const NFTCard = (props: { asset: FuelAsset }) => {
                 isCopy
               />
             </Flex>
-          </Box>
+          </Flex>
           <VStack
             maxW="full"
             flex={1}
@@ -377,7 +385,21 @@ const NFTCard = (props: { asset: FuelAsset }) => {
         minW={133}
         p={0}
       >
-        <Image maxW="full" src={parseURI(image)} />
+        <Skeleton
+          w="full"
+          h="full"
+          isLoaded={isLoaded}
+          minH={[300, 330, 220, 211, 175]}
+        >
+          <Image
+            maxW="full"
+            src={parseURI(image)}
+            onLoad={() => {
+              setIsLoaded(true);
+            }}
+          />
+        </Skeleton>
+
         <Box p={2} w="full">
           <Text fontSize="sm">{nftName}</Text>
         </Box>
@@ -506,26 +528,7 @@ export const NFTCollections = ({
   );
 
   if (isLoading) {
-    return (
-      <Card
-        w="full"
-        h="fit-content"
-        display="block"
-        alignItems="center"
-        backdropFilter="blur(7px)"
-      >
-        <Flex mb={3} alignItems="center" justify="space-between">
-          <Skeleton height="8" width="32" rounded="md" />
-        </Flex>
-        <HStack overflow="hidden" gap={3}>
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-        </HStack>
-      </Card>
-    );
+    return <NFTCollectionSkeleton />;
   }
 
   return (
@@ -842,9 +845,11 @@ export function ProfilePage({ chainId }: { chainId: number | null }) {
           </Card>
         </Box>
       </Stack>
-      <Box maxW={1019} w="full">
-        <NFTCollections chainId={chainId!} resolver={resolver ?? ''} />
-      </Box>
+      {!isLoading && (
+        <Box maxW={1019} w="full">
+          <NFTCollections chainId={chainId!} resolver={resolver ?? ''} />
+        </Box>
+      )}
     </Center>
   );
 }

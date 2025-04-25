@@ -7,7 +7,6 @@ import {
   type FlexProps,
   Grid,
   GridItem,
-  HStack,
   Heading,
   Icon,
   Image,
@@ -19,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { isB256 } from 'fuels';
-import { type ReactNode, Suspense, useMemo } from 'react';
+import { type ReactNode, Suspense, useMemo, useState } from 'react';
 import nftEmpty from '../../../assets/nft-empty.png';
 import { Card, Dialog } from '../../../components';
 import { AccountsCard } from '../../../components/card/accountsCard.tsx';
@@ -44,6 +43,7 @@ import {
 } from '../../../utils/formatter.ts';
 import { getExplorer } from '../../../utils/getExplorer.ts';
 import { ProfileCardLoadingSkeleton } from './profileCardLoadingSkeleton.tsx';
+import { NFTCollectionSkeleton } from '../../../components/skeletons/nftCollectionSkeleton.tsx';
 
 type ProfileCardsProps = {
   domainParam: string;
@@ -123,12 +123,14 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
   } = props.asset;
   const dialog = useDisclosure();
 
+  const [isLoaded, setIsLoaded] = useState(false);
+
   const { data: metadata } = useQuery({
     queryKey: ['nft-metadata', assetId],
     queryFn: async (): Promise<Record<string, string>> => {
       let metadata: Record<string, string> = defaultMetadata ?? {};
       const metadataEntries = Object.entries(metadata).filter(
-        ([key]) => !key.toLowerCase().includes('uri'),
+        ([key]) => !key.toLowerCase().includes('uri')
       );
 
       if (metadataEntries.length === 0 && uri?.endsWith('.json')) {
@@ -163,7 +165,7 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
     if (metadata) {
       const imageKeys = ['image'];
       const imageKey = Object.keys(metadata).find((key) =>
-        imageKeys.includes(key.split(':').at(0)!),
+        imageKeys.includes(key.split(':').at(0)!)
       );
       const nftImageURI = parseURI(metadata[imageKey!]);
       imageUri = nftImageURI || imageUri;
@@ -213,22 +215,27 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
             md: 'flex-start',
           }}
         >
-          <Box
-            w={{
-              base: 'full',
-              md: 'auto',
-            }}
-            maxW={{
-              base: 'full',
-              sm: '400px',
-            }}
+          <Flex
+            flexDir="column"
+            justifyContent="space-between"
+            h="97%"
+            minH={{ base: '445px', sm: '470x' }}
           >
-            <Image
-              w="full"
-              src={parseURI(image)}
-              alt="NFT image"
+            <Skeleton
+              h="full"
               borderRadius="xl"
-            />
+              isLoaded={isLoaded}
+              w={['auto', '398px']}
+              minH={['375px', '398px']}
+              mx="auto"
+            >
+              <Image
+                w="full"
+                src={parseURI(image)}
+                alt="NFT image"
+                borderRadius="xl"
+              />
+            </Skeleton>
             <Flex direction="row" wrap="wrap" gap={3} mt={3}>
               <NFTText
                 icon={<BTCIcon />}
@@ -244,7 +251,7 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
                 isCopy
               />
             </Flex>
-          </Box>
+          </Flex>
           <VStack
             maxW="full"
             flex={1}
@@ -266,10 +273,21 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
                 right="0"
               />
             </Box>
-            <Box flex={1} mt={6} maxH="full" overflowY="hidden">
+            <Box
+              flex={1}
+              mt={6}
+              maxH="full"
+              overflowY="hidden"
+              maxW={{ base: 'full', md: 'xl' }}
+            >
               <Box mb={6}>
                 <Heading fontSize="md">Description</Heading>
-                <Text mt={3} fontSize="sm" color="section.500">
+                <Text
+                  mt={3}
+                  fontSize="sm"
+                  color="section.500"
+                  wordBreak="break-all"
+                >
                   {metadata?.description ?? 'Description not provided.'}
                 </Text>
               </Box>
@@ -317,15 +335,20 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
           </VStack>
         </Dialog.Body>
       </Dialog.Modal>
-      <Card
-        borderRadius="5px"
-        overflow={'hidden'}
-        onClick={dialog.onOpen}
-        minW={133}
-        p={0}
-      >
-        <Image maxW="full" src={props.asset.image ?? image} />
-        <Box p={2} w="full">
+      <Card borderRadius="5px" overflow="hidden" onClick={dialog.onOpen} p={0}>
+        <Skeleton
+          w="full"
+          h="full"
+          isLoaded={isLoaded}
+          minH={['333px', '321px', '124px', '177px']}
+        >
+          <Image
+            maxW="full"
+            src={props.asset.image ?? image}
+            onLoad={() => setIsLoaded(true)}
+          />
+        </Skeleton>
+        <Box p={2} w="full" mt="auto">
           <Text fontSize="sm">{nftName}</Text>
         </Box>
       </Card>
@@ -353,12 +376,10 @@ export const NFTCollections = ({
         image?: string;
       })[];
 
-      //['nft-metadata', assetId]
-
       for (const nft of nfts) {
         let metadata: Record<string, string> = nft.metadata ?? {};
         const metadataEntries = Object.entries(metadata).filter(
-          ([key]) => !key.toLowerCase().includes('uri'),
+          ([key]) => !key.toLowerCase().includes('uri')
         );
 
         if (metadataEntries.length === 0 && nft.uri?.endsWith('.json')) {
@@ -385,7 +406,7 @@ export const NFTCollections = ({
         nft.metadata = metadata;
 
         const image = Object.entries(metadata).find(([key]) =>
-          key.includes('image'),
+          key.includes('image')
         )?.[1];
         nft.image = image ? parseURI(image) : undefined;
 
@@ -430,7 +451,7 @@ export const NFTCollections = ({
             assets: (FuelAsset & {
               image?: string;
             })[];
-          }[],
+          }[]
         )
         .sort((a, b) => {
           if (a.name === 'Other') return 1;
@@ -450,30 +471,11 @@ export const NFTCollections = ({
           }
           return a.name.localeCompare(b.name);
         }) ?? [],
-    [data],
+    [data]
   );
 
   if (isLoading) {
-    return (
-      <Card
-        w="full"
-        h="fit-content"
-        display="block"
-        alignItems="center"
-        backdropFilter="blur(7px)"
-      >
-        <Flex mb={3} alignItems="center" justify="space-between">
-          <Skeleton height="8" width="32" rounded="md" />
-        </Flex>
-        <HStack overflow="hidden" gap={3}>
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-        </HStack>
-      </Card>
-    );
+    return <NFTCollectionSkeleton />;
   }
 
   return (
