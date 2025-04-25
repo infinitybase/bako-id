@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
-import type { AbstractAddress } from 'fuels';
+import type { Address } from 'fuels';
 import { useState } from 'react';
 import accoutIcon from '../../assets/account-icon.svg';
 import { BeginnersGuide } from '../icons/beginnersGuide.tsx';
@@ -32,7 +32,7 @@ export const Info = ({
   account,
 }: {
   name: string;
-  account: string | AbstractAddress;
+  account: string | Address;
 }) => {
   const {
     fuel: { disconnect },

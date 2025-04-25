@@ -5,17 +5,17 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 
 /*
-  Fuels version: 0.96.1
+  Fuels version: 0.100.1
   Forc version: 0.66.4
   Fuel-Core version: 0.40.0
 */
 
-import { Contract, Interface } from "fuels";
+import { Contract as __Contract, Interface } from "fuels";
 import type {
   Provider,
   Account,
   StorageSlot,
-  AbstractAddress,
+  Address,
   BigNumberish,
   BN,
   Bytes,
@@ -795,7 +795,7 @@ export class RegistryInterface extends Interface {
   };
 }
 
-export class Registry extends Contract {
+export class Registry extends __Contract {
   static readonly abi = abi;
   static readonly storageSlots = storageSlots;
 
@@ -817,7 +817,7 @@ export class Registry extends Contract {
   };
 
   constructor(
-    id: string | AbstractAddress,
+    id: string | Address,
     accountOrProvider: Account | Provider,
   ) {
     super(id, abi, accountOrProvider);

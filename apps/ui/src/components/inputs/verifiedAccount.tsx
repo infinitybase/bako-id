@@ -168,7 +168,6 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
           </InputLeftAddon>
 
           <Box
-            type="text"
             w="full"
             h="full"
             pr={2}
@@ -180,15 +179,21 @@ const VerifiedAccountInput = (props: CustomInputProps) => {
             borderLeftColor="transparent"
             borderRightColor={rightAddon ? 'transparent' : 'stroke.500'}
             backgroundColor="input.600"
-            color="grey.100"
-            fontSize={['xs', 'sm']}
-            textAlign="end"
-            fontWeight={500}
             _focus={{}}
             _hover={{}}
-            {...rest}
+            isTruncated
           >
-            {currentVariant?.value ?? `Add ${currentVariant?.name} account`}
+            <Text
+              {...rest}
+              maxW="95%"
+              isTruncated
+              color="grey.100"
+              fontSize={['xs', 'sm']}
+              textAlign="end"
+              fontWeight={500}
+            >
+              {currentVariant?.value ?? `Add ${currentVariant?.name} account`}
+            </Text>
           </Box>
           {rightAddon && isVerified ? (
             <InputRightAddon

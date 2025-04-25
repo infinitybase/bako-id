@@ -39,7 +39,7 @@ describe('[PAUSABLE] Registry Contract', () => {
     const nftCall = await nft.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } }
+        { ContractId: { bits: registry.id.toB256() } },
       )
       .call();
     await nftCall.waitForResult();
@@ -48,7 +48,7 @@ describe('[PAUSABLE] Registry Contract', () => {
       .constructor(
         { bits: owner.address.toB256() },
         { bits: manager.id.toB256() },
-        { bits: nftAbi.id.toB256() }
+        { bits: nftAbi.id.toB256() },
       )
       .call();
     await registerCall.waitForResult();
@@ -56,7 +56,7 @@ describe('[PAUSABLE] Registry Contract', () => {
     const managerCall = await manager.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } }
+        { ContractId: { bits: registry.id.toB256() } },
       )
       .call();
     await managerCall.waitForResult();
@@ -87,7 +87,10 @@ describe('[PAUSABLE] Registry Contract', () => {
       const { waitForResult: waitForRegister } = await registry.functions
         .register('@is_paused', { Address: { bits: getRandomB256() } }, bn(1))
         .callParams({
-          forward: { assetId: node.provider.getBaseAssetId(), amount: price },
+          forward: {
+            assetId: await node.provider.getBaseAssetId(),
+            amount: price,
+          },
         })
         .addContracts([manager, nft])
         .call();
