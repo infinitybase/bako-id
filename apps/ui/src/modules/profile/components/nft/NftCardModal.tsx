@@ -1,0 +1,127 @@
+import { useCustomToast } from '@/components';
+import { BTCIcon } from '@/components/icons/btcicon';
+import { ContractIcon } from '@/components/icons/contracticon';
+import { useCreateOrder } from '@/hooks/marketplace';
+import type { Asset } from '@/types/marketplace';
+import { parseURI } from '@/utils/formatter';
+import { Box, Flex, Heading, Stack, Text } from '@chakra-ui/react';
+import { bn } from 'fuels';
+import { useMemo } from 'react';
+import { NftModal } from './modal';
+import { NftCardSaleForm, type NftSaleCardForm } from './NftCardSaleForm';
+import { NftListMetadata } from './NftListMetadata';
+import { NftMetadataBlock } from './NftMetadataBlock';
+
+interface NftCardModalProps {
+  assetId: string;
+  contractId?: string;
+  nftName: React.ReactNode;
+  metadata?: Record<string, string>;
+  image: string;
+  isOpen: boolean;
+  onClose: () => void;
+  assets: Asset[];
+  isOwner: boolean;
+}
+
+export const NftCardModal = ({
+  assetId,
+  nftName,
+  contractId,
+  metadata,
+  image,
+  isOpen,
+  onClose,
+  assets,
+  isOwner,
+}: NftCardModalProps) => {
+  const { createOrderAsync, isPending } = useCreateOrder();
+  const { successToast, errorToast } = useCustomToast();
+  const metadataArray = useMemo(() => {
+    return Object.entries(metadata ?? {}).map(([key, value]) => ({
+      label: key,
+      value,
+    }));
+  }, [metadata]);
+
+  const handleCreateOrder = async (data: NftSaleCardForm) => {
+    try {
+      await createOrderAsync({
+        itemAsset: assetId,
+        itemAmount: bn(1),
+        sellPrice: bn.parseUnits(data.sellPrice.toString()),
+        sellAsset: data.sellAsset.id,
+      });
+      successToast({ title: 'Order created successfully!' });
+      onClose();
+    } catch (error) {
+      console.error(error);
+      errorToast({ title: 'Failed to create order. Please try again.' });
+    }
+  };
+
+  return (
+    <NftModal.Root onClose={onClose} isOpen={isOpen}>
+      <NftModal.Content
+        flexDirection={{
+          base: 'column',
+          md: 'row',
+        }}
+        maxH="540px"
+        overflowY={{
+          base: 'scroll',
+          md: 'hidden',
+        }}
+      >
+        <NftModal.Image w="full" src={parseURI(image)} alt="NFT image" />
+        <Stack
+          w="full"
+          overflowY={{
+            base: 'unset',
+            md: 'scroll',
+          }}
+          style={{ scrollbarWidth: 'none' }}
+          maxH={{ md: '480px' }}
+        >
+          <Heading fontSize="xl">{nftName}</Heading>
+          <Stack spacing={6} flex={1} mt={6} maxH="full" overflowY="hidden">
+            <Box>
+              <Heading fontSize="md">Description</Heading>
+              <Text mt={3} fontSize="sm" color="section.500">
+                {metadata?.description ?? 'Description not provided.'}
+              </Text>
+            </Box>
+
+            <Flex direction="row" wrap="wrap" gap={3}>
+              <NftMetadataBlock
+                icon={<BTCIcon />}
+                value={assetId}
+                title="Asset ID"
+                isCopy
+              />
+
+              <NftMetadataBlock
+                icon={<ContractIcon />}
+                value={contractId!}
+                title="Contract Address"
+                isCopy
+              />
+            </Flex>
+
+            {isOwner && (
+              <NftCardSaleForm
+                onSubmit={handleCreateOrder}
+                isLoading={isPending}
+                assets={assets}
+              />
+            )}
+
+            <NftListMetadata metadata={metadataArray} />
+          </Stack>
+        </Stack>
+
+        <NftModal.CloseIcon onClose={onClose} />
+      </NftModal.Content>
+    </NftModal.Root>
+  );
+};
