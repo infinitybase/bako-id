@@ -59,6 +59,19 @@ const autocomplete = defineStyle({
   },
 });
 
+const outlined = defineStyle({
+  field: {
+    pt: 5,
+    pb: 1,
+    px: 4,
+    bgColor: 'input.900',
+    color: 'text.700',
+    _focus: inputActiveStyle,
+    _focusVisible: inputActiveStyle,
+    _invalid: inputInvalidStyle,
+  },
+});
+
 const Input = defineStyleConfig({
   baseStyle,
   defaultProps: {
@@ -67,9 +80,10 @@ const Input = defineStyleConfig({
   variants: {
     custom: baseStyle,
     autocomplete,
+    outlined,
   },
 });
 
 const Textarea = Input;
 
-export { Input, Textarea, baseStyle as inputStyle };
+export { Input, baseStyle as inputStyle, Textarea };
