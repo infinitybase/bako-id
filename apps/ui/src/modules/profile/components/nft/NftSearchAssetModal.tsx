@@ -1,6 +1,7 @@
 import UnknownAsset from '@/assets/unknown-asset.png';
 import { Dialog } from '@/components';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
+import { useAssetsBalance } from '@/hooks/useAssetsBalance';
 import { CloseIcon } from '@chakra-ui/icons';
 import {
   CircularProgress,
@@ -15,9 +16,6 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { useWallet } from '@fuels/react';
-import { useQuery } from '@tanstack/react-query';
-import { bn } from 'fuels';
 import { useMemo, useState } from 'react';
 
 interface NftSearchAssetModalProps {
@@ -32,27 +30,10 @@ export const NftSearchAssetModal = ({
   onSelect,
 }: NftSearchAssetModalProps) => {
   const [search, setSearch] = useState('');
-  const { wallet } = useWallet();
   const { assets, isLoading: isAssetsLoading } = useListAssets();
 
-  const { data, isLoading: isBalancesLoading } = useQuery({
-    queryKey: ['balances'],
-    queryFn: async () => {
-      if (wallet) {
-        const { balances } = await wallet.getBalances();
+  const { data, isLoading: isBalancesLoading } = useAssetsBalance({ assets });
 
-        return assets.map((asset) => {
-          const balance = balances.find(
-            (balance) => balance.assetId === asset.id
-          );
-          return {
-            ...asset,
-            balance: balance ? bn(balance.amount) : bn(0),
-          };
-        });
-      }
-    },
-  });
   const isLoading = isAssetsLoading || isBalancesLoading;
 
   const filteredAssets = useMemo(() => {
