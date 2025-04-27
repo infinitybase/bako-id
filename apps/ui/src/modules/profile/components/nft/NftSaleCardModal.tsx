@@ -3,6 +3,7 @@ import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
 import { useExecuteOrder, useUpdateOrder } from '@/hooks/marketplace';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
+import { useAssetsBalance } from '@/hooks/useAssetsBalance';
 import type { Nft } from '@/types/marketplace';
 import { blocklistMetadataKeys, MarketPlaceErrors } from '@/utils/constants';
 import {
@@ -15,6 +16,7 @@ import {
   Image,
   Stack,
   Text,
+  Tooltip,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { entries } from 'lodash';
@@ -62,7 +64,23 @@ export const NftSaleCardModal = ({
   const { updateOrderAsync, isPending } = useUpdateOrder();
   const { errorToast, successToast } = useCustomToast();
   const { assets } = useListAssets();
+  const { data: assetsBalance } = useAssetsBalance({ assets });
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder();
+
+  const currentSellAssetBalance = useMemo(
+    () =>
+      assetsBalance
+        ?.find((item) => item.id === asset.id)
+        ?.balance.formatUnits(asset.decimals),
+    [assetsBalance, asset.id, asset.decimals]
+  );
+
+  const notEnoughBalance = useMemo(() => {
+    if (!currentSellAssetBalance) return false;
+    const parsedValue = Number.parseFloat(value);
+    const parsedBalance = Number.parseFloat(currentSellAssetBalance);
+    return parsedValue > parsedBalance;
+  }, [currentSellAssetBalance, value]);
 
   const handleExecuteOrder = async () => {
     try {
@@ -219,14 +237,17 @@ export const NftSaleCardModal = ({
           )}
 
           {!isOwner && (
-            <Button
-              variant="primary"
-              py={4}
-              isLoading={isExecuting}
-              onClick={handleExecuteOrder}
-            >
-              Buy
-            </Button>
+            <Tooltip label={notEnoughBalance ? 'Not enough balance' : ''}>
+              <Button
+                variant="primary"
+                py={4}
+                isLoading={isExecuting}
+                disabled={notEnoughBalance}
+                onClick={handleExecuteOrder}
+              >
+                Buy
+              </Button>
+            </Tooltip>
           )}
 
           <NftListMetadata metadata={metadataArray} />
