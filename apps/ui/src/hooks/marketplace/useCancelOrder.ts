@@ -1,6 +1,6 @@
 import { useProfile } from '@/modules/profile/hooks/useProfile';
-import { marketplaceClient } from '@/services/marketplace';
-import { OrderStatus, type Order as ListOrder } from '@/types/marketplace';
+import { marketplaceService } from '@/services/marketplace';
+import type { Order as ListOrder } from '@/types/marketplace';
 import { MarketplaceQueryKeys } from '@/utils/constants';
 import { getOrderMetadata } from '@/utils/getOrderMetadata';
 import type { PaginationResult } from '@/utils/pagination';
@@ -49,23 +49,13 @@ export const useCancelOrder = () => {
           updatedOrders.push(firstOrder);
         }
 
-        const nextOrder = await marketplaceClient.getOrders({
-          where: {
-            seller: {
-              _eq: address,
-            },
-            status: {
-              _eq: OrderStatus.CREATED,
-            },
-          },
-          offset: (nextPage - 1) * previousOrders.limit,
-          count: 1,
-          // @ts-expect-error - sort by db_write_timestamp
-          sort: { db_write_timestamp: 'desc' },
+        const nextOrder = await marketplaceService.getOrders({
+          account: address!,
+          page: nextPage,
         });
 
-        if (nextOrder.length > 0) {
-          const order = nextOrder[0];
+        if (nextOrder.orders.length > 0) {
+          const order = nextOrder.orders[0];
           const orderWithMetadata = await getOrderMetadata(order, chainId);
           updatedOrders.push(orderWithMetadata);
         }

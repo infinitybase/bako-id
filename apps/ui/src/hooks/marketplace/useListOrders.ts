@@ -1,5 +1,4 @@
-import { marketplaceClient } from '@/services/marketplace';
-import { OrderStatus } from '@/types/marketplace';
+import { marketplaceService } from '@/services/marketplace';
 import { MarketplaceQueryKeys } from '@/utils/constants';
 import { getOrderMetadata } from '@/utils/getOrderMetadata';
 import { getPagination } from '@/utils/pagination';
@@ -17,22 +16,9 @@ export const useListOrders = ({
 
   const { data: orders, ...rest } = useQuery({
     queryFn: async () => {
-      const where = {
-        seller: {
-          _eq: account,
-        },
-        status: {
-          _eq: OrderStatus.CREATED,
-        },
-      };
-
-      const total = await marketplaceClient.getOrdersCount({ where });
-      const orders = await marketplaceClient.getOrders({
-        where,
-        offset: (page - 1) * limit,
-        count: limit,
-        // @ts-expect-error - sort by db_write_timestamp
-        sort: { db_write_timestamp: 'desc' },
+      const { orders, total } = await marketplaceService.getOrders({
+        account: account!,
+        page,
       });
 
       const ordersWithMetadata = await Promise.all(
