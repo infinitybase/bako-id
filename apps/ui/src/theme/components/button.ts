@@ -6,7 +6,16 @@ const primary = defineStyle({
   color: 'input.900',
   _hover: {
     opacity: 0.8,
+    _disabled: {
+      opacity: 0.8,
+      bgColor: 'button.500',
+    },
   },
+
+  _disabled: {
+    opacity: 0.8,
+  },
+
   fontSize: 'sm',
 });
 
