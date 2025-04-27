@@ -1,20 +1,19 @@
 import { Card } from '@/components';
 import { CloseIcon } from '@/components/icons/closeIcon';
+import { Pagination } from '@/components/pagination';
 import { useListOrders } from '@/hooks/marketplace/useListOrders';
-import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import {
   Button,
   Center,
   Grid,
   GridItem,
   Heading,
-  IconButton,
   Skeleton,
   Stack,
   Text,
 } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
-import { Link, useSearch } from '@tanstack/react-router';
+import { useSearch } from '@tanstack/react-router';
 import { bn } from 'fuels';
 import { Fragment, useMemo, useState } from 'react';
 import NftSaleCard from './NftSaleCard';
@@ -120,37 +119,12 @@ export const NftListForSale = ({
         justifyContent="end"
         alignItems="center"
       >
-        <Text fontSize="sm" mr={2}>
-          {page ?? 1} - {orders?.totalPages ?? 1} of {orders?.totalPages ?? 1}
-        </Text>
-        <IconButton
-          aria-label="Previous Page"
-          variant="unstyled"
-          disabled={!orders?.hasPreviousPage}
-          size="sm"
-        >
-          <Link
-            search={{ page: Number(page) - 1 }}
-            to="."
-            disabled={!orders?.hasPreviousPage}
-          >
-            <ChevronLeftIcon fontSize="2xl" />
-          </Link>
-        </IconButton>
-        <IconButton
-          aria-label="Next Page"
-          variant="unstyled"
-          disabled={!orders?.hasNextPage}
-          size="sm"
-        >
-          <Link
-            search={{ page: Number(page ?? 1) + 1 }}
-            to="."
-            disabled={!orders?.hasNextPage}
-          >
-            <ChevronRightIcon fontSize="2xl" />
-          </Link>
-        </IconButton>
+        <Pagination
+          page={Number(page ?? 1)}
+          totalPages={orders?.totalPages}
+          hasNextPage={orders?.hasNextPage}
+          hasPreviousPage={orders?.hasPreviousPage}
+        />
       </GridItem>
     </Card>
   );

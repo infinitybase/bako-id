@@ -25,45 +25,6 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
   const dialog = useDisclosure();
   const { wallet } = useWallet();
 
-  // const { data: metadata } = useQuery({
-  //   queryKey: ['nft-metadata', assetId],
-  //   queryFn: async (): Promise<Record<string, string>> => {
-  //     let metadata: Record<string, string> = defaultMetadata ?? {};
-  //     const metadataEntries = Object.entries(metadata).filter(
-  //       ([key]) => !key.toLowerCase().includes('uri')
-  //     );
-
-  //     if (
-  //       (metadataEntries.length === 0 && uri?.endsWith('.json')) ||
-  //       defaultMetadata?.uri?.endsWith('.json')
-  //     ) {
-  //       const input = defaultMetadata?.uri ?? uri;
-  //       const json: Record<string, string> = await fetch(parseURI(input!))
-  //         .then((res) => res.json())
-  //         .catch(() => ({}));
-  //       metadata = json;
-  //     }
-
-  //     for (const [key, value] of Object.entries(metadata)) {
-  //       if (Array.isArray(value)) {
-  //         const metadataValueRecord = metadataArrayToObject(value, key);
-  //         Object.assign(metadata, metadataValueRecord);
-  //         delete metadata[key];
-  //         continue;
-  //       }
-
-  //       if (metadata[key] === undefined) {
-  //         const matadataValue = value as string;
-  //         metadata[key] = matadataValue as string;
-  //       }
-  //     }
-
-  //     return metadata;
-  //   },
-  //   enabled: !!assetId,
-  //   refetchOnWindowFocus: false,
-  // });
-
   const image = useMemo(() => {
     let imageUri = nftEmpty;
 
