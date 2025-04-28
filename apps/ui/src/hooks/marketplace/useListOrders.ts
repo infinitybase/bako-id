@@ -2,7 +2,7 @@ import { marketplaceService } from '@/services/marketplace';
 import { MarketplaceQueryKeys } from '@/utils/constants';
 import { getOrderMetadata } from '@/utils/getOrderMetadata';
 import { getPagination } from '@/utils/pagination';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useChainId } from '../useChainId';
 
 type useListOrdersProps = { account?: string; page?: number; limit?: number };
@@ -13,6 +13,7 @@ export const useListOrders = ({
   limit = 12,
 }: useListOrdersProps) => {
   const { chainId } = useChainId();
+  const queryClient = useQueryClient();
 
   const { data: orders, ...rest } = useQuery({
     queryFn: async () => {
@@ -22,7 +23,9 @@ export const useListOrders = ({
       });
 
       const ordersWithMetadata = await Promise.all(
-        orders.map(async (order) => getOrderMetadata(order, chainId))
+        orders.map(async (order) =>
+          getOrderMetadata(order, queryClient, chainId)
+        )
       );
 
       return getPagination({
