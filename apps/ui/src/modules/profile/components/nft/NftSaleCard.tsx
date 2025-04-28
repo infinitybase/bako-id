@@ -87,7 +87,7 @@ const NftSaleCard = ({
   const name = nft.name ?? 'Unknown NFT';
 
   return (
-    <NftCard.Root onClick={onOpen} cursor="pointer">
+    <NftCard.Root onClick={onOpen} cursor="pointer" minH="240px">
       {nft.edition && <NftCard.EditionBadge edition={nft.edition} />}
       {showDelistButton && <NftCard.DelistButton onDelist={handleDelist} />}
       <NftCard.Image src={imageUrl} />

@@ -4,4 +4,5 @@ members = [
     "./contracts/registry",
     "./contracts/resolver",
     "./contracts/nft",
+    "./contracts/scripts/uploader-validator-script"
 ]

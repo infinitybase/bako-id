@@ -20,6 +20,9 @@ export const Image = ({ src, alt, ...rest }: ImageProps) => {
         base: '330px',
         md: 'full',
       }}
+      minH={{
+        lg: '480px',
+      }}
       mx="auto"
       borderRadius="lg"
     >

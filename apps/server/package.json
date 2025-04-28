@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.779.0",
     "@bako-id/contracts": "workspace:*",
     "@bako-id/graphql": "workspace:*",
     "@bako-id/marketplace": "workspace:*",

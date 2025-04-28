@@ -35,6 +35,10 @@ export interface ByAddress {
   address: string;
   chainId: number;
 }
+export interface ByAssetId {
+  assetId: string;
+  chainId: number;
+}
 
 export type ByAddressResponse = {
   data: FuelAsset[];

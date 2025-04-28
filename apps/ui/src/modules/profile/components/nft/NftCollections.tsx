@@ -1,4 +1,5 @@
 import { Card } from '@/components';
+import { NFTCollectionSkeleton } from '@/components/skeletons/nftCollectionSkeleton';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
 import { type FuelAsset, FuelAssetService } from '@/services/fuel-assets';
 import { formatMetadataFromIpfs, parseURI } from '@/utils/formatter';
@@ -10,8 +11,6 @@ import {
   Grid,
   GridItem,
   Heading,
-  HStack,
-  Skeleton,
   Text,
 } from '@chakra-ui/react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -44,9 +43,7 @@ export const NftCollections = ({
       for (const nft of nfts) {
         let metadata: Record<string, string> = nft.metadata ?? {};
         const metadataEntries = Object.entries(metadata).filter(
-          ([key]) =>
-            !key.toLowerCase().includes('uri') &&
-            !key.toLowerCase().includes('image')
+          ([key]) => !['uri', 'image'].includes(key.toLowerCase())
         );
 
         if (metadataEntries.length === 0 && nft.uri?.endsWith('.json')) {
@@ -129,27 +126,7 @@ export const NftCollections = ({
   );
 
   if (isLoading) {
-    return (
-      <Card
-        w="full"
-        h="fit-content"
-        display="block"
-        alignItems="center"
-        backdropFilter="blur(7px)"
-      >
-        <Flex mb={3} alignItems="center" justify="space-between">
-          <Skeleton height="8" width="32" rounded="md" />
-        </Flex>
-        <HStack overflow="hidden" gap={3}>
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-          <Skeleton w="full" minW={160} h={160} rounded="lg" />
-        </HStack>
-      </Card>
-    );
+    return <NFTCollectionSkeleton />;
   }
 
   return (

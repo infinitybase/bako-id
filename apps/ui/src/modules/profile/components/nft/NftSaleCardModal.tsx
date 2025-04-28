@@ -151,7 +151,7 @@ export const NftSaleCardModal = ({
           <Heading>{name}</Heading>
           <Stack spacing={2}>
             <Text>Description</Text>
-            <Text fontSize="sm" color="grey.subtitle">
+            <Text fontSize="sm" color="grey.subtitle" wordBreak="break-all">
               {nft.description ?? 'Description not provided.'}
             </Text>
           </Stack>

@@ -10,6 +10,7 @@ import { VerifiedAccountInput } from '@/components/inputs/verifiedAccount';
 import { ProfileCardSkeleton } from '@/components/skeletons';
 import { AccountsCardSkeleton } from '@/components/skeletons/accountsCardSkeleton';
 import { AddressCardSkeleton } from '@/components/skeletons/addressCardSkeleton';
+import { NFTCollectionSkeleton } from '@/components/skeletons/nftCollectionSkeleton';
 import { OwnershipCardSkeleton } from '@/components/skeletons/ownershipCardSkeleton';
 import { getExplorer } from '@/getExplorer';
 import type { PaginationResult } from '@/helpers/pagination';
@@ -49,6 +50,7 @@ const ProfileCardLoadingSkeleton = () => (
         md: 'row',
       }}
       w="full"
+      mb={3}
     >
       <Flex w="full" h="full" flexDirection="column" gap={[4, 4, 4, 6]}>
         <ProfileCardSkeleton />
@@ -68,6 +70,7 @@ const ProfileCardLoadingSkeleton = () => (
       </Flex>
       <AccountsCardSkeleton />
     </Stack>
+    <NFTCollectionSkeleton />
   </Suspense>
 );
 

@@ -25,8 +25,13 @@ export const ProfileCards = ({
   isLoading: loadingDomain,
   owner,
 }: ProfileCardsProps) => {
-  const { metadataModal, metadata, setUpdatedMetadata, loadingMetadata } =
-    useMetadata();
+  const {
+    metadataModal,
+    metadata,
+    setUpdatedMetadata,
+    loadingMetadata,
+    fetchingMetadata,
+  } = useMetadata();
 
   const loading = loadingDomain || loadingMetadata;
 
@@ -64,6 +69,7 @@ export const ProfileCards = ({
             domain={domain ?? ''}
             metadata={metadata}
             editAction={metadataModal.onOpen}
+            isMetadataLoading={loading || fetchingMetadata}
           />
 
           <Stack

@@ -87,7 +87,12 @@ export const NftCardModal = ({
           <Stack spacing={6} flex={1} mt={6} maxH="full" overflowY="hidden">
             <Box>
               <Heading fontSize="md">Description</Heading>
-              <Text mt={3} fontSize="sm" color="section.500">
+              <Text
+                mt={3}
+                fontSize="sm"
+                color="section.500"
+                wordBreak="break-all"
+              >
                 {metadata?.description ?? 'Description not provided.'}
               </Text>
             </Box>

@@ -32,14 +32,10 @@ export const NftListCollections = ({
         image?: string;
       })[];
 
-      //['nft-metadata', assetId]
-
       for (const nft of nfts) {
         let metadata: Record<string, string> = nft.metadata ?? {};
         const metadataEntries = Object.entries(metadata).filter(
-          ([key]) =>
-            !key.toLowerCase().includes('uri') &&
-            !key.toLowerCase().includes('image')
+          ([key]) => !['uri', 'image'].includes(key.toLowerCase())
         );
 
         if (metadataEntries.length === 0 && nft.uri?.endsWith('.json')) {
