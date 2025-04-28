@@ -21,7 +21,6 @@ export const getAssetMetadata = async (
   ]);
 
   if (metadataByCache) {
-    console.log('get metadata from cache', assetId);
     return metadataByCache;
   }
 
@@ -45,7 +44,6 @@ export const getOrderMetadata = async (
   queryClient: QueryClient,
   chainId?: number | null
 ): Promise<Order> => {
-  console.log('get metadata', order.id);
   const assetMetadata = await getAssetMetadata(
     order.asset,
     queryClient,
