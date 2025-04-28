@@ -69,6 +69,7 @@ const NFTText = ({
     minW="fit-content"
     w="full"
     p={3}
+    mr={1}
     gap={3}
     alignItems="center"
     borderRadius="md"
@@ -101,7 +102,7 @@ const NFTText = ({
         {title}
       </Text>
       <Flex gap={2}>
-        <Text fontSize="xs">
+        <Text fontSize="xs" wordBreak="break-all">
           {isB256(value!) ? formatAddress(value!, 9) : value}
         </Text>
         {isCopy && <CopyText value={value!} />}
@@ -295,6 +296,7 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
                 <Heading fontSize="md">Metadata</Heading>
                 <Flex
                   w="full"
+                  maxW={{ base: 'full', md: '425px' }}
                   maxH="310px"
                   overflowY="scroll"
                   direction="row"
