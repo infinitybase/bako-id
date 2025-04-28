@@ -45,7 +45,7 @@ export const useCreateOrder = () => {
         id: String(response.orderId),
       };
 
-      const newOrder = await getOrderMetadata(order, chainId);
+      const newOrder = await getOrderMetadata(order, queryClient, chainId);
 
       const updatedOrders = [newOrder, ...(previousOrders.data ?? [])].slice(
         0,

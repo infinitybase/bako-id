@@ -56,7 +56,11 @@ export const useCancelOrder = () => {
 
         if (nextOrder.orders.length > 0) {
           const order = nextOrder.orders[0];
-          const orderWithMetadata = await getOrderMetadata(order, chainId);
+          const orderWithMetadata = await getOrderMetadata(
+            order,
+            queryClient,
+            chainId
+          );
           updatedOrders.push(orderWithMetadata);
         }
       }

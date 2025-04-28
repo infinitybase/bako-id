@@ -42,6 +42,7 @@ export const useUpdateOrder = () => {
       if (previousOrders) {
         const orderAssetMetadata = await getAssetMetadata(
           payload.sellAsset,
+          queryClient,
           chainId
         );
         const mergedOrders = previousOrders.data.map((order) => {
