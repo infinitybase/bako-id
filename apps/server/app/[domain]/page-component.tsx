@@ -39,7 +39,9 @@ import { NftListCollections } from './components/NftListColletions';
 import { NftListForSale } from './components/NftListForSale';
 import { useProfile } from './hooks';
 
-const ProfileCardLoadingSkeleton = () => (
+const ProfileCardLoadingSkeleton = ({
+  hiddenCollectionSkeleton = false,
+}: { hiddenCollectionSkeleton?: boolean }) => (
   <Suspense>
     <Stack
       display="flex"
@@ -70,7 +72,7 @@ const ProfileCardLoadingSkeleton = () => (
       </Flex>
       <AccountsCardSkeleton />
     </Stack>
-    <NFTCollectionSkeleton />
+    {!hiddenCollectionSkeleton && <NFTCollectionSkeleton />}
   </Suspense>
 );
 
@@ -136,7 +138,9 @@ export function ProfilePage({
     >
       {isLoading && (
         <Box w="full" maxW={1019}>
-          <ProfileCardLoadingSkeleton />
+          <ProfileCardLoadingSkeleton
+            hiddenCollectionSkeleton={!!initialOrders.total}
+          />
         </Box>
       )}
       <Stack
