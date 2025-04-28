@@ -1,9 +1,8 @@
 import { Manager, Nft, Registry, getContractId } from '@bako-id/contracts';
 import {
-  Account,
+  type Account,
   DateTime,
   type Provider,
-  TransactionStatus,
   getMintedAssetId,
   getRandomB256,
   sha256,
@@ -97,7 +96,7 @@ export class RegistryContract {
   static create(accountOrProvider: Account | Provider) {
     let provider: Provider;
 
-    if (accountOrProvider instanceof Account) {
+    if ('provider' in accountOrProvider) {
       provider = accountOrProvider.provider;
     } else {
       provider = accountOrProvider;
@@ -268,7 +267,7 @@ export class RegistryContract {
   async setMetadata(
     domain: string,
     metadata: Partial<Record<MetadataKeys, string>>
-  ) {
+  ): Promise<TransactionResult> {
     if (!this.account) {
       throw new Error('Account is required to setMetadata');
     }
@@ -292,7 +291,7 @@ export class RegistryContract {
       )
       .call();
     const { transactionResult } = await multiCall.waitForResult();
-    return transactionResult.status === TransactionStatus.success;
+    return transactionResult;
   }
 
   async getMetadata(domain: string) {

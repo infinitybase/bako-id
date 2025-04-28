@@ -4,12 +4,10 @@
 //   type Metadata,
 // } from '@bako-id/sdk';
 import {
-  Box,
   Button,
   Center,
   CloseButton,
   Flex,
-  Icon,
   Spinner,
   Tab,
   TabIndicator,
@@ -21,26 +19,28 @@ import {
   useDisclosure,
   useMediaQuery,
 } from '@chakra-ui/react';
-import { useWallet } from '@fuels/react';
-
-import { useParams } from '@tanstack/react-router';
-import type { Account } from 'fuels';
 import React, { useMemo, useState, type ReactNode } from 'react';
 import {
+  useMetadata,
   type MetadataKeyValue,
   type MetadataResponse,
-  useMetadata,
 } from '../../hooks/useMetadata';
 import { type MetadataItem, Metadatas } from '../../utils/metadatas';
 import { MetadataCard } from '../card/metadataCard';
 import { Dialog } from '../dialog';
-import { AvatarIcon, FlagIcon } from '../icons';
+import { FlagIcon } from '../icons';
 import { EditProfileFieldsModal } from './editProfileFieldsModal';
 import { EditProfilePicModal } from './editProfilePicModal';
 import { TransactionsDetailsModal } from './transactionDetails';
 import { useGetPrimaryHandleName } from '../../hooks';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
 import { useSetPrimaryHandle } from '../../hooks/useSetPrimaryHandle';
+
+import { useParams } from '@tanstack/react-router';
+import { useWallet } from '@fuels/react';
+import type { Account } from 'fuels';
+import { MetadataKeys } from '@bako-id/sdk';
+import { UserAvatar } from '../user/userAvatar';
 
 interface Metadata {
   key: string;
@@ -115,9 +115,11 @@ const ModalEmptyState = () => {
 const ModalTitle = ({
   onClose,
   avatar,
+  isAvatarLoading,
 }: Pick<EditProfileModalProps, 'onClose'> & {
   wallet: Account;
-  avatar?: string;
+  avatar?: string | null;
+  isAvatarLoading: boolean;
 }) => {
   const modalTitle = useDisclosure();
   const { domain } = useParams({ strict: false });
@@ -131,32 +133,13 @@ const ModalTitle = ({
   return (
     <Flex w="full" justify="space-between">
       <Flex>
-        {avatar ? (
-          <Box
-            w={48}
-            h={28}
-            rounded="lg"
-            mr={4}
-            bgImage={`url(${avatar})`}
-            bgSize="cover"
-            bgPosition="center"
-            bgRepeat="no-repeat"
-            border="1.5px solid"
-            borderColor={'button.500'}
-          />
-        ) : (
-          <Icon
-            w={[16, 16, 16, 20]}
-            h={[16, 16, 16, 20]}
-            rounded="lg"
-            mr={3}
-            as={AvatarIcon}
-            // _hover={{
-            //   cursor: 'pointer',
-            // }}
-            // onClick={modalTitle.onOpen}
-          />
-        )}
+        <UserAvatar
+          isAvatarLoading={isAvatarLoading}
+          isEditProfilePicModalOpen={true}
+          onClick={modalTitle.onOpen}
+          avatar={avatar}
+        />
+
         <Flex
           gap={4}
           alignItems="flex-start"
@@ -486,9 +469,13 @@ export const EditMetadataModal = ({
     transactionModal,
     updatedMetadata,
     setUpdatedMetadata,
+    fetchingMetadata,
+    loadingMetadata,
   } = useMetadata(handleOnSuccess);
 
-  const avatar = metadata?.find((meta) => meta.key === 'avatar')?.value;
+  const avatar = metadata?.find((m) => m.key === MetadataKeys.AVATAR);
+
+  const isAvatarLoading = fetchingMetadata || loadingMetadata;
 
   const [filter, setFilter] = useState(FilterButtonTypes.ALL);
 
@@ -505,7 +492,12 @@ export const EditMetadataModal = ({
         onClose={onClose}
         size={['full', '2xl', '2xl', '2xl']}
         modalTitle={
-          <ModalTitle avatar={avatar} onClose={onClose} wallet={wallet!} />
+          <ModalTitle
+            avatar={avatar?.value}
+            isAvatarLoading={isAvatarLoading}
+            onClose={onClose}
+            wallet={wallet!}
+          />
         }
       >
         <ModalFiltersButtons changeFilter={handleFilterClick} filter={filter} />

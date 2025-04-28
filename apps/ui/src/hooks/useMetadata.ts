@@ -69,6 +69,7 @@ export const useMetadata = (
       }
     },
     enabled: !!domain || !!handleName,
+    refetchOnWindowFocus: false,
   });
 
   const handleSaveRequest = useMutation({
@@ -119,6 +120,7 @@ export const useMetadata = (
   return {
     metadata: handleListRequest.data,
     loadingMetadata: handleListRequest.isLoading,
+    fetchingMetadata: handleListRequest.isFetching,
     metadataModal,
     transactionModal,
     handleSaveRequest,

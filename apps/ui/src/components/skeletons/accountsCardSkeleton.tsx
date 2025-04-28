@@ -5,7 +5,7 @@ export const AccountsCardSkeleton = () => {
   return (
     <Card
       w={['full', 'full', 'full', '50%']}
-      h={['fit-content', 'fit-content', 'fit-content', 'auto']}
+      h={['fit-content', 'fit-content', 'fit-content', '416px']}
       display="flex"
       backdropFilter="blur(6px)"
       flexDirection="column"
@@ -13,11 +13,6 @@ export const AccountsCardSkeleton = () => {
     >
       <Flex alignItems="center" justify="space-between">
         <Skeleton w={32} h={8} rounded="md" />
-        {/* {isMyDomain && (
-        <Button variant="ghosted" rightIcon={<PlusSquareIcon />}>
-          Add
-        </Button>
-      )} */}
       </Flex>
 
       <VStack spacing={5}>
