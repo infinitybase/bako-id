@@ -1,7 +1,6 @@
 import {
   Box,
   Divider,
-  Flex,
   FormControl,
   Text,
   useDisclosure,
@@ -20,13 +19,18 @@ import { DropdownAutocomplete } from '../inputs/dropdownAutocomplete';
 import { useSidebar } from './hooks/useSidebar';
 import { ENSBanner } from '../buttons/ensBanner';
 import { NSDialog } from '../../modules/ens/components/dialog';
+import { useMetadata } from '../../hooks/useMetadata';
+import { MetadataKeys } from '@bako-id/sdk';
 
 interface ProfileSidebarProps extends BoxProps {}
 
 const ProfileSidebar = (props: ProfileSidebarProps) => {
+  const { metadata, loadingMetadata } = useMetadata();
   const { isMyDomain } = useSidebar();
   const [active, setActive] = useState<string>('');
   const ensDialogState = useDisclosure();
+  const hasEns = !!metadata?.find((m) => m.key === MetadataKeys.ENS_DOMAIN);
+  const showEnsBanner = !hasEns && isMyDomain && !loadingMetadata;
 
   return (
     <>
@@ -89,23 +93,23 @@ const ProfileSidebar = (props: ProfileSidebarProps) => {
           />
         </VStack>
         <VStack spacing={4}>
-          {isMyDomain && (
+          {/* {isMyDomain && (
             <Flex w="full" flexDirection="column" gap={2}>
-              {/* <SidebarBanner
+              <SidebarBanner
               text="Click here to verify your X account and get benefits"
               icon={TwitterBannerIcon}
-            /> */}
+            />
 
-              {/* <SidebarBanner
+              <SidebarBanner
               text="Click here to verify your Farcaster account and get benefits"
               icon={FarcasterIcon}
               bgColor="#7F5FC7"
               iconColor="white"
-            /> */}
+            />
             </Flex>
-          )}
+          )} */}
 
-          <ENSBanner onClick={ensDialogState.onOpen} />
+          {showEnsBanner && <ENSBanner onClick={ensDialogState.onOpen} />}
 
           <BakoSafeBanner
             onClick={() => window.open('https://www.bako.global', '_blank')}

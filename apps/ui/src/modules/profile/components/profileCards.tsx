@@ -577,7 +577,7 @@ export const ProfileCards = ({
             domain={domain ?? ''}
             metadata={metadata}
             editAction={metadataModal.onOpen}
-            isMetadataLoading={loading || fetchingMetadata}
+            isMetadataLoading={fetchingMetadata || loadingMetadata}
           />
 
           <Stack
@@ -597,7 +597,11 @@ export const ProfileCards = ({
             />
           </Stack>
         </Flex>
-        <AccountsCard metadata={metadata} addAction={metadataModal.onOpen} />
+        <AccountsCard
+          metadata={metadata}
+          addAction={metadataModal.onOpen}
+          isMetadataLoading={fetchingMetadata || loadingMetadata}
+        />
       </Stack>
       <NFTCollections resolver={domain!} chainId={chainId} />
     </Suspense>

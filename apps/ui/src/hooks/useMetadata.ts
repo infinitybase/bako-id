@@ -25,7 +25,7 @@ export type MetadataResponse =
 
 export const useMetadata = (handleOnSuccess?: () => void) => {
   const [updatedMetadata, setUpdatedMetadata] = useState<MetadataKeyValue[]>(
-    [],
+    []
   );
   const { domain } = useParams({ strict: false });
   const { provider } = useProvider();
@@ -64,6 +64,8 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
     },
     enabled: !!domain,
     refetchOnWindowFocus: false,
+    refetchOnMount: true,
+    staleTime: 1000 * 60 * 60 * 2,
   });
 
   const handleSaveRequest = useMutation({
@@ -75,7 +77,7 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
         ...updatedMetadata.reduce(
           // biome-ignore lint/performance/noAccumulatingSpread: <explanation>
           (acc, { key, value }) => ({ ...acc, [key]: value }),
-          {},
+          {}
         ),
       };
 

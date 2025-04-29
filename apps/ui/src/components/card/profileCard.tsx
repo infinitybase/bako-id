@@ -4,10 +4,12 @@ import {
   Button,
   type ButtonProps,
   Flex,
+  Icon,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
+  Skeleton,
   Text,
   useClipboard,
   useMediaQuery,
@@ -17,11 +19,10 @@ import { ExplorerTypes } from '../../types';
 import { twitterLink } from '../../utils/formatter.ts';
 import { getExplorer } from '../../utils/getExplorer';
 import { MetadataKeys } from '../../utils/metadataKeys';
-import { EditIcon, ExploreIcon, TwitterIcon } from '../icons';
+import { AvatarIcon, EditIcon, ExploreIcon, TwitterIcon } from '../icons';
 import { CopyIcon } from '../icons/copyIcon.tsx';
 import { ShareIcon } from '../icons/shareicon.tsx';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
-import { UserAvatar } from '../user/userAvatar.tsx';
 import { useChainId } from '../../hooks/useChainId.ts';
 
 interface IProfileCard {
@@ -205,11 +206,23 @@ export const ProfileCard = ({
       zIndex={1}
     >
       <Flex w="full">
-        <UserAvatar
-          avatar={avatar?.value}
-          isAvatarLoading={isMetadataLoading}
-        />
-
+        {avatar ? (
+          <Skeleton
+            isLoaded={!isMetadataLoading}
+            minW={32}
+            h={32}
+            rounded="lg"
+            mr={4}
+            bgImage={`url(${avatar.value})`}
+            bgSize="cover"
+            bgPosition="center"
+            bgRepeat="no-repeat"
+            border="1.5px solid"
+            borderColor={'button.500'}
+          />
+        ) : (
+          <Icon w={32} h={32} rounded="lg" mr={4} as={AvatarIcon} />
+        )}
         <Flex
           gap={4}
           alignItems={isLowerThanMobile ? 'flex-start' : 'flex-start'}

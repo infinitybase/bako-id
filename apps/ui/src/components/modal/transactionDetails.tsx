@@ -101,7 +101,7 @@ export const TransactionsDetailsModal = ({
             justifyContent="start"
             textColor="grey.100"
             leftAction={'action'}
-            content="Registration"
+            content="Update profile"
           />
           <Box w="full" display="flex" flexDirection="column" my={4}>
             <Text
