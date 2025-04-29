@@ -1,0 +1,9 @@
+query get_primary_handle($resolver: String!) {
+    AddressResolver(
+      where: {
+        resolver: { _eq: $resolver }
+      }
+    ) {
+      name
+    }
+}

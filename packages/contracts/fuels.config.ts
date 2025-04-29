@@ -27,7 +27,8 @@ export default createConfig({
       fs.readFileSync(contractIdJsonPath, 'utf-8')
     );
     const contractsIds = Object.fromEntries(
-      data.map(({ name, contractId }) => [name, contractId])
+      // @ts-ignore
+      data.contracts?.map(({ name, contractId }) => [name, contractId])
     );
 
     const networkContractsIds = {

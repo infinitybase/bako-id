@@ -14,6 +14,7 @@ import {
 import { HandleCard } from './handleCard';
 import { useNavigate } from '@tanstack/react-router';
 import { useGetPrimaryHandleName } from '../../../hooks';
+import { useWallet } from '@fuels/react';
 
 interface MyHandlesCard {
   handles?: IDRecord[];
@@ -23,6 +24,7 @@ interface MyHandlesCard {
 export const MyHandlesCard = ({ handles, isLoading }: MyHandlesCard) => {
   const { data: primaryHandle, isLoading: isPrimaryHandleRequestLoading } =
     useGetPrimaryHandleName();
+  const { wallet } = useWallet();
 
   const navigate = useNavigate();
   return (
@@ -74,6 +76,7 @@ export const MyHandlesCard = ({ handles, isLoading }: MyHandlesCard) => {
                   handle={handle}
                   primaryHandle={primaryHandle ?? ''}
                   isPrimaryHandleRequestLoading={isPrimaryHandleRequestLoading}
+                  wallet={wallet}
                 />
               ))
             ) : (

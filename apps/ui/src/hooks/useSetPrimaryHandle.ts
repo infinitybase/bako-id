@@ -5,10 +5,11 @@ import { useCustomToast } from '../components';
 import { useState } from 'react';
 import { getWalletSignatureErrorTitle } from '../utils/walletSignatureErrorsTitle';
 
-const useSetPrimaryHandle = (domain: string) => {
+const useSetPrimaryHandle = (domain: string, handleCloseDialog: () => void) => {
   const { errorToast, successToast } = useCustomToast();
   const { wallet } = useWallet();
   const registryContract = useRegistryContract();
+
   const [isSigning, setIsSigning] = useState(false);
 
   const { mutate: setPrimaryHandle, isPending } = useMutation({
@@ -21,6 +22,7 @@ const useSetPrimaryHandle = (domain: string) => {
         title: 'Successfully set primary handle',
       });
       setIsSigning(false);
+      handleCloseDialog();
     },
     onError: (error) => {
       console.error(error);

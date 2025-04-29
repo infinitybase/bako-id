@@ -131,6 +131,7 @@ export class BakoIDClient {
       resolveNetwork(chainId),
       `/name/${Address.fromDynamicInput(addr).toB256()}`
     );
+
     return name ?? null;
   }
 

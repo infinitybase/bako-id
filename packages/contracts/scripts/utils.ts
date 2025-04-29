@@ -25,7 +25,7 @@ export const setup = async () => {
   const providerUrl = requireEnv('PROVIDER_URL');
   const privateKey = requireEnv('PRIVATE_KEY');
 
-  const provider = await Provider.create(providerUrl);
+  const provider =  new Provider(providerUrl);
   const wallet = Wallet.fromPrivateKey(privateKey, provider);
   const balance = await wallet.getBalance();
 

@@ -1778,6 +1778,13 @@ export type GQLOwnerQueryVariables = Exact<{
 
 export type GQLOwnerQuery = { __typename: 'query_root', Records: Array<{ __typename: 'Records', owner: string }> };
 
+export type GQLGet_Primary_HandleQueryVariables = Exact<{
+  resolver: Scalars['String']['input'];
+}>;
+
+
+export type GQLGet_Primary_HandleQuery = { __typename: 'query_root', AddressResolver: Array<{ __typename: 'AddressResolver', name: string }> };
+
 export type GQLRecordsQueryVariables = Exact<{
   owner?: InputMaybe<Scalars['String']['input']>;
   network?: InputMaybe<Scalars['network']['input']>;
@@ -1820,6 +1827,13 @@ export const OwnerDocument = gql`
   }
 }
     `;
+export const Get_Primary_HandleDocument = gql`
+    query get_primary_handle($resolver: String!) {
+  AddressResolver(where: {resolver: {_eq: $resolver}}) {
+    name
+  }
+}
+    `;
 export const RecordsDocument = gql`
     query records($owner: String, $network: network) {
   Records(where: {owner: {_eq: $owner}, network: {_eq: $network}}) {
@@ -1848,6 +1862,7 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 const NameDocumentString = print(NameDocument);
 const NamesDocumentString = print(NamesDocument);
 const OwnerDocumentString = print(OwnerDocument);
+const Get_Primary_HandleDocumentString = print(Get_Primary_HandleDocument);
 const RecordsDocumentString = print(RecordsDocument);
 const ResolverDocumentString = print(ResolverDocument);
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
@@ -1860,6 +1875,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     owner(variables?: GQLOwnerQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLOwnerQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLOwnerQuery>(OwnerDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'owner', 'query', variables);
+    },
+    get_primary_handle(variables: GQLGet_Primary_HandleQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLGet_Primary_HandleQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLGet_Primary_HandleQuery>(Get_Primary_HandleDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'get_primary_handle', 'query', variables);
     },
     records(variables?: GQLRecordsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLRecordsQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLRecordsQuery>(RecordsDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'records', 'query', variables);

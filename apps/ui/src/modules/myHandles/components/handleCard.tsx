@@ -12,25 +12,27 @@ import {
 import { useNavigate } from '@tanstack/react-router';
 import { AvatarIcon } from '../../../components';
 import { useMetadata } from '../../../hooks/useMetadata';
-import { useSidebar } from '../../../components/sidebar/hooks/useSidebar';
+import type { Account } from 'fuels';
 
 interface IHandleCard extends StackProps {
   handle: IDRecord;
   primaryHandle: string;
   isPrimaryHandleRequestLoading: boolean;
+  wallet: Account | null;
 }
 
 export const HandleCard = ({
   primaryHandle,
   isPrimaryHandleRequestLoading,
   handle,
+  wallet,
   ...rest
 }: IHandleCard) => {
   const navigate = useNavigate();
-  const { isMyDomain: isOwner } = useSidebar(handle.name);
   const { metadata, loadingMetadata } = useMetadata(undefined, handle.name);
 
   const avatar = metadata?.find((m) => m.key === MetadataKeys.AVATAR);
+  const isOwner = wallet?.address.b256Address === handle.owner;
   const isLoading = isPrimaryHandleRequestLoading || loadingMetadata;
   const isPrimaryHandle = isOwner && primaryHandle === handle.name;
 

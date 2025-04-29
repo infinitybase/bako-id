@@ -3,11 +3,11 @@ import { useParams } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { useResolveOwnerRequests } from '../../../hooks/useResolveOwnerRequests.ts';
 
-export const useSidebar = (handleName?: string) => {
+export const useSidebar = () => {
   const { domain: domainParam } = useParams({ strict: false });
 
   const { wallet } = useWallet();
-  const { data: owner } = useResolveOwnerRequests(handleName ?? domainParam);
+  const { data: owner } = useResolveOwnerRequests(domainParam);
 
   const isMyDomain = useMemo(() => {
     if (!owner) return false;

@@ -28,9 +28,10 @@
     "fuels": "0.100.1"
   },
   "devDependencies": {
+    "@shared/tsup": "workspace:*",
     "@types/jest": "^29.5.11",
     "jest": "^29.6.4",
     "ts-jest": "^29.1.1",
-    "@shared/tsup": "workspace:*"
+    "ts-node": "^10.9.2"
   }
 }

@@ -205,6 +205,7 @@ export class RegistryContract {
       .set_primary_handle(newDomainName)
       .addContracts([this.managerContract])
       .call();
+
     const { transactionResult } = await changePrimaryHandleCall.waitForResult();
 
     return transactionResult;

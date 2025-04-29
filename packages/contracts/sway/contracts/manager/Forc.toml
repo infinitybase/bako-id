@@ -11,4 +11,5 @@ sway_libs = { git = "https://github.com/FuelLabs/sway-libs", tag = "v0.24.0" }
 
 [proxy]
 enabled = true
-address = "0xe7de61aeb195208e7f8eb8b59673639bc5a37a28c976222f79eb07db6eadc0b7"
+address = "0xae2fc776cffa65b6522f9943c1ab5a8b8f462eca4735c99afe6107fc0becf42d"
+

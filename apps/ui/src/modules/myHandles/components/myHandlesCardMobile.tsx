@@ -11,6 +11,8 @@ import {
 } from '@chakra-ui/react';
 import { HandleCard } from './handleCard';
 import { useNavigate } from '@tanstack/react-router';
+import { useGetPrimaryHandleName } from '../../../hooks';
+import { useWallet } from '@fuels/react';
 
 interface IMyHandlesCardMobile {
   handles?: IDRecord[];
@@ -21,7 +23,11 @@ export const MyHandlesCardMobile = ({
   handles,
   isLoading,
 }: IMyHandlesCardMobile) => {
+  const { data: primaryHandle, isLoading: isPrimaryHandleRequestLoading } =
+    useGetPrimaryHandleName();
+  const { wallet } = useWallet();
   const navigate = useNavigate();
+
   return (
     <Center w="full" h="max-content" p={4}>
       <VStack w="full" align="flex-start">
@@ -51,7 +57,13 @@ export const MyHandlesCardMobile = ({
           <Skeleton isLoaded={!isLoading} minH="200px" rounded="lg">
             {handles?.length ? (
               handles.map((handle) => (
-                <HandleCard key={handle.name} handle={handle} />
+                <HandleCard
+                  key={handle.name}
+                  handle={handle}
+                  primaryHandle={primaryHandle ?? ''}
+                  isPrimaryHandleRequestLoading={isPrimaryHandleRequestLoading}
+                  wallet={wallet}
+                />
               ))
             ) : (
               <VStack mt={4} h="282px" placeContent="center">

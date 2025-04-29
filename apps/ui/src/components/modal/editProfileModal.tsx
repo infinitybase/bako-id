@@ -33,7 +33,6 @@ import { EditProfileFieldsModal } from './editProfileFieldsModal';
 import { EditProfilePicModal } from './editProfilePicModal';
 import { TransactionsDetailsModal } from './transactionDetails';
 import { useGetPrimaryHandleName } from '../../hooks';
-import { useSidebar } from '../sidebar/hooks/useSidebar';
 import { useSetPrimaryHandle } from '../../hooks/useSetPrimaryHandle';
 
 import { useParams } from '@tanstack/react-router';
@@ -41,6 +40,7 @@ import { useWallet } from '@fuels/react';
 import type { Account } from 'fuels';
 import { MetadataKeys } from '@bako-id/sdk';
 import { UserAvatar } from '../user/userAvatar';
+import { useSidebar } from '../sidebar/hooks/useSidebar';
 
 interface Metadata {
   key: string;
@@ -123,9 +123,19 @@ const ModalTitle = ({
 }) => {
   const modalTitle = useDisclosure();
   const { domain } = useParams({ strict: false });
-  const { data: primaryHandleName } = useGetPrimaryHandleName();
+  const { data: primaryHandleName, refetch } = useGetPrimaryHandleName();
 
-  const { handleSetPrimaryHandle, isLoading } = useSetPrimaryHandle(domain);
+  const handleCloseDialog = () => {
+    setTimeout(() => {
+      refetch();
+    }, 1200);
+    onClose();
+  };
+
+  const { handleSetPrimaryHandle, isLoading } = useSetPrimaryHandle(
+    domain,
+    handleCloseDialog
+  );
   const { isMyDomain: isOwner } = useSidebar();
 
   const isPrimaryHandle = isOwner && primaryHandleName === domain;

@@ -77,6 +77,8 @@ Manager.ResolverChangedEvent.handler(async ({ event, context }) => {
     networkName
   );
   const oldResolver = await context.AddressResolver.get(oldResolverId);
+  const isChangingPrimaryHandle =
+    oldResolver && oldResolver.name !== event.params.name;
 
   if (oldResolver && oldResolver.record_id === recordId) {
     context.AddressResolver.deleteUnsafe(oldResolverId);
@@ -86,18 +88,20 @@ Manager.ResolverChangedEvent.handler(async ({ event, context }) => {
     event.params.new_resolver.payload.bits,
     networkName
   );
+
   const newResolver = await context.AddressResolver.get(newResolverId);
 
-  if (!newResolver) {
+  if (!newResolver || isChangingPrimaryHandle) {
     context.AddressResolver.set({
       id: newResolverId,
       resolver: event.params.new_resolver.payload.bits,
       name: event.params.name,
       record_id: recordId,
     });
-    context.Records.set({
-      ...record,
-      resolver: event.params.new_resolver.payload.bits,
-    });
   }
+
+  context.Records.set({
+    ...record,
+    resolver: event.params.new_resolver.payload.bits,
+  });
 });

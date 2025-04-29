@@ -3,6 +3,7 @@ import {
   Button,
   type ButtonProps,
   Flex,
+  Icon,
   Menu,
   MenuButton,
   MenuItem,
