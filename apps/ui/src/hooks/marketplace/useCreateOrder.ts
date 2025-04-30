@@ -1,3 +1,4 @@
+import { useProfile } from '@/modules/profile/hooks/useProfile';
 import {
   OrderStatus,
   type Order as OrderWithMetadata,
@@ -8,6 +9,7 @@ import type { PaginationResult } from '@/utils/pagination';
 import type { Order } from '@bako-id/marketplace';
 import { useAccount } from '@fuels/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSearch } from '@tanstack/react-router';
 import { useChainId } from '../useChainId';
 import { useMarketplace } from './useMarketplace';
 
@@ -16,6 +18,10 @@ export const useCreateOrder = () => {
   const queryClient = useQueryClient();
   const { account } = useAccount();
   const { chainId } = useChainId();
+  const { domain } = useProfile();
+  const { page } = useSearch({ strict: false });
+
+  const address = domain?.Address?.bits || domain?.ContractId?.bits;
 
   const {
     mutate: createOrder,
@@ -27,12 +33,13 @@ export const useCreateOrder = () => {
       return await marketplace.createOrder(order);
     },
     onSuccess: async (response, payload) => {
-      const previousOrders = queryClient.getQueriesData<
-        PaginationResult<OrderWithMetadata>
-      >({
-        queryKey: [MarketplaceQueryKeys.ORDERS],
-        exact: false,
-      })[0][1] as PaginationResult<OrderWithMetadata>;
+      const _page = page ?? 1;
+      const previousOrders = queryClient.getQueryData<PaginationResult<Order>>([
+        MarketplaceQueryKeys.ORDERS,
+        address,
+        _page,
+        chainId,
+      ]);
 
       const order: OrderResponse = {
         __typename: 'Order',
@@ -45,11 +52,11 @@ export const useCreateOrder = () => {
         id: String(response.orderId),
       };
 
-      const newOrder = await getOrderMetadata(order, queryClient, chainId);
+      const newOrder = await getOrderMetadata(order, chainId);
 
-      const updatedOrders = [newOrder, ...(previousOrders.data ?? [])].slice(
+      const updatedOrders = [newOrder, ...(previousOrders?.data ?? [])].slice(
         0,
-        previousOrders.limit
+        previousOrders?.limit
       );
 
       queryClient.setQueriesData<PaginationResult<OrderWithMetadata>>(

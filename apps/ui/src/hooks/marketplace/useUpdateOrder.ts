@@ -37,12 +37,12 @@ export const useUpdateOrder = () => {
         MarketplaceQueryKeys.ORDERS,
         address,
         _page,
+        chainId,
       ]);
 
       if (previousOrders) {
         const orderAssetMetadata = await getAssetMetadata(
           payload.sellAsset,
-          queryClient,
           chainId
         );
         const mergedOrders = previousOrders.data.map((order) => {

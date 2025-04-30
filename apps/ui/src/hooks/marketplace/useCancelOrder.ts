@@ -5,6 +5,7 @@ import { MarketplaceQueryKeys } from '@/utils/constants';
 import { getOrderMetadata } from '@/utils/getOrderMetadata';
 import type { PaginationResult } from '@/utils/pagination';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSearch } from '@tanstack/react-router';
 import { useChainId } from '../useChainId';
 import { useMarketplace } from './useMarketplace';
 
@@ -13,6 +14,7 @@ export const useCancelOrder = () => {
   const queryClient = useQueryClient();
   const { domain } = useProfile();
   const { chainId } = useChainId();
+  const { page } = useSearch({ strict: false });
 
   const address = domain?.Address?.bits || domain?.ContractId?.bits;
 
@@ -26,12 +28,15 @@ export const useCancelOrder = () => {
       return await marketplace.cancelOrder(orderId);
     },
     onSuccess: async (_, orderId) => {
-      const previousOrders = queryClient.getQueriesData<
+      const _page = page ?? 1;
+      const previousOrders = queryClient.getQueryData<
         PaginationResult<ListOrder>
-      >({
-        queryKey: [MarketplaceQueryKeys.ORDERS],
-        exact: false,
-      })[0][1] as PaginationResult<ListOrder>;
+      >([
+        MarketplaceQueryKeys.ORDERS,
+        address,
+        _page,
+        chainId,
+      ]) as PaginationResult<ListOrder>;
 
       const updatedOrders = previousOrders.data.filter(
         (order) => order.id !== orderId
@@ -42,7 +47,7 @@ export const useCancelOrder = () => {
         const nextPage = previousOrders.page + 1;
         const nextPageOrders = queryClient.getQueryData<
           PaginationResult<ListOrder>
-        >([MarketplaceQueryKeys.ORDERS, address, nextPage]);
+        >([MarketplaceQueryKeys.ORDERS, address, nextPage, chainId]);
 
         if (nextPageOrders) {
           const firstOrder = nextPageOrders.data[0];
@@ -56,11 +61,7 @@ export const useCancelOrder = () => {
 
         if (nextOrder.orders.length > 0) {
           const order = nextOrder.orders[0];
-          const orderWithMetadata = await getOrderMetadata(
-            order,
-            queryClient,
-            chainId
-          );
+          const orderWithMetadata = await getOrderMetadata(order, chainId);
           updatedOrders.push(orderWithMetadata);
         }
       }
@@ -70,9 +71,9 @@ export const useCancelOrder = () => {
         data: updatedOrders,
       };
 
-      queryClient.setQueriesData<PaginationResult<ListOrder>>(
-        { queryKey: [MarketplaceQueryKeys.ORDERS], exact: false },
-        () => paginatedOrders
+      queryClient.setQueryData<PaginationResult<ListOrder>>(
+        [MarketplaceQueryKeys.ORDERS, address, _page, chainId],
+        paginatedOrders
       );
 
       queryClient.invalidateQueries({ queryKey: ['nfts'] });

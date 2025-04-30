@@ -1,8 +1,9 @@
 import { type FuelAsset, FuelAssetService } from '@/services/fuel-assets';
 import type { Order } from '@/types/marketplace';
-import type { QueryClient } from '@tanstack/react-query';
-import { assignIn, merge } from 'lodash';
+import { assignIn, concat, merge, uniqBy } from 'lodash';
+import { ASSETS_METADATA_STORAGE_KEY } from './constants';
 import { formatMetadataFromIpfs, parseURI } from './formatter';
+import { getLocalStorage, setLocalStorage } from './localStorage';
 
 export type OrderResponse = Omit<Order, 'nft' | 'asset'> & {
   asset: string;
@@ -10,18 +11,20 @@ export type OrderResponse = Omit<Order, 'nft' | 'asset'> & {
 
 type AssetMetadata = (FuelAsset & { id: string }) | null;
 
+type CachedMetadata = Record<string, AssetMetadata>;
+
 export const getAssetMetadata = async (
   assetId: string,
-  queryCLient: QueryClient,
   chainId?: number | null
 ) => {
-  const metadataByCache = queryCLient.getQueryData<AssetMetadata | null>([
-    'assetMetadata',
-    assetId,
-  ]);
+  const metadataByStorage = getLocalStorage<CachedMetadata>(
+    ASSETS_METADATA_STORAGE_KEY
+  );
+
+  const metadataByCache = metadataByStorage?.[assetId] || null;
 
   if (metadataByCache) {
-    console.log('get metadata from cache', assetId);
+    console.log('Cache hit', assetId);
     return metadataByCache;
   }
 
@@ -30,37 +33,20 @@ export const getAssetMetadata = async (
     chainId: chainId!,
   });
 
-  if (assetMetadata) {
-    queryCLient.setQueryData<AssetMetadata | null>(['assetMetadata', assetId], {
-      ...assetMetadata,
-      id: assetId,
-    });
-  }
-
   return assetMetadata;
 };
 
 export const getOrderMetadata = async (
   order: OrderResponse,
-  queryClient: QueryClient,
   chainId?: number | null
 ): Promise<Order> => {
-  console.log('get metadata', order.id);
-  const assetMetadata = await getAssetMetadata(
-    order.asset,
-    queryClient,
-    chainId
-  );
-  const fuelMetadata = await getAssetMetadata(
-    order.itemAsset,
-    queryClient,
-    chainId
-  );
+  const assetMetadata = await getAssetMetadata(order.asset, chainId);
+  const fuelMetadata = await getAssetMetadata(order.itemAsset, chainId);
   const ipfsMetadata: Record<string, string> = {};
 
   if (fuelMetadata?.uri?.endsWith('.json')) {
     const json: Record<string, string> = await fetch(fuelMetadata.uri)
-      .then((res) => res.json())
+      .then(async (res) => await res.json())
       .catch(() => ({}));
     const data = formatMetadataFromIpfs(json);
     assignIn(ipfsMetadata, data);
@@ -78,13 +64,52 @@ export const getOrderMetadata = async (
       : null,
     nft: {
       metadata,
-      ipfs: ipfsMetadata,
+      fuelMetadata,
       contractId: fuelMetadata?.contractId,
       id: order.itemAsset,
       edition: ipfsMetadata?.edition ? `#${ipfsMetadata.edition}` : undefined,
       name: fuelMetadata?.name,
-      image: parseURI(fuelMetadata?.metadata?.image ?? ''),
+      image: fuelMetadata?.metadata?.image
+        ? parseURI(fuelMetadata?.metadata?.image)
+        : undefined,
       description: ipfsMetadata?.description,
     },
   };
+};
+
+export const saveMetadataToLocalStorage = (orders: Order[]) => {
+  const uniqueAssets = uniqBy(
+    orders
+      .filter((order) => order.asset)
+      .map((order) => ({
+        ...order.asset,
+        id: order.asset?.id as string,
+      })),
+    'id'
+  );
+  const nftAssets = orders
+    .filter((order) => order.nft.fuelMetadata)
+    .map((order) => ({
+      ...order.nft.fuelMetadata,
+      id: order.nft.id,
+    }));
+
+  const metadata = concat(uniqueAssets, nftAssets);
+  const metadataByStorage =
+    getLocalStorage<CachedMetadata>(ASSETS_METADATA_STORAGE_KEY) || {};
+
+  const newMetadata = metadata.reduce((acc, asset) => {
+    const { id, ...rest } = asset;
+    return Object.assign(acc, {
+      [id]: {
+        ...rest,
+        id,
+      },
+    });
+  }, {} as CachedMetadata);
+
+  setLocalStorage(
+    ASSETS_METADATA_STORAGE_KEY,
+    merge(metadataByStorage, newMetadata)
+  );
 };

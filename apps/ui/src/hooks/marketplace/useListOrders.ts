@@ -3,14 +3,13 @@ import type { Order } from '@/types/marketplace';
 import { MarketplaceQueryKeys } from '@/utils/constants';
 import { getOrderMetadata } from '@/utils/getOrderMetadata';
 import { getPagination, type PaginationResult } from '@/utils/pagination';
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useChainId } from '../useChainId';
 
 type useListOrdersProps = { page?: number; limit?: number; id?: string };
 
 export const useListOrders = ({ limit = 12, id }: useListOrdersProps) => {
   const { chainId } = useChainId();
-  const queryClient = useQueryClient();
 
   const { data: orders, ...rest } = useInfiniteQuery<PaginationResult<Order>>({
     queryKey: [MarketplaceQueryKeys.ORDERS, chainId, id],
@@ -28,11 +27,8 @@ export const useListOrders = ({ limit = 12, id }: useListOrdersProps) => {
         page: pageParam as number,
         id,
       });
-
       const ordersWithMetadata = await Promise.all(
-        orders.map(
-          async (order) => await getOrderMetadata(order, queryClient, chainId)
-        )
+        orders.map(async (order) => await getOrderMetadata(order, chainId))
       );
 
       return getPagination({
@@ -42,6 +38,7 @@ export const useListOrders = ({ limit = 12, id }: useListOrdersProps) => {
         total,
       });
     },
+    placeholderData: (data) => data,
   });
 
   return { orders, ...rest };

@@ -1,12 +1,11 @@
 import { marketplaceService } from '@/services/marketplace';
 import { MarketplaceQueryKeys } from '@/utils/constants';
 import { getAssetMetadata } from '@/utils/getOrderMetadata';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useChainId } from '../useChainId';
 
 export const useListAssets = () => {
   const { chainId } = useChainId();
-  const queryClient = useQueryClient();
 
   const { data: assets, ...rest } = useQuery({
     queryKey: [MarketplaceQueryKeys.ASSETS, chainId],
@@ -15,11 +14,7 @@ export const useListAssets = () => {
 
       const assetsWithMetadata = await Promise.all(
         assets.map(async (asset) => {
-          const metadata = await getAssetMetadata(
-            asset.id,
-            queryClient,
-            chainId
-          );
+          const metadata = await getAssetMetadata(asset.id, chainId);
           return {
             ...asset,
             metadata,

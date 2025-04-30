@@ -5,7 +5,7 @@ import { useExecuteOrder, useUpdateOrder } from '@/hooks/marketplace';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
 import { useAssetsBalance } from '@/hooks/useAssetsBalance';
 import type { Nft } from '@/types/marketplace';
-import { blocklistMetadataKeys, MarketPlaceErrors } from '@/utils/constants';
+import { blocklistMetadataKeys } from '@/utils/constants';
 import {
   Button,
   Flex,
@@ -87,15 +87,8 @@ export const NftSaleCardModal = ({
       await executeOrderAsync(orderId);
       successToast({ title: 'Order executed successfully!' });
       onClose();
-    } catch (error) {
-      const err = error instanceof Error ? error.message : String(error);
-      const errors = Object.values(MarketPlaceErrors.executeOrder);
-      const errorIndex = errors.findIndex((e) => e === err);
-      const errorMessage =
-        errorIndex !== -1
-          ? errors[errorIndex]
-          : MarketPlaceErrors.executeOrder.default;
-      errorToast({ title: errorMessage });
+    } catch {
+      errorToast({ title: 'Failed to execute order' });
     }
   };
 

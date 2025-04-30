@@ -1,8 +1,11 @@
 import { marketplaceService } from '@/services/marketplace';
 import { MarketplaceQueryKeys } from '@/utils/constants';
-import { getOrderMetadata } from '@/utils/getOrderMetadata';
+import {
+  getOrderMetadata,
+  saveMetadataToLocalStorage,
+} from '@/utils/getOrderMetadata';
 import { getPagination } from '@/utils/pagination';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useChainId } from '../useChainId';
 
 type useListOrdersProps = { account?: string; page?: number; limit?: number };
@@ -13,7 +16,6 @@ export const useListOrdersByAccount = ({
   limit = 12,
 }: useListOrdersProps) => {
   const { chainId } = useChainId();
-  const queryClient = useQueryClient();
 
   const { data: orders, ...rest } = useQuery({
     queryFn: async () => {
@@ -23,10 +25,10 @@ export const useListOrdersByAccount = ({
       });
 
       const ordersWithMetadata = await Promise.all(
-        orders.map(async (order) =>
-          getOrderMetadata(order, queryClient, chainId)
-        )
+        orders.map(async (order) => getOrderMetadata(order, chainId))
       );
+
+      saveMetadataToLocalStorage(ordersWithMetadata);
 
       return getPagination({
         data: ordersWithMetadata,
@@ -35,7 +37,7 @@ export const useListOrdersByAccount = ({
         total,
       });
     },
-    queryKey: [MarketplaceQueryKeys.ORDERS, account, page],
+    queryKey: [MarketplaceQueryKeys.ORDERS, account, page, chainId],
     placeholderData: (data) => data,
     enabled: !!account,
   });
