@@ -24,7 +24,7 @@ export interface Order {
     name?: string | null;
     image?: string;
     description?: string;
-    ipfs: Record<string, string>;
+    fuelMetadata?: FuelAsset | null;
   };
 }
 
