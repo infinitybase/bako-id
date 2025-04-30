@@ -49,7 +49,7 @@ export const useCancelOrder = () => {
           updatedOrders.push(firstOrder);
         }
 
-        const nextOrder = await marketplaceService.getOrders({
+        const nextOrder = await marketplaceService.getOrdersByAccount({
           account: address!,
           page: nextPage,
         });
