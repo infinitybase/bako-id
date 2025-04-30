@@ -1,4 +1,3 @@
-import { contractsId } from '@bako-id/sdk';
 import {
   Box,
   Center,
@@ -16,7 +15,7 @@ import {
   VStack,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { isB256 } from 'fuels';
 import { type ReactNode, Suspense, useMemo, useState } from 'react';
 import nftEmpty from '../../../assets/nft-empty.png';
@@ -31,10 +30,7 @@ import { ContractIcon } from '../../../components/icons/contracticon.tsx';
 import { EditMetadataModal } from '../../../components/modal/editProfileModal.tsx';
 import { useMetadata } from '../../../hooks/useMetadata.ts';
 import { useChainId } from '../../../hooks/useChainId';
-import {
-  type FuelAsset,
-  FuelAssetService,
-} from '../../../services/fuel-assets.ts';
+import type { FuelAsset } from '../../../services/fuel-assets.ts';
 import {
   formatAddress,
   isUrl,
@@ -44,6 +40,7 @@ import {
 import { getExplorer } from '../../../utils/getExplorer.ts';
 import { ProfileCardLoadingSkeleton } from './profileCardLoadingSkeleton.tsx';
 import { NFTCollectionSkeleton } from '../../../components/skeletons/nftCollectionSkeleton.tsx';
+import { useGetPaginatedAssets } from '../../../hooks/useGetPaginatedAssets.ts';
 
 type ProfileCardsProps = {
   domainParam: string;
@@ -363,69 +360,77 @@ export const NFTCollections = ({
   resolver: string;
   chainId?: number | null;
 }) => {
-  const queryClient = useQueryClient();
-  const { data, isLoading } = useQuery({
-    queryKey: ['nfts', chainId, resolver],
-    queryFn: async () => {
-      const { data } = await FuelAssetService.byAddress({
-        address: resolver,
-        chainId: chainId!,
-      });
+  const {
+    assets: data,
+    isLoadingAssets: isLoading,
+    loadMoreRef,
+  } = useGetPaginatedAssets(resolver, chainId);
 
-      const nfts = data.filter((a) => !!a.isNFT) as (FuelAsset & {
-        image?: string;
-      })[];
+  // luisburigo total nft: 31
 
-      for (const nft of nfts) {
-        let metadata: Record<string, string> = nft.metadata ?? {};
-        const metadataEntries = Object.entries(metadata).filter(
-          ([key]) => !key.toLowerCase().includes('uri')
-        );
+  // const queryClient = useQueryClient();
+  // const { data, isLoading } = useQuery({
+  //   queryKey: ['nfts', chainId, resolver],
+  //   queryFn: async () => {
+  //     const { data } = await FuelAssetService.byAddress({
+  //       address: resolver,
+  //       chainId: chainId!,
+  //     });
 
-        if (metadataEntries.length === 0 && nft.uri?.endsWith('.json')) {
-          const json: Record<string, string> = await fetch(parseURI(nft.uri))
-            .then((res) => res.json())
-            .catch(() => ({}));
-          metadata = json;
-        }
+  //     const nfts = data.filter((a) => !!a.isNFT) as (FuelAsset & {
+  //       image?: string;
+  //     })[];
 
-        for (const [key, value] of Object.entries(metadata)) {
-          if (Array.isArray(value)) {
-            const metadataValueRecord = metadataArrayToObject(value, key);
-            Object.assign(metadata, metadataValueRecord);
-            delete metadata[key];
-            continue;
-          }
+  //     for (const nft of nfts) {
+  //       let metadata: Record<string, string> = nft.metadata ?? {};
+  //       const metadataEntries = Object.entries(metadata).filter(
+  //         ([key]) => !key.toLowerCase().includes('uri')
+  //       );
 
-          if (metadata[key] === undefined) {
-            const matadataValue = value as string;
-            metadata[key] = matadataValue as string;
-          }
-        }
+  //       if (metadataEntries.length === 0 && nft.uri?.endsWith('.json')) {
+  //         const json: Record<string, string> = await fetch(parseURI(nft.uri))
+  //           .then((res) => res.json())
+  //           .catch(() => ({}));
+  //         metadata = json;
+  //       }
 
-        nft.metadata = metadata;
+  //       for (const [key, value] of Object.entries(metadata)) {
+  //         if (Array.isArray(value)) {
+  //           const metadataValueRecord = metadataArrayToObject(value, key);
+  //           Object.assign(metadata, metadataValueRecord);
+  //           delete metadata[key];
+  //           continue;
+  //         }
 
-        const image = Object.entries(metadata).find(([key]) =>
-          key.includes('image')
-        )?.[1];
-        nft.image = image ? parseURI(image) : undefined;
+  //         if (metadata[key] === undefined) {
+  //           const matadataValue = value as string;
+  //           metadata[key] = matadataValue as string;
+  //         }
+  //       }
 
-        if (nft.contractId === contractsId.mainnet.nft) {
-          nft.collection = 'Bako ID';
-        }
+  //       nft.metadata = metadata;
 
-        queryClient.setQueryData(['nft-metadata', nft.assetId], nft.metadata);
-      }
+  //       const image = Object.entries(metadata).find(([key]) =>
+  //         key.includes('image')
+  //       )?.[1];
+  //       nft.image = image ? parseURI(image) : undefined;
 
-      return nfts.sort((a, b) => {
-        if (a.image && !b.image) return -1;
-        if (!a.image && b.image) return 1;
-        return 0;
-      });
-    },
-    select: (data) => data?.filter((a) => !!a.isNFT),
-    enabled: chainId !== undefined || chainId !== null,
-  });
+  //       if (nft.contractId === contractsId.mainnet.nft) {
+  //         nft.collection = 'Bako ID';
+  //       }
+
+  //       queryClient.setQueryData(['nft-metadata', nft.assetId], nft.metadata);
+  //     }
+
+  //     return nfts.sort((a, b) => {
+  //       if (a.image && !b.image) return -1;
+  //       if (!a.image && b.image) return 1;
+  //       return 0;
+  //     });
+  //   },
+  //   select: (data) => data?.filter((a) => !!a.isNFT),
+  //   enabled: chainId !== undefined || chainId !== null,
+  // });
 
   const desiredOrder = ['Bako ID', 'Executoors'];
   const nftCollections = useMemo(
@@ -491,26 +496,50 @@ export const NFTCollections = ({
       <Flex mb={6} alignItems="center" justify="space-between">
         <Heading fontSize="lg">NFT</Heading>
       </Flex>
-      {nftCollections.map((collection) => (
-        <Box key={collection.name} mb={5}>
-          <Heading fontSize="md" mb={3}>
-            {collection.name}
-          </Heading>
-          <Grid
-            templateColumns={{
-              base: 'repeat(1, 1fr)',
-              sm: 'repeat(2, 1fr)',
-              md: 'repeat(4, 1fr)',
-              lg: 'repeat(5, 1fr)',
-            }}
-            gap={6}
-          >
-            {collection.assets.map((a) => (
-              <NFTCard key={a.assetId} asset={a} />
-            ))}
-          </Grid>
-        </Box>
-      ))}
+      <VStack
+        alignItems="flex-start"
+        w="full"
+        pr={4}
+        maxH="470px"
+        overflowY="scroll"
+        border="1px solid red"
+        sx={{
+          '&::-webkit-scrollbar': {
+            width: '3px',
+            maxHeight: '330px',
+            backgroundColor: 'grey.900',
+            borderRadius: '30px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'button.500',
+            borderRadius: '30px',
+            height: '10px',
+          },
+        }}
+      >
+        {nftCollections.map((collection) => (
+          <Box key={collection.name} mb={5}>
+            <Heading fontSize="md" mb={3}>
+              {collection.name}
+            </Heading>
+            <Grid
+              templateColumns={{
+                base: 'repeat(1, 1fr)',
+                sm: 'repeat(2, 1fr)',
+                md: 'repeat(4, 1fr)',
+                lg: 'repeat(5, 1fr)',
+              }}
+              gap={6}
+            >
+              {collection.assets.map((a) => (
+                <NFTCard key={a.assetId} asset={a} />
+              ))}
+            </Grid>
+          </Box>
+        ))}
+        <Box bg="red" minHeight="10px" w="full" ref={loadMoreRef} />
+      </VStack>
+
       {!nftCollections?.length && (
         <GridItem as={Center} py={10} colSpan={5} gridArea="5fr">
           <Text
