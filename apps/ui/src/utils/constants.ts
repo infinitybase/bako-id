@@ -5,12 +5,7 @@ export enum MarketplaceQueryKeys {
   ORDERS = 'orders',
 }
 
-export const MarketPlaceErrors = {
-  executeOrder: {
-    balance: 'Insufficient balance',
-    default: 'Failed to execute order',
-  },
-} as const;
-
 export const ETH_ID =
   '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07';
+
+export const ASSETS_METADATA_STORAGE_KEY = '@bako-id/assets';
