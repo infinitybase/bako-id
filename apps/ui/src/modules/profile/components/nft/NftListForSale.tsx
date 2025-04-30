@@ -1,7 +1,7 @@
 import { Card } from '@/components';
 import { CloseIcon } from '@/components/icons/closeIcon';
 import { Pagination } from '@/components/pagination';
-import { useListOrders } from '@/hooks/marketplace/useListOrders';
+import { useListOrdersByAccount } from '@/hooks/marketplace';
 import {
   Button,
   Center,
@@ -27,7 +27,7 @@ export const NftListForSale = ({
     strict: false,
   });
 
-  const { orders, isLoading } = useListOrders({
+  const { orders, isLoading } = useListOrdersByAccount({
     account: address,
     page: page || undefined,
   });
@@ -96,6 +96,7 @@ export const NftListForSale = ({
               nft={order.nft}
               showDelistButton={isDelistOrder}
               isOwner={isOwner}
+              showBuyButton={!isOwner}
             />
           </GridItem>
         ))}

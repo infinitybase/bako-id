@@ -17,6 +17,7 @@ interface NftSaleCardProps {
   nft: Nft;
   showDelistButton: boolean;
   isOwner: boolean;
+  showBuyButton: boolean;
 }
 
 const NftSaleCard = ({
@@ -26,6 +27,7 @@ const NftSaleCard = ({
   showDelistButton,
   isOwner,
   asset,
+  showBuyButton,
 }: NftSaleCardProps) => {
   const { successToast, errorToast } = useCustomToast();
   const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
@@ -81,10 +83,10 @@ const NftSaleCard = ({
     [value]
   );
 
-  const assetSymbolUrl = asset?.icon ?? UnknownAsset;
+  const assetSymbolUrl = asset?.icon || UnknownAsset;
 
-  const imageUrl = nft.image ?? nftEmpty;
-  const name = nft.name ?? 'Unknown NFT';
+  const imageUrl = nft.image || nftEmpty;
+  const name = nft.name || 'Unknown NFT';
 
   return (
     <NftCard.Root onClick={onOpen} cursor="pointer" minH="240px">
@@ -111,7 +113,7 @@ const NftSaleCard = ({
           </Text>
         )}
 
-        {!isOwner && <Button variant="primary">Buy</Button>}
+        {showBuyButton && <Button variant="primary">Buy</Button>}
       </NftCard.Content>
 
       {delistModal.isOpen && (
