@@ -5,6 +5,7 @@ import {
   Flex,
   Icon,
   Image,
+  Link,
   useMediaQuery,
 } from '@chakra-ui/react';
 import {
@@ -14,13 +15,14 @@ import {
   useIsConnected,
   useWallet,
 } from '@fuels/react';
-import { useNavigate } from '@tanstack/react-router';
-import { Connect } from '../helpers';
-import { QuestionIcon } from '../icons/question';
-import { FileIcon } from '../icons';
+import { Link as TanstackLink, useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useGetPrimaryHandleName } from '../../hooks';
 import { formatAddress } from '../../utils/formatter';
+import { Connect } from '../helpers';
+import { FileIcon } from '../icons';
+import { ExchangeBoxIcon } from '../icons/exchangeBoxIcon';
+import { QuestionIcon } from '../icons/question';
 
 export const Header = () => {
   const [initialLoadState, setInitialLoadState] = useState(true);
@@ -91,7 +93,29 @@ export const Header = () => {
       />
 
       <Flex w="fit-content" align="center" justify="flex-end" gap={2}>
-        <Flex w="full" gap={2}>
+        <Flex w="full" alignItems="center" gap={2}>
+          <Link
+            as={TanstackLink}
+            to="/marketplace"
+            _hover={{
+              color: 'button.500',
+              path: {
+                fill: 'button.500',
+              },
+            }}
+            color="grey.100"
+            size="sm"
+          >
+            <Flex alignItems="center">
+              Marketplace
+              <ExchangeBoxIcon
+                fontSize="md"
+                alignSelf="center"
+                ml={2}
+                fill="grey.100"
+              />
+            </Flex>
+          </Link>
           {!isMobile && wallet !== null && !initialLoadState && (
             <Button
               w="fit-content"
