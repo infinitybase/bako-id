@@ -67,7 +67,7 @@ export class FuelAssetService {
     try {
       const networkUrl = FuelAssetService.networkUrl(chainId);
       const response = await fetch(`${networkUrl}/assets/${assetId}`);
-      return response.json();
+      return await response.json();
     } catch {
       return null;
     }
