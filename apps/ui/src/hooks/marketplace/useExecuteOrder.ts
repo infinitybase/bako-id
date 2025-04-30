@@ -5,6 +5,7 @@ import { MarketplaceQueryKeys } from '@/utils/constants';
 import { getOrderMetadata } from '@/utils/getOrderMetadata';
 import type { PaginationResult } from '@/utils/pagination';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSearch } from '@tanstack/react-router';
 import { useChainId } from '../useChainId';
 import { useMarketplace } from './useMarketplace';
 
@@ -13,6 +14,7 @@ export const useExecuteOrder = () => {
   const queryClient = useQueryClient();
   const { domain } = useProfile();
   const { chainId } = useChainId();
+  const { page } = useSearch({ strict: false });
 
   const address = domain?.Address?.bits || domain?.ContractId?.bits;
 
@@ -26,23 +28,23 @@ export const useExecuteOrder = () => {
       return await marketplace.executeOrder(orderId);
     },
     onSuccess: async (_, orderId) => {
-      const previousOrders = queryClient.getQueriesData<
-        PaginationResult<Order>
-      >({
-        queryKey: [MarketplaceQueryKeys.ORDERS],
-        exact: false,
-      })[0][1] as PaginationResult<Order>;
+      const _page = page ?? 1;
+      const previousOrders = queryClient.getQueryData<PaginationResult<Order>>([
+        MarketplaceQueryKeys.ORDERS,
+        address,
+        _page,
+        chainId,
+      ]) as PaginationResult<Order>;
 
-      const updatedOrders = previousOrders.data.filter(
-        (order) => order.id !== orderId
-      );
-      const hasNextPage = previousOrders.hasNextPage;
+      const updatedOrders =
+        previousOrders?.data.filter((order) => order.id !== orderId) ?? [];
+      const hasNextPage = previousOrders?.hasNextPage;
 
       if (hasNextPage) {
         const nextPage = previousOrders.page + 1;
         const nextPageOrders = queryClient.getQueryData<
           PaginationResult<Order>
-        >([MarketplaceQueryKeys.ORDERS, address, nextPage]);
+        >([MarketplaceQueryKeys.ORDERS, address, nextPage, chainId]);
 
         if (nextPageOrders) {
           const firstOrder = nextPageOrders.data[0];
@@ -56,11 +58,7 @@ export const useExecuteOrder = () => {
 
         if (nextOrder.orders.length > 0) {
           const order = nextOrder.orders[0];
-          const orderWithMetadata = await getOrderMetadata(
-            order,
-            queryClient,
-            chainId
-          );
+          const orderWithMetadata = await getOrderMetadata(order, chainId);
           updatedOrders.push(orderWithMetadata);
         }
       }
@@ -70,9 +68,9 @@ export const useExecuteOrder = () => {
         data: updatedOrders,
       };
 
-      queryClient.setQueriesData<PaginationResult<Order>>(
-        { queryKey: [MarketplaceQueryKeys.ORDERS], exact: false },
-        () => paginatedOrders
+      queryClient.setQueryData<PaginationResult<Order>>(
+        [MarketplaceQueryKeys.ORDERS, address, page, chainId],
+        paginatedOrders
       );
     },
   });
