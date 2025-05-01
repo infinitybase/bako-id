@@ -12,6 +12,8 @@ export const QUERY_KEY_BACHTED_ASSETS = (address: string) => [
   address,
 ];
 
+const PAGE_SIZE = 10;
+
 interface VisibleAssets {
   name: string | null;
   assets: Nft[];
@@ -21,8 +23,6 @@ export const useGetBatchedAssets = (
   address: string,
   chainId: number | null
 ) => {
-  const PAGE_SIZE = 10;
-
   const [displayCount, setDisplayCount] = useState(PAGE_SIZE);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
