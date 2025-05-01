@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { formatNftMetadata } from '../utils/formatNftMetadata';
 import {
   NFTCollectionPaginator,
@@ -41,9 +41,9 @@ export const useGetBatchedAssets = (
     },
   });
 
-  let visibleAssets: VisibleAssets[] = [];
+  const visibleAssets = useMemo(() => {
+    if (!allAssets?.length) return [];
 
-  if (allAssets?.length) {
     const priorityCollections = ['Bako ID', 'Executoors'];
     const paginator = new NFTCollectionPaginator(
       allAssets ?? [],
@@ -51,35 +51,30 @@ export const useGetBatchedAssets = (
     );
     const result = paginator.getNextBatchesUntilCount(displayCount);
 
-    const formattedResult = result.collections.map((collection) => {
-      if (collection.isPartialCollection) {
-        visibleAssets = visibleAssets.reduce<VisibleAssets[]>((acc, curr) => {
-          const existingCollection = acc.find(
-            (item) => item.name === curr.name
-          );
+    //  Instead of creating a repeated Collection due the pagination, merge them
+    const mergedCollections = result.collections.reduce<
+      Record<string, VisibleAssets>
+    >((acc, collection) => {
+      const collectionName =
+        collection.collectionName === 'null'
+          ? 'Other'
+          : collection.collectionName;
 
-          if (existingCollection) {
-            existingCollection.assets = [
-              ...existingCollection.assets,
-              ...curr.assets,
-            ];
-          }
-
-          return acc;
-        }, []);
+      if (acc[collectionName!]) {
+        acc[collectionName!].assets.push(...collection.nfts);
+      } else {
+        acc[collectionName!] = {
+          name: collectionName,
+          assets: [...collection.nfts],
+        };
       }
 
-      return {
-        name:
-          collection.collectionName === 'null'
-            ? 'Other'
-            : collection.collectionName,
-        assets: collection.nfts,
-      };
-    });
+      return acc;
+    }, {});
 
-    visibleAssets = formattedResult;
-  }
+    return Object.values(mergedCollections);
+  }, [allAssets, displayCount]);
+
   const hasMore = allAssets ? displayCount < allAssets.length : false;
 
   const loadMoreAssets = () => {

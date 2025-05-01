@@ -4,76 +4,37 @@ import { metadataArrayToObject, parseURI } from '@/utils';
 import { queryClient } from '@/providers';
 import { QUERY_KEY_BACHTED_ASSETS } from '@/hooks/useGetBatchedAssets';
 
-const NFT_IMAGE_CACHE = 'nft-images-cache-v1';
+const METADATA_MAP_KEY = 'nft-metadata';
+
+const getMetadataMap = (): Map<string, Record<string, string>> => {
+  const storedMap = localStorage.getItem(METADATA_MAP_KEY);
+  if (!storedMap) return new Map();
+
+  const parsed = JSON.parse(storedMap);
+  return new Map(Object.entries(parsed));
+};
 
 const cacheNftMetadata = (
   nftAssetId: string,
   metadata: Record<string, string>
 ) => {
-  const verifyCachedNft = localStorage.getItem(nftAssetId);
-
-  if (verifyCachedNft) {
-    return;
-  }
-  localStorage.setItem(nftAssetId, JSON.stringify(metadata));
+  const map = getMetadataMap();
+  map.set(nftAssetId, metadata);
+  const mapObject = Object.fromEntries(map);
+  localStorage.setItem(METADATA_MAP_KEY, JSON.stringify(mapObject));
 };
 
-const getCachedNftMetadata = (nftAssetId: string) => {
-  const cachedData = localStorage.getItem(nftAssetId);
-
-  if (!cachedData) return null;
-
-  try {
-    const parsed = JSON.parse(cachedData);
-    return parsed &&
-      typeof parsed === 'object' &&
-      Object.keys(parsed).length > 0
-      ? parsed
-      : null;
-  } catch {
-    return null;
-  }
+const getCachedNftMetadata = (
+  nftAssetId: string
+): Record<string, string> | null => {
+  const map = getMetadataMap();
+  return map.get(nftAssetId) || null;
 };
 
-async function fetchWithCache(url: string): Promise<Blob> {
-  // Check if Cache API is available (browser environment)
-  if (typeof caches === 'undefined') {
-    return fetch(url).then((res) => res.blob());
-  }
-
-  try {
-    const cache = await caches.open(NFT_IMAGE_CACHE);
-
-    const cachedResponse = await cache.match(url);
-
-    if (cachedResponse) {
-      return cachedResponse.blob();
-    }
-
-    const response = await fetch(url);
-
-    // Need to clone the response to avoid error "body already consumed"
-    const responseClone = response.clone();
-
-    cache.put(url, responseClone);
-
-    return response.blob();
-  } catch (error) {
-    console.error(`Cache error for ${url}:`, error);
-
-    return fetch(url).then((res) => res.blob());
-  }
-}
-
-async function preloadImage(url: string): Promise<string> {
-  try {
-    await fetchWithCache(url);
-    return url;
-  } catch (error) {
-    console.error(`Failed to preload image: ${url}`, error);
-    return url;
-  }
-}
+const preloadImage = (url: string) => {
+  const img = new Image();
+  img.src = url;
+};
 
 export const formatNftMetadata = async (
   data: FuelAsset[],
@@ -92,7 +53,7 @@ export const formatNftMetadata = async (
     const cachedNftMetadata = getCachedNftMetadata(nft.assetId);
 
     if (metadataEntries.length === 0 && nft.uri?.endsWith('.json')) {
-      if (cachedNftMetadata) {
+      if (cachedNftMetadata && Object.keys(cachedNftMetadata).length > 0) {
         metadata = cachedNftMetadata;
       } else {
         const json: Record<string, string> = await fetch(parseURI(nft.uri))
