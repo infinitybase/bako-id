@@ -1,4 +1,3 @@
-import { getAssetsByOwner } from 'fuels';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 
@@ -7,6 +6,7 @@ import {
   NFTCollectionPaginator,
 } from '../services/nftCollectionPaginator';
 import { formatNftMetadata } from '@/services/formatNftMetadata';
+import { FuelAssetService } from '@/services/fuel-assets';
 
 const networkResolver: Record<number, 'mainnet' | 'testnet'> = {
   0: 'testnet',
@@ -36,11 +36,10 @@ export const useGetBatchedAssets = (
   const { data: allAssets, isLoading } = useQuery({
     queryKey: QUERY_KEY_BACHTED_ASSETS(address),
     queryFn: async () => {
-      const result = await getAssetsByOwner({
-        owner: address,
-        network: networkResolver[chainId!],
+      const result = await FuelAssetService.byAddress({
+        address,
+        chainId: chainId ?? 9889,
       });
-
       const nfts = await formatNftMetadata(
         result.data || [],
         networkResolver[chainId!]

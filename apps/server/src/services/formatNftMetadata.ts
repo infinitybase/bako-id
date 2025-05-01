@@ -1,7 +1,6 @@
 import { contractsId } from '@bako-id/contracts';
 import type { FuelAsset } from '../services/fuel-assets';
 import { metadataArrayToObject, parseURI } from '@/utils';
-import type { AssetInfo } from 'fuels';
 import { queryClient } from '@/providers';
 import { QUERY_KEY_BACHTED_ASSETS } from '@/hooks/useGetBatchedAssets';
 
@@ -77,7 +76,7 @@ async function preloadImage(url: string): Promise<string> {
 }
 
 export const formatNftMetadata = async (
-  data: AssetInfo[],
+  data: FuelAsset[],
   network: 'testnet' | 'mainnet'
 ) => {
   const nfts = data.filter((a) => !!a.isNFT) as (FuelAsset & {
