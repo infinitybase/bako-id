@@ -109,8 +109,6 @@ export class NFTCollectionPaginator {
       this.currentCollectionIndex++;
       this.currentCollectionName = null;
       this.currentCollectionOffset = 0;
-
-      console.log({ collectionNFTs });
     }
 
     this.loadedNFTs = [...this.loadedNFTs, ...collectionNFTs];

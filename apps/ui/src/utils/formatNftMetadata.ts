@@ -20,13 +20,20 @@ const cacheNftMetadata = (
 };
 
 const getCachedNftMetadata = (nftAssetId: string) => {
-  const verifyCachedNft = localStorage.getItem(nftAssetId);
+  const cachedData = localStorage.getItem(nftAssetId);
 
-  if (verifyCachedNft) {
-    return JSON.parse(verifyCachedNft);
+  if (!cachedData) return null;
+
+  try {
+    const parsed = JSON.parse(cachedData);
+    return parsed &&
+      typeof parsed === 'object' &&
+      Object.keys(parsed).length > 0
+      ? parsed
+      : null;
+  } catch {
+    return null;
   }
-
-  return null;
 };
 
 const fetchWithCache = async (url: string) => {
@@ -77,9 +84,8 @@ export const formatNftMetadata = async (data: AssetInfo[]) => {
   for (const nft of nfts) {
     let metadata: Record<string, string> = nft.metadata ?? {};
     const metadataEntries = Object.entries(metadata).filter(
-      ([key]) => !key.toLowerCase().includes('uri')
+      ([key]) => !['uri', 'image'].includes(key.toLowerCase())
     );
-
     const cachedNftMetadata = getCachedNftMetadata(nft.assetId);
 
     if (metadataEntries.length === 0 && nft.uri?.endsWith('.json')) {
@@ -125,7 +131,7 @@ export const formatNftMetadata = async (data: AssetInfo[]) => {
       nft.collection = 'Bako ID';
     }
 
-    if (!cachedNftMetadata) {
+    if (!cachedNftMetadata && Object.keys(nft.metadata).length > 0) {
       cacheNftMetadata(nft.assetId, nft.metadata);
     }
 

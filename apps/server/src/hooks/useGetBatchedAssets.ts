@@ -18,6 +18,11 @@ export const QUERY_KEY_BACHTED_ASSETS = (address: string) => [
   address,
 ];
 
+interface VisibleAssets {
+  name: string | null;
+  assets: Nft[];
+}
+
 export const useGetBatchedAssets = (
   address: string,
   chainId: number | null
@@ -48,10 +53,7 @@ export const useGetBatchedAssets = (
     },
   });
 
-  let visibleAssets: {
-    name: string | null;
-    assets: Nft[];
-  }[] = [];
+  let visibleAssets: VisibleAssets[] = [];
 
   if (allAssets?.length) {
     const priorityCollections = ['Bako ID', 'Executoors'];
@@ -62,6 +64,23 @@ export const useGetBatchedAssets = (
     const result = paginator.getNextBatchesUntilCount(displayCount);
 
     const formattedResult = result.collections.map((collection) => {
+      if (collection.isPartialCollection) {
+        visibleAssets = visibleAssets.reduce<VisibleAssets[]>((acc, curr) => {
+          const existingCollection = acc.find(
+            (item) => item.name === curr.name
+          );
+
+          if (existingCollection) {
+            existingCollection.assets = [
+              ...existingCollection.assets,
+              ...curr.assets,
+            ];
+          }
+
+          return acc;
+        }, []);
+      }
+
       return {
         name:
           collection.collectionName === 'null'

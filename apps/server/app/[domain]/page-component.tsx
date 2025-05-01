@@ -17,7 +17,7 @@ import { AddressCardSkeleton } from '@/components/skeletons/addressCardSkeleton'
 import { OwnershipCardSkeleton } from '@/components/skeletons/ownershipCardSkeleton';
 import { getExplorer } from '@/getExplorer';
 import type { FuelAsset } from '@/services/fuel-assets';
-import { formatAddress, metadataArrayToObject, parseURI } from '@/utils';
+import { formatAddress, parseURI } from '@/utils';
 import { MetadataKeys } from '@bako-id/sdk';
 import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons';
 import {
@@ -39,7 +39,6 @@ import {
   VStack,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { Address, ZeroBytes32, isB256 } from 'fuels';
 import { useParams } from 'next/navigation';
@@ -146,50 +145,9 @@ const ProfileCardLoadingSkeleton = () => (
 const _blacklistMetadataKeys = ['name', 'image', 'description', 'uri'];
 
 const NFTCard = (props: { asset: FuelAsset }) => {
-  const {
-    name,
-    contractId,
-    assetId,
-    metadata: defaultMetadata,
-    symbol,
-    uri,
-  } = props.asset;
+  const { name, contractId, assetId, metadata, symbol } = props.asset;
   const dialog = useDisclosure();
   const [isLoaded, setIsLoaded] = useState(false);
-
-  const { data: metadata } = useQuery({
-    queryKey: ['nft-metadata', assetId],
-    queryFn: async (): Promise<Record<string, string>> => {
-      let metadata: Record<string, string> = defaultMetadata ?? {};
-      const metadataEntries = Object.entries(metadata).filter(
-        ([key]) => !['uri', 'image'].includes(key.toLowerCase())
-      );
-
-      if (metadataEntries.length === 0 && uri?.endsWith('.json')) {
-        const json: Record<string, string> = await fetch(parseURI(uri))
-          .then((res) => res.json())
-          .catch(() => ({}));
-        metadata = json;
-      }
-
-      for (const [key, value] of Object.entries(metadata)) {
-        if (Array.isArray(value)) {
-          const metadataValueRecord = metadataArrayToObject(value, key);
-          Object.assign(metadata, metadataValueRecord);
-          delete metadata[key];
-          continue;
-        }
-
-        if (metadata[key] === undefined) {
-          const matadataValue = value as string;
-          metadata[key] = matadataValue as string;
-        }
-      }
-
-      return metadata;
-    },
-    enabled: !!assetId,
-  });
 
   const image = useMemo(() => {
     let imageUri = nftEmpty.src;
@@ -394,10 +352,11 @@ export const NFTCollections = ({
   resolver: string;
   chainId?: number;
 }) => {
-  const { assets: nftCollections, isLoadingAssets } = useGetBatchedAssets(
-    resolver,
-    chainId
-  );
+  const {
+    assets: nftCollections,
+    isLoadingAssets,
+    loadMoreRef,
+  } = useGetBatchedAssets(resolver, chainId);
 
   if (isLoadingAssets) {
     return <NFTCollectionSkeleton />;
@@ -415,26 +374,49 @@ export const NFTCollections = ({
       <Flex mb={6} alignItems="center" justify="space-between">
         <Heading fontSize="lg">NFT</Heading>
       </Flex>
-      {nftCollections.map((collection) => (
-        <Box key={collection.name} mb={5}>
-          <Heading fontSize="md" mb={3}>
-            {collection.name}
-          </Heading>
-          <Grid
-            templateColumns={{
-              base: 'repeat(1, 1fr)',
-              sm: 'repeat(2, 1fr)',
-              md: 'repeat(4, 1fr)',
-              lg: 'repeat(5, 1fr)',
-            }}
-            gap={6}
-          >
-            {collection.assets.map((a) => (
-              <NFTCard key={a.assetId} asset={a} />
-            ))}
-          </Grid>
-        </Box>
-      ))}
+      <VStack
+        alignItems="flex-start"
+        w="full"
+        pr={4}
+        maxH="470px"
+        overflowY="scroll"
+        sx={{
+          '&::-webkit-scrollbar': {
+            width: '3px',
+            maxHeight: '330px',
+            backgroundColor: 'grey.900',
+            borderRadius: '30px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'button.500',
+            borderRadius: '30px',
+            height: '10px',
+          },
+        }}
+      >
+        {nftCollections.map((collection) => (
+          <Box key={collection.name} mb={5}>
+            <Heading fontSize="md" mb={3}>
+              {collection.name}
+            </Heading>
+            <Grid
+              templateColumns={{
+                base: 'repeat(1, 1fr)',
+                sm: 'repeat(2, 1fr)',
+                md: 'repeat(4, 1fr)',
+                lg: 'repeat(5, 1fr)',
+              }}
+              gap={6}
+            >
+              {collection.assets.map((a) => (
+                <NFTCard key={a.assetId} asset={a} />
+              ))}
+            </Grid>
+          </Box>
+        ))}
+        <Box minHeight="10px" w="full" ref={loadMoreRef} />
+      </VStack>
+
       {!nftCollections?.length && (
         <GridItem as={Center} py={10} colSpan={5} gridArea="5fr">
           <Text

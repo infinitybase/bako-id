@@ -15,7 +15,6 @@ import {
   VStack,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useQuery } from '@tanstack/react-query';
 import { isB256 } from 'fuels';
 import { type ReactNode, Suspense, useMemo, useState } from 'react';
 import nftEmpty from '../../../assets/nft-empty.png';
@@ -31,12 +30,7 @@ import { EditMetadataModal } from '../../../components/modal/editProfileModal.ts
 import { useMetadata } from '../../../hooks/useMetadata.ts';
 import { useChainId } from '../../../hooks/useChainId';
 import type { FuelAsset } from '../../../services/fuel-assets.ts';
-import {
-  formatAddress,
-  isUrl,
-  metadataArrayToObject,
-  parseURI,
-} from '../../../utils/formatter.ts';
+import { formatAddress, isUrl, parseURI } from '../../../utils/formatter.ts';
 import { getExplorer } from '../../../utils/getExplorer.ts';
 import { ProfileCardLoadingSkeleton } from './profileCardLoadingSkeleton.tsx';
 import { NFTCollectionSkeleton } from '../../../components/skeletons/nftCollectionSkeleton.tsx';
@@ -110,51 +104,10 @@ const NFTText = ({
 const _blacklistMetadataKeys = ['name', 'image', 'description', 'uri'];
 
 const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
-  const {
-    name,
-    contractId,
-    assetId,
-    metadata: defaultMetadata,
-    symbol,
-    uri,
-  } = props.asset;
+  const { name, contractId, assetId, metadata, symbol } = props.asset;
   const dialog = useDisclosure();
 
   const [isLoaded, setIsLoaded] = useState(false);
-
-  const { data: metadata } = useQuery({
-    queryKey: ['nft-metadata', assetId],
-    queryFn: async (): Promise<Record<string, string>> => {
-      let metadata: Record<string, string> = defaultMetadata ?? {};
-      const metadataEntries = Object.entries(metadata).filter(
-        ([key]) => !key.toLowerCase().includes('uri')
-      );
-
-      if (metadataEntries.length === 0 && uri?.endsWith('.json')) {
-        const json: Record<string, string> = await fetch(parseURI(uri))
-          .then((res) => res.json())
-          .catch(() => ({}));
-        metadata = json;
-      }
-
-      for (const [key, value] of Object.entries(metadata)) {
-        if (Array.isArray(value)) {
-          const metadataValueRecord = metadataArrayToObject(value, key);
-          Object.assign(metadata, metadataValueRecord);
-          delete metadata[key];
-          continue;
-        }
-
-        if (metadata[key] === undefined) {
-          const matadataValue = value as string;
-          metadata[key] = matadataValue as string;
-        }
-      }
-
-      return metadata;
-    },
-    enabled: !!assetId,
-  });
 
   const image = useMemo(() => {
     let imageUri = nftEmpty;
@@ -423,7 +376,7 @@ export const NFTCollections = ({
             </Grid>
           </Box>
         ))}
-        <Box bg="red" minHeight="10px" w="full" ref={loadMoreRef} />
+        <Box minHeight="10px" w="full" ref={loadMoreRef} />
       </VStack>
 
       {!nftCollections?.length && (
