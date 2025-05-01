@@ -28,7 +28,7 @@ export const useGetBatchedAssets = (
   chainId: number | null
 ) => {
   const PAGE_SIZE = 10;
-  const BATCH_SIZE = 200;
+
   const [displayCount, setDisplayCount] = useState(PAGE_SIZE);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
@@ -39,9 +39,6 @@ export const useGetBatchedAssets = (
       const result = await getAssetsByOwner({
         owner: address,
         network: networkResolver[chainId!],
-        pagination: {
-          last: BATCH_SIZE,
-        },
       });
 
       const nfts = await formatNftMetadata(
