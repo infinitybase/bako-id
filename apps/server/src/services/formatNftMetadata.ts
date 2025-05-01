@@ -1,9 +1,9 @@
 import { contractsId } from '@bako-id/contracts';
 import type { FuelAsset } from '../services/fuel-assets';
-import { metadataArrayToObject, parseURI } from './formatter';
+import { metadataArrayToObject, parseURI } from '@/utils';
 import type { AssetInfo } from 'fuels';
-import { queryClient } from '../services/query-client';
-import { QUERY_KEY_BACHTED_ASSETS } from '../hooks/useGetBatchedAssets';
+import { queryClient } from '@/providers';
+import { QUERY_KEY_BACHTED_ASSETS } from '@/hooks/useGetBatchedAssets';
 
 const NFT_IMAGE_CACHE = 'nft-images-cache-v1';
 
@@ -29,7 +29,7 @@ const getCachedNftMetadata = (nftAssetId: string) => {
   return null;
 };
 
-const fetchWithCache = async (url: string) => {
+async function fetchWithCache(url: string): Promise<Blob> {
   // Check if Cache API is available (browser environment)
   if (typeof caches === 'undefined') {
     return fetch(url).then((res) => res.blob());
@@ -57,9 +57,9 @@ const fetchWithCache = async (url: string) => {
 
     return fetch(url).then((res) => res.blob());
   }
-};
+}
 
-const preloadImage = async (url: string) => {
+async function preloadImage(url: string): Promise<string> {
   try {
     await fetchWithCache(url);
     return url;
@@ -67,9 +67,12 @@ const preloadImage = async (url: string) => {
     console.error(`Failed to preload image: ${url}`, error);
     return url;
   }
-};
+}
 
-export const formatNftMetadata = async (data: AssetInfo[]) => {
+export const formatNftMetadata = async (
+  data: AssetInfo[],
+  network: 'testnet' | 'mainnet'
+) => {
   const nfts = data.filter((a) => !!a.isNFT) as (FuelAsset & {
     image?: string;
   })[];
@@ -93,7 +96,6 @@ export const formatNftMetadata = async (data: AssetInfo[]) => {
         metadata = json;
       }
     }
-
     for (const [key, value] of Object.entries(metadata)) {
       if (Array.isArray(value)) {
         const metadataValueRecord = metadataArrayToObject(value, key);
@@ -121,7 +123,7 @@ export const formatNftMetadata = async (data: AssetInfo[]) => {
       preloadImage(imageUrl);
     }
 
-    if (nft.contractId === contractsId.mainnet.nft) {
+    if (nft.contractId === contractsId[network].nft) {
       nft.collection = 'Bako ID';
     }
 

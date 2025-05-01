@@ -16,10 +16,9 @@ import { AccountsCardSkeleton } from '@/components/skeletons/accountsCardSkeleto
 import { AddressCardSkeleton } from '@/components/skeletons/addressCardSkeleton';
 import { OwnershipCardSkeleton } from '@/components/skeletons/ownershipCardSkeleton';
 import { getExplorer } from '@/getExplorer';
-import { queryClient } from '@/providers';
-import { type FuelAsset, FuelAssetService } from '@/services/fuel-assets';
-import { formatAddress, parseURI } from '@/utils';
-import { MetadataKeys, contractsId } from '@bako-id/sdk';
+import type { FuelAsset } from '@/services/fuel-assets';
+import { formatAddress, metadataArrayToObject, parseURI } from '@/utils';
+import { MetadataKeys } from '@bako-id/sdk';
 import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -47,28 +46,7 @@ import { useParams } from 'next/navigation';
 import { type ReactNode, Suspense, useMemo, useState } from 'react';
 import { useProfile } from './hooks';
 import { NFTCollectionSkeleton } from '@/components/skeletons/nftCollectionSkeleton';
-
-const metadataArrayToObject = (
-  metadata: Record<string, string>[],
-  key: string
-) => {
-  return metadata
-    .map((v) => {
-      const keyValue = Object.keys(v).find((k) => k !== 'value');
-      const keyName = v[keyValue!].toLowerCase().replace(' ', '-');
-      return {
-        key: `${key}:${keyName}`,
-        value: v.value,
-      };
-    })
-    .reduce(
-      (acc, curr) => {
-        acc[curr.key] = curr.value;
-        return acc;
-      },
-      {} as Record<string, string>
-    );
-};
+import { useGetBatchedAssets } from '@/hooks/useGetBatchedAssets';
 
 const isUrl = (url: string) => !!url?.startsWith?.('https');
 
@@ -416,119 +394,12 @@ export const NFTCollections = ({
   resolver: string;
   chainId?: number;
 }) => {
-  const { data, isLoading } = useQuery({
-    queryKey: ['nfts', resolver],
-    queryFn: async () => {
-      const { data } = await FuelAssetService.byAddress({
-        address: resolver,
-        chainId: chainId!,
-      });
-
-      const nfts = data.filter((a) => !!a.isNFT) as (FuelAsset & {
-        image?: string;
-      })[];
-
-      //['nft-metadata', assetId]
-
-      for (const nft of nfts) {
-        let metadata: Record<string, string> = nft.metadata ?? {};
-        const metadataEntries = Object.entries(metadata).filter(
-          ([key]) => !key.toLowerCase().includes('uri')
-        );
-
-        if (metadataEntries.length === 0 && nft.uri?.endsWith('.json')) {
-          const json: Record<string, string> = await fetch(parseURI(nft.uri))
-            .then((res) => res.json())
-            .catch(() => ({}));
-          metadata = json;
-        }
-
-        for (const [key, value] of Object.entries(metadata)) {
-          if (Array.isArray(value)) {
-            const metadataValueRecord = metadataArrayToObject(value, key);
-            Object.assign(metadata, metadataValueRecord);
-            delete metadata[key];
-            continue;
-          }
-
-          if (metadata[key] === undefined) {
-            const matadataValue = value as string;
-            metadata[key] = matadataValue as string;
-          }
-        }
-
-        nft.metadata = metadata;
-
-        const image = Object.entries(metadata).find(([key]) =>
-          key.includes('image')
-        )?.[1];
-        nft.image = image ? parseURI(image) : undefined;
-
-        if (nft.contractId === contractsId.mainnet.nft) {
-          nft.collection = 'Bako ID';
-        }
-
-        queryClient.setQueryData(['nft-metadata', nft.assetId], nft.metadata);
-      }
-
-      return nfts.sort((a, b) => {
-        if (a.image && !b.image) return -1;
-        if (!a.image && b.image) return 1;
-        return 0;
-      });
-    },
-    select: (data) => data?.filter((a) => !!a.isNFT),
-    enabled: !!chainId,
-  });
-
-  const desiredOrder = ['Bako ID', 'Executoors'];
-  const nftCollections = useMemo(
-    () =>
-      data
-        ?.reduce(
-          (acc, curr) => {
-            const collectionName = curr?.collection ?? 'Other';
-            const collectionAssets = acc.find((c) => c.name === collectionName);
-            if (collectionAssets) {
-              collectionAssets.assets.push(curr);
-            } else {
-              acc.push({
-                name: collectionName,
-                assets: [curr],
-              });
-            }
-
-            return acc;
-          },
-          [] as {
-            name: string;
-            assets: (FuelAsset & {
-              image?: string;
-            })[];
-          }[]
-        )
-        .sort((a, b) => {
-          if (a.name === 'Other') return 1;
-          if (b.name === 'Other') return -1;
-
-          const indexA = desiredOrder.indexOf(a.name);
-          const indexB = desiredOrder.indexOf(b.name);
-
-          if (indexA !== -1 && indexB !== -1) {
-            return indexA - indexB;
-          }
-          if (indexA !== -1) {
-            return -1;
-          }
-          if (indexB !== -1) {
-            return 1;
-          }
-          return a.name.localeCompare(b.name);
-        }) ?? [],
-    [data]
+  const { assets: nftCollections, isLoadingAssets } = useGetBatchedAssets(
+    resolver,
+    chainId
   );
 
-  if (isLoading) {
+  if (isLoadingAssets) {
     return <NFTCollectionSkeleton />;
   }
 
