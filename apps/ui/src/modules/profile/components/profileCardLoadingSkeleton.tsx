@@ -4,6 +4,7 @@ import { AccountsCardSkeleton } from '../../../components/skeletons/accountsCard
 import { AddressCardSkeleton } from '../../../components/skeletons/addressCardSkeleton';
 import { OwnershipCardSkeleton } from '../../../components/skeletons/ownershipCardSkeleton';
 import { Flex, Stack } from '@chakra-ui/react';
+import { NFTCollectionSkeleton } from '../../../components/skeletons/nftCollectionSkeleton';
 
 const ProfileCardLoadingSkeleton = () => (
   <Suspense>
@@ -29,6 +30,7 @@ const ProfileCardLoadingSkeleton = () => (
       </Flex>
       <AccountsCardSkeleton />
     </Stack>
+    <NFTCollectionSkeleton />
   </Suspense>
 );
 

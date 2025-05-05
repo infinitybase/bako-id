@@ -217,7 +217,12 @@ export const ProfileCard = ({
             </Text>
 
             {nickname?.value && (
-              <Text fontSize={['sm', 'md']} color="grey.200" ml={0.5}>
+              <Text
+                fontSize={['sm', 'md']}
+                color="grey.200"
+                ml={0.5}
+                maxW={{ base: '80%', sm: 'full' }}
+              >
                 {nickname.value}
               </Text>
             )}

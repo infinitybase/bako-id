@@ -25,10 +25,12 @@ const EditProfilePicBox = ({
   setUploadedFile,
   isSigning,
   nftImagePreview,
+  setInputValue,
 }: {
   setUploadedFile: React.Dispatch<React.SetStateAction<File | undefined>>;
   isSigning: boolean;
   nftImagePreview: string | null | undefined;
+  setInputValue: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -66,6 +68,7 @@ const EditProfilePicBox = ({
   const handleDeleteUploadedFile = () => {
     setUploadedFile(undefined);
     setPreviewUrl(null);
+    setInputValue('');
 
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -120,10 +123,10 @@ const EditProfilePicBox = ({
       borderColor={isDragging ? 'grey.100' : 'grey.400'}
       p={4}
       bg={isDragging ? 'grey.600' : 'transparent'}
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
+      onDragEnter={!nftImagePreview ? handleDragEnter : undefined}
+      onDragLeave={!nftImagePreview ? handleDragLeave : undefined}
+      onDragOver={!nftImagePreview ? handleDragOver : undefined}
+      onDrop={!nftImagePreview ? handleDrop : undefined}
       transition="all 0.2s ease"
       pointerEvents={isSigning ? 'none' : 'unset'}
       position="relative"
@@ -154,7 +157,7 @@ const EditProfilePicBox = ({
         display="none"
       />
 
-      {nftImagePreview ? null : previewUrl ? (
+      {nftImagePreview || previewUrl ? (
         <Button
           position="absolute"
           bg="error.500"
@@ -302,6 +305,7 @@ export const EditProfilePicModal = ({
           setUploadedFile={setUploadedFile}
           isSigning={isSigning}
           nftImagePreview={nftImage ?? undefined}
+          setInputValue={setInputValue}
         />
         <Text color="grey.subtitle" mt={6} fontSize="xs">
           Or insert NFT Asset ID:
@@ -328,11 +332,17 @@ export const EditProfilePicModal = ({
           border="1px solid"
           borderColor="grey.500"
           borderRadius={10}
-          isDisabled={isSigning || isNftImageLoading}
+          isDisabled={isSigning || isNftImageLoading || !!uploadedFile}
           _focus={{}}
           _hover={{}}
           _focusVisible={{}}
         />
+
+        {!isNftImageLoading && isValidAssetId && !nftImage && (
+          <Text fontSize="xs" color="error.500" my={1}>
+            Invalid Asset ID. Ensure it is a Fuel-compatible NFT.
+          </Text>
+        )}
       </Dialog.Body>
       <Dialog.Actions hideDivider mt={56}>
         <Dialog.SecondaryAction onClick={handleClose} isDisabled={isSigning}>
