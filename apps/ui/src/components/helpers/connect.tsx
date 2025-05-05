@@ -1,6 +1,5 @@
 import { Box, Button, Icon, Text } from '@chakra-ui/react';
 import { useAccount, useConnectUI, useWallet } from '@fuels/react';
-import { useScreenSize } from '../../hooks/useScreenSize';
 import { WalletIcon } from '../icons/wallet';
 import { Info } from '../user';
 
@@ -11,8 +10,6 @@ export const Connect = ({
   isLoading: boolean;
   domain: string;
 }) => {
-  const { isMobile } = useScreenSize();
-
   const { connect, isConnecting, isConnected } = useConnectUI();
   const { account } = useAccount();
   const { wallet } = useWallet({
