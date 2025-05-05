@@ -27,7 +27,9 @@ import { useHome } from '../../modules/home/hooks';
 import { CloseIcon } from '../icons/closeIcon';
 import { SearchIcon } from '../icons/searchIcon';
 
-interface IAutocomplete extends InputProps {}
+interface IAutocomplete extends InputProps {
+  actionOnContinue?: () => void;
+}
 
 type AutocompleteValue = {
   handle: string;
@@ -55,12 +57,13 @@ export const Autocomplete = (props: IAutocomplete) => {
   });
   const onSubmit = () => {
     handleConfirmDomain();
+    props.actionOnContinue?.();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const forbiddenCharacters = /[^a-zA-Z0-9_]/g; // Special characters except letters, numbers, and underscores
     const hasForbiddenCharacters = forbiddenCharacters.test(
-      e.target.value.replace('@', ''), // Ignores first '@'
+      e.target.value.replace('@', '') // Ignores first '@'
     );
 
     let inputValue = e.target.value

@@ -21,6 +21,7 @@ import { FileIcon } from '../icons';
 import { useEffect, useMemo, useState } from 'react';
 import { useGetPrimaryHandleName } from '../../hooks';
 import { formatAddress } from '../../utils/formatter';
+import { Info } from '../user';
 
 export const Header = () => {
   const [initialLoadState, setInitialLoadState] = useState(true);
@@ -109,7 +110,16 @@ export const Header = () => {
               My Handles
             </Button>
           )}
-          <Connect isLoading={initialLoadState} domain={domain!} />
+          {wallet ? (
+            <Info
+              name={formatAddress(wallet.address.toB256())!}
+              account={wallet.address}
+            />
+          ) : (
+            <Box mr={isMobile ? 3 : 0}>
+              <Connect isLoading={initialLoadState} domain={domain!} />
+            </Box>
+          )}
         </Flex>
         {!isMobile && (
           <Box w="fit-content">

@@ -22,7 +22,7 @@ interface MyHandlesCard {
 export const MyHandlesCard = ({ handles, isLoading }: MyHandlesCard) => {
   const navigate = useNavigate();
   return (
-    <Center w="full" h={['auto', '70%', 'xl', '3xl']} alignItems="center">
+    <Center w="full" minH="70%" h="auto" alignItems="center">
       <Card
         border="1px solid"
         borderColor="stroke.500"

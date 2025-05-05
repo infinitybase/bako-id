@@ -335,7 +335,14 @@ const NFTCard = (props: { asset: FuelAsset & { image?: string } }) => {
           </VStack>
         </Dialog.Body>
       </Dialog.Modal>
-      <Card borderRadius="5px" overflow="hidden" onClick={dialog.onOpen} p={0}>
+      <Card
+        borderRadius="5px"
+        overflow="hidden"
+        onClick={dialog.onOpen}
+        p={0}
+        bg="#272726"
+        backdropFilter="none"
+      >
         <Skeleton
           w="full"
           h="full"
