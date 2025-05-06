@@ -1,9 +1,10 @@
-import { Button, Text, useDisclosure } from '@chakra-ui/react';
+import { Button, Text, Tooltip, useDisclosure } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
 import nftEmpty from '@/assets/nft-empty.png';
 import type { FuelAsset } from '@/services/fuel-assets';
 import type { Asset } from '@/types/marketplace';
+import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
 import { formatAddress, parseURI } from '@/utils/formatter';
 import { useWallet } from '@fuels/react';
 import { NftCardModal } from './NftCardModal';
@@ -47,6 +48,11 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
     [ownerDomain, props.asset.owner]
   );
 
+  const isBakoIdNft = useMemo(
+    () => BAKO_CONTRACTS_IDS.includes(contractId!),
+    [contractId]
+  );
+
   const nftName = (
     <>
       {hasSrc20Name && `${symbol} ${name}`}
@@ -78,9 +84,13 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
           <Text fontSize="sm">{nftName}</Text>
 
           {isOwner && (
-            <Button mt={2} variant="primary" size="sm">
-              Sell
-            </Button>
+            <Tooltip
+              label={isBakoIdNft ? 'This NFT is not allowed to be sold' : ''}
+            >
+              <Button mt={2} disabled={isBakoIdNft} variant="primary" size="sm">
+                Sell
+              </Button>
+            </Tooltip>
           )}
         </NftCard.Content>
       </NftCard.Root>

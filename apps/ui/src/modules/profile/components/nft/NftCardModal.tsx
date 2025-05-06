@@ -3,6 +3,7 @@ import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
 import { useCreateOrder } from '@/hooks/marketplace';
 import type { Asset } from '@/types/marketplace';
+import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
 import { parseURI } from '@/utils/formatter';
 import { Box, Flex, Heading, Stack, Text } from '@chakra-ui/react';
 import { bn } from 'fuels';
@@ -60,6 +61,11 @@ export const NftCardModal = ({
     }
   };
 
+  const isBakoIdNft = useMemo(
+    () => BAKO_CONTRACTS_IDS.includes(contractId!),
+    [contractId]
+  );
+
   return (
     <NftModal.Root onClose={onClose} isOpen={isOpen}>
       <NftModal.Content
@@ -113,7 +119,7 @@ export const NftCardModal = ({
               />
             </Flex>
 
-            {isOwner && (
+            {!isBakoIdNft && isOwner && (
               <NftCardSaleForm
                 onSubmit={handleCreateOrder}
                 isLoading={isPending}
