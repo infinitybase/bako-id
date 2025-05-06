@@ -1,11 +1,9 @@
 import {
   Box,
-  Button,
   Center,
   Flex,
   Icon,
   Image,
-  Link,
   useMediaQuery,
 } from '@chakra-ui/react';
 import {
@@ -15,7 +13,7 @@ import {
   useIsConnected,
   useWallet,
 } from '@fuels/react';
-import { Link as TanstackLink, useNavigate } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useGetPrimaryHandleName } from '../../hooks';
 import { formatAddress } from '../../utils/formatter';
@@ -23,6 +21,7 @@ import { Connect } from '../helpers';
 import { FileIcon } from '../icons';
 import { ExchangeBoxIcon } from '../icons/exchangeBoxIcon';
 import { QuestionIcon } from '../icons/question';
+import { NavLinkItem } from '../navLinkItem';
 
 export const Header = () => {
   const [initialLoadState, setInitialLoadState] = useState(true);
@@ -93,45 +92,19 @@ export const Header = () => {
       />
 
       <Flex w="fit-content" align="center" justify="flex-end" gap={2}>
-        <Flex w="full" alignItems="center" gap={2}>
-          <Link
-            as={TanstackLink}
-            to="/marketplace"
-            _hover={{
-              color: 'button.500',
-              path: {
-                fill: 'button.500',
-              },
-            }}
-            color="grey.100"
-            size="sm"
-          >
-            <Flex alignItems="center">
-              Marketplace
-              <ExchangeBoxIcon
-                fontSize="md"
-                alignSelf="center"
-                ml={2}
-                fill="grey.100"
-              />
-            </Flex>
-          </Link>
+        <Flex w="full" alignItems="center" gap={2} flex={1}>
+          <NavLinkItem
+            href="/marketplace"
+            label="Marketplace"
+            icon={<ExchangeBoxIcon w={4} h={4} />}
+            // mr={isConnected ? 0 : 2}
+          />
           {!isMobile && wallet !== null && !initialLoadState && (
-            <Button
-              w="fit-content"
-              bgColor="transparent"
-              _hover={{
-                bgColor: 'transparent',
-                color: 'button.500',
-              }}
-              color="grey.100"
-              fontWeight="normal"
-              fontSize="sm"
-              rightIcon={<FileIcon w={4} h={4} />}
-              onClick={() => navigate({ to: '/my-handles' })}
-            >
-              My Handles
-            </Button>
+            <NavLinkItem
+              href="/my-handles"
+              label="My Handles"
+              icon={<FileIcon w={4} h={4} />}
+            />
           )}
           <Connect isLoading={initialLoadState} domain={domain!} />
         </Flex>
