@@ -66,6 +66,21 @@ const icon = defineStyle({
   fontSize: 'xl',
 });
 
+const customLink = defineStyle({
+  bgColor: 'transparent',
+  color: 'grey.100',
+  _hover: {
+    color: 'button.500',
+    bgColor: '#FFC0101A',
+  },
+  _active: {
+    color: 'button.500',
+    bgColor: '#FFC0101A',
+  },
+  fontSize: 'sm',
+  fontWeight: 'normal',
+});
+
 const baseStyle = defineStyle({
   borderRadius: 8,
   fontWeight: 'semibold',
@@ -83,6 +98,7 @@ const Button = defineStyleConfig({
     secondary,
     tertiary,
     ghosted,
+    customLink,
   },
 });
 
