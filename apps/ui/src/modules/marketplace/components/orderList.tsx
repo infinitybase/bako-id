@@ -32,30 +32,41 @@ export const OrderList = ({
   }, [inView, hasNextPage, onFetchNextPage]);
 
   return (
-    <>
-      <SimpleGrid
-        gap={3}
-        pb={10}
-        columns={{
+    <SimpleGrid
+      gap={3}
+      pb={10}
+      columns={{
+        lg: 6,
+        md: 5,
+        sm: 3,
+        base: 2,
+      }}
+    >
+      {orders.map((order) => (
+        <NftSaleCard
+          key={order.id}
+          asset={order.asset}
+          orderId={order.id}
+          nft={order.nft}
+          showDelistButton={false}
+          value={bn(order.itemPrice).formatUnits(order.asset?.decimals)}
+          isOwner={address === order.seller}
+          showBuyButton
+        />
+      ))}
+
+      <GridItem
+        colSpan={{
           lg: 6,
           md: 5,
           sm: 3,
           base: 2,
         }}
-      >
-        {orders.map((order) => (
-          <NftSaleCard
-            key={order.id}
-            asset={order.asset}
-            orderId={order.id}
-            nft={order.nft}
-            showDelistButton={false}
-            value={bn(order.itemPrice).formatUnits(order.asset?.decimals)}
-            isOwner={address === order.seller}
-            showBuyButton
-          />
-        ))}
+        mb={10}
+        ref={ref}
+      />
 
+      {isEmptyOrders && !isLoadingOrders && (
         <GridItem
           colSpan={{
             lg: 6,
@@ -63,32 +74,20 @@ export const OrderList = ({
             sm: 3,
             base: 2,
           }}
-          ref={ref}
-        />
+        >
+          <Heading size="md" textAlign="center">
+            No orders available
+          </Heading>
+        </GridItem>
+      )}
 
-        {isEmptyOrders && !isLoadingOrders && (
-          <GridItem
-            colSpan={{
-              lg: 6,
-              md: 5,
-              sm: 3,
-              base: 2,
-            }}
-          >
-            <Heading size="md" textAlign="center">
-              No orders available
-            </Heading>
-          </GridItem>
-        )}
-
-        {isLoadingOrders && (
-          <Fragment>
-            {Array.from({ length: 12 }, () => (
-              <Skeleton key={Math.random()} height="250px" borderRadius="lg" />
-            ))}
-          </Fragment>
-        )}
-      </SimpleGrid>
-    </>
+      {isLoadingOrders && (
+        <Fragment>
+          {Array.from({ length: 12 }, () => (
+            <Skeleton key={Math.random()} height="250px" borderRadius="lg" />
+          ))}
+        </Fragment>
+      )}
+    </SimpleGrid>
   );
 };

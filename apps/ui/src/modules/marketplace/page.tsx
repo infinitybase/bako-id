@@ -1,15 +1,17 @@
 import { useListOrders } from '@/hooks/marketplace/useListOrders';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Container, Stack } from '@chakra-ui/react';
-import { useMemo, useState } from 'react';
+import { useNavigate, useSearch } from '@tanstack/react-router';
+import { useMemo } from 'react';
 import { OrderList, SearchBar } from './components';
 
 export const MarketplacePage = () => {
-  const [search, setSearch] = useState<string>('');
-  const debouncedSearch = useDebounce(search, 500);
+  const navigate = useNavigate();
+  const { search } = useSearch({ strict: false });
+  const debouncedSearch = useDebounce(search ?? '', 500);
   const { orders, isLoading, fetchNextPage, hasNextPage } = useListOrders({
     limit: 20,
-    id: debouncedSearch,
+    search: debouncedSearch,
   });
 
   const data = useMemo(
@@ -18,7 +20,12 @@ export const MarketplacePage = () => {
   );
 
   const handleChangeSearch = (search: string) => {
-    setSearch(search);
+    navigate({
+      search: {
+        // @ts-expect-error - TODO: add type for search in router schema
+        search,
+      },
+    });
   };
 
   return (

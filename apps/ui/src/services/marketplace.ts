@@ -32,9 +32,9 @@ export class marketplaceService {
 
   static async getOrders({
     page,
-    limit = 12,
+    limit,
     id,
-  }: { page: number | string; limit?: number; id?: string }): Promise<{
+  }: { page: number | string; limit: number; id?: string }): Promise<{
     orders: OrderResponse[];
     total: number;
   }> {
