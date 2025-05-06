@@ -18,6 +18,7 @@ import {
   Text,
   Tooltip,
 } from '@chakra-ui/react';
+import { useConnectUI } from '@fuels/react';
 import { bn } from 'fuels';
 import { entries } from 'lodash';
 import { useMemo, useState } from 'react';
@@ -61,6 +62,7 @@ export const NftSaleCardModal = ({
   isOwner,
 }: NftSaleCardModalProps) => {
   const [isEditView, setIsEditView] = useState(false);
+  const { connect, isConnected } = useConnectUI();
   const { updateOrderAsync, isPending } = useUpdateOrder();
   const { errorToast, successToast } = useCustomToast();
   const { assets } = useListAssets();
@@ -83,6 +85,11 @@ export const NftSaleCardModal = ({
   }, [currentSellAssetBalance, value]);
 
   const handleExecuteOrder = async () => {
+    if (!isConnected) {
+      connect();
+      onClose();
+      return;
+    }
     try {
       await executeOrderAsync(orderId);
       successToast({ title: 'Order executed successfully!' });
