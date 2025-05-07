@@ -3,6 +3,17 @@
  */
 import { Marketplace, type Order } from 'generated';
 
+const parseNetworkName = (chainId: number): 'MAINNET' | 'TESTNET' => {
+  switch (chainId) {
+    case 0:
+      return 'TESTNET';
+    case 9889:
+      return 'MAINNET';
+    default:
+      throw new Error(`Unknown chainId: ${chainId}`);
+  }
+};
+
 Marketplace.AssetFeeAdjustedEvent.handler(async ({ event, context }) => {
   const asset = await context.Asset.get(event.params.asset.bits);
   if (asset) {
@@ -14,14 +25,18 @@ Marketplace.AssetFeeAdjustedEvent.handler(async ({ event, context }) => {
 });
 
 Marketplace.AssetAddedEvent.handler(async ({ event, context }) => {
+  const network = parseNetworkName(event.chainId);
   context.Asset.set({
     id: event.params.asset.bits,
     fee: event.params.fee,
+    network,
   });
 });
 
 Marketplace.OrderCreatedEvent.handler(async ({ event, context }) => {
   const { order_id, order } = event.params;
+  const network = parseNetworkName(event.chainId);
+
   const entity: Order = {
     id: order_id,
     asset: order.asset.bits,
@@ -30,6 +45,7 @@ Marketplace.OrderCreatedEvent.handler(async ({ event, context }) => {
     itemPrice: order.item_price,
     itemAsset: order.item_asset.bits,
     status: 'CREATED',
+    network,
   };
 
   context.Order.set(entity);

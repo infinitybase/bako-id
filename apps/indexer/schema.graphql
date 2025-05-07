@@ -20,24 +20,3 @@ type AddressResolver {
   resolver: String!
   record: Records! @index
 }
-
-enum OrderStatus {
-  CREATED
-  COMPLETED
-  CANCELLED
-}
-
-type Order {
-  id: ID!
-  asset: String!
-  amount: BigInt!
-  seller: String!
-  itemPrice: BigInt!
-  itemAsset: String!
-  status: OrderStatus!
-}
-
-type Asset {
-  id: ID!
-  fee: BigInt!
-}
