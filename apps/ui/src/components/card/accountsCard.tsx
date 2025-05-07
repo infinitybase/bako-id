@@ -63,7 +63,11 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
     return <CopyText value={value} />;
   };
 
-  const avoidKeys = [MetadataKeys.CONTACT_BIO, MetadataKeys.CONTACT_NICKNAME];
+  const avoidKeys = [
+    MetadataKeys.CONTACT_BIO,
+    MetadataKeys.CONTACT_NICKNAME,
+    MetadataKeys.AVATAR,
+  ];
 
   return (
     <>
@@ -93,7 +97,7 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
         </Flex>
 
         {metadata?.filter(
-          (data) => !avoidKeys.includes(data.key as MetadataKeys),
+          (data) => !avoidKeys.includes(data.key as MetadataKeys)
         ).length ? (
           <VStack spacing={5} h="full" mt={6}>
             {metadata?.map((m) => {
@@ -108,7 +112,7 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
                   rightAddon
                   rightAddonName={getInputIcon(
                     m.key as MetadataKeys,
-                    m.value ?? '',
+                    m.value ?? ''
                   )}
                 />
               );

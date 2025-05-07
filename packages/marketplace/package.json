@@ -1,0 +1,37 @@
+{
+  "name": "@bako-id/marketplace",
+  "private": true,
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "test": "vitest",
+    "build": "tsup",
+    "build:sway": "pnpm fuels build",
+    "contracts:start": "ts-node scripts/construct-contracts.ts",
+    "codegen": "gql-gen --config codegen.sdk.ts"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "fuels": "0.100.1",
+    "graphql": "^16.9.0",
+    "graphql-request": "^7.1.2",
+    "graphql-tag": "^2.12.6"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.3",
+    "@graphql-codegen/typescript": "^4.1.2",
+    "@graphql-codegen/typescript-graphql-request": "^6.2.0",
+    "@graphql-codegen/typescript-operations": "^4.4.0",
+    "@shared/tsup": "workspace:*",
+    "vitest": "^3.1.1"
+  }
+}

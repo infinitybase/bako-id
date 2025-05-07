@@ -2,6 +2,7 @@ import {
   Image as ChakraImage,
   Flex,
   type ImageProps,
+  ResponsiveValue,
   Spinner,
 } from '@chakra-ui/react';
 import { useState } from 'react';
@@ -9,6 +10,7 @@ import { useState } from 'react';
 interface TokenImageProps extends ImageProps {
   src: string;
   spinnerSize?: string;
+  spinnerTopPosition?: ResponsiveValue<number | string>;
 }
 
 export const TokenImage = ({ src, ...props }: TokenImageProps) => {
@@ -21,6 +23,7 @@ export const TokenImage = ({ src, ...props }: TokenImageProps) => {
           boxSize={props.spinnerSize ?? '100px'}
           mx="auto"
           left={props.spinnerSize ? 12 : 'unset'}
+          top={props.spinnerTopPosition}
           position="absolute"
         />
       )}
