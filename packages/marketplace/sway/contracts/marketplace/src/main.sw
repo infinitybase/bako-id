@@ -4,6 +4,7 @@ mod events;
 
 use sway_libs::ownership::*;
 use sway_libs::pausable::*;
+use sway_libs::reentrancy::*;
 
 use std::context::msg_amount;
 use std::asset::transfer;
@@ -270,6 +271,8 @@ impl Marketplace for Contract {
     #[storage(read, write), payable]
     fn execute_order(order_id: OrderId) {
         require_not_paused();
+        reentrancy_guard();
+
         let order = storage.orders.get(order_id).try_read();
         require(order.is_some(), MarketplaceError::OrderNotFound);
 
@@ -307,6 +310,8 @@ impl Marketplace for Contract {
 
     #[storage(read, write)]
     fn cancel_order(order_id: OrderId) {
+        reentrancy_guard();
+
         let order = storage.orders.get(order_id).try_read();
         require(order.is_some(), MarketplaceError::OrderNotFound);
 

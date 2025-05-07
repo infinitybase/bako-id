@@ -16,7 +16,7 @@
     "test": "vitest",
     "build": "tsup",
     "build:sway": "pnpm fuels build",
-    "contracts:start": "ts-node scripts/construct-contracts.ts",
+    "contract:start": "ts-node scripts/start-contract.ts",
     "codegen": "gql-gen --config codegen.sdk.ts"
   },
   "license": "ISC",
