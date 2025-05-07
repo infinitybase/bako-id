@@ -1,10 +1,11 @@
 import type { Asset } from '@/types/marketplace';
+import { constructUrl } from '@/utils/constructUrl';
 import type { OrderResponse } from '@/utils/getOrderMetadata';
 
 const BASE_API_URL = import.meta.env.VITE_API_URL;
 
 export class marketplaceService {
-  static async getOrders({
+  static async getOrdersByAccount({
     account,
     page,
   }: { account: string; page: number | string }): Promise<{
@@ -23,6 +24,27 @@ export class marketplaceService {
 
   static async getAssets(): Promise<Omit<Asset, 'metadata'>[]> {
     const response = await fetch(`${BASE_API_URL}/marketplace/assets`);
+
+    const data = await response.json();
+
+    return data;
+  }
+
+  static async getOrders({
+    page,
+    limit,
+    id,
+  }: { page: number | string; limit: number; id?: string }): Promise<{
+    orders: OrderResponse[];
+    total: number;
+  }> {
+    const url = constructUrl(`${BASE_API_URL}/marketplace/orders`, {
+      page,
+      limit,
+      id,
+    });
+
+    const response = await fetch(url);
 
     const data = await response.json();
 

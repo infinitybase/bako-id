@@ -1,73 +1,87 @@
 import { useProfile } from '@/modules/profile/hooks/useProfile';
 import type { Order } from '@/types/marketplace';
 import { MarketplaceQueryKeys } from '@/utils/constants';
-import { getAssetMetadata } from '@/utils/getOrderMetadata';
 import type { PaginationResult } from '@/utils/pagination';
 import type { UpdateOrder } from '@bako-id/marketplace';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import type { InfiniteData } from '@tanstack/react-query';
 import { useSearch } from '@tanstack/react-router';
+
 import { useChainId } from '../useChainId';
+import { useMutationWithPolling } from '../useMutationWithPolling';
 import { useMarketplace } from './useMarketplace';
+
+type TUpdateOrder = UpdateOrder & { orderId: string };
 
 export const useUpdateOrder = () => {
   const marketplaceContract = useMarketplace();
-  const queryClient = useQueryClient();
   const { chainId } = useChainId();
   const { domain } = useProfile();
-  const { page } = useSearch({ strict: false });
+  const { page: urlPage, search } = useSearch({ strict: false });
 
   const address = domain?.Address?.bits || domain?.ContractId?.bits;
+  const page = Number(urlPage || 1);
 
   const {
     mutate: updateOrder,
     mutateAsync: updateOrderAsync,
     ...rest
-  } = useMutation({
-    mutationFn: async ({
-      orderId,
-      ...data
-    }: UpdateOrder & { orderId: string }) => {
+  } = useMutationWithPolling<TUpdateOrder, unknown, PaginationResult<Order>>({
+    mutationFn: async ({ orderId, ...data }: TUpdateOrder) => {
       const marketplace = await marketplaceContract;
       return await marketplace.updateOrder(orderId, data);
     },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onSuccess: async (_, payload) => {
-      const _page = page ?? 1;
-      const previousOrders = queryClient.getQueryData<PaginationResult<Order>>([
-        MarketplaceQueryKeys.ORDERS,
-        address,
-        _page,
-        chainId,
-      ]);
-
-      if (previousOrders) {
-        const orderAssetMetadata = await getAssetMetadata(
-          payload.sellAsset,
-          chainId
-        );
-        const mergedOrders = previousOrders.data.map((order) => {
-          if (order.id === payload.orderId) {
-            return {
-              ...order,
-              asset: orderAssetMetadata
-                ? { ...orderAssetMetadata, id: String(order.asset?.id) }
-                : null,
-              itemPrice: payload.sellPrice.toString(),
-            };
+    pollConfigs: [
+      {
+        getQueryKey: () => [
+          MarketplaceQueryKeys.ORDERS,
+          address,
+          page,
+          chainId,
+        ],
+        isDataReady: (data, payload) => {
+          if (!data) {
+            return true;
           }
-          return order;
-        });
 
-        queryClient.setQueriesData<PaginationResult<Order>>(
-          {
-            queryKey: [MarketplaceQueryKeys.ORDERS],
-            exact: false,
-          },
-          { ...previousOrders, data: mergedOrders }
-        );
-      }
-    },
+          const { orderId } = payload;
+          const refreshedOrder = data.data.find(
+            (order) => order.id === orderId
+          );
+
+          return isEqual(refreshedOrder!, payload);
+        },
+      },
+      {
+        getQueryKey: () => [
+          MarketplaceQueryKeys.ALL_ORDERS,
+          chainId,
+          search || '', // -> search
+        ],
+        // @ts-expect-error - TODO: fix this type error
+        isDataReady: (
+          data: InfiniteData<PaginationResult<Order>, unknown>,
+          payload
+        ) => {
+          if (!data) return true;
+
+          const { orderId } = payload;
+          const orders = data.pages.flatMap((page) => page.data);
+          const refreshedOrder = orders.find((order) => order.id === orderId);
+
+          return isEqual(refreshedOrder!, payload);
+        },
+      },
+    ],
   });
 
   return { updateOrder, updateOrderAsync, ...rest };
+};
+
+const isEqual = (order: Order, payload: TUpdateOrder) => {
+  const { orderId, sellAsset, sellPrice } = payload;
+  return (
+    order.id === orderId &&
+    order.asset?.id === sellAsset &&
+    order.itemPrice === sellPrice.toString()
+  );
 };

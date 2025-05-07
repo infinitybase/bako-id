@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Center,
   Flex,
   Icon,
@@ -15,12 +14,14 @@ import {
   useWallet,
 } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
-import { Connect } from '../helpers';
-import { QuestionIcon } from '../icons/question';
-import { FileIcon } from '../icons';
 import { useEffect, useMemo, useState } from 'react';
 import { useGetPrimaryHandleName } from '../../hooks';
 import { formatAddress } from '../../utils/formatter';
+import { Connect } from '../helpers';
+import { FileIcon } from '../icons';
+import { ExchangeBoxIcon } from '../icons/exchangeBoxIcon';
+import { QuestionIcon } from '../icons/question';
+import { NavLinkItem } from '../navLinkItem';
 
 export const Header = () => {
   const [initialLoadState, setInitialLoadState] = useState(true);
@@ -91,23 +92,19 @@ export const Header = () => {
       />
 
       <Flex w="fit-content" align="center" justify="flex-end" gap={2}>
-        <Flex w="full" gap={2}>
+        <Flex w="full" alignItems="center" gap={2} flex={1}>
+          <NavLinkItem
+            href="/marketplace"
+            label="Marketplace"
+            icon={<ExchangeBoxIcon w={4} h={4} />}
+            // mr={isConnected ? 0 : 2}
+          />
           {!isMobile && wallet !== null && !initialLoadState && (
-            <Button
-              w="fit-content"
-              bgColor="transparent"
-              _hover={{
-                bgColor: 'transparent',
-                color: 'button.500',
-              }}
-              color="grey.100"
-              fontWeight="normal"
-              fontSize="sm"
-              rightIcon={<FileIcon w={4} h={4} />}
-              onClick={() => navigate({ to: '/my-handles' })}
-            >
-              My Handles
-            </Button>
+            <NavLinkItem
+              href="/my-handles"
+              label="My Handles"
+              icon={<FileIcon w={4} h={4} />}
+            />
           )}
           <Connect isLoading={initialLoadState} domain={domain!} />
         </Flex>

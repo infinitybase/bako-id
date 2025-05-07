@@ -1,12 +1,11 @@
 import { useProfile } from '@/modules/profile/hooks/useProfile';
-import { marketplaceService } from '@/services/marketplace';
 import type { Order as ListOrder } from '@/types/marketplace';
 import { MarketplaceQueryKeys } from '@/utils/constants';
-import { getOrderMetadata } from '@/utils/getOrderMetadata';
 import type { PaginationResult } from '@/utils/pagination';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, type InfiniteData } from '@tanstack/react-query';
 import { useSearch } from '@tanstack/react-router';
 import { useChainId } from '../useChainId';
+import { useMutationWithPolling } from '../useMutationWithPolling';
 import { useMarketplace } from './useMarketplace';
 
 export const useCancelOrder = () => {
@@ -14,70 +13,61 @@ export const useCancelOrder = () => {
   const queryClient = useQueryClient();
   const { domain } = useProfile();
   const { chainId } = useChainId();
-  const { page } = useSearch({ strict: false });
+  const { page: pageUrl, search } = useSearch({ strict: false });
 
   const address = domain?.Address?.bits || domain?.ContractId?.bits;
+  const page = Number(pageUrl || 1);
 
   const {
     mutate: cancelOrder,
     mutateAsync: cancelOrderAsync,
     ...rest
-  } = useMutation({
+  } = useMutationWithPolling({
     mutationFn: async (orderId: string) => {
       const marketplace = await marketplaceContract;
       return await marketplace.cancelOrder(orderId);
     },
-    onSuccess: async (_, orderId) => {
-      const _page = page ?? 1;
-      const previousOrders = queryClient.getQueryData<
-        PaginationResult<ListOrder>
-      >([
-        MarketplaceQueryKeys.ORDERS,
-        address,
-        _page,
-        chainId,
-      ]) as PaginationResult<ListOrder>;
-
-      const updatedOrders = previousOrders.data.filter(
-        (order) => order.id !== orderId
-      );
-      const hasNextPage = previousOrders.hasNextPage;
-
-      if (hasNextPage) {
-        const nextPage = previousOrders.page + 1;
-        const nextPageOrders = queryClient.getQueryData<
-          PaginationResult<ListOrder>
-        >([MarketplaceQueryKeys.ORDERS, address, nextPage, chainId]);
-
-        if (nextPageOrders) {
-          const firstOrder = nextPageOrders.data[0];
-          updatedOrders.push(firstOrder);
-        }
-
-        const nextOrder = await marketplaceService.getOrders({
-          account: address!,
-          page: nextPage,
-        });
-
-        if (nextOrder.orders.length > 0) {
-          const order = nextOrder.orders[0];
-          const orderWithMetadata = await getOrderMetadata(order, chainId);
-          updatedOrders.push(orderWithMetadata);
-        }
-      }
-
-      const paginatedOrders = {
-        ...previousOrders,
-        data: updatedOrders,
-      };
-
-      queryClient.setQueryData<PaginationResult<ListOrder>>(
-        [MarketplaceQueryKeys.ORDERS, address, _page, chainId],
-        paginatedOrders
-      );
-
-      queryClient.invalidateQueries({ queryKey: ['nfts'] });
+    mutationOpts: {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: ['nfts'] });
+      },
     },
+    pollConfigs: [
+      {
+        getQueryKey: () => [
+          MarketplaceQueryKeys.ORDERS,
+          address,
+          page,
+          chainId,
+        ],
+        isDataReady: (
+          data: PaginationResult<ListOrder> | undefined,
+          payload
+        ) => {
+          if (!data) return true;
+
+          return !data.data.find((order) => order.id === payload);
+        },
+      },
+      {
+        getQueryKey: () => [
+          MarketplaceQueryKeys.ALL_ORDERS,
+          chainId,
+          search || '', // -> search
+        ],
+        // @ts-expect-error - TODO: Fix this type
+        isDataReady: (
+          data: InfiniteData<PaginationResult<ListOrder>> | undefined,
+          payload
+        ) => {
+          if (!data) return true;
+
+          const orders = data.pages.flatMap((page) => page.data);
+
+          return !orders.find((order) => order.id === payload);
+        },
+      },
+    ],
   });
 
   return { cancelOrder, cancelOrderAsync, ...rest };

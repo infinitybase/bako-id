@@ -1,6 +1,6 @@
 import { type FuelAsset, FuelAssetService } from '@/services/fuel-assets';
 import type { Order } from '@/types/marketplace';
-import { assignIn, concat, merge, uniqBy } from 'lodash';
+import { assignIn, concat, isEmpty, merge, uniqBy } from 'lodash';
 import { ASSETS_METADATA_STORAGE_KEY } from './constants';
 import { formatMetadataFromIpfs, parseURI } from './formatter';
 import { getLocalStorage, setLocalStorage } from './localStorage';
@@ -9,14 +9,16 @@ export type OrderResponse = Omit<Order, 'nft' | 'asset'> & {
   asset: string;
 };
 
-type AssetMetadata = (FuelAsset & { id: string }) | null;
+type AssetMetadata =
+  | (FuelAsset & { id: string; ipfs?: Record<string, string> })
+  | null;
 
 type CachedMetadata = Record<string, AssetMetadata>;
 
 export const getAssetMetadata = async (
   assetId: string,
   chainId?: number | null
-) => {
+): Promise<AssetMetadata> => {
   const metadataByStorage = getLocalStorage<CachedMetadata>(
     ASSETS_METADATA_STORAGE_KEY
   );
@@ -24,7 +26,6 @@ export const getAssetMetadata = async (
   const metadataByCache = metadataByStorage?.[assetId] || null;
 
   if (metadataByCache) {
-    console.log('Cache hit', assetId);
     return metadataByCache;
   }
 
@@ -33,23 +34,24 @@ export const getAssetMetadata = async (
     chainId: chainId!,
   });
 
-  return assetMetadata;
+  return assetMetadata ? { ...assetMetadata, id: assetId } : null;
 };
 
 export const getOrderMetadata = async (
   order: OrderResponse,
-  chainId?: number | null
+  chainId: number | null | undefined
 ): Promise<Order> => {
   const assetMetadata = await getAssetMetadata(order.asset, chainId);
   const fuelMetadata = await getAssetMetadata(order.itemAsset, chainId);
-  const ipfsMetadata: Record<string, string> = {};
+  const ipfsMetadata: Record<string, string> = fuelMetadata?.ipfs || {};
+  console.log('ipfsMetadata', ipfsMetadata, isEmpty(ipfsMetadata));
 
-  if (fuelMetadata?.uri?.endsWith('.json')) {
+  if (isEmpty(ipfsMetadata) && fuelMetadata?.uri?.endsWith('.json')) {
+    console.log('fetch ipfs metadata');
     const json: Record<string, string> = await fetch(fuelMetadata.uri)
       .then(async (res) => await res.json())
       .catch(() => ({}));
-    const data = formatMetadataFromIpfs(json);
-    assignIn(ipfsMetadata, data);
+    assignIn(ipfsMetadata, formatMetadataFromIpfs(json));
   }
 
   const metadata = merge(ipfsMetadata, fuelMetadata?.metadata ?? {});
@@ -91,6 +93,7 @@ export const saveMetadataToLocalStorage = (orders: Order[]) => {
     .filter((order) => order.nft.fuelMetadata)
     .map((order) => ({
       ...order.nft.fuelMetadata,
+      ipfs: order.nft.metadata,
       id: order.nft.id,
     }));
 

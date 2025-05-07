@@ -88,6 +88,7 @@ export const Info = ({
               as={Button}
               variant="ghost"
               rounded="md"
+              minW="fit-content"
               _focus={{}}
               _hover={{}}
               _focusVisible={{}}
