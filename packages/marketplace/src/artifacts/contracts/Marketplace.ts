@@ -34,6 +34,8 @@ export type MarketplaceErrorInput = Enum<{ AssetNotValid: AssetIdInput, OrderAlr
 export type MarketplaceErrorOutput = Enum<{ AssetNotValid: AssetIdOutput, OrderAlreadyExists: string, InsufficientBalance: AssetIdOutput, ItemNotFound: AssetIdOutput, ItemNotValid: AssetIdOutput, ItemAmountIsZero: void, OrderNotOwned: void, OrderNotFound: void, OrderAssetNotMatch: [], OrderAmountNotMatch: [BN, BN], PriceNotPositive: void }>;
 export enum PauseErrorInput { Paused = 'Paused', NotPaused = 'NotPaused' };
 export enum PauseErrorOutput { Paused = 'Paused', NotPaused = 'NotPaused' };
+export enum ReentrancyErrorInput { NonReentrant = 'NonReentrant' };
+export enum ReentrancyErrorOutput { NonReentrant = 'NonReentrant' };
 
 export type AddressInput = { bits: string };
 export type AddressOutput = AddressInput;
@@ -111,54 +113,59 @@ const abi = {
       "metadataTypeId": 7
     },
     {
+      "type": "enum sway_libs::reentrancy::errors::ReentrancyError",
+      "concreteTypeId": "4d216c57b3357523323f59401c7355785b41bdf832f6e1106272186b94797038",
+      "metadataTypeId": 8
+    },
+    {
       "type": "struct events::AssetAddedEvent",
       "concreteTypeId": "91f28e6b71df131de051f19a1f8cb58ece2165f4a5f9108fbb85471538446fa9",
-      "metadataTypeId": 9
+      "metadataTypeId": 10
     },
     {
       "type": "struct events::AssetFeeAdjustedEvent",
       "concreteTypeId": "8ec71dbeaa645b2b14b88caffc532ebdbbb161e6c75c27bb98b4409a6cb4755a",
-      "metadataTypeId": 10
+      "metadataTypeId": 11
     },
     {
       "type": "struct events::Order",
       "concreteTypeId": "c55cab7602d3f15cab0c13a68816b8dbb16c2921df2b8a3aa62c26bbb1424fd8",
-      "metadataTypeId": 11
+      "metadataTypeId": 12
     },
     {
       "type": "struct events::OrderCancelledEvent",
       "concreteTypeId": "2992862e9a561d761b74985c9333d79e22836314eed6bc983c25dcf096c755c8",
-      "metadataTypeId": 12
+      "metadataTypeId": 13
     },
     {
       "type": "struct events::OrderCreatedEvent",
       "concreteTypeId": "7b55a88023a1041ba857dbda5e33dc9793daf8f5e3fa5bffcdb82aa634ceff43",
-      "metadataTypeId": 13
+      "metadataTypeId": 14
     },
     {
       "type": "struct events::OrderEditedEvent",
       "concreteTypeId": "4daae82842de101195b6ec681faea04e30e9dad318f1c643d114671a812e5ad3",
-      "metadataTypeId": 14
+      "metadataTypeId": 15
     },
     {
       "type": "struct events::OrderExecutedEvent",
       "concreteTypeId": "1ba4a8db83f7ac89d556b54bc6c30eafef4a476bb9660db5e0857a105906547b",
-      "metadataTypeId": 15
+      "metadataTypeId": 16
     },
     {
       "type": "struct std::asset_id::AssetId",
       "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974",
-      "metadataTypeId": 17
+      "metadataTypeId": 18
     },
     {
       "type": "struct sway_libs::ownership::events::OwnershipSet",
       "concreteTypeId": "e1ef35033ea9d2956f17c3292dea4a46ce7d61fdf37bbebe03b7b965073f43b5",
-      "metadataTypeId": 19
+      "metadataTypeId": 20
     },
     {
       "type": "struct sway_libs::ownership::events::OwnershipTransferred",
       "concreteTypeId": "b3fffbcb3158d7c010c31b194b60fb7857adb4ad61bdcf4b8b42958951d9f308",
-      "metadataTypeId": 20
+      "metadataTypeId": 21
     },
     {
       "type": "u64",
@@ -172,11 +179,11 @@ const abi = {
       "components": [
         {
           "name": "__tuple_element",
-          "typeId": 17
+          "typeId": 18
         },
         {
           "name": "__tuple_element",
-          "typeId": 17
+          "typeId": 18
         }
       ]
     },
@@ -200,7 +207,7 @@ const abi = {
       "components": [
         {
           "name": "AssetNotValid",
-          "typeId": 17
+          "typeId": 18
         },
         {
           "name": "OrderAlreadyExists",
@@ -208,15 +215,15 @@ const abi = {
         },
         {
           "name": "InsufficientBalance",
-          "typeId": 17
+          "typeId": 18
         },
         {
           "name": "ItemNotFound",
-          "typeId": 17
+          "typeId": 18
         },
         {
           "name": "ItemNotValid",
-          "typeId": 17
+          "typeId": 18
         },
         {
           "name": "ItemAmountIsZero",
@@ -260,11 +267,11 @@ const abi = {
       "components": [
         {
           "name": "Address",
-          "typeId": 16
+          "typeId": 17
         },
         {
           "name": "ContractId",
-          "typeId": 18
+          "typeId": 19
         }
       ]
     },
@@ -278,11 +285,11 @@ const abi = {
         },
         {
           "name": "Some",
-          "typeId": 8
+          "typeId": 9
         }
       ],
       "typeParameters": [
-        8
+        9
       ]
     },
     {
@@ -310,16 +317,26 @@ const abi = {
       ]
     },
     {
+      "type": "enum sway_libs::reentrancy::errors::ReentrancyError",
+      "metadataTypeId": 8,
+      "components": [
+        {
+          "name": "NonReentrant",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        }
+      ]
+    },
+    {
       "type": "generic T",
-      "metadataTypeId": 8
+      "metadataTypeId": 9
     },
     {
       "type": "struct events::AssetAddedEvent",
-      "metadataTypeId": 9,
+      "metadataTypeId": 10,
       "components": [
         {
           "name": "asset",
-          "typeId": 17
+          "typeId": 18
         },
         {
           "name": "fee",
@@ -329,11 +346,11 @@ const abi = {
     },
     {
       "type": "struct events::AssetFeeAdjustedEvent",
-      "metadataTypeId": 10,
+      "metadataTypeId": 11,
       "components": [
         {
           "name": "asset",
-          "typeId": 17
+          "typeId": 18
         },
         {
           "name": "fee",
@@ -343,11 +360,11 @@ const abi = {
     },
     {
       "type": "struct events::Order",
-      "metadataTypeId": 11,
+      "metadataTypeId": 12,
       "components": [
         {
           "name": "asset",
-          "typeId": 17
+          "typeId": 18
         },
         {
           "name": "amount",
@@ -363,13 +380,13 @@ const abi = {
         },
         {
           "name": "item_asset",
-          "typeId": 17
+          "typeId": 18
         }
       ]
     },
     {
       "type": "struct events::OrderCancelledEvent",
-      "metadataTypeId": 12,
+      "metadataTypeId": 13,
       "components": [
         {
           "name": "order_id",
@@ -379,20 +396,6 @@ const abi = {
     },
     {
       "type": "struct events::OrderCreatedEvent",
-      "metadataTypeId": 13,
-      "components": [
-        {
-          "name": "order_id",
-          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
-        },
-        {
-          "name": "order",
-          "typeId": 11
-        }
-      ]
-    },
-    {
-      "type": "struct events::OrderEditedEvent",
       "metadataTypeId": 14,
       "components": [
         {
@@ -400,8 +403,22 @@ const abi = {
           "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
         },
         {
+          "name": "order",
+          "typeId": 12
+        }
+      ]
+    },
+    {
+      "type": "struct events::OrderEditedEvent",
+      "metadataTypeId": 15,
+      "components": [
+        {
+          "name": "order_id",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        {
           "name": "new_asset",
-          "typeId": 17
+          "typeId": 18
         },
         {
           "name": "new_price",
@@ -411,7 +428,7 @@ const abi = {
     },
     {
       "type": "struct events::OrderExecutedEvent",
-      "metadataTypeId": 15,
+      "metadataTypeId": 16,
       "components": [
         {
           "name": "order_id",
@@ -427,7 +444,7 @@ const abi = {
         },
         {
           "name": "asset",
-          "typeId": 17
+          "typeId": 18
         },
         {
           "name": "fee",
@@ -437,16 +454,6 @@ const abi = {
     },
     {
       "type": "struct std::address::Address",
-      "metadataTypeId": 16,
-      "components": [
-        {
-          "name": "bits",
-          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
-        }
-      ]
-    },
-    {
-      "type": "struct std::asset_id::AssetId",
       "metadataTypeId": 17,
       "components": [
         {
@@ -456,7 +463,7 @@ const abi = {
       ]
     },
     {
-      "type": "struct std::contract_id::ContractId",
+      "type": "struct std::asset_id::AssetId",
       "metadataTypeId": 18,
       "components": [
         {
@@ -466,8 +473,18 @@ const abi = {
       ]
     },
     {
-      "type": "struct sway_libs::ownership::events::OwnershipSet",
+      "type": "struct std::contract_id::ContractId",
       "metadataTypeId": 19,
+      "components": [
+        {
+          "name": "bits",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        }
+      ]
+    },
+    {
+      "type": "struct sway_libs::ownership::events::OwnershipSet",
+      "metadataTypeId": 20,
       "components": [
         {
           "name": "new_owner",
@@ -477,7 +494,7 @@ const abi = {
     },
     {
       "type": "struct sway_libs::ownership::events::OwnershipTransferred",
-      "metadataTypeId": 20,
+      "metadataTypeId": 21,
       "components": [
         {
           "name": "new_owner",
@@ -740,6 +757,10 @@ const abi = {
     {
       "logId": "10288224578490882859",
       "concreteTypeId": "8ec71dbeaa645b2b14b88caffc532ebdbbb161e6c75c27bb98b4409a6cb4755a"
+    },
+    {
+      "logId": "5557842539076482339",
+      "concreteTypeId": "4d216c57b3357523323f59401c7355785b41bdf832f6e1106272186b94797038"
     },
     {
       "logId": "9380741853358249135",

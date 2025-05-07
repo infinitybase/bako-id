@@ -1,7 +1,7 @@
 import type { FunctionInvocationScope } from 'fuels';
 
 export const callAndWait = async <T extends unknown[], R>(
-  method: FunctionInvocationScope<T, R>,
+  method: FunctionInvocationScope<T, R>
 ) => {
   const result = await method.call();
   return result.waitForResult();
@@ -9,7 +9,10 @@ export const callAndWait = async <T extends unknown[], R>(
 
 export const getContractId = (chainId: number) => {
   const contractsId: Record<number, string> = {
-    0: '0x3f1ec560123a1bbd929c03e4fde1cd54d4c3071a1efd00b427e4ad4b9ac730bb',
+    // TESTNET
+    0: '0xc905465054211ca2186d2afe389b1ead7d06d484168483c8cbdcd990665b50b1',
+
+    // MAINNET
     9889: '0x0000000000000000000000000000000000000000000000000000000000000000',
   };
 
