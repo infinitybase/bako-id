@@ -8,10 +8,10 @@ import { parseURI } from '@/utils/formatter';
 import { Box, Flex, Heading, Stack, Text } from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { useMemo } from 'react';
-import { NftModal } from './modal';
 import { NftCardSaleForm, type NftSaleCardForm } from './NftCardSaleForm';
 import { NftListMetadata } from './NftListMetadata';
 import { NftMetadataBlock } from './NftMetadataBlock';
+import { NftModal } from './modal';
 
 interface NftCardModalProps {
   assetId: string;
@@ -90,7 +90,7 @@ export const NftCardModal = ({
           maxH={{ md: '480px' }}
         >
           <Heading fontSize="xl">{nftName}</Heading>
-          <Stack spacing={6} flex={1} mt={6} maxH="full" overflowY="hidden">
+          <Stack spacing={6} flex={1} mt={6} maxH="full">
             <Box>
               <Heading fontSize="md">Description</Heading>
               <Text
@@ -126,7 +126,6 @@ export const NftCardModal = ({
                 assets={assets}
               />
             )}
-
             <NftListMetadata metadata={metadataArray} />
           </Stack>
         </Stack>
