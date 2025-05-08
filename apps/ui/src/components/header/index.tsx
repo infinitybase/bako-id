@@ -70,6 +70,8 @@ export const Header = () => {
     navigate({ to: '/' }).then();
   };
 
+  const showMarketplaceLink = isMobile ? !wallet : true;
+
   return (
     <Center
       as="header"
@@ -93,12 +95,13 @@ export const Header = () => {
 
       <Flex w="fit-content" align="center" justify="flex-end" gap={2}>
         <Flex w="full" alignItems="center" gap={2} flex={1}>
-          <NavLinkItem
-            href="/marketplace"
-            label="Marketplace"
-            icon={<ExchangeBoxIcon w={4} h={4} />}
-            // mr={isConnected ? 0 : 2}
-          />
+          {showMarketplaceLink && (
+            <NavLinkItem
+              href="/marketplace"
+              label="Marketplace"
+              icon={<ExchangeBoxIcon w={4} h={4} />}
+            />
+          )}
           {!isMobile && wallet !== null && !initialLoadState && (
             <NavLinkItem
               href="/my-handles"

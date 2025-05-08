@@ -11,6 +11,7 @@ import {
   MenuItem,
   MenuList,
   Text,
+  useMediaQuery,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
@@ -20,6 +21,7 @@ import accoutIcon from '../../assets/account-icon.svg';
 import { BeginnersGuide } from '../icons/beginnersGuide.tsx';
 import { FileIcon } from '../icons/fileIcon.tsx';
 // import { HowToSendCrypto } from '../icons/howToSendCrypto.tsx';
+import { ExchangeBoxIcon } from '../icons/exchangeBoxIcon.tsx';
 import { LogoutIcon } from '../icons/logoutIcon.tsx';
 import { MiningCrypto } from '../icons/miningCrypto.tsx';
 import { MoreBako } from '../icons/moreBako.tsx';
@@ -38,6 +40,7 @@ export const Info = ({
     fuel: { disconnect },
   } = useFuel();
   const navigate = useNavigate();
+  const [isMobile] = useMediaQuery('(max-width: 48em)');
   const { successToast } = useCustomToast();
   const [showTerms, setShowTerms] = useState(false);
 
@@ -194,6 +197,29 @@ export const Info = ({
                 My Handles
               </MenuItem>
               <Divider w="95%" color="grey.300" mx="auto" />
+
+              {/* Marketplace */}
+              {isMobile && (
+                <>
+                  <MenuItem
+                    p={2}
+                    bgColor="transparent"
+                    color="grey.200"
+                    my={2}
+                    gap={2}
+                    onClick={() => navigate({ to: '/marketplace' })}
+                    _hover={{
+                      cursor: 'pointer',
+                      color: 'button.500',
+                      opacity: 0.9,
+                    }}
+                  >
+                    <Icon as={ExchangeBoxIcon} />
+                    Marketplace
+                  </MenuItem>
+                  <Divider w="95%" color="grey.300" mx="auto" />
+                </>
+              )}
 
               {/* Notifications */}
               {/* <MenuItem
