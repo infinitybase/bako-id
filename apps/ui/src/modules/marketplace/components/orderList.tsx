@@ -36,10 +36,9 @@ export const OrderList = ({
       gap={3}
       pb={10}
       columns={{
-        lg: 6,
-        md: 5,
+        md: 4,
         sm: 3,
-        base: 2,
+        base: 1,
       }}
     >
       {orders.map((order) => (
@@ -57,10 +56,9 @@ export const OrderList = ({
 
       <GridItem
         colSpan={{
-          lg: 6,
-          md: 5,
+          md: 4,
           sm: 3,
-          base: 2,
+          base: 1,
         }}
         mb={10}
         ref={ref}
@@ -69,10 +67,9 @@ export const OrderList = ({
       {isEmptyOrders && !isLoadingOrders && (
         <GridItem
           colSpan={{
-            lg: 6,
-            md: 5,
+            md: 4,
             sm: 3,
-            base: 2,
+            base: 1,
           }}
         >
           <Heading size="md" textAlign="center">
