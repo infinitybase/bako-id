@@ -29,6 +29,7 @@ export const useListOrders = ({ limit, search }: useListOrdersProps) => {
         page: pageParam as number,
         limit,
         id: search,
+        chainId: chainId ?? undefined,
       });
       const ordersWithMetadata = await Promise.all(
         orders.map(async (order) => await getOrderMetadata(order, chainId))

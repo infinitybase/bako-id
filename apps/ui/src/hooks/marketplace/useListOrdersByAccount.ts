@@ -22,6 +22,7 @@ export const useListOrdersByAccount = ({
       const { orders, total } = await marketplaceService.getOrdersByAccount({
         account: account!,
         page,
+        chainId: chainId ?? undefined,
       });
 
       const ordersWithMetadata = await Promise.all(

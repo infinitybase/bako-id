@@ -10,7 +10,9 @@ export const useListAssets = () => {
   const { data: assets, ...rest } = useQuery({
     queryKey: [MarketplaceQueryKeys.ASSETS, chainId],
     queryFn: async () => {
-      const assets = await marketplaceService.getAssets();
+      const assets = await marketplaceService.getAssets({
+        chainId: chainId ?? undefined,
+      });
 
       const assetsWithMetadata = await Promise.all(
         assets.map(async (asset) => {
