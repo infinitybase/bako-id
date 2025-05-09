@@ -6,9 +6,9 @@ import { useCancelOrder } from '@/hooks/marketplace';
 import type { FuelAsset } from '@/services/fuel-assets';
 import type { Nft } from '@/types/marketplace';
 import { Button, Heading, Image, Text, useDisclosure } from '@chakra-ui/react';
-import { type MouseEvent, useCallback, useMemo } from 'react';
-import { NftCard } from './card';
+import { useCallback, useMemo, type MouseEvent } from 'react';
 import { NftSaleCardModal } from './NftSaleCardModal';
+import { NftCard } from './card';
 
 interface NftSaleCardProps {
   orderId: string;
@@ -94,7 +94,13 @@ const NftSaleCard = ({
       {showDelistButton && <NftCard.DelistButton onDelist={handleDelist} />}
       <NftCard.Image src={imageUrl} />
       <NftCard.Content spacing={2}>
-        <Text fontSize="sm" color="text.700">
+        <Text
+          fontSize="sm"
+          color="text.700"
+          whiteSpace="nowrap"
+          textOverflow="ellipsis"
+          overflow="hidden"
+        >
           {name}
         </Text>
         <Heading
