@@ -1,4 +1,5 @@
-import { Card, Flex, Grid, Skeleton } from '@chakra-ui/react';
+import { Flex, Grid, Skeleton } from '@chakra-ui/react';
+import { Card } from '../card';
 
 export const NFTCollectionSkeleton = () => {
   return (
