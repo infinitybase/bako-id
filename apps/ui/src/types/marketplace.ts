@@ -16,6 +16,7 @@ export interface Order {
   itemPrice: string;
   itemAsset: string;
   status: string;
+  sellerDomain?: string;
   nft: {
     id: string;
     metadata: Record<string, string> & Metadata;

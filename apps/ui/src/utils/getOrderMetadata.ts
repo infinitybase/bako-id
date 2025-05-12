@@ -1,11 +1,11 @@
-import { type FuelAsset, FuelAssetService } from '@/services/fuel-assets';
+import { FuelAssetService, type FuelAsset } from '@/services/fuel-assets';
 import type { Order } from '@/types/marketplace';
 import { assignIn, concat, isEmpty, merge, uniqBy } from 'lodash';
 import { ASSETS_METADATA_STORAGE_KEY } from './constants';
 import { formatMetadataFromIpfs, parseURI } from './formatter';
 import { getLocalStorage, setLocalStorage } from './localStorage';
 
-export type OrderResponse = Omit<Order, 'nft' | 'asset'> & {
+export type OrderResponse = Omit<Order, 'nft' | 'asset' | 'sellerDomain'> & {
   asset: string;
 };
 
@@ -44,10 +44,8 @@ export const getOrderMetadata = async (
   const assetMetadata = await getAssetMetadata(order.asset, chainId);
   const fuelMetadata = await getAssetMetadata(order.itemAsset, chainId);
   const ipfsMetadata: Record<string, string> = fuelMetadata?.ipfs || {};
-  console.log('ipfsMetadata', ipfsMetadata, isEmpty(ipfsMetadata));
 
   if (isEmpty(ipfsMetadata) && fuelMetadata?.uri?.endsWith('.json')) {
-    console.log('fetch ipfs metadata');
     const json: Record<string, string> = await fetch(fuelMetadata.uri)
       .then(async (res) => await res.json())
       .catch(() => ({}));
