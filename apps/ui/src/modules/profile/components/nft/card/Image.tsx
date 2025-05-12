@@ -1,9 +1,9 @@
 import EmptyImg from '@/assets/nft-empty.png';
 import {
-  type ImageProps,
   Box,
   Image as ChakraImg,
   Skeleton,
+  type ImageProps,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 
@@ -26,7 +26,7 @@ export const Image = ({ ...props }: ImageProps) => {
         <ChakraImg
           onLoad={handleOnLoad}
           fallbackSrc={EmptyImg}
-          borderTopRadius="4px"
+          borderTopRadius="8px"
           {...props}
         />
       </Skeleton>
