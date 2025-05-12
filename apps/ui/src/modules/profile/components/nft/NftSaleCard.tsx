@@ -3,30 +3,24 @@ import nftEmpty from '@/assets/nft-empty.png';
 import UnknownAsset from '@/assets/unknown-asset.png';
 import { ConfirmationDialog, useCustomToast } from '@/components';
 import { useCancelOrder } from '@/hooks/marketplace';
-import type { FuelAsset } from '@/services/fuel-assets';
-import type { Nft } from '@/types/marketplace';
+import type { Order } from '@/types/marketplace';
 import { Button, Heading, Image, Text, useDisclosure } from '@chakra-ui/react';
+import { bn } from 'fuels';
 import { useCallback, useMemo, type MouseEvent } from 'react';
 import { NftSaleCardModal } from './NftSaleCardModal';
 import { NftCard } from './card';
 
 interface NftSaleCardProps {
-  orderId: string;
-  asset: (FuelAsset & { id: string }) | null;
-  value: string;
-  nft: Nft;
+  order: Order;
   showDelistButton: boolean;
   isOwner: boolean;
   showBuyButton: boolean;
 }
 
 const NftSaleCard = ({
-  value,
-  orderId,
-  nft,
+  order,
   showDelistButton,
   isOwner,
-  asset,
   showBuyButton,
 }: NftSaleCardProps) => {
   const { successToast, errorToast } = useCustomToast();
@@ -36,7 +30,7 @@ const NftSaleCard = ({
 
   const handleCancelOrder = useCallback(async () => {
     try {
-      await cancelOrderAsync(orderId);
+      await cancelOrderAsync(order.id);
       successToast({
         title: 'Order cancelled',
         description: 'Your order has been successfully cancelled.',
@@ -49,7 +43,7 @@ const NftSaleCard = ({
         description: 'An error occurred while cancelling your order.',
       });
     }
-  }, [cancelOrderAsync, orderId, successToast, errorToast, onClose]);
+  }, [cancelOrderAsync, order.id, successToast, errorToast, onClose]);
 
   const handleDelist = (e: MouseEvent) => {
     e.stopPropagation();
@@ -61,7 +55,12 @@ const NftSaleCard = ({
     delistModal.onClose();
   };
 
-  const rate = asset?.rate ?? 0;
+  const rate = order.asset?.rate ?? 0;
+
+  const value = useMemo(
+    () => bn(order.itemPrice).formatUnits(order.asset?.decimals),
+    [order.itemPrice, order.asset?.decimals]
+  );
 
   const usdValue = useMemo(() => Number(value) * rate, [value, rate]);
 
@@ -83,14 +82,16 @@ const NftSaleCard = ({
     [value]
   );
 
-  const assetSymbolUrl = asset?.icon || UnknownAsset;
+  const assetSymbolUrl = order.asset?.icon || UnknownAsset;
 
-  const imageUrl = nft.image || nftEmpty;
-  const name = nft.name || 'Unknown NFT';
+  const imageUrl = order.nft?.image || nftEmpty;
+  const name = order.nft?.name || 'Unknown NFT';
 
   return (
     <NftCard.Root onClick={onOpen} cursor="pointer" minH="240px">
-      {nft.edition && <NftCard.EditionBadge edition={nft.edition} />}
+      {order.nft?.edition && (
+        <NftCard.EditionBadge edition={order.nft?.edition} />
+      )}
       {showDelistButton && <NftCard.DelistButton onDelist={handleDelist} />}
       <NftCard.Image src={imageUrl} />
       <NftCard.Content spacing={2}>
@@ -113,13 +114,17 @@ const NftSaleCard = ({
           <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
           {nftPrice}
         </Heading>
-        {asset?.rate && (
+        {order.asset?.rate && (
           <Text color="grey.subtitle" fontSize="sm">
             {currency}
           </Text>
         )}
 
-        {showBuyButton && <Button variant="primary">Buy</Button>}
+        {showBuyButton && (
+          <Button height="auto" py={1.5} variant="primary">
+            Buy
+          </Button>
+        )}
       </NftCard.Content>
 
       {delistModal.isOpen && (
@@ -139,21 +144,13 @@ const NftSaleCard = ({
 
       {isOpen && (
         <NftSaleCardModal
-          orderId={orderId}
+          order={order}
           imageUrl={imageUrl}
           isOpen={isOpen}
           onClose={onClose}
-          nft={nft}
-          name={name}
           onCancelOrder={handleCancelOrder}
           isCanceling={isCanceling}
           value={valueWithoutRigthZeros}
-          asset={{
-            iconUrl: assetSymbolUrl,
-            decimals: asset?.decimals,
-            id: asset?.id!,
-            name: asset?.name ?? 'Unknown',
-          }}
           usdValue={currency}
           isOwner={isOwner}
         />

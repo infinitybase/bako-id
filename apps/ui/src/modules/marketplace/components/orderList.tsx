@@ -2,7 +2,6 @@ import NftSaleCard from '@/modules/profile/components/nft/NftSaleCard';
 import type { Order } from '@/types/marketplace';
 import { GridItem, Heading, SimpleGrid, Skeleton } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
-import { bn } from 'fuels';
 import { Fragment, useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 
@@ -36,7 +35,7 @@ export const OrderList = ({
       gap={3}
       pb={10}
       columns={{
-        md: 4,
+        md: 5,
         sm: 3,
         base: 1,
       }}
@@ -44,11 +43,8 @@ export const OrderList = ({
       {orders.map((order) => (
         <NftSaleCard
           key={order.id}
-          asset={order.asset}
-          orderId={order.id}
-          nft={order.nft}
+          order={order}
           showDelistButton={false}
-          value={bn(order.itemPrice).formatUnits(order.asset?.decimals)}
           isOwner={address === order.seller}
           showBuyButton
         />
@@ -56,7 +52,7 @@ export const OrderList = ({
 
       <GridItem
         colSpan={{
-          md: 4,
+          md: 5,
           sm: 3,
           base: 1,
         }}
@@ -67,7 +63,7 @@ export const OrderList = ({
       {isEmptyOrders && !isLoadingOrders && (
         <GridItem
           colSpan={{
-            md: 4,
+            md: 5,
             sm: 3,
             base: 1,
           }}
@@ -80,7 +76,7 @@ export const OrderList = ({
 
       {isLoadingOrders && (
         <Fragment>
-          {Array.from({ length: 12 }, () => (
+          {Array.from({ length: 5 }, () => (
             <Skeleton key={Math.random()} height="250px" borderRadius="lg" />
           ))}
         </Fragment>

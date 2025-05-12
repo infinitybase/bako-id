@@ -2,6 +2,7 @@ import { Card } from '@/components';
 import { CloseIcon } from '@/components/icons/closeIcon';
 import { Pagination } from '@/components/pagination';
 import { useListOrdersByAccount } from '@/hooks/marketplace';
+import { formatAddress } from '@/utils/formatter';
 import {
   Button,
   Center,
@@ -14,14 +15,13 @@ import {
 } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
 import { useSearch } from '@tanstack/react-router';
-import { bn } from 'fuels';
 import { Fragment, useMemo, useState } from 'react';
 import NftSaleCard from './NftSaleCard';
 
 export const NftListForSale = ({
   domain,
   address,
-}: { domain: string; address: string }) => {
+}: { domain?: string; address: string }) => {
   const [isDelistOrder, setIsDelistOrder] = useState(false);
   const { page } = useSearch({
     strict: false,
@@ -40,7 +40,7 @@ export const NftListForSale = ({
   const isEmptyOrders = !orders?.data?.length;
 
   const isOwner = useMemo(
-    () => wallet?.address.b256Address === address,
+    () => wallet?.address.b256Address.toLowerCase() === address.toLowerCase(),
     [wallet?.address.b256Address, address]
   );
 
@@ -49,7 +49,7 @@ export const NftListForSale = ({
       <Stack justifyContent="space-between" direction="row" alignItems="center">
         <Heading fontSize="lg">
           <Heading fontSize="lg" as="span" color="yellow.500">
-            @{domain}
+            @{domain ? domain : formatAddress(address)}
           </Heading>{' '}
           for sale
         </Heading>
@@ -90,10 +90,7 @@ export const NftListForSale = ({
         {orders?.data?.map((order) => (
           <GridItem key={order.id}>
             <NftSaleCard
-              orderId={order.id}
-              asset={order.asset}
-              value={bn(order.itemPrice).formatUnits(order.asset?.decimals)}
-              nft={order.nft}
+              order={order}
               showDelistButton={isDelistOrder}
               isOwner={isOwner}
               showBuyButton={!isOwner}
