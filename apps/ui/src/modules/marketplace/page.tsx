@@ -32,9 +32,11 @@ export const MarketplacePage = () => {
     <Container
       maxWidth="container.lg"
       py={8}
-      overflowY={{
-        base: 'scroll',
-        sm: 'auto',
+      overflowY="scroll"
+      sx={{
+        '&::-webkit-scrollbar': {
+          width: '0px',
+        },
       }}
       maxH="100vh"
       pb={{
