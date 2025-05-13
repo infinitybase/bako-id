@@ -10,6 +10,7 @@ export default function ProfileContainer({
       w="full"
       justifyContent="center"
       pr={['0', '0', '0', '0', '0', '10%']}
+      py={8}
     >
       <Stack
         display="flex"
