@@ -3,10 +3,18 @@ import { CloseIcon } from '@/components/icons/closeIcon';
 import { Pagination } from '@/components/pagination';
 import { useListOrdersByAccount } from '@/hooks/marketplace';
 import { formatAddress } from '@/utils/formatter';
-import { Button, Grid, GridItem, Heading, Stack, Text } from '@chakra-ui/react';
+import {
+  Button,
+  Grid,
+  GridItem,
+  Heading,
+  Skeleton,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
 import { useSearch } from '@tanstack/react-router';
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import NftSaleCard from './NftSaleCard';
 
 export const NftListForSale = ({
@@ -72,6 +80,16 @@ export const NftListForSale = ({
         }}
         gap={6}
       >
+        {isLoading && (
+          <Fragment>
+            {Array.from({ length: 6 }, () => (
+              <GridItem key={crypto.randomUUID()}>
+                <Skeleton height="200px" width="full" rounded="lg" />
+              </GridItem>
+            ))}
+          </Fragment>
+        )}
+
         {orders?.data?.map((order) => (
           <GridItem key={order.id}>
             <NftSaleCard
