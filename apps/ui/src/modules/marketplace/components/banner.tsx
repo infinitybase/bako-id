@@ -1,29 +1,13 @@
 import Banner from '@/assets/marketplace-banner.png';
-import { useChainId } from '@/hooks/useChainId';
-import BakoIdService from '@/services/bako-id';
-import { BakoIDQueryKeys } from '@/utils/constants';
-import { Networks } from '@/utils/resolverNetwork';
+import { useResolverName } from '@/hooks';
 import { Box, Button, Heading, Image, Stack, Text } from '@chakra-ui/react';
 import { useAccount } from '@fuels/react';
-import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
-import { ZeroBytes32 } from 'fuels';
-import { isNil } from 'lodash';
 
 export const MarketplaceBanner = () => {
   const { account } = useAccount();
-  const { chainId } = useChainId();
 
-  const { data, isLoading } = useQuery({
-    queryKey: [BakoIDQueryKeys.NAME, account ?? ZeroBytes32, chainId],
-    queryFn: async () => {
-      return BakoIdService.name(account!, chainId ?? Networks.MAINNET);
-    },
-    enabled: !!account && !isNil(chainId),
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-  });
-  console.log('data', data);
+  const { data, isLoading } = useResolverName();
 
   const handle = data || account;
 
