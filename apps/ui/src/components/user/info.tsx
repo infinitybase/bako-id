@@ -26,6 +26,7 @@ import { LogoutIcon } from '../icons/logoutIcon.tsx';
 import { MiningCrypto } from '../icons/miningCrypto.tsx';
 import { MoreBako } from '../icons/moreBako.tsx';
 import { SmallCloseIcon } from '../icons/smallCloseIcon.tsx';
+import { UserIcon } from '../icons/userIcon.tsx';
 import { TermsOfUseDialog } from '../termsOfUseDialog/index.tsx';
 import { useCustomToast } from '../toast/index.tsx';
 
@@ -62,6 +63,8 @@ export const Info = ({
     await disconnect();
     navigate({ to: '/' });
   };
+
+  const isDomain = !name.includes('...');
 
   const icon = (
     <Box
@@ -178,6 +181,27 @@ export const Info = ({
                 </Flex>
               </MenuItem>
               <Divider w="95%" color="grey.300" mx="auto" mt={3} />
+
+              {/* Profile */}
+              <MenuItem
+                p={2}
+                bgColor="transparent"
+                color="grey.200"
+                my={2}
+                gap={2}
+                onClick={() =>
+                  navigate({ to: `/profile/${isDomain ? name : account}` })
+                }
+                _hover={{
+                  cursor: 'pointer',
+                  color: 'button.500',
+                  opacity: 0.9,
+                }}
+              >
+                <Icon as={UserIcon} />
+                Profile
+              </MenuItem>
+              <Divider w="95%" color="grey.300" mx="auto" />
 
               {/* My Handles */}
               <MenuItem
