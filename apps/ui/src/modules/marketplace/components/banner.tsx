@@ -1,15 +1,27 @@
 import Banner from '@/assets/marketplace-banner.png';
 import { useResolverName } from '@/hooks';
 import { Box, Button, Heading, Image, Stack, Text } from '@chakra-ui/react';
-import { useAccount } from '@fuels/react';
-import { Link } from '@tanstack/react-router';
+import { useAccount, useConnectUI } from '@fuels/react';
+import { useNavigate } from '@tanstack/react-router';
 
 export const MarketplaceBanner = () => {
   const { account } = useAccount();
+  const { connect } = useConnectUI();
+  const navigate = useNavigate();
 
   const { data, isLoading } = useResolverName();
 
   const handle = data || account;
+
+  const handleStartSelling = () => {
+    if (!handle) {
+      connect();
+      return;
+    }
+    navigate({
+      to: `/profile/${handle}`,
+    });
+  };
 
   return (
     <Box height="230px" position="relative">
@@ -26,8 +38,7 @@ export const MarketplaceBanner = () => {
           </Box>
 
           <Button
-            as={Link}
-            to={`/profile/${handle}`}
+            onClick={handleStartSelling}
             borderColor="grey.100"
             disabled={isLoading}
             color="grey.100"
