@@ -1,11 +1,17 @@
 import { useChainId } from '@/hooks/useChainId';
+import type { Order } from '@/types/marketplace';
+import type { PaginationResult } from '@/utils/pagination';
 import { Container, Stack } from '@chakra-ui/react';
 import { useParams } from '@tanstack/react-router';
 import { NftCollections } from './nft/NftCollections';
 import { NftListForSale } from './nft/NftListForSale';
 import ProfileHandleBanner from './profileHandleBanner';
 
-export default function ProfileWithoutHandler() {
+export default function ProfileWithoutHandler({
+  orders,
+}: {
+  orders: PaginationResult<Order> | undefined;
+}) {
   const { chainId } = useChainId();
   const { domain: domainParam } = useParams({ strict: false });
 
@@ -29,7 +35,7 @@ export default function ProfileWithoutHandler() {
       <Stack w="full" height="full" flex={1} gap={6} pb={10}>
         <ProfileHandleBanner />
 
-        <NftListForSale address={address} />
+        <NftListForSale address={address} orders={orders} hiddenWhenEmpty />
 
         <NftCollections resolver={address} chainId={chainId} />
       </Stack>

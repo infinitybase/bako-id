@@ -5,7 +5,9 @@ import { ProfileCard } from '@/components/card/profileCard.tsx';
 import { EditMetadataModal } from '@/components/modal/editProfileModal.tsx';
 import { useChainId } from '@/hooks/useChainId';
 import { useMetadata } from '@/hooks/useMetadata.ts';
+import type { Order } from '@/types/marketplace';
 import { getExplorer } from '@/utils/getExplorer.ts';
+import type { PaginationResult } from '@/utils/pagination';
 import { Flex, Stack } from '@chakra-ui/react';
 import { Suspense } from 'react';
 import { NftCollections } from './nft/NftCollections.tsx';
@@ -17,6 +19,7 @@ type ProfileCardsProps = {
   domain: string;
   owner: string;
   isLoading: boolean;
+  orders: PaginationResult<Order> | undefined;
 };
 
 export const ProfileCards = ({
@@ -24,6 +27,7 @@ export const ProfileCards = ({
   domainParam,
   isLoading: loadingDomain,
   owner,
+  orders,
 }: ProfileCardsProps) => {
   const { metadataModal, metadata, setUpdatedMetadata, loadingMetadata } =
     useMetadata();
@@ -87,7 +91,7 @@ export const ProfileCards = ({
         <AccountsCard metadata={metadata} addAction={metadataModal.onOpen} />
       </Stack>
 
-      <NftListForSale domain={domainParam!} address={domain} />
+      <NftListForSale orders={orders} domain={domainParam!} address={domain} />
 
       <NftCollections resolver={domain!} chainId={chainId} />
     </Suspense>
