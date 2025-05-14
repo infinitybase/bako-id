@@ -7,7 +7,7 @@ import { useProfile } from './hooks/useProfile';
 const Profile = () => {
   const { domain, domainParam, isLoadingDomain, owner } = useProfile();
 
-  const userWithDomain = !!domain && !!owner;
+  const userWithDomain = !!domain;
 
   if (isLoadingDomain) {
     return (
@@ -24,7 +24,7 @@ const Profile = () => {
           domain={domain.Address?.bits || domain.ContractId?.bits || ''}
           domainParam={domainParam}
           isLoadingDomain={isLoadingDomain}
-          owner={owner.Address?.bits || owner.ContractId?.bits || ''}
+          owner={owner?.Address?.bits || owner?.ContractId?.bits || ''}
         />
       ) : (
         <ProfileWithoutHandler />
