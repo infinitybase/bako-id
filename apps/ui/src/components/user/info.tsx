@@ -182,6 +182,25 @@ export const Info = ({
               </MenuItem>
               <Divider w="95%" color="grey.300" mx="auto" mt={3} />
 
+              {/* My Handles */}
+              <MenuItem
+                p={2}
+                bgColor="transparent"
+                color="grey.200"
+                my={2}
+                gap={2}
+                onClick={() => navigate({ to: '/my-handles' })}
+                _hover={{
+                  cursor: 'pointer',
+                  color: 'button.500',
+                  opacity: 0.9,
+                }}
+              >
+                <Icon as={FileIcon} />
+                My Handles
+              </MenuItem>
+              <Divider w="95%" color="grey.300" mx="auto" />
+
               {/* Profile */}
               <MenuItem
                 p={2}
@@ -200,25 +219,6 @@ export const Info = ({
               >
                 <Icon as={UserIcon} />
                 Profile
-              </MenuItem>
-              <Divider w="95%" color="grey.300" mx="auto" />
-
-              {/* My Handles */}
-              <MenuItem
-                p={2}
-                bgColor="transparent"
-                color="grey.200"
-                my={2}
-                gap={2}
-                onClick={() => navigate({ to: '/my-handles' })}
-                _hover={{
-                  cursor: 'pointer',
-                  color: 'button.500',
-                  opacity: 0.9,
-                }}
-              >
-                <Icon as={FileIcon} />
-                My Handles
               </MenuItem>
               <Divider w="95%" color="grey.300" mx="auto" />
 
