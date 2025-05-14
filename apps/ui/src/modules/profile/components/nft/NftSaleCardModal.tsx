@@ -1,5 +1,5 @@
 import UnknownAsset from '@/assets/unknown-asset.png';
-import { EditIcon, UserIcon, useCustomToast } from '@/components';
+import { EditIcon, LightIcon, UserIcon, useCustomToast } from '@/components';
 import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
 import { useExecuteOrder, useUpdateOrder } from '@/hooks/marketplace';
@@ -168,9 +168,19 @@ export const NftSaleCardModal = ({
               </GridItem>
             )}
 
+            {order.nft.fuelMetadata?.collection && (
+              <GridItem>
+                <NftMetadataBlock
+                  title="Creator"
+                  value={order.nft.fuelMetadata?.collection}
+                  icon={<LightIcon />}
+                />
+              </GridItem>
+            )}
+
             <GridItem>
               <NftMetadataBlock
-                title="Contract ID"
+                title="Contract address"
                 value={order.nft?.contractId ?? 'N/A'}
                 icon={<ContractIcon />}
                 isCopy

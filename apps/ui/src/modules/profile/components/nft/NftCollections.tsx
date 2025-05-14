@@ -1,9 +1,9 @@
 import { Card } from '@/components';
 import { NFTCollectionSkeleton } from '@/components/skeletons/nftCollectionSkeleton';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
-import { type FuelAsset, FuelAssetService } from '@/services/fuel-assets';
+import { FuelAssetService, type FuelAsset } from '@/services/fuel-assets';
+import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
 import { formatMetadataFromIpfs, parseURI } from '@/utils/formatter';
-import { contractsId } from '@bako-id/sdk';
 import {
   Box,
   Center,
@@ -62,7 +62,7 @@ export const NftCollections = ({
         )?.[1];
         nft.image = image ? parseURI(image) : undefined;
 
-        if (nft.contractId === contractsId.mainnet.nft) {
+        if (nft.contractId && BAKO_CONTRACTS_IDS.includes(nft.contractId)) {
           nft.collection = 'Bako ID';
         }
 

@@ -1,4 +1,4 @@
-import { useCustomToast } from '@/components';
+import { LightIcon, useCustomToast } from '@/components';
 import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
 import { useCreateOrder } from '@/hooks/marketplace';
@@ -23,6 +23,8 @@ interface NftCardModalProps {
   onClose: () => void;
   assets: Asset[];
   isOwner: boolean;
+  edition?: string;
+  collection?: string;
 }
 
 export const NftCardModal = ({
@@ -35,6 +37,8 @@ export const NftCardModal = ({
   onClose,
   assets,
   isOwner,
+  edition,
+  collection,
 }: NftCardModalProps) => {
   const { createOrderAsync, isPending } = useCreateOrder();
   const { successToast, errorToast } = useCustomToast();
@@ -104,12 +108,22 @@ export const NftCardModal = ({
             </Box>
 
             <Flex direction="row" wrap="wrap" gap={3}>
-              <NftMetadataBlock
-                icon={<BTCIcon />}
-                value={assetId}
-                title="Asset ID"
-                isCopy
-              />
+              {edition && (
+                <NftMetadataBlock
+                  icon={<BTCIcon />}
+                  value={edition}
+                  title="Token ID"
+                  isCopy
+                />
+              )}
+
+              {collection && (
+                <NftMetadataBlock
+                  value={collection}
+                  title="Creator"
+                  icon={<LightIcon />}
+                />
+              )}
 
               <NftMetadataBlock
                 icon={<ContractIcon />}
