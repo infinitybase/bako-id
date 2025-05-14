@@ -5,7 +5,7 @@ import { useCreateOrder } from '@/hooks/marketplace';
 import type { Asset } from '@/types/marketplace';
 import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
 import { parseURI } from '@/utils/formatter';
-import { Box, Flex, Heading, Stack, Text } from '@chakra-ui/react';
+import { Box, Grid, GridItem, Heading, Stack, Text } from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { useMemo } from 'react';
 import { NftCardSaleForm, type NftSaleCardForm } from './NftCardSaleForm';
@@ -23,7 +23,6 @@ interface NftCardModalProps {
   onClose: () => void;
   assets: Asset[];
   isOwner: boolean;
-  edition?: string;
   collection?: string;
 }
 
@@ -37,7 +36,6 @@ export const NftCardModal = ({
   onClose,
   assets,
   isOwner,
-  edition,
   collection,
 }: NftCardModalProps) => {
   const { createOrderAsync, isPending } = useCreateOrder();
@@ -107,31 +105,37 @@ export const NftCardModal = ({
               </Text>
             </Box>
 
-            <Flex direction="row" wrap="wrap" gap={3}>
-              {edition && (
-                <NftMetadataBlock
-                  icon={<BTCIcon />}
-                  value={edition}
-                  title="Token ID"
-                  isCopy
-                />
+            <Grid templateColumns="repeat(2, 1fr)" gap={4}>
+              {assetId && (
+                <GridItem>
+                  <NftMetadataBlock
+                    icon={<BTCIcon />}
+                    value={assetId}
+                    title="Asset ID"
+                    isCopy
+                  />
+                </GridItem>
               )}
 
               {collection && (
-                <NftMetadataBlock
-                  value={collection}
-                  title="Creator"
-                  icon={<LightIcon />}
-                />
+                <GridItem>
+                  <NftMetadataBlock
+                    value={collection}
+                    title="Creator"
+                    icon={<LightIcon />}
+                  />
+                </GridItem>
               )}
 
-              <NftMetadataBlock
-                icon={<ContractIcon />}
-                value={contractId!}
-                title="Contract Address"
-                isCopy
-              />
-            </Flex>
+              <GridItem>
+                <NftMetadataBlock
+                  icon={<ContractIcon />}
+                  value={contractId!}
+                  title="Contract Address"
+                  isCopy
+                />
+              </GridItem>
+            </Grid>
 
             {!isBakoIdNft && isOwner && (
               <NftCardSaleForm

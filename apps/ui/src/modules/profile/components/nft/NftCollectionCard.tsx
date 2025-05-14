@@ -76,7 +76,6 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
         isOpen={dialog.isOpen}
         onClose={dialog.onClose}
         isOwner={isOwner}
-        edition={edition}
         collection={collection}
       />
 
