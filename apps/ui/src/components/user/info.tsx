@@ -64,7 +64,7 @@ export const Info = ({
     navigate({ to: '/' });
   };
 
-  const isDomain = !name.includes('...');
+  const isDomain = !name?.includes('...');
 
   const icon = (
     <Box
