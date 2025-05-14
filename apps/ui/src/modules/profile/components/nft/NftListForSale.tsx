@@ -45,7 +45,7 @@ export const NftListForSale = ({
       <Stack justifyContent="space-between" direction="row" alignItems="center">
         <Heading fontSize="lg">
           <Heading fontSize="lg" as="span" color="yellow.500">
-            @{domain ? domain : formatAddress(address)}
+            {domain ? `@${domain}` : formatAddress(address)}
           </Heading>{' '}
           {!isEmptyOrders ? 'for sale' : 'has nothing to sale'}
         </Heading>

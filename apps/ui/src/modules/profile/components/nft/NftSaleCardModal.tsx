@@ -157,11 +157,11 @@ export const NftSaleCardModal = ({
           </Stack>
 
           <Grid templateColumns="repeat(2, 1fr)" gap={4}>
-            {order.nft?.edition && (
+            {order.nft.id && (
               <GridItem>
                 <NftMetadataBlock
-                  title="Token ID"
-                  value={order.nft?.edition?.replace('#', '') ?? ''}
+                  title="Asset ID"
+                  value={order.nft.id}
                   icon={<BTCIcon />}
                   isCopy
                 />
