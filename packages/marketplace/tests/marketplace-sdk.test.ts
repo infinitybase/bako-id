@@ -1,17 +1,17 @@
 import {
-  type FunctionInvocationScope,
   TransactionStatus,
-  type WalletUnlocked,
   bn,
+  type FunctionInvocationScope,
+  type WalletUnlocked,
 } from 'fuels';
 import { TestAssetId, launchTestNode } from 'fuels/test-utils';
 import { beforeAll, describe, expect, it } from 'vitest';
 import type { Marketplace } from '../src/artifacts';
-import { MarketplaceFactory } from '../src/artifacts';
+import { MarketplaceFactory, ResolverMockFactory } from '../src/artifacts';
 import { MarketplaceContract } from '../src/sdk';
 
 const callAndWait = async <T extends unknown[], R>(
-  method: FunctionInvocationScope<T, R>,
+  method: FunctionInvocationScope<T, R>
 ) => {
   const result = await method.call();
   return result.waitForResult();
@@ -20,26 +20,38 @@ const callAndWait = async <T extends unknown[], R>(
 const setup = async () => {
   const [feeAssetId] = TestAssetId.random(1);
   const node = await launchTestNode({
-    contractsConfigs: [{ factory: MarketplaceFactory }],
     walletsConfig: {
       assets: [TestAssetId.A, TestAssetId.B, feeAssetId],
     },
   });
 
-  const [contract] = node.contracts;
   const [owner] = node.wallets;
 
-  const marketplace = contract as Marketplace;
+  const resolverContractId = (await ResolverMockFactory.deploy(owner))
+    .contractId;
+
+  const marketplace = (
+    await (
+      await MarketplaceFactory.deploy(owner, {
+        configurableConstants: {
+          RESOLVER_CONTRACT_ID: resolverContractId,
+        },
+      })
+    ).waitForResult()
+  ).contract;
   const provider = node.provider;
 
   await callAndWait(
     marketplace.functions.initialize({
       Address: { bits: owner.address.toB256() },
-    }),
+    })
   );
 
   await callAndWait(
-    marketplace.functions.add_valid_asset({ bits: TestAssetId.B.value }, bn(1)),
+    marketplace.functions.add_valid_asset({ bits: TestAssetId.B.value }, [
+      bn(2),
+      bn(1),
+    ])
   );
 
   return { node, marketplace, provider, feeAssetId: feeAssetId.value, owner };
@@ -100,7 +112,7 @@ describe('Marketplace SDK (Contract)', () => {
 
   it('should not execute order when cancelled', async () => {
     await expect(contract.executeOrder(orderId)).rejects.toThrow(
-      /Order not found/,
+      /Order not found/
     );
   });
 
@@ -128,7 +140,7 @@ describe('Marketplace SDK (Contract)', () => {
     orderId = id;
 
     await expect(contract.executeOrder(id)).rejects.toThrow(
-      /Insufficient balance/,
+      /Insufficient balance/
     );
   });
 
@@ -139,7 +151,7 @@ describe('Marketplace SDK (Contract)', () => {
       contract.updateOrder(orderId, {
         sellPrice: bn(100),
         sellAsset: TestAssetId.A.value,
-      }),
+      })
     ).rejects.toThrow(/AssetNotValid/);
   });
 });

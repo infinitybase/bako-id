@@ -1,6 +1,6 @@
 import { TestAssetId } from 'fuels/test-utils';
 
-import { type Provider, bn } from 'fuels';
+import { bn, type Provider } from 'fuels';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type {
   Marketplace,
@@ -33,15 +33,15 @@ describe('Marketplace (Orders)', () => {
     const {
       logs: [assetAddedEvent],
     } = await callAndWait(
-      marketplace.functions.add_valid_asset({ bits: asset }, bn(0)),
+      marketplace.functions.add_valid_asset({ bits: asset }, [bn(0), bn(0)])
     );
     expect(assetAddedEvent.asset.bits).toEqual(asset);
 
     await callAndWait(
-      marketplace.functions.add_valid_asset(
-        { bits: TestAssetId.A.value },
+      marketplace.functions.add_valid_asset({ bits: TestAssetId.A.value }, [
+        bn(1),
         bn(0),
-      ),
+      ])
     );
   });
 
@@ -56,8 +56,8 @@ describe('Marketplace (Orders)', () => {
             amount: 1,
             assetId: itemAsset,
           },
-        }),
-      ),
+        })
+      )
     ).rejects.toThrow(/PriceNotPositive/);
   });
 
@@ -80,7 +80,7 @@ describe('Marketplace (Orders)', () => {
 
     const afterBalance = await marketplace.getBalance(itemAsset);
     expect(afterBalance.toString()).toEqual(
-      bn(beforeBalance).add(1).toString(),
+      bn(beforeBalance).add(1).toString()
     );
 
     order = orderCreatedEvent;
@@ -93,10 +93,10 @@ describe('Marketplace (Orders)', () => {
 
     expect(value?.item_asset.bits).toEqual(order.order.item_asset.bits);
     expect(value?.item_price.toString()).toEqual(
-      order.order.item_price.toString(),
+      order.order.item_price.toString()
     );
     expect(value?.seller.Address?.bits!).toEqual(
-      order.order.seller?.Address?.bits!,
+      order.order.seller?.Address?.bits!
     );
   });
 
@@ -107,9 +107,9 @@ describe('Marketplace (Orders)', () => {
         marketplace.functions.edit_order(
           order.order_id,
           { bits: invalidAsset },
-          order.order.item_price.toNumber(),
-        ),
-      ),
+          order.order.item_price.toNumber()
+        )
+      )
     ).rejects.toThrow(/AssetNotValid/);
   });
 
@@ -119,7 +119,10 @@ describe('Marketplace (Orders)', () => {
     const {
       logs: [assetAddedEvent],
     } = await callAndWait(
-      marketplace.functions.add_valid_asset({ bits: otherAsset }, bn(0)),
+      marketplace.functions.add_valid_asset({ bits: otherAsset }, [
+        bn(0),
+        bn(0),
+      ])
     );
 
     expect(assetAddedEvent.asset.bits).toEqual(otherAsset);
@@ -130,8 +133,8 @@ describe('Marketplace (Orders)', () => {
       marketplace.functions.edit_order(
         order.order_id,
         { bits: otherAsset },
-        newPrice,
-      ),
+        newPrice
+      )
     );
 
     expect(orderEditedEvent).toBeDefined();
@@ -144,7 +147,7 @@ describe('Marketplace (Orders)', () => {
     const wallet = node.wallets[0];
 
     const beforeMarketBalance = await marketplace.getBalance(
-      TestAssetId.A.value,
+      TestAssetId.A.value
     );
     const beforeWalletBalance = await wallet.getBalance(TestAssetId.A.value);
 
@@ -159,10 +162,10 @@ describe('Marketplace (Orders)', () => {
     const walletBalance = await wallet.getBalance(TestAssetId.A.value);
 
     expect(marketBalance.toString()).toEqual(
-      bn(beforeMarketBalance).sub(1).toString(),
+      bn(beforeMarketBalance).sub(1).toString()
     );
     expect(walletBalance.toString()).toEqual(
-      bn(beforeWalletBalance).add(1).toString(),
+      bn(beforeWalletBalance).add(1).toString()
     );
 
     const { value } = await marketplace.functions
@@ -173,7 +176,7 @@ describe('Marketplace (Orders)', () => {
 
   it('should not cancel an order that does not exist', async () => {
     await expect(
-      callAndWait(marketplace.functions.cancel_order(order.order_id)),
+      callAndWait(marketplace.functions.cancel_order(order.order_id))
     ).rejects.toThrow(/OrderNotFound/);
   });
 
@@ -188,7 +191,7 @@ describe('Marketplace (Orders)', () => {
     marketplace.account = wallet;
 
     await expect(
-      callAndWait(marketplace.functions.cancel_order(order.order_id)),
+      callAndWait(marketplace.functions.cancel_order(order.order_id))
     ).rejects.toThrow(/OrderNotOwned/);
 
     marketplace.account = node.wallets[0];
@@ -220,7 +223,7 @@ describe('Marketplace (Orders)', () => {
           amount: order.order.item_price,
           assetId: order.order.asset.bits,
         },
-      }),
+      })
     );
 
     const sellerNewBalance = await seller.getBalance(buyAsset);
@@ -230,17 +233,17 @@ describe('Marketplace (Orders)', () => {
     const expectedBuyerBalance = bn(buyerBalance).add(order.order.amount);
 
     expect(sellerNewBalance.toString()).toEqual(
-      expectedSellerBalance.toString(),
+      expectedSellerBalance.toString()
     );
     expect(buyerNewBalance.toString()).toEqual(expectedBuyerBalance.toString());
 
     expect(orderExecutedEvent).toBeDefined();
     expect(orderExecutedEvent.order_id).toEqual(order.order_id);
     expect(orderExecutedEvent.buyer.Address?.bits).toEqual(
-      buyer.address.toB256(),
+      buyer.address.toB256()
     );
     expect(orderExecutedEvent.amount.toString()).toEqual(
-      order.order.item_price.toString(),
+      order.order.item_price.toString()
     );
     expect(orderExecutedEvent.asset.bits).toEqual(order.order.asset.bits);
   });
