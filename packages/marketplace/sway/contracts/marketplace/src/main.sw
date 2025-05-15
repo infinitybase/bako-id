@@ -1,6 +1,7 @@
 contract;
 
 mod events;
+mod external;
 
 use sway_libs::ownership::*;
 use sway_libs::pausable::*;
@@ -10,6 +11,14 @@ use std::context::msg_amount;
 use std::asset::transfer;
 use std::call_frames::msg_asset_id;
 use std::hash::*;
+use std::string::String;
+use std::option::Option;
+
+configurable {
+    RESOLVER_CONTRACT_ID: b256 = b256::zero(),
+}
+
+use external::NameResolver;
 
 use events::{
     AssetAddedEvent,
@@ -46,6 +55,11 @@ pub enum MarketplaceError {
     OrderAmountNotMatch: (u64, u64),
     /// The provided price is not positive (zero ou negativo)
     PriceNotPositive: (),
+}
+
+pub enum AdjustFeeType {
+    FEE_0: u64,
+    FEE_1: u64,
 }
 
 /// The main marketplace interface
@@ -127,12 +141,12 @@ abi FeeManager {
     ///
     /// # Arguments
     /// * `asset`: The asset ID to add
-    /// * `fee`: The fee percentage in basis points (1% = 100)
+    /// * `fee`: The fees percentage in basis points (1% = 100)
     ///
     /// # Events
     /// * `AssetAddedEvent`: Emitted when the asset is successfully added
     #[storage(read, write)]
-    fn add_valid_asset(asset: AssetId, fee: u64);
+    fn add_valid_asset(asset: AssetId, fee: (u64, u64));
 
     /// Adjusts the fee percentage for an existing asset
     ///
@@ -143,7 +157,7 @@ abi FeeManager {
     /// # Events
     /// * `AssetFeeAdjustedEvent`: Emitted when the fee is successfully adjusted
     #[storage(read, write)]
-    fn adjust_fee(asset: AssetId, fee: u64);
+    fn adjust_fee(asset: AssetId, fee: AdjustFeeType);
 }
 
 /// Interface for managing ownership of the marketplace contract
@@ -174,7 +188,7 @@ storage {
     /// Map of order IDs to orders
     orders: StorageMap<OrderId, Order> = StorageMap {},
     /// Map of valid assets to their fees
-    valid_assets: StorageMap<AssetId, u64> = StorageMap {},
+    valid_assets: StorageMap<AssetId, (u64, u64)> = StorageMap {},
     /// Map of collected fees per asset
     collected_fees: StorageMap<AssetId, u64> = StorageMap {},
 }
@@ -192,25 +206,49 @@ fn _calculate_fee(amount: u64, fee: Option<u64>) -> u64 {
 }
 
 #[storage(read)]
-fn _split_fee(amount: u64, asset: AssetId) -> (u64, u64) {
-    let fee = _calculate_fee(amount, storage.valid_assets.get(asset).try_read());
+fn _split_fee(amount: u64, sender: Identity, asset: AssetId) -> (u64, u64) {
+    let resolver = abi(NameResolver, RESOLVER_CONTRACT_ID);
+
+    let fees = storage.valid_assets.get(asset).try_read().unwrap_or((0, 0));
+
+    // Check if the sender has a Bako ID
+    let fee_percentage = match resolver.name(sender) {
+        // if the Sender has Bako ID, use the fee in the second position (discount)
+        Some(_) => fees.1,
+        // if the Sender doesn't have Bako ID, use the fee in the first position (regular)
+        None => fees.0,
+    };
+
+    let fee = _calculate_fee(amount, Some(fee_percentage));
     let seller_amount = amount - fee;
     (seller_amount, fee)
 }
 
 impl FeeManager for Contract {
     #[storage(read, write)]
-    fn add_valid_asset(asset: AssetId, fee: u64) {
+    fn add_valid_asset(asset: AssetId, fee: (u64, u64)) {
         only_owner();
         storage.valid_assets.insert(asset, fee);
         log(AssetAddedEvent { asset, fee });
     }
 
     #[storage(read, write)]
-    fn adjust_fee(asset: AssetId, fee: u64) {
+    fn adjust_fee(asset: AssetId, fee_change: AdjustFeeType) {
         only_owner();
-        storage.valid_assets.insert(asset, fee);
-        log(AssetFeeAdjustedEvent { asset, fee });
+        let asset_fee = storage.valid_assets.get(asset).try_read();
+        require(asset_fee.is_some(), MarketplaceError::AssetNotValid(asset));
+        let asset_fee = asset_fee.unwrap();
+
+        let new_fee = match fee_change {
+            AdjustFeeType::FEE_0(fee) => (fee, asset_fee.1),
+            AdjustFeeType::FEE_1(fee) => (asset_fee.0, fee),
+        };
+
+        storage.valid_assets.insert(asset, new_fee);
+        log(AssetFeeAdjustedEvent {
+            asset,
+            fee: new_fee,
+        });
     }
 }
 
@@ -293,7 +331,7 @@ impl Marketplace for Contract {
         let buyer = msg_sender().unwrap();
         transfer(buyer, order.item_asset, order.amount);
 
-        let (seller_amount, fee) = _split_fee(amount, asset);
+        let (seller_amount, fee) = _split_fee(amount, buyer, asset);
         transfer(order.seller, asset, seller_amount);
         storage.collected_fees.insert(asset, fee);
 

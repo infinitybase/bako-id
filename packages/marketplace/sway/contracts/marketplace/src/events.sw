@@ -31,7 +31,7 @@ pub struct AssetAddedEvent {
     /// The asset ID that was added
     pub asset: AssetId,
     /// The fee percentage for this asset (in basis points, 1% = 100)
-    pub fee: u64,
+    pub fee: (u64, u64),
 }
 
 /// Event emitted when an order is cancelled
@@ -59,7 +59,7 @@ pub struct AssetFeeAdjustedEvent {
     /// The asset ID whose fee was adjusted
     pub asset: AssetId,
     /// The new fee percentage (in basis points)
-    pub fee: u64,
+    pub fee: (u64, u64),
 }
 
 /// Event emitted when an order is edited

@@ -26,12 +26,14 @@ import type { Option, Enum } from "./common";
 
 export enum AccessErrorInput { NotOwner = 'NotOwner' };
 export enum AccessErrorOutput { NotOwner = 'NotOwner' };
+export type AdjustFeeTypeInput = Enum<{ FEE_0: BigNumberish, FEE_1: BigNumberish }>;
+export type AdjustFeeTypeOutput = Enum<{ FEE_0: BN, FEE_1: BN }>;
 export type IdentityInput = Enum<{ Address: AddressInput, ContractId: ContractIdInput }>;
 export type IdentityOutput = Enum<{ Address: AddressOutput, ContractId: ContractIdOutput }>;
 export enum InitializationErrorInput { CannotReinitialized = 'CannotReinitialized' };
 export enum InitializationErrorOutput { CannotReinitialized = 'CannotReinitialized' };
-export type MarketplaceErrorInput = Enum<{ AssetNotValid: AssetIdInput, OrderAlreadyExists: string, InsufficientBalance: AssetIdInput, ItemNotFound: AssetIdInput, ItemNotValid: AssetIdInput, ItemAmountIsZero: undefined, OrderNotOwned: undefined, OrderNotFound: undefined, OrderAssetNotMatch: [], OrderAmountNotMatch: [BigNumberish, BigNumberish], PriceNotPositive: undefined }>;
-export type MarketplaceErrorOutput = Enum<{ AssetNotValid: AssetIdOutput, OrderAlreadyExists: string, InsufficientBalance: AssetIdOutput, ItemNotFound: AssetIdOutput, ItemNotValid: AssetIdOutput, ItemAmountIsZero: void, OrderNotOwned: void, OrderNotFound: void, OrderAssetNotMatch: [], OrderAmountNotMatch: [BN, BN], PriceNotPositive: void }>;
+export type MarketplaceErrorInput = Enum<{ AssetNotValid: AssetIdInput, OrderAlreadyExists: string, InsufficientBalance: AssetIdInput, ItemNotFound: AssetIdInput, ItemNotValid: AssetIdInput, ItemAmountIsZero: undefined, OrderNotOwned: undefined, OrderNotFound: undefined, OrderAssetNotMatch: [AssetIdInput, AssetIdInput], OrderAmountNotMatch: [], PriceNotPositive: undefined }>;
+export type MarketplaceErrorOutput = Enum<{ AssetNotValid: AssetIdOutput, OrderAlreadyExists: string, InsufficientBalance: AssetIdOutput, ItemNotFound: AssetIdOutput, ItemNotValid: AssetIdOutput, ItemAmountIsZero: void, OrderNotOwned: void, OrderNotFound: void, OrderAssetNotMatch: [AssetIdOutput, AssetIdOutput], OrderAmountNotMatch: [], PriceNotPositive: void }>;
 export enum PauseErrorInput { Paused = 'Paused', NotPaused = 'NotPaused' };
 export enum PauseErrorOutput { Paused = 'Paused', NotPaused = 'NotPaused' };
 export enum ReentrancyErrorInput { NonReentrant = 'NonReentrant' };
@@ -39,10 +41,10 @@ export enum ReentrancyErrorOutput { NonReentrant = 'NonReentrant' };
 
 export type AddressInput = { bits: string };
 export type AddressOutput = AddressInput;
-export type AssetAddedEventInput = { asset: AssetIdInput, fee: BigNumberish };
-export type AssetAddedEventOutput = { asset: AssetIdOutput, fee: BN };
-export type AssetFeeAdjustedEventInput = { asset: AssetIdInput, fee: BigNumberish };
-export type AssetFeeAdjustedEventOutput = { asset: AssetIdOutput, fee: BN };
+export type AssetAddedEventInput = { asset: AssetIdInput, fee: [BigNumberish, BigNumberish] };
+export type AssetAddedEventOutput = { asset: AssetIdOutput, fee: [BN, BN] };
+export type AssetFeeAdjustedEventInput = { asset: AssetIdInput, fee: [BigNumberish, BigNumberish] };
+export type AssetFeeAdjustedEventOutput = { asset: AssetIdOutput, fee: [BN, BN] };
 export type AssetIdInput = { bits: string };
 export type AssetIdOutput = AssetIdInput;
 export type ContractIdInput = { bits: string };
@@ -62,6 +64,10 @@ export type OwnershipSetOutput = { new_owner: IdentityOutput };
 export type OwnershipTransferredInput = { new_owner: IdentityInput, previous_owner: IdentityInput };
 export type OwnershipTransferredOutput = { new_owner: IdentityOutput, previous_owner: IdentityOutput };
 
+export type MarketplaceConfigurables = Partial<{
+  RESOLVER_CONTRACT_ID: string;
+}>;
+
 const abi = {
   "programType": "contract",
   "specVersion": "1",
@@ -72,6 +78,11 @@ const abi = {
       "concreteTypeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
     },
     {
+      "type": "(u64, u64)",
+      "concreteTypeId": "41bd1a98f0a59642d8f824c805b798a5f268d1f7d05808eb05c4189c493f1be0",
+      "metadataTypeId": 0
+    },
+    {
       "type": "b256",
       "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
     },
@@ -80,24 +91,29 @@ const abi = {
       "concreteTypeId": "b760f44fa5965c2474a3b471467a22c43185152129295af588b022ae50b50903"
     },
     {
+      "type": "enum AdjustFeeType",
+      "concreteTypeId": "37c7a0f61d0666929a8302499329b65eb89a1eecd905713d86de0851eb41acd0",
+      "metadataTypeId": 2
+    },
+    {
       "type": "enum MarketplaceError",
       "concreteTypeId": "822f1703ab0ed4af1dc35ef9e0ca4958c06eef96d7e0dd9fa8b1a48316ac39cb",
-      "metadataTypeId": 2
+      "metadataTypeId": 3
     },
     {
       "type": "enum standards::src5::AccessError",
       "concreteTypeId": "3f702ea3351c9c1ece2b84048006c8034a24cbc2bad2e740d0412b4172951d3d",
-      "metadataTypeId": 3
+      "metadataTypeId": 4
     },
     {
       "type": "enum std::identity::Identity",
       "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335",
-      "metadataTypeId": 4
+      "metadataTypeId": 5
     },
     {
       "type": "enum std::option::Option<struct events::Order>",
       "concreteTypeId": "395d142e041abd0df6b3980a7e635e939083f5745370d78b72316697b0a016e2",
-      "metadataTypeId": 5,
+      "metadataTypeId": 6,
       "typeArguments": [
         "c55cab7602d3f15cab0c13a68816b8dbb16c2921df2b8a3aa62c26bbb1424fd8"
       ]
@@ -105,67 +121,67 @@ const abi = {
     {
       "type": "enum sway_libs::ownership::errors::InitializationError",
       "concreteTypeId": "1dfe7feadc1d9667a4351761230f948744068a090fe91b1bc6763a90ed5d3893",
-      "metadataTypeId": 6
+      "metadataTypeId": 7
     },
     {
       "type": "enum sway_libs::pausable::errors::PauseError",
       "concreteTypeId": "8b3afcadf894415a10b09fc3717487e33802c8ffbb030edafe84ca4a71b280bc",
-      "metadataTypeId": 7
+      "metadataTypeId": 8
     },
     {
       "type": "enum sway_libs::reentrancy::errors::ReentrancyError",
       "concreteTypeId": "4d216c57b3357523323f59401c7355785b41bdf832f6e1106272186b94797038",
-      "metadataTypeId": 8
+      "metadataTypeId": 9
     },
     {
       "type": "struct events::AssetAddedEvent",
       "concreteTypeId": "91f28e6b71df131de051f19a1f8cb58ece2165f4a5f9108fbb85471538446fa9",
-      "metadataTypeId": 10
+      "metadataTypeId": 11
     },
     {
       "type": "struct events::AssetFeeAdjustedEvent",
       "concreteTypeId": "8ec71dbeaa645b2b14b88caffc532ebdbbb161e6c75c27bb98b4409a6cb4755a",
-      "metadataTypeId": 11
+      "metadataTypeId": 12
     },
     {
       "type": "struct events::Order",
       "concreteTypeId": "c55cab7602d3f15cab0c13a68816b8dbb16c2921df2b8a3aa62c26bbb1424fd8",
-      "metadataTypeId": 12
+      "metadataTypeId": 13
     },
     {
       "type": "struct events::OrderCancelledEvent",
       "concreteTypeId": "2992862e9a561d761b74985c9333d79e22836314eed6bc983c25dcf096c755c8",
-      "metadataTypeId": 13
+      "metadataTypeId": 14
     },
     {
       "type": "struct events::OrderCreatedEvent",
       "concreteTypeId": "7b55a88023a1041ba857dbda5e33dc9793daf8f5e3fa5bffcdb82aa634ceff43",
-      "metadataTypeId": 14
+      "metadataTypeId": 15
     },
     {
       "type": "struct events::OrderEditedEvent",
       "concreteTypeId": "4daae82842de101195b6ec681faea04e30e9dad318f1c643d114671a812e5ad3",
-      "metadataTypeId": 15
+      "metadataTypeId": 16
     },
     {
       "type": "struct events::OrderExecutedEvent",
       "concreteTypeId": "1ba4a8db83f7ac89d556b54bc6c30eafef4a476bb9660db5e0857a105906547b",
-      "metadataTypeId": 16
+      "metadataTypeId": 17
     },
     {
       "type": "struct std::asset_id::AssetId",
       "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974",
-      "metadataTypeId": 18
+      "metadataTypeId": 19
     },
     {
       "type": "struct sway_libs::ownership::events::OwnershipSet",
       "concreteTypeId": "e1ef35033ea9d2956f17c3292dea4a46ce7d61fdf37bbebe03b7b965073f43b5",
-      "metadataTypeId": 20
+      "metadataTypeId": 21
     },
     {
       "type": "struct sway_libs::ownership::events::OwnershipTransferred",
       "concreteTypeId": "b3fffbcb3158d7c010c31b194b60fb7857adb4ad61bdcf4b8b42958951d9f308",
-      "metadataTypeId": 21
+      "metadataTypeId": 22
     },
     {
       "type": "u64",
@@ -179,11 +195,11 @@ const abi = {
       "components": [
         {
           "name": "__tuple_element",
-          "typeId": 18
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
         },
         {
           "name": "__tuple_element",
-          "typeId": 18
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
         }
       ]
     },
@@ -193,21 +209,35 @@ const abi = {
       "components": [
         {
           "name": "__tuple_element",
-          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+          "typeId": 19
         },
         {
           "name": "__tuple_element",
+          "typeId": 19
+        }
+      ]
+    },
+    {
+      "type": "enum AdjustFeeType",
+      "metadataTypeId": 2,
+      "components": [
+        {
+          "name": "FEE_0",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "FEE_1",
           "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
         }
       ]
     },
     {
       "type": "enum MarketplaceError",
-      "metadataTypeId": 2,
+      "metadataTypeId": 3,
       "components": [
         {
           "name": "AssetNotValid",
-          "typeId": 18
+          "typeId": 19
         },
         {
           "name": "OrderAlreadyExists",
@@ -215,15 +245,15 @@ const abi = {
         },
         {
           "name": "InsufficientBalance",
-          "typeId": 18
+          "typeId": 19
         },
         {
           "name": "ItemNotFound",
-          "typeId": 18
+          "typeId": 19
         },
         {
           "name": "ItemNotValid",
-          "typeId": 18
+          "typeId": 19
         },
         {
           "name": "ItemAmountIsZero",
@@ -239,11 +269,11 @@ const abi = {
         },
         {
           "name": "OrderAssetNotMatch",
-          "typeId": 0
+          "typeId": 1
         },
         {
           "name": "OrderAmountNotMatch",
-          "typeId": 1
+          "typeId": 0
         },
         {
           "name": "PriceNotPositive",
@@ -253,7 +283,7 @@ const abi = {
     },
     {
       "type": "enum standards::src5::AccessError",
-      "metadataTypeId": 3,
+      "metadataTypeId": 4,
       "components": [
         {
           "name": "NotOwner",
@@ -263,21 +293,21 @@ const abi = {
     },
     {
       "type": "enum std::identity::Identity",
-      "metadataTypeId": 4,
+      "metadataTypeId": 5,
       "components": [
         {
           "name": "Address",
-          "typeId": 17
+          "typeId": 18
         },
         {
           "name": "ContractId",
-          "typeId": 19
+          "typeId": 20
         }
       ]
     },
     {
       "type": "enum std::option::Option",
-      "metadataTypeId": 5,
+      "metadataTypeId": 6,
       "components": [
         {
           "name": "None",
@@ -285,16 +315,16 @@ const abi = {
         },
         {
           "name": "Some",
-          "typeId": 9
+          "typeId": 10
         }
       ],
       "typeParameters": [
-        9
+        10
       ]
     },
     {
       "type": "enum sway_libs::ownership::errors::InitializationError",
-      "metadataTypeId": 6,
+      "metadataTypeId": 7,
       "components": [
         {
           "name": "CannotReinitialized",
@@ -304,7 +334,7 @@ const abi = {
     },
     {
       "type": "enum sway_libs::pausable::errors::PauseError",
-      "metadataTypeId": 7,
+      "metadataTypeId": 8,
       "components": [
         {
           "name": "Paused",
@@ -318,7 +348,7 @@ const abi = {
     },
     {
       "type": "enum sway_libs::reentrancy::errors::ReentrancyError",
-      "metadataTypeId": 8,
+      "metadataTypeId": 9,
       "components": [
         {
           "name": "NonReentrant",
@@ -328,43 +358,43 @@ const abi = {
     },
     {
       "type": "generic T",
-      "metadataTypeId": 9
+      "metadataTypeId": 10
     },
     {
       "type": "struct events::AssetAddedEvent",
-      "metadataTypeId": 10,
+      "metadataTypeId": 11,
       "components": [
         {
           "name": "asset",
-          "typeId": 18
+          "typeId": 19
         },
         {
           "name": "fee",
-          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+          "typeId": 0
         }
       ]
     },
     {
       "type": "struct events::AssetFeeAdjustedEvent",
-      "metadataTypeId": 11,
+      "metadataTypeId": 12,
       "components": [
         {
           "name": "asset",
-          "typeId": 18
+          "typeId": 19
         },
         {
           "name": "fee",
-          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+          "typeId": 0
         }
       ]
     },
     {
       "type": "struct events::Order",
-      "metadataTypeId": 12,
+      "metadataTypeId": 13,
       "components": [
         {
           "name": "asset",
-          "typeId": 18
+          "typeId": 19
         },
         {
           "name": "amount",
@@ -372,7 +402,7 @@ const abi = {
         },
         {
           "name": "seller",
-          "typeId": 4
+          "typeId": 5
         },
         {
           "name": "item_price",
@@ -380,13 +410,13 @@ const abi = {
         },
         {
           "name": "item_asset",
-          "typeId": 18
+          "typeId": 19
         }
       ]
     },
     {
       "type": "struct events::OrderCancelledEvent",
-      "metadataTypeId": 13,
+      "metadataTypeId": 14,
       "components": [
         {
           "name": "order_id",
@@ -396,20 +426,6 @@ const abi = {
     },
     {
       "type": "struct events::OrderCreatedEvent",
-      "metadataTypeId": 14,
-      "components": [
-        {
-          "name": "order_id",
-          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
-        },
-        {
-          "name": "order",
-          "typeId": 12
-        }
-      ]
-    },
-    {
-      "type": "struct events::OrderEditedEvent",
       "metadataTypeId": 15,
       "components": [
         {
@@ -417,8 +433,22 @@ const abi = {
           "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
         },
         {
+          "name": "order",
+          "typeId": 13
+        }
+      ]
+    },
+    {
+      "type": "struct events::OrderEditedEvent",
+      "metadataTypeId": 16,
+      "components": [
+        {
+          "name": "order_id",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        {
           "name": "new_asset",
-          "typeId": 18
+          "typeId": 19
         },
         {
           "name": "new_price",
@@ -428,7 +458,7 @@ const abi = {
     },
     {
       "type": "struct events::OrderExecutedEvent",
-      "metadataTypeId": 16,
+      "metadataTypeId": 17,
       "components": [
         {
           "name": "order_id",
@@ -436,7 +466,7 @@ const abi = {
         },
         {
           "name": "buyer",
-          "typeId": 4
+          "typeId": 5
         },
         {
           "name": "amount",
@@ -444,7 +474,7 @@ const abi = {
         },
         {
           "name": "asset",
-          "typeId": 18
+          "typeId": 19
         },
         {
           "name": "fee",
@@ -454,16 +484,6 @@ const abi = {
     },
     {
       "type": "struct std::address::Address",
-      "metadataTypeId": 17,
-      "components": [
-        {
-          "name": "bits",
-          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
-        }
-      ]
-    },
-    {
-      "type": "struct std::asset_id::AssetId",
       "metadataTypeId": 18,
       "components": [
         {
@@ -473,7 +493,7 @@ const abi = {
       ]
     },
     {
-      "type": "struct std::contract_id::ContractId",
+      "type": "struct std::asset_id::AssetId",
       "metadataTypeId": 19,
       "components": [
         {
@@ -483,26 +503,36 @@ const abi = {
       ]
     },
     {
-      "type": "struct sway_libs::ownership::events::OwnershipSet",
+      "type": "struct std::contract_id::ContractId",
       "metadataTypeId": 20,
       "components": [
         {
+          "name": "bits",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        }
+      ]
+    },
+    {
+      "type": "struct sway_libs::ownership::events::OwnershipSet",
+      "metadataTypeId": 21,
+      "components": [
+        {
           "name": "new_owner",
-          "typeId": 4
+          "typeId": 5
         }
       ]
     },
     {
       "type": "struct sway_libs::ownership::events::OwnershipTransferred",
-      "metadataTypeId": 21,
+      "metadataTypeId": 22,
       "components": [
         {
           "name": "new_owner",
-          "typeId": 4
+          "typeId": 5
         },
         {
           "name": "previous_owner",
-          "typeId": 4
+          "typeId": 5
         }
       ]
     }
@@ -516,7 +546,7 @@ const abi = {
         },
         {
           "name": "fee",
-          "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+          "concreteTypeId": "41bd1a98f0a59642d8f824c805b798a5f268d1f7d05808eb05c4189c493f1be0"
         }
       ],
       "name": "add_valid_asset",
@@ -538,8 +568,8 @@ const abi = {
           "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974"
         },
         {
-          "name": "fee",
-          "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+          "name": "fee_change",
+          "concreteTypeId": "37c7a0f61d0666929a8302499329b65eb89a1eecd905713d86de0851eb41acd0"
         }
       ],
       "name": "adjust_fee",
@@ -755,16 +785,16 @@ const abi = {
       "concreteTypeId": "91f28e6b71df131de051f19a1f8cb58ece2165f4a5f9108fbb85471538446fa9"
     },
     {
+      "logId": "9380741853358249135",
+      "concreteTypeId": "822f1703ab0ed4af1dc35ef9e0ca4958c06eef96d7e0dd9fa8b1a48316ac39cb"
+    },
+    {
       "logId": "10288224578490882859",
       "concreteTypeId": "8ec71dbeaa645b2b14b88caffc532ebdbbb161e6c75c27bb98b4409a6cb4755a"
     },
     {
       "logId": "5557842539076482339",
       "concreteTypeId": "4d216c57b3357523323f59401c7355785b41bdf832f6e1106272186b94797038"
-    },
-    {
-      "logId": "9380741853358249135",
-      "concreteTypeId": "822f1703ab0ed4af1dc35ef9e0ca4958c06eef96d7e0dd9fa8b1a48316ac39cb"
     },
     {
       "logId": "2995604236870753654",
@@ -800,7 +830,13 @@ const abi = {
     }
   ],
   "messagesTypes": [],
-  "configurables": []
+  "configurables": [
+    {
+      "name": "RESOLVER_CONTRACT_ID",
+      "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b",
+      "offset": 37928
+    }
+  ]
 };
 
 const storageSlots: StorageSlot[] = [];
@@ -832,8 +868,8 @@ export class Marketplace extends __Contract {
 
   declare interface: MarketplaceInterface;
   declare functions: {
-    add_valid_asset: InvokeFunction<[asset: AssetIdInput, fee: BigNumberish], void>;
-    adjust_fee: InvokeFunction<[asset: AssetIdInput, fee: BigNumberish], void>;
+    add_valid_asset: InvokeFunction<[asset: AssetIdInput, fee: [BigNumberish, BigNumberish]], void>;
+    adjust_fee: InvokeFunction<[asset: AssetIdInput, fee_change: AdjustFeeTypeInput], void>;
     cancel_order: InvokeFunction<[order_id: string], void>;
     create_order: InvokeFunction<[asset: AssetIdInput, price: BigNumberish], void>;
     edit_order: InvokeFunction<[order_id: string, asset: AssetIdInput, price: BigNumberish], void>;
