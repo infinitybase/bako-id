@@ -17,6 +17,7 @@
     "build": "tsup",
     "build:sway": "pnpm fuels build",
     "contract:start": "ts-node scripts/start-contract.ts",
+    "contract:deploy": "ts-node scripts/deploy.ts",
     "codegen": "gql-gen --config codegen.sdk.ts"
   },
   "license": "ISC",
@@ -32,6 +33,7 @@
     "@graphql-codegen/typescript-graphql-request": "^6.2.0",
     "@graphql-codegen/typescript-operations": "^4.4.0",
     "@shared/tsup": "workspace:*",
+    "ts-node": "^10.9.2",
     "vitest": "^3.1.1"
   }
 }

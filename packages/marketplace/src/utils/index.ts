@@ -1,4 +1,7 @@
+import dotenv from 'dotenv';
 import type { FunctionInvocationScope } from 'fuels';
+
+dotenv.config();
 
 export const callAndWait = async <T extends unknown[], R>(
   method: FunctionInvocationScope<T, R>
@@ -17,4 +20,12 @@ export const getContractId = (chainId: number) => {
   };
 
   return contractsId[chainId] ?? contractsId[9889];
+};
+
+export const requireEnv = (env: string): string => {
+  const environment = process.env[env];
+  if (!environment) {
+    throw new Error(`${env} is not set`);
+  }
+  return environment;
 };
