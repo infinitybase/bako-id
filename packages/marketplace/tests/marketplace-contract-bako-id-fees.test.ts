@@ -1,6 +1,6 @@
 import { TestAssetId } from 'fuels/test-utils';
 
-import { bn, type Provider } from 'fuels';
+import { bn } from 'fuels';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Marketplace, ResolverMock } from '../src/artifacts/contracts';
 import {
@@ -13,7 +13,6 @@ import {
 describe('Marketplace (Bako ID Fees)', () => {
   let node: Awaited<ReturnType<typeof setup>>['node'];
   let marketplace: Marketplace;
-  let provider: Provider;
   let resolver: ResolverMock;
   let feeAssetId: string;
 
@@ -25,26 +24,14 @@ describe('Marketplace (Bako ID Fees)', () => {
     const {
       node: setupNode,
       marketplace: setupMarketplace,
-      provider: setupProvider,
       resolver: setupResolver,
       feeAssetId: setupFeeAssetId,
     } = await setup();
 
     marketplace = setupMarketplace;
-    provider = setupProvider;
     node = setupNode;
     resolver = setupResolver;
     feeAssetId = setupFeeAssetId;
-
-    const baseAsset = await provider.getBaseAssetId();
-    await registerAsset(marketplace, baseAsset, REGULAR_FEE, BAKO_ID_FEE);
-
-    await registerAsset(
-      marketplace,
-      TestAssetId.A.value,
-      REGULAR_FEE,
-      BAKO_ID_FEE
-    );
 
     await registerAsset(
       marketplace,
