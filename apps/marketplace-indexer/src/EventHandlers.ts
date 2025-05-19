@@ -19,7 +19,7 @@ Marketplace.AssetFeeAdjustedEvent.handler(async ({ event, context }) => {
   if (asset) {
     context.Asset.set({
       ...asset,
-      fee: event.params.fee,
+      fees: event.params.fee,
     });
   }
 });
@@ -28,7 +28,8 @@ Marketplace.AssetAddedEvent.handler(async ({ event, context }) => {
   const network = parseNetworkName(event.chainId);
   context.Asset.set({
     id: event.params.asset.bits,
-    fee: event.params.fee,
+    fees: event.params.fee,
+    fee: Array.isArray(event.params.fee) ? undefined : event.params.fee,
     network,
   });
 });

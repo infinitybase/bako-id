@@ -65,4 +65,21 @@ export class marketplaceService {
 
     return data;
   }
+
+  static async getAssetById({
+    id,
+    chainId = Networks.MAINNET,
+  }: {
+    id: string;
+    chainId?: number;
+  }): Promise<Asset> {
+    const network = resolveNetwork(chainId);
+    const response = await fetch(
+      `${BASE_API_URL}/${network}/marketplace/assets/${id}`
+    );
+
+    const data = await response.json();
+
+    return data;
+  }
 }

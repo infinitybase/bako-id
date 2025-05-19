@@ -2,7 +2,9 @@ import UnknownAsset from '@/assets/unknown-asset.png';
 import { EditIcon, LightIcon, UserIcon, useCustomToast } from '@/components';
 import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
+import { ExchangeDolarIcon } from '@/components/icons/exchangeDolar';
 import { useExecuteOrder, useUpdateOrder } from '@/hooks/marketplace';
+import { useGetAsset } from '@/hooks/marketplace/useGetAsset';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
 import { useAssetsBalance } from '@/hooks/useAssetsBalance';
 import type { Order } from '@/types/marketplace';
@@ -60,6 +62,7 @@ export const NftSaleCardModal = ({
   const { assets } = useListAssets();
   const { data: assetsBalance } = useAssetsBalance({ assets });
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder();
+  const { data: assetData } = useGetAsset(order.asset?.id as string);
 
   const currentSellAssetBalance = useMemo(
     () =>
@@ -200,6 +203,14 @@ export const NftSaleCardModal = ({
                 </Link>
               </GridItem>
             )}
+
+            <GridItem>
+              <NftMetadataBlock
+                title="Application FEE"
+                value={`${bn(assetData?.fee).formatUnits(2)}%`}
+                icon={<ExchangeDolarIcon />}
+              />
+            </GridItem>
           </Grid>
 
           {!isEditView && (
