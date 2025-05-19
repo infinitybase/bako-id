@@ -1,4 +1,4 @@
-import { type Account, type BN, Provider } from 'fuels';
+import { Provider, type Account, type BN } from 'fuels';
 import { Marketplace } from '../artifacts';
 import { callAndWait, getContractId } from '../utils';
 
@@ -57,7 +57,10 @@ export class MarketplaceContract {
         ? accountOrProvider
         : accountOrProvider.provider;
 
-    const contractId = getContractId(await provider.getChainId());
+    const contractId = getContractId(
+      await provider.getChainId(),
+      'marketplace'
+    );
     return new MarketplaceContract(contractId, accountOrProvider);
   }
 
@@ -77,7 +80,7 @@ export class MarketplaceContract {
     if (!itemAssetBalance || !itemAssetBalance.gte(itemAmount)) {
       const available = itemAssetBalance.formatUnits();
       throw new Error(
-        `Insufficient balance for ${itemAsset}: expected ${itemAmount}, available ${available}`,
+        `Insufficient balance for ${itemAsset}: expected ${itemAmount}, available ${available}`
       );
     }
 
@@ -89,7 +92,7 @@ export class MarketplaceContract {
             amount: order.itemAmount,
             assetId: order.itemAsset,
           },
-        }),
+        })
     );
 
     const {
@@ -114,7 +117,7 @@ export class MarketplaceContract {
     }
 
     const response = await callAndWait(
-      this.marketplace.functions.cancel_order(orderId),
+      this.marketplace.functions.cancel_order(orderId)
     );
 
     return {
@@ -141,7 +144,7 @@ export class MarketplaceContract {
     if (!sellAssetBalance || !sellAssetBalance.gte(sellPrice)) {
       const available = sellAssetBalance.formatUnits();
       throw new Error(
-        `Insufficient balance for ${sellAsset}: expected ${sellPrice}, available ${available}`,
+        `Insufficient balance for ${sellAsset}: expected ${sellPrice}, available ${available}`
       );
     }
 
@@ -151,7 +154,7 @@ export class MarketplaceContract {
           amount: sellPrice,
           assetId: sellAsset,
         },
-      }),
+      })
     );
 
     return {
@@ -166,7 +169,7 @@ export class MarketplaceContract {
    */
   async getOrder(orderId: string): Promise<Order | null> {
     const { value } = await callAndWait(
-      this.marketplace.functions.get_order(orderId),
+      this.marketplace.functions.get_order(orderId)
     );
 
     if (!value) {
@@ -196,8 +199,8 @@ export class MarketplaceContract {
       this.marketplace.functions.edit_order(
         orderId,
         { bits: order.sellAsset },
-        order.sellPrice,
-      ),
+        order.sellPrice
+      )
     );
 
     return {
