@@ -9,8 +9,9 @@ import {
 import fs from "node:fs";
 import path from "node:path";
 import bakoContracts from "../../contracts/src/artifacts/contracts-fuel.json";
+import { requireEnv } from "../node-only/index";
 import { Marketplace, MarketplaceFactory } from "../src/artifacts";
-import { ContractsMap, callAndWait, getContractId, requireEnv } from "../src/utils";
+import { ContractsMap, callAndWait, getContractId } from "../src/utils";
 
 const CONTRACTS_FILE = "contract.json";
 const CONTRACTS_PATH = path.join(__dirname, "..", "src", "artifacts");

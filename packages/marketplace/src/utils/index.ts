@@ -1,8 +1,5 @@
-import dotenv from 'dotenv';
 import type { FunctionInvocationScope } from 'fuels';
 import contracts from '../artifacts/contract.json';
-
-dotenv.config();
 
 export type MarketplaceContractsName = 'marketplace';
 export type ContractsMap = Record<string, Record<string, string>>;
@@ -31,12 +28,4 @@ export const getContractId = (
   }
 
   return contract;
-};
-
-export const requireEnv = (env: string): string => {
-  const environment = process.env[env];
-  if (!environment) {
-    throw new Error(`${env} is not set`);
-  }
-  return environment;
 };
