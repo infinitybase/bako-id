@@ -1,7 +1,11 @@
 import dotenv from 'dotenv';
 import type { FunctionInvocationScope } from 'fuels';
+import contracts from '../artifacts/contract.json';
 
 dotenv.config();
+
+export type MarketplaceContractsName = 'marketplace';
+export type ContractsMap = Record<string, Record<string, string>>;
 
 export const callAndWait = async <T extends unknown[], R>(
   method: FunctionInvocationScope<T, R>
@@ -10,16 +14,23 @@ export const callAndWait = async <T extends unknown[], R>(
   return result.waitForResult();
 };
 
-export const getContractId = (chainId: number) => {
-  const contractsId: Record<number, string> = {
-    // TESTNET
-    0: '0xc905465054211ca2186d2afe389b1ead7d06d484168483c8cbdcd990665b50b1',
+export const getContractId = (
+  chainId: number,
+  name: MarketplaceContractsName
+) => {
+  // TODO -> remove this when deploying to mainnet
+  if (chainId === 9889) {
+    return '0x0000000000000000000000000000000000000000000000000000000000000000';
+  }
 
-    // MAINNET
-    9889: '0x0000000000000000000000000000000000000000000000000000000000000000',
-  };
+  const chainIdStr = chainId.toString();
+  const contract = (contracts as ContractsMap)[chainIdStr]?.[name];
 
-  return contractsId[chainId] ?? contractsId[9889];
+  if (!contract) {
+    throw new Error(`Contract ${name} not found for chainId ${chainId}`);
+  }
+
+  return contract;
 };
 
 export const requireEnv = (env: string): string => {

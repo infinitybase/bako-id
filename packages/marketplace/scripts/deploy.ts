@@ -9,11 +9,12 @@ import {
 import fs from "node:fs";
 import path from "node:path";
 import bakoContracts from "../../contracts/src/artifacts/contracts-fuel.json";
-import { MarketplaceFactory } from "../src/artifacts";
-import { callAndWait, requireEnv } from "../src/utils";
+import { Marketplace, MarketplaceFactory } from "../src/artifacts";
+import { ContractsMap, callAndWait, getContractId, requireEnv } from "../src/utils";
 
 const CONTRACTS_FILE = "contract.json";
 const CONTRACTS_PATH = path.join(__dirname, "..", "src", "artifacts");
+
 const REGULAR_ETH_FEE = bn(10).mul(100); // 10%
 const DISCOUNTED_ETH_FEE = bn(5).mul(100); // 5% (discounted when has Bako ID)
 
@@ -37,22 +38,11 @@ const getResolverContractId = (chainId: number) => {
   return bakoContracts[network]?.resolver;
 };
 
-const getContractAddress = (name: string, chainId: number) => {
-  const contractPath = path.join(CONTRACTS_PATH, CONTRACTS_FILE);
-
-  if (!fs.existsSync(contractPath)) {
-    fs.writeFileSync(contractPath, JSON.stringify({}));
-  }
-
-  const contracts = JSON.parse(fs.readFileSync(contractPath, "utf8"));
-  return contracts[chainId]?.[name];
-};
-
 const setContractAddress = (name: string, chainId: number, address: string) => {
   const contractPath = path.join(CONTRACTS_PATH, CONTRACTS_FILE);
-  const contracts = JSON.parse(fs.readFileSync(contractPath, "utf8"));
-  contracts[chainId] = contracts[chainId] || {};
-  contracts[chainId][name] = address;
+  const contracts = JSON.parse(fs.readFileSync(contractPath, "utf8")) as ContractsMap;
+  contracts[chainId.toString()] = contracts[chainId.toString()] || {};
+  contracts[chainId.toString()][name] = address;
   fs.writeFileSync(contractPath, JSON.stringify(contracts, null, 2));
 };
 
@@ -70,7 +60,7 @@ const setup = () => {
 
 const deployProxy = async () => {
   const { proxyWallet, provider } = setup();
-  const proxyAddress = getContractAddress("proxy", await provider.getChainId());
+  const proxyAddress = getContractId(await provider.getChainId(), "marketplace");
 
   if (proxyAddress) {
     console.log("Proxy already deployed:", proxyAddress);
@@ -93,7 +83,7 @@ const deployProxy = async () => {
   await callAndWait(contract.functions.initialize_proxy());
 
   setContractAddress(
-    "proxy",
+    "marketplace",
     await provider.getChainId(),
     contract.id.toB256(),
   );
@@ -105,7 +95,6 @@ const deployProxy = async () => {
 
 const deployMarketplace = async () => {
   const { marketplaceWallet, provider } = setup();
-  const baseAssetId = await provider.getBaseAssetId();
 
   console.log("Deploying marketplace...");
   const chainId = await provider.getChainId();
@@ -128,16 +117,7 @@ const deployMarketplace = async () => {
     }),
   );
 
-  await callAndWait(contract.functions.add_valid_asset({ bits: baseAssetId }, [REGULAR_ETH_FEE, DISCOUNTED_ETH_FEE]));
-  console.info(`Marketplace added baseAssetId with fees: ${REGULAR_ETH_FEE.toString()}, ${DISCOUNTED_ETH_FEE.toString()}`);
-
   console.log("Marketplace deployed:", contract.id.toB256());
-
-  setContractAddress(
-    "marketplace",
-    await provider.getChainId(),
-    contract.id.toB256(),
-  );
 
   return contract;
 };
@@ -145,11 +125,20 @@ const deployMarketplace = async () => {
 export const deployContracts = async () => {
   const proxy = await deployProxy();
   const marketplace = await deployMarketplace();
+  const { provider, marketplaceWallet } = setup();
+
+  const baseAssetId = await provider.getBaseAssetId();
 
   console.log("Setting proxy target...");
   await callAndWait(
     proxy.functions.set_proxy_target({ bits: marketplace.id.toB256() }),
   );
+
+  const contract = new Marketplace(proxy.id, marketplaceWallet);
+
+  await callAndWait(contract.functions.add_valid_asset({ bits: baseAssetId }, [REGULAR_ETH_FEE, DISCOUNTED_ETH_FEE]));
+  console.info(`Marketplace added baseAssetId with fees: ${REGULAR_ETH_FEE.toString()}, ${DISCOUNTED_ETH_FEE.toString()}`);
+
 
   return {
     proxy,
