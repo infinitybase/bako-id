@@ -91,7 +91,12 @@ export const ProfileCards = ({
         <AccountsCard metadata={metadata} addAction={metadataModal.onOpen} />
       </Stack>
 
-      <NftListForSale orders={orders} domain={domainParam!} address={domain} />
+      <NftListForSale
+        orders={orders}
+        domain={domainParam!}
+        address={domain}
+        hiddenWhenEmpty
+      />
 
       <NftCollections resolver={domain!} chainId={chainId} />
     </Suspense>
