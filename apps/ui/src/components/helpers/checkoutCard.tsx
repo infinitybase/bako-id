@@ -1,5 +1,5 @@
-import { Spinner, type ImageProps } from '@chakra-ui/react';
-import { useToken } from '../../hooks/useToken';
+import { useToken } from '@/hooks/useToken';
+import type { ImageProps } from '@chakra-ui/react';
 import { TokenImage } from './tokenImage';
 
 interface CheckoutCardProps extends ImageProps {
@@ -11,11 +11,7 @@ export function CheckoutCard(props: CheckoutCardProps) {
 
   return (
     <>
-      {token?.image ? (
-        <TokenImage src={token.image} {...props} />
-      ) : (
-        <Spinner boxSize={props.spinnerSize ?? '100px'} mx="auto" />
-      )}
+      <TokenImage src={token?.image} {...props} />
     </>
   );
 }
