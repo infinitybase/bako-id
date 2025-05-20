@@ -4,6 +4,7 @@ import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
 import { ExchangeDolarIcon } from '@/components/icons/exchangeDolar';
 import { useExecuteOrder, useUpdateOrder } from '@/hooks/marketplace';
+import { useGetAsset } from '@/hooks/marketplace/useGetAsset';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
 import { useAssetsBalance } from '@/hooks/useAssetsBalance';
 import type { Order } from '@/types/marketplace';
@@ -17,6 +18,7 @@ import {
   Heading,
   IconButton,
   Image,
+  Skeleton,
   Stack,
   Text,
   Tooltip,
@@ -63,10 +65,13 @@ export const NftSaleCardModal = ({
   const { assets } = useListAssets();
   const { data: assetsBalance } = useAssetsBalance({ assets });
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder();
+  const { data: assetData, isLoading: isLoadingAsset } = useGetAsset(
+    order.asset?.id || ''
+  );
 
   const assetFee = useMemo(
-    () => (withHandle ? order.asset?.fees[1] : order.asset?.fees[0]),
-    [order.asset?.fees, withHandle]
+    () => (withHandle ? assetData?.fees[1] : assetData?.fees[0]),
+    [assetData, withHandle]
   );
 
   const currentSellAssetBalance = useMemo(
@@ -220,13 +225,15 @@ export const NftSaleCardModal = ({
               </GridItem>
             )}
 
-            {assetFee && (
+            {(assetFee || isLoadingAsset) && (
               <GridItem>
-                <NftMetadataBlock
-                  title="Application Fee"
-                  value={`${bn(assetFee).formatUnits(2)}%`}
-                  icon={<ExchangeDolarIcon />}
-                />
+                <Skeleton isLoaded={!isLoadingAsset}>
+                  <NftMetadataBlock
+                    title="Application Fee"
+                    value={`${bn(assetFee).formatUnits(2)}%`}
+                    icon={<ExchangeDolarIcon />}
+                  />
+                </Skeleton>
               </GridItem>
             )}
           </Grid>
