@@ -55,7 +55,7 @@ const NftSaleCard = ({
     delistModal.onClose();
   };
 
-  const rate = order.asset?.rate ?? 0;
+  const rate = useMemo(() => order.asset?.rate ?? 0, [order.asset?.rate]);
 
   const value = useMemo(
     () => bn(order.itemPrice).formatUnits(order.asset?.decimals),
