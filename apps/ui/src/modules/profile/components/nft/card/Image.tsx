@@ -27,6 +27,7 @@ export const Image = ({ ...props }: ImageProps) => {
           onLoad={handleOnLoad}
           fallbackSrc={EmptyImg}
           borderTopRadius="8px"
+          aspectRatio="1/1"
           {...props}
         />
       </Skeleton>

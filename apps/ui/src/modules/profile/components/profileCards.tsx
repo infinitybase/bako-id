@@ -98,6 +98,7 @@ export const ProfileCards = ({
         domain={domainParam!}
         address={domain}
         withHandle={withHandle}
+        hiddenWhenEmpty
       />
 
       <NftCollections resolver={domain!} chainId={chainId} />
