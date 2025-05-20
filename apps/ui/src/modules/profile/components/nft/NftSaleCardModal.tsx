@@ -24,7 +24,7 @@ import { useConnectUI } from '@fuels/react';
 import { Link } from '@tanstack/react-router';
 import { bn } from 'fuels';
 import { entries } from 'lodash';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { NftCardSaleForm, type NftSaleCardForm } from './NftCardSaleForm';
 import { NftListMetadata } from './NftListMetadata';
 import { NftMetadataBlock } from './NftMetadataBlock';
@@ -76,7 +76,7 @@ export const NftSaleCardModal = ({
     return parsedValue > parsedBalance;
   }, [currentSellAssetBalance, value]);
 
-  const handleExecuteOrder = async () => {
+  const handleExecuteOrder = useCallback(async () => {
     if (!isConnected) {
       connect();
       onClose();
@@ -89,7 +89,15 @@ export const NftSaleCardModal = ({
     } catch {
       errorToast({ title: 'Failed to execute order' });
     }
-  };
+  }, [
+    connect,
+    executeOrderAsync,
+    order.id,
+    onClose,
+    successToast,
+    errorToast,
+    isConnected,
+  ]);
 
   const metadataArray = useMemo(
     () =>
@@ -102,19 +110,22 @@ export const NftSaleCardModal = ({
     [order.nft.metadata]
   );
 
-  const handleUpdateOrder = async (data: NftSaleCardForm) => {
-    try {
-      await updateOrderAsync({
-        sellPrice: bn.parseUnits(data.sellPrice.toString()),
-        sellAsset: data.sellAsset.id,
-        orderId: order.id,
-      });
-      successToast({ title: 'Order updated successfully!' });
-      onClose();
-    } catch {
-      errorToast({ title: 'Failed to update order' });
-    }
-  };
+  const handleUpdateOrder = useCallback(
+    async (data: NftSaleCardForm) => {
+      try {
+        await updateOrderAsync({
+          sellPrice: bn.parseUnits(data.sellPrice.toString()),
+          sellAsset: data.sellAsset.id,
+          orderId: order.id,
+        });
+        successToast({ title: 'Order updated successfully!' });
+        onClose();
+      } catch {
+        errorToast({ title: 'Failed to update order' });
+      }
+    },
+    [updateOrderAsync, order.id, successToast, errorToast, onClose]
+  );
 
   const nftName = order.nft?.name ?? 'Unknown NFT';
 

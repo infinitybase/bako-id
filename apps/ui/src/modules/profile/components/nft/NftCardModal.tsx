@@ -7,7 +7,7 @@ import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
 import { parseURI } from '@/utils/formatter';
 import { Box, Grid, GridItem, Heading, Stack, Text } from '@chakra-ui/react';
 import { bn } from 'fuels';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { NftCardSaleForm, type NftSaleCardForm } from './NftCardSaleForm';
 import { NftListMetadata } from './NftListMetadata';
 import { NftMetadataBlock } from './NftMetadataBlock';
@@ -47,21 +47,23 @@ export const NftCardModal = ({
     }));
   }, [metadata]);
 
-  const handleCreateOrder = async (data: NftSaleCardForm) => {
-    try {
-      await createOrderAsync({
-        itemAsset: assetId,
-        itemAmount: bn(1),
-        sellPrice: bn.parseUnits(data.sellPrice.toString()),
-        sellAsset: data.sellAsset.id,
-      });
-      successToast({ title: 'Order created successfully!' });
-      onClose();
-    } catch (error) {
-      console.error(error);
-      errorToast({ title: 'Failed to create order. Please try again.' });
-    }
-  };
+  const handleCreateOrder = useCallback(
+    async (data: NftSaleCardForm) => {
+      try {
+        await createOrderAsync({
+          itemAsset: assetId,
+          itemAmount: bn(1),
+          sellPrice: bn.parseUnits(data.sellPrice.toString()),
+          sellAsset: data.sellAsset.id,
+        });
+        successToast({ title: 'Order created successfully!' });
+        onClose();
+      } catch {
+        errorToast({ title: 'Failed to create order. Please try again.' });
+      }
+    },
+    [assetId, createOrderAsync, errorToast, onClose, successToast]
+  );
 
   const isBakoIdNft = useMemo(
     () => BAKO_CONTRACTS_IDS.includes(contractId!),
