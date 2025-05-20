@@ -1,6 +1,6 @@
 import { type FuelAsset, FuelAssetService } from '@/services/fuel-assets';
 import type { Order } from '@/types/marketplace';
-import { assignIn, concat, isEmpty, merge, uniqBy } from 'lodash';
+import { assignIn, concat, merge, uniqBy } from 'lodash';
 import { ASSETS_METADATA_STORAGE_KEY } from './constants';
 import { formatMetadataFromIpfs, parseURI } from './formatter';
 import { getLocalStorage, setLocalStorage } from './localStorage';
