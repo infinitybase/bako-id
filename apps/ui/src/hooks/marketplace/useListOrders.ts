@@ -15,7 +15,7 @@ import { useChainId } from '../useChainId';
 type useListOrdersProps = { page?: number; limit: number; search?: string };
 
 export const useListOrders = ({ limit, search }: useListOrdersProps) => {
-  const { chainId } = useChainId();
+  const { chainId, isLoading } = useChainId();
 
   const { data: orders, ...rest } = useInfiniteQuery<PaginationResult<Order>>({
     queryKey: [MarketplaceQueryKeys.ALL_ORDERS, chainId, search],
@@ -64,6 +64,7 @@ export const useListOrders = ({ limit, search }: useListOrdersProps) => {
       });
     },
     placeholderData: (data) => data,
+    enabled: !isLoading,
   });
 
   return { orders, ...rest };

@@ -1,3 +1,3 @@
 export * from './banner';
 export * from './orderList';
-export * from './searchBar';
+export { default as SearchBar } from './searchBar';

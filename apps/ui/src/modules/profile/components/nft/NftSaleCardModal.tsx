@@ -227,7 +227,7 @@ export const NftSaleCardModal = ({
 
             {(assetFee || isLoadingAsset) && (
               <GridItem>
-                <Skeleton isLoaded={!isLoadingAsset}>
+                <Skeleton isLoaded={!isLoadingAsset} borderRadius="md">
                   <NftMetadataBlock
                     title="Application Fee"
                     value={`${bn(assetFee).formatUnits(2)}%`}

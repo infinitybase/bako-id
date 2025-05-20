@@ -43,8 +43,8 @@ export async function GET(
       where,
       offset: (page - 1) * limit,
       count: limit,
-      // @ts-expect-error - sort by db_write_timestamp
-      sort: { db_write_timestamp: 'desc' },
+      // @ts-expect-error - sort by id
+      sort: { id: 'desc' },
     });
 
     return Response.json({ orders, total }, { status: 200 });
