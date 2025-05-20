@@ -7,8 +7,8 @@ contracts:
     events:
       - name: AssetFeeAdjustedEvent
         logId: '10288224578490882859'
-      - name: AssetAddedEvent
-        logId: '10516624671986619165'
+      - name: AssetAddedEvent2
+        logId: '10985593674862968702'
       - name: OrderCreatedEvent
         logId: '8887194707992577051'
       - name: OrderExecutedEvent
