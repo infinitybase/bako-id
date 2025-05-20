@@ -24,12 +24,11 @@ Marketplace.AssetFeeAdjustedEvent.handler(async ({ event, context }) => {
   }
 });
 
-Marketplace.AssetAddedEvent.handler(async ({ event, context }) => {
+Marketplace.AssetAddedEvent2.handler(async ({ event, context }) => {
   const network = parseNetworkName(event.chainId);
   context.Asset.set({
     id: event.params.asset.bits,
     fees: event.params.fee,
-    fee: Array.isArray(event.params.fee) ? undefined : event.params.fee,
     network,
   });
 });

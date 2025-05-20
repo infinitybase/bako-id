@@ -41,8 +41,8 @@ export enum ReentrancyErrorOutput { NonReentrant = 'NonReentrant' };
 
 export type AddressInput = { bits: string };
 export type AddressOutput = AddressInput;
-export type AssetAddedEventInput = { asset: AssetIdInput, fee: [BigNumberish, BigNumberish] };
-export type AssetAddedEventOutput = { asset: AssetIdOutput, fee: [BN, BN] };
+export type AssetAddedEvent2Input = { asset: AssetIdInput, fee: [BigNumberish, BigNumberish] };
+export type AssetAddedEvent2Output = { asset: AssetIdOutput, fee: [BN, BN] };
 export type AssetFeeAdjustedEventInput = { asset: AssetIdInput, fee: [BigNumberish, BigNumberish] };
 export type AssetFeeAdjustedEventOutput = { asset: AssetIdOutput, fee: [BN, BN] };
 export type AssetIdInput = { bits: string };
@@ -134,8 +134,8 @@ const abi = {
       "metadataTypeId": 9
     },
     {
-      "type": "struct events::AssetAddedEvent",
-      "concreteTypeId": "91f28e6b71df131de051f19a1f8cb58ece2165f4a5f9108fbb85471538446fa9",
+      "type": "struct events::AssetAddedEvent2",
+      "concreteTypeId": "9874ab3e3cfc3f7e340e74e1c2334731a76ef353dd6b0bcb61011514a0183b83",
       "metadataTypeId": 11
     },
     {
@@ -361,7 +361,7 @@ const abi = {
       "metadataTypeId": 10
     },
     {
-      "type": "struct events::AssetAddedEvent",
+      "type": "struct events::AssetAddedEvent2",
       "metadataTypeId": 11,
       "components": [
         {
@@ -781,8 +781,8 @@ const abi = {
       "concreteTypeId": "3f702ea3351c9c1ece2b84048006c8034a24cbc2bad2e740d0412b4172951d3d"
     },
     {
-      "logId": "10516624671986619165",
-      "concreteTypeId": "91f28e6b71df131de051f19a1f8cb58ece2165f4a5f9108fbb85471538446fa9"
+      "logId": "10985593674862968702",
+      "concreteTypeId": "9874ab3e3cfc3f7e340e74e1c2334731a76ef353dd6b0bcb61011514a0183b83"
     },
     {
       "logId": "9380741853358249135",

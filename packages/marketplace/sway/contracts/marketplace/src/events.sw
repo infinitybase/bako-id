@@ -27,7 +27,7 @@ pub struct OrderCreatedEvent {
 }
 
 /// Event emitted when a new asset is added to the valid assets list
-pub struct AssetAddedEvent {
+pub struct AssetAddedEvent2 {
     /// The asset ID that was added
     pub asset: AssetId,
     /// The fee percentage for this asset (in basis points, 1% = 100)

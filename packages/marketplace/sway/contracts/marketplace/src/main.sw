@@ -21,7 +21,7 @@ configurable {
 use external::NameResolver;
 
 use events::{
-    AssetAddedEvent,
+    AssetAddedEvent2,
     AssetFeeAdjustedEvent,
     Order,
     OrderCancelledEvent,
@@ -229,7 +229,7 @@ impl FeeManager for Contract {
     fn add_valid_asset(asset: AssetId, fee: (u64, u64)) {
         only_owner();
         storage.valid_assets.insert(asset, fee);
-        log(AssetAddedEvent { asset, fee });
+        log(AssetAddedEvent2 { asset, fee });
     }
 
     #[storage(read, write)]
