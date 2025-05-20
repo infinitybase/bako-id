@@ -9,10 +9,11 @@ export const MarketplacePage = () => {
   const navigate = useNavigate();
   const { search } = useSearch({ strict: false });
   const debouncedSearch = useDebounce<string>(search ?? '', 700);
-  const { orders, isLoading, fetchNextPage, hasNextPage } = useListOrders({
-    limit: 20,
-    search: debouncedSearch,
-  });
+  const { orders, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useListOrders({
+      limit: 20,
+      search: debouncedSearch,
+    });
 
   const data = useMemo(
     () => orders?.pages?.flatMap((page) => page.data) ?? [],
@@ -57,6 +58,7 @@ export const MarketplacePage = () => {
           hasNextPage={hasNextPage}
           onFetchNextPage={fetchNextPage}
           isLoadingOrders={isLoading}
+          isFetchingNextPage={isFetchingNextPage}
         />
       </Stack>
     </Container>

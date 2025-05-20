@@ -3,7 +3,7 @@ import NftSaleCard from '@/modules/profile/components/nft/NftSaleCard';
 import type { Order } from '@/types/marketplace';
 import { GridItem, Heading, SimpleGrid, Skeleton } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
-import { Fragment, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 interface OrderListProps {
@@ -11,6 +11,7 @@ interface OrderListProps {
   onFetchNextPage: () => void;
   hasNextPage: boolean;
   isLoadingOrders?: boolean;
+  isFetchingNextPage?: boolean;
 }
 
 export const OrderList = ({
@@ -18,6 +19,7 @@ export const OrderList = ({
   isLoadingOrders = false,
   onFetchNextPage,
   hasNextPage,
+  isFetchingNextPage = false,
 }: OrderListProps) => {
   const { wallet } = useWallet();
   const { ref, inView } = useInView();
@@ -27,10 +29,10 @@ export const OrderList = ({
   const address = useMemo(() => wallet?.address.b256Address, [wallet]);
 
   useEffect(() => {
-    if (inView && hasNextPage) {
+    if (inView && hasNextPage && !isFetchingNextPage) {
       onFetchNextPage();
     }
-  }, [inView, hasNextPage, onFetchNextPage]);
+  }, [inView, hasNextPage, onFetchNextPage, isFetchingNextPage]);
 
   return (
     <SimpleGrid
@@ -77,13 +79,12 @@ export const OrderList = ({
         </GridItem>
       )}
 
-      {isLoadingOrders && (
-        <Fragment>
-          {Array.from({ length: 5 }, () => (
-            <Skeleton key={Math.random()} height="250px" borderRadius="lg" />
-          ))}
-        </Fragment>
-      )}
+      {(isLoadingOrders || isFetchingNextPage) &&
+        Array.from({ length: 5 }, () => (
+          <GridItem key={Math.random()}>
+            <Skeleton height="250px" borderRadius="lg" />
+          </GridItem>
+        ))}
     </SimpleGrid>
   );
 };
