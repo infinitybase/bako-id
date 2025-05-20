@@ -6,7 +6,7 @@ query assets($count: Int, $offset: Int, $where: Asset_bool_exp) {
 
 fragment Asset on Asset {
   id
-  fee
+  fees
 }
 
 query orders(

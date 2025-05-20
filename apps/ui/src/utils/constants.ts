@@ -4,6 +4,7 @@ export const blocklistMetadataKeys = ['name', 'image', 'description', 'uri'];
 
 export enum MarketplaceQueryKeys {
   ASSETS = 'assets',
+  ASSET = 'asset',
   ORDERS = 'orders',
   ALL_ORDERS = 'allOrders',
 }

@@ -1,6 +1,6 @@
 import { TestAssetId } from 'fuels/test-utils';
 
-import { type Provider, bn } from 'fuels';
+import { bn, type Provider } from 'fuels';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Marketplace } from '../src/artifacts/contracts/Marketplace';
 import {
@@ -42,13 +42,13 @@ describe('Marketplace (Pausable)', () => {
       createOrder(marketplace, TestAssetId.A.value, {
         asset: await provider.getBaseAssetId(),
         amount: 100,
-      }),
+      })
     ).rejects.toThrow(/Paused/);
     await callAndWait(marketplace.functions.unpause());
   });
 
   it('should error when executing an order while paused', async () => {
-    await registerAsset(marketplace, TestAssetId.B.value, bn(0));
+    await registerAsset(marketplace, TestAssetId.B.value, bn(0), bn(0));
     const { order_id } = await createOrder(marketplace, TestAssetId.A.value, {
       asset: TestAssetId.B.value,
       amount: 100,
@@ -63,8 +63,8 @@ describe('Marketplace (Pausable)', () => {
             amount: 100,
             assetId: await provider.getBaseAssetId(),
           },
-        }),
-      ),
+        })
+      )
     ).rejects.toThrow(/Paused/);
   });
 });

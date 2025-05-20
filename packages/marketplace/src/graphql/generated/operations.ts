@@ -29,45 +29,9 @@ export type Scalars = {
 export type GQLAsset = {
   __typename: 'Asset';
   db_write_timestamp?: Maybe<Scalars['timestamp']['output']>;
-  fee: Scalars['numeric']['output'];
+  fees: Array<Scalars['numeric']['output']>;
   id: Scalars['String']['output'];
   network: Scalars['network']['output'];
-};
-
-/** aggregated selection of "Asset" */
-export type GQLAsset_Aggregate = {
-  __typename: 'Asset_aggregate';
-  aggregate?: Maybe<GQLAsset_Aggregate_Fields>;
-  nodes: Array<GQLAsset>;
-};
-
-/** aggregate fields of "Asset" */
-export type GQLAsset_Aggregate_Fields = {
-  __typename: 'Asset_aggregate_fields';
-  avg?: Maybe<GQLAsset_Avg_Fields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<GQLAsset_Max_Fields>;
-  min?: Maybe<GQLAsset_Min_Fields>;
-  stddev?: Maybe<GQLAsset_Stddev_Fields>;
-  stddev_pop?: Maybe<GQLAsset_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<GQLAsset_Stddev_Samp_Fields>;
-  sum?: Maybe<GQLAsset_Sum_Fields>;
-  var_pop?: Maybe<GQLAsset_Var_Pop_Fields>;
-  var_samp?: Maybe<GQLAsset_Var_Samp_Fields>;
-  variance?: Maybe<GQLAsset_Variance_Fields>;
-};
-
-
-/** aggregate fields of "Asset" */
-export type GQLAsset_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<GQLAsset_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** aggregate avg on columns */
-export type GQLAsset_Avg_Fields = {
-  __typename: 'Asset_avg_fields';
-  fee?: Maybe<Scalars['Float']['output']>;
 };
 
 /** Boolean expression to filter rows from the table "Asset". All fields are combined with a logical 'AND'. */
@@ -76,33 +40,15 @@ export type GQLAsset_Bool_Exp = {
   _not?: InputMaybe<GQLAsset_Bool_Exp>;
   _or?: InputMaybe<Array<GQLAsset_Bool_Exp>>;
   db_write_timestamp?: InputMaybe<GQLTimestamp_Comparison_Exp>;
-  fee?: InputMaybe<GQLNumeric_Comparison_Exp>;
+  fees?: InputMaybe<GQLNumeric_Array_Comparison_Exp>;
   id?: InputMaybe<GQLString_Comparison_Exp>;
   network?: InputMaybe<GQLNetwork_Comparison_Exp>;
-};
-
-/** aggregate max on columns */
-export type GQLAsset_Max_Fields = {
-  __typename: 'Asset_max_fields';
-  db_write_timestamp?: Maybe<Scalars['timestamp']['output']>;
-  fee?: Maybe<Scalars['numeric']['output']>;
-  id?: Maybe<Scalars['String']['output']>;
-  network?: Maybe<Scalars['network']['output']>;
-};
-
-/** aggregate min on columns */
-export type GQLAsset_Min_Fields = {
-  __typename: 'Asset_min_fields';
-  db_write_timestamp?: Maybe<Scalars['timestamp']['output']>;
-  fee?: Maybe<Scalars['numeric']['output']>;
-  id?: Maybe<Scalars['String']['output']>;
-  network?: Maybe<Scalars['network']['output']>;
 };
 
 /** Ordering options when selecting data from "Asset". */
 export type GQLAsset_Order_By = {
   db_write_timestamp?: InputMaybe<GQLOrder_By>;
-  fee?: InputMaybe<GQLOrder_By>;
+  fees?: InputMaybe<GQLOrder_By>;
   id?: InputMaybe<GQLOrder_By>;
   network?: InputMaybe<GQLOrder_By>;
 };
@@ -112,30 +58,12 @@ export enum GQLAsset_Select_Column {
   /** column name */
   DbWriteTimestamp = 'db_write_timestamp',
   /** column name */
-  Fee = 'fee',
+  Fees = 'fees',
   /** column name */
   Id = 'id',
   /** column name */
   Network = 'network'
 }
-
-/** aggregate stddev on columns */
-export type GQLAsset_Stddev_Fields = {
-  __typename: 'Asset_stddev_fields';
-  fee?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type GQLAsset_Stddev_Pop_Fields = {
-  __typename: 'Asset_stddev_pop_fields';
-  fee?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type GQLAsset_Stddev_Samp_Fields = {
-  __typename: 'Asset_stddev_samp_fields';
-  fee?: Maybe<Scalars['Float']['output']>;
-};
 
 /** Streaming cursor of the table "Asset" */
 export type GQLAsset_Stream_Cursor_Input = {
@@ -148,33 +76,9 @@ export type GQLAsset_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type GQLAsset_Stream_Cursor_Value_Input = {
   db_write_timestamp?: InputMaybe<Scalars['timestamp']['input']>;
-  fee?: InputMaybe<Scalars['numeric']['input']>;
+  fees?: InputMaybe<Array<Scalars['numeric']['input']>>;
   id?: InputMaybe<Scalars['String']['input']>;
   network?: InputMaybe<Scalars['network']['input']>;
-};
-
-/** aggregate sum on columns */
-export type GQLAsset_Sum_Fields = {
-  __typename: 'Asset_sum_fields';
-  fee?: Maybe<Scalars['numeric']['output']>;
-};
-
-/** aggregate var_pop on columns */
-export type GQLAsset_Var_Pop_Fields = {
-  __typename: 'Asset_var_pop_fields';
-  fee?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate var_samp on columns */
-export type GQLAsset_Var_Samp_Fields = {
-  __typename: 'Asset_var_samp_fields';
-  fee?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate variance on columns */
-export type GQLAsset_Variance_Fields = {
-  __typename: 'Asset_variance_fields';
-  fee?: Maybe<Scalars['Float']['output']>;
 };
 
 /** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
@@ -217,43 +121,6 @@ export type GQLOrder = {
   status: Scalars['orderstatus']['output'];
 };
 
-/** aggregated selection of "Order" */
-export type GQLOrder_Aggregate = {
-  __typename: 'Order_aggregate';
-  aggregate?: Maybe<GQLOrder_Aggregate_Fields>;
-  nodes: Array<GQLOrder>;
-};
-
-/** aggregate fields of "Order" */
-export type GQLOrder_Aggregate_Fields = {
-  __typename: 'Order_aggregate_fields';
-  avg?: Maybe<GQLOrder_Avg_Fields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<GQLOrder_Max_Fields>;
-  min?: Maybe<GQLOrder_Min_Fields>;
-  stddev?: Maybe<GQLOrder_Stddev_Fields>;
-  stddev_pop?: Maybe<GQLOrder_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<GQLOrder_Stddev_Samp_Fields>;
-  sum?: Maybe<GQLOrder_Sum_Fields>;
-  var_pop?: Maybe<GQLOrder_Var_Pop_Fields>;
-  var_samp?: Maybe<GQLOrder_Var_Samp_Fields>;
-  variance?: Maybe<GQLOrder_Variance_Fields>;
-};
-
-
-/** aggregate fields of "Order" */
-export type GQLOrder_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<GQLOrder_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** aggregate avg on columns */
-export type GQLOrder_Avg_Fields = {
-  __typename: 'Order_avg_fields';
-  amount?: Maybe<Scalars['Float']['output']>;
-  itemPrice?: Maybe<Scalars['Float']['output']>;
-};
-
 /** Boolean expression to filter rows from the table "Order". All fields are combined with a logical 'AND'. */
 export type GQLOrder_Bool_Exp = {
   _and?: InputMaybe<Array<GQLOrder_Bool_Exp>>;
@@ -268,34 +135,6 @@ export type GQLOrder_Bool_Exp = {
   network?: InputMaybe<GQLNetwork_Comparison_Exp>;
   seller?: InputMaybe<GQLString_Comparison_Exp>;
   status?: InputMaybe<GQLOrderstatus_Comparison_Exp>;
-};
-
-/** aggregate max on columns */
-export type GQLOrder_Max_Fields = {
-  __typename: 'Order_max_fields';
-  amount?: Maybe<Scalars['numeric']['output']>;
-  asset?: Maybe<Scalars['String']['output']>;
-  db_write_timestamp?: Maybe<Scalars['timestamp']['output']>;
-  id?: Maybe<Scalars['String']['output']>;
-  itemAsset?: Maybe<Scalars['String']['output']>;
-  itemPrice?: Maybe<Scalars['numeric']['output']>;
-  network?: Maybe<Scalars['network']['output']>;
-  seller?: Maybe<Scalars['String']['output']>;
-  status?: Maybe<Scalars['orderstatus']['output']>;
-};
-
-/** aggregate min on columns */
-export type GQLOrder_Min_Fields = {
-  __typename: 'Order_min_fields';
-  amount?: Maybe<Scalars['numeric']['output']>;
-  asset?: Maybe<Scalars['String']['output']>;
-  db_write_timestamp?: Maybe<Scalars['timestamp']['output']>;
-  id?: Maybe<Scalars['String']['output']>;
-  itemAsset?: Maybe<Scalars['String']['output']>;
-  itemPrice?: Maybe<Scalars['numeric']['output']>;
-  network?: Maybe<Scalars['network']['output']>;
-  seller?: Maybe<Scalars['String']['output']>;
-  status?: Maybe<Scalars['orderstatus']['output']>;
 };
 
 /** Ordering options when selecting data from "Order". */
@@ -333,27 +172,6 @@ export enum GQLOrder_Select_Column {
   Status = 'status'
 }
 
-/** aggregate stddev on columns */
-export type GQLOrder_Stddev_Fields = {
-  __typename: 'Order_stddev_fields';
-  amount?: Maybe<Scalars['Float']['output']>;
-  itemPrice?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type GQLOrder_Stddev_Pop_Fields = {
-  __typename: 'Order_stddev_pop_fields';
-  amount?: Maybe<Scalars['Float']['output']>;
-  itemPrice?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type GQLOrder_Stddev_Samp_Fields = {
-  __typename: 'Order_stddev_samp_fields';
-  amount?: Maybe<Scalars['Float']['output']>;
-  itemPrice?: Maybe<Scalars['Float']['output']>;
-};
-
 /** Streaming cursor of the table "Order" */
 export type GQLOrder_Stream_Cursor_Input = {
   /** Stream column input with initial value */
@@ -373,34 +191,6 @@ export type GQLOrder_Stream_Cursor_Value_Input = {
   network?: InputMaybe<Scalars['network']['input']>;
   seller?: InputMaybe<Scalars['String']['input']>;
   status?: InputMaybe<Scalars['orderstatus']['input']>;
-};
-
-/** aggregate sum on columns */
-export type GQLOrder_Sum_Fields = {
-  __typename: 'Order_sum_fields';
-  amount?: Maybe<Scalars['numeric']['output']>;
-  itemPrice?: Maybe<Scalars['numeric']['output']>;
-};
-
-/** aggregate var_pop on columns */
-export type GQLOrder_Var_Pop_Fields = {
-  __typename: 'Order_var_pop_fields';
-  amount?: Maybe<Scalars['Float']['output']>;
-  itemPrice?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate var_samp on columns */
-export type GQLOrder_Var_Samp_Fields = {
-  __typename: 'Order_var_samp_fields';
-  amount?: Maybe<Scalars['Float']['output']>;
-  itemPrice?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate variance on columns */
-export type GQLOrder_Variance_Fields = {
-  __typename: 'Order_variance_fields';
-  amount?: Maybe<Scalars['Float']['output']>;
-  itemPrice?: Maybe<Scalars['Float']['output']>;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -807,6 +597,23 @@ export type GQLNetwork_Comparison_Exp = {
 };
 
 /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
+export type GQLNumeric_Array_Comparison_Exp = {
+  /** is the array contained in the given array value */
+  _contained_in?: InputMaybe<Array<Scalars['numeric']['input']>>;
+  /** does the array contain the given value */
+  _contains?: InputMaybe<Array<Scalars['numeric']['input']>>;
+  _eq?: InputMaybe<Array<Scalars['numeric']['input']>>;
+  _gt?: InputMaybe<Array<Scalars['numeric']['input']>>;
+  _gte?: InputMaybe<Array<Scalars['numeric']['input']>>;
+  _in?: InputMaybe<Array<Array<Scalars['numeric']['input']>>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Array<Scalars['numeric']['input']>>;
+  _lte?: InputMaybe<Array<Scalars['numeric']['input']>>;
+  _neq?: InputMaybe<Array<Scalars['numeric']['input']>>;
+  _nin?: InputMaybe<Array<Array<Scalars['numeric']['input']>>>;
+};
+
+/** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
 export type GQLNumeric_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['numeric']['input']>;
   _gt?: InputMaybe<Scalars['numeric']['input']>;
@@ -920,14 +727,10 @@ export type GQLQuery_Root = {
   __typename: 'query_root';
   /** fetch data from the table: "Asset" */
   Asset: Array<GQLAsset>;
-  /** fetch aggregated fields from the table: "Asset" */
-  Asset_aggregate: GQLAsset_Aggregate;
   /** fetch data from the table: "Asset" using primary key columns */
   Asset_by_pk?: Maybe<GQLAsset>;
   /** fetch data from the table: "Order" */
   Order: Array<GQLOrder>;
-  /** fetch aggregated fields from the table: "Order" */
-  Order_aggregate: GQLOrder_Aggregate;
   /** fetch data from the table: "Order" using primary key columns */
   Order_by_pk?: Maybe<GQLOrder>;
   /** fetch data from the table: "chain_metadata" */
@@ -966,30 +769,12 @@ export type GQLQuery_RootAssetArgs = {
 };
 
 
-export type GQLQuery_RootAsset_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<GQLAsset_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<GQLAsset_Order_By>>;
-  where?: InputMaybe<GQLAsset_Bool_Exp>;
-};
-
-
 export type GQLQuery_RootAsset_By_PkArgs = {
   id: Scalars['String']['input'];
 };
 
 
 export type GQLQuery_RootOrderArgs = {
-  distinct_on?: InputMaybe<Array<GQLOrder_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<GQLOrder_Order_By>>;
-  where?: InputMaybe<GQLOrder_Bool_Exp>;
-};
-
-
-export type GQLQuery_RootOrder_AggregateArgs = {
   distinct_on?: InputMaybe<Array<GQLOrder_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -1225,16 +1010,12 @@ export type GQLSubscription_Root = {
   __typename: 'subscription_root';
   /** fetch data from the table: "Asset" */
   Asset: Array<GQLAsset>;
-  /** fetch aggregated fields from the table: "Asset" */
-  Asset_aggregate: GQLAsset_Aggregate;
   /** fetch data from the table: "Asset" using primary key columns */
   Asset_by_pk?: Maybe<GQLAsset>;
   /** fetch data from the table in a streaming manner: "Asset" */
   Asset_stream: Array<GQLAsset>;
   /** fetch data from the table: "Order" */
   Order: Array<GQLOrder>;
-  /** fetch aggregated fields from the table: "Order" */
-  Order_aggregate: GQLOrder_Aggregate;
   /** fetch data from the table: "Order" using primary key columns */
   Order_by_pk?: Maybe<GQLOrder>;
   /** fetch data from the table in a streaming manner: "Order" */
@@ -1287,15 +1068,6 @@ export type GQLSubscription_RootAssetArgs = {
 };
 
 
-export type GQLSubscription_RootAsset_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<GQLAsset_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<GQLAsset_Order_By>>;
-  where?: InputMaybe<GQLAsset_Bool_Exp>;
-};
-
-
 export type GQLSubscription_RootAsset_By_PkArgs = {
   id: Scalars['String']['input'];
 };
@@ -1309,15 +1081,6 @@ export type GQLSubscription_RootAsset_StreamArgs = {
 
 
 export type GQLSubscription_RootOrderArgs = {
-  distinct_on?: InputMaybe<Array<GQLOrder_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<GQLOrder_Order_By>>;
-  where?: InputMaybe<GQLOrder_Bool_Exp>;
-};
-
-
-export type GQLSubscription_RootOrder_AggregateArgs = {
   distinct_on?: InputMaybe<Array<GQLOrder_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -1497,9 +1260,9 @@ export type GQLAssetsQueryVariables = Exact<{
 }>;
 
 
-export type GQLAssetsQuery = { __typename: 'query_root', Asset: Array<{ __typename: 'Asset', id: string, fee: string }> };
+export type GQLAssetsQuery = { __typename: 'query_root', Asset: Array<{ __typename: 'Asset', id: string, fees: Array<string> }> };
 
-export type GQLAssetFragment = { __typename: 'Asset', id: string, fee: string };
+export type GQLAssetFragment = { __typename: 'Asset', id: string, fees: Array<string> };
 
 export type GQLOrdersQueryVariables = Exact<{
   count?: InputMaybe<Scalars['Int']['input']>;
@@ -1525,7 +1288,7 @@ export type GQLOrderFragment = { __typename: 'Order', id: string, asset: string,
 export const AssetFragmentDoc = gql`
     fragment Asset on Asset {
   id
-  fee
+  fees
 }
     `;
 export const OrderFragmentDoc = gql`

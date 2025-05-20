@@ -12,3 +12,5 @@
 
 export { Marketplace } from './Marketplace';
 export { MarketplaceFactory } from './MarketplaceFactory';
+export { ResolverMock } from './ResolverMock';
+export { ResolverMockFactory } from './ResolverMockFactory';

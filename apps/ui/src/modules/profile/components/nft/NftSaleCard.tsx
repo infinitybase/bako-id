@@ -15,6 +15,7 @@ interface NftSaleCardProps {
   showDelistButton: boolean;
   isOwner: boolean;
   showBuyButton: boolean;
+  withHandle: boolean;
 }
 
 const NftSaleCard = ({
@@ -22,6 +23,7 @@ const NftSaleCard = ({
   showDelistButton,
   isOwner,
   showBuyButton,
+  withHandle,
 }: NftSaleCardProps) => {
   const { successToast, errorToast } = useCustomToast();
   const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
@@ -153,6 +155,7 @@ const NftSaleCard = ({
           value={valueWithoutRigthZeros}
           usdValue={currency}
           isOwner={isOwner}
+          withHandle={withHandle}
         />
       )}
     </NftCard.Root>

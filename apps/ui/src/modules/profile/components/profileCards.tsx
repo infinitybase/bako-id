@@ -20,6 +20,7 @@ type ProfileCardsProps = {
   owner: string;
   isLoading: boolean;
   orders: PaginationResult<Order> | undefined;
+  withHandle: boolean;
 };
 
 export const ProfileCards = ({
@@ -28,6 +29,7 @@ export const ProfileCards = ({
   isLoading: loadingDomain,
   owner,
   orders,
+  withHandle,
 }: ProfileCardsProps) => {
   const { metadataModal, metadata, setUpdatedMetadata, loadingMetadata } =
     useMetadata();
@@ -95,6 +97,7 @@ export const ProfileCards = ({
         orders={orders}
         domain={domainParam!}
         address={domain}
+        withHandle={withHandle}
         hiddenWhenEmpty
       />
 

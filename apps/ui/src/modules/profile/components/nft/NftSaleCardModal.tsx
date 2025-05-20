@@ -2,6 +2,7 @@ import UnknownAsset from '@/assets/unknown-asset.png';
 import { EditIcon, LightIcon, UserIcon, useCustomToast } from '@/components';
 import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
+import { ExchangeDolarIcon } from '@/components/icons/exchangeDolar';
 import { useExecuteOrder, useUpdateOrder } from '@/hooks/marketplace';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
 import { useAssetsBalance } from '@/hooks/useAssetsBalance';
@@ -40,6 +41,7 @@ interface NftSaleCardModalProps {
   onCancelOrder: () => Promise<void>;
   isCanceling?: boolean;
   isOwner: boolean;
+  withHandle: boolean;
 }
 
 export const NftSaleCardModal = ({
@@ -52,6 +54,7 @@ export const NftSaleCardModal = ({
   imageUrl,
   isOwner,
   value,
+  withHandle,
 }: NftSaleCardModalProps) => {
   const [isEditView, setIsEditView] = useState(false);
   const { connect, isConnected } = useConnectUI();
@@ -60,6 +63,11 @@ export const NftSaleCardModal = ({
   const { assets } = useListAssets();
   const { data: assetsBalance } = useAssetsBalance({ assets });
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder();
+
+  const assetFee = useMemo(
+    () => (withHandle ? order.asset?.fees[1] : order.asset?.fees[0]),
+    [order.asset?.fees, withHandle]
+  );
 
   const currentSellAssetBalance = useMemo(
     () =>
@@ -209,6 +217,16 @@ export const NftSaleCardModal = ({
                     icon={<UserIcon />}
                   />
                 </Link>
+              </GridItem>
+            )}
+
+            {assetFee && (
+              <GridItem>
+                <NftMetadataBlock
+                  title="Application Fee"
+                  value={`${bn(assetFee).formatUnits(2)}%`}
+                  icon={<ExchangeDolarIcon />}
+                />
               </GridItem>
             )}
           </Grid>

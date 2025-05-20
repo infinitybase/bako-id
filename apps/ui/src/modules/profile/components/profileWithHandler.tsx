@@ -81,6 +81,7 @@ export default function ProfileWithHandler({
                 isLoading={isLoadingDomain}
                 owner={owner}
                 orders={orders}
+                withHandle
               />
             </Box>
           </Center>
