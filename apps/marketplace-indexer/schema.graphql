@@ -23,6 +23,5 @@ type Order {
 type Asset {
   id: ID!
   fees: [BigInt!]!
-  fee: BigInt
   network: Network!
 }
