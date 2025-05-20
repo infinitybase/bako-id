@@ -20,6 +20,7 @@ type ProfileCardsProps = {
   owner: string;
   isLoading: boolean;
   orders: PaginationResult<Order> | undefined;
+  withHandle: boolean;
 };
 
 export const ProfileCards = ({
@@ -28,6 +29,7 @@ export const ProfileCards = ({
   isLoading: loadingDomain,
   owner,
   orders,
+  withHandle,
 }: ProfileCardsProps) => {
   const { metadataModal, metadata, setUpdatedMetadata, loadingMetadata } =
     useMetadata();
@@ -91,7 +93,12 @@ export const ProfileCards = ({
         <AccountsCard metadata={metadata} addAction={metadataModal.onOpen} />
       </Stack>
 
-      <NftListForSale orders={orders} domain={domainParam!} address={domain} />
+      <NftListForSale
+        orders={orders}
+        domain={domainParam!}
+        address={domain}
+        withHandle={withHandle}
+      />
 
       <NftCollections resolver={domain!} chainId={chainId} />
     </Suspense>

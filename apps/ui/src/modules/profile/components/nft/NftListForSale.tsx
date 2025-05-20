@@ -15,11 +15,13 @@ export const NftListForSale = ({
   orders,
   address,
   hiddenWhenEmpty = false,
+  withHandle,
 }: {
   domain?: string;
   orders: PaginationResult<Order> | undefined;
   address: string;
   hiddenWhenEmpty?: boolean;
+  withHandle: boolean;
 }) => {
   const [isDelistOrder, setIsDelistOrder] = useState(false);
   const { page } = useSearch({
@@ -82,6 +84,7 @@ export const NftListForSale = ({
               showDelistButton={isDelistOrder}
               isOwner={isOwner}
               showBuyButton={!isOwner}
+              withHandle={withHandle}
             />
           </GridItem>
         ))}

@@ -1,3 +1,4 @@
+import { useResolverName } from '@/hooks';
 import NftSaleCard from '@/modules/profile/components/nft/NftSaleCard';
 import type { Order } from '@/types/marketplace';
 import { GridItem, Heading, SimpleGrid, Skeleton } from '@chakra-ui/react';
@@ -21,6 +22,7 @@ export const OrderList = ({
   const { wallet } = useWallet();
   const { ref, inView } = useInView();
   const isEmptyOrders = !orders?.length;
+  const { data } = useResolverName();
 
   const address = useMemo(() => wallet?.address.b256Address, [wallet]);
 
@@ -47,6 +49,7 @@ export const OrderList = ({
           showDelistButton={false}
           isOwner={address === order.seller}
           showBuyButton
+          withHandle={!!data}
         />
       ))}
 

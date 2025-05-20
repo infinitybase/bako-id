@@ -1,4 +1,5 @@
 import { FuelAssetService, type FuelAsset } from '@/services/fuel-assets';
+import { marketplaceService } from '@/services/marketplace';
 import type { Order } from '@/types/marketplace';
 import { assignIn, concat, isEmpty, merge, uniqBy } from 'lodash';
 import { ASSETS_METADATA_STORAGE_KEY } from './constants';
@@ -42,6 +43,10 @@ export const getOrderMetadata = async (
   chainId: number | null | undefined
 ): Promise<Order> => {
   const assetMetadata = await getAssetMetadata(order.asset, chainId);
+  const assetData = await marketplaceService.getAssetById({
+    id: order.asset,
+    chainId: chainId!,
+  });
   const fuelMetadata = await getAssetMetadata(order.itemAsset, chainId);
   const ipfsMetadata: Record<string, string> = fuelMetadata?.ipfs || {};
 
@@ -60,6 +65,7 @@ export const getOrderMetadata = async (
       ? {
           ...assetMetadata,
           id: order.asset,
+          fees: assetData.fees,
         }
       : null,
     nft: {

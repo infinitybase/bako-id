@@ -4,7 +4,6 @@ import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
 import { ExchangeDolarIcon } from '@/components/icons/exchangeDolar';
 import { useExecuteOrder, useUpdateOrder } from '@/hooks/marketplace';
-import { useGetAsset } from '@/hooks/marketplace/useGetAsset';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
 import { useAssetsBalance } from '@/hooks/useAssetsBalance';
 import type { Order } from '@/types/marketplace';
@@ -42,6 +41,7 @@ interface NftSaleCardModalProps {
   onCancelOrder: () => Promise<void>;
   isCanceling?: boolean;
   isOwner: boolean;
+  withHandle: boolean;
 }
 
 export const NftSaleCardModal = ({
@@ -54,6 +54,7 @@ export const NftSaleCardModal = ({
   imageUrl,
   isOwner,
   value,
+  withHandle,
 }: NftSaleCardModalProps) => {
   const [isEditView, setIsEditView] = useState(false);
   const { connect, isConnected } = useConnectUI();
@@ -62,7 +63,11 @@ export const NftSaleCardModal = ({
   const { assets } = useListAssets();
   const { data: assetsBalance } = useAssetsBalance({ assets });
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder();
-  const { data: assetData } = useGetAsset(order.asset?.id as string);
+
+  const assetFee = useMemo(
+    () => (withHandle ? order.asset?.fees[1] : order.asset?.fees[0]),
+    [order.asset?.fees, withHandle]
+  );
 
   const currentSellAssetBalance = useMemo(
     () =>
@@ -204,13 +209,15 @@ export const NftSaleCardModal = ({
               </GridItem>
             )}
 
-            <GridItem>
-              <NftMetadataBlock
-                title="Application FEE"
-                value={`${bn(assetData?.fee).formatUnits(2)}%`}
-                icon={<ExchangeDolarIcon />}
-              />
-            </GridItem>
+            {assetFee && (
+              <GridItem>
+                <NftMetadataBlock
+                  title="Application Fee"
+                  value={`${bn(assetFee).formatUnits(2)}%`}
+                  icon={<ExchangeDolarIcon />}
+                />
+              </GridItem>
+            )}
           </Grid>
 
           {!isEditView && (
