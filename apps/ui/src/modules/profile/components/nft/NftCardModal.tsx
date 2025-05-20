@@ -1,17 +1,17 @@
-import { useCustomToast } from '@/components';
+import { LightIcon, useCustomToast } from '@/components';
 import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
 import { useCreateOrder } from '@/hooks/marketplace';
 import type { Asset } from '@/types/marketplace';
 import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
 import { parseURI } from '@/utils/formatter';
-import { Box, Flex, Heading, Stack, Text } from '@chakra-ui/react';
+import { Box, Grid, GridItem, Heading, Stack, Text } from '@chakra-ui/react';
 import { bn } from 'fuels';
-import { useMemo } from 'react';
-import { NftModal } from './modal';
+import { useCallback, useMemo } from 'react';
 import { NftCardSaleForm, type NftSaleCardForm } from './NftCardSaleForm';
 import { NftListMetadata } from './NftListMetadata';
 import { NftMetadataBlock } from './NftMetadataBlock';
+import { NftModal } from './modal';
 
 interface NftCardModalProps {
   assetId: string;
@@ -23,6 +23,7 @@ interface NftCardModalProps {
   onClose: () => void;
   assets: Asset[];
   isOwner: boolean;
+  collection?: string;
 }
 
 export const NftCardModal = ({
@@ -35,6 +36,7 @@ export const NftCardModal = ({
   onClose,
   assets,
   isOwner,
+  collection,
 }: NftCardModalProps) => {
   const { createOrderAsync, isPending } = useCreateOrder();
   const { successToast, errorToast } = useCustomToast();
@@ -45,21 +47,23 @@ export const NftCardModal = ({
     }));
   }, [metadata]);
 
-  const handleCreateOrder = async (data: NftSaleCardForm) => {
-    try {
-      await createOrderAsync({
-        itemAsset: assetId,
-        itemAmount: bn(1),
-        sellPrice: bn.parseUnits(data.sellPrice.toString()),
-        sellAsset: data.sellAsset.id,
-      });
-      successToast({ title: 'Order created successfully!' });
-      onClose();
-    } catch (error) {
-      console.error(error);
-      errorToast({ title: 'Failed to create order. Please try again.' });
-    }
-  };
+  const handleCreateOrder = useCallback(
+    async (data: NftSaleCardForm) => {
+      try {
+        await createOrderAsync({
+          itemAsset: assetId,
+          itemAmount: bn(1),
+          sellPrice: bn.parseUnits(data.sellPrice.toString()),
+          sellAsset: data.sellAsset.id,
+        });
+        successToast({ title: 'Order created successfully!' });
+        onClose();
+      } catch {
+        errorToast({ title: 'Failed to create order. Please try again.' });
+      }
+    },
+    [assetId, createOrderAsync, errorToast, onClose, successToast]
+  );
 
   const isBakoIdNft = useMemo(
     () => BAKO_CONTRACTS_IDS.includes(contractId!),
@@ -90,7 +94,7 @@ export const NftCardModal = ({
           maxH={{ md: '480px' }}
         >
           <Heading fontSize="xl">{nftName}</Heading>
-          <Stack spacing={6} flex={1} mt={6} maxH="full" overflowY="hidden">
+          <Stack spacing={6} flex={1} mt={6} maxH="full">
             <Box>
               <Heading fontSize="md">Description</Heading>
               <Text
@@ -103,21 +107,37 @@ export const NftCardModal = ({
               </Text>
             </Box>
 
-            <Flex direction="row" wrap="wrap" gap={3}>
-              <NftMetadataBlock
-                icon={<BTCIcon />}
-                value={assetId}
-                title="Asset ID"
-                isCopy
-              />
+            <Grid templateColumns="repeat(2, 1fr)" gap={4}>
+              {assetId && (
+                <GridItem>
+                  <NftMetadataBlock
+                    icon={<BTCIcon />}
+                    value={assetId}
+                    title="Asset ID"
+                    isCopy
+                  />
+                </GridItem>
+              )}
 
-              <NftMetadataBlock
-                icon={<ContractIcon />}
-                value={contractId!}
-                title="Contract Address"
-                isCopy
-              />
-            </Flex>
+              {collection && (
+                <GridItem>
+                  <NftMetadataBlock
+                    value={collection}
+                    title="Creator"
+                    icon={<LightIcon />}
+                  />
+                </GridItem>
+              )}
+
+              <GridItem>
+                <NftMetadataBlock
+                  icon={<ContractIcon />}
+                  value={contractId!}
+                  title="Contract Address"
+                  isCopy
+                />
+              </GridItem>
+            </Grid>
 
             {!isBakoIdNft && isOwner && (
               <NftCardSaleForm
@@ -126,7 +146,6 @@ export const NftCardModal = ({
                 assets={assets}
               />
             )}
-
             <NftListMetadata metadata={metadataArray} />
           </Stack>
         </Stack>

@@ -13,7 +13,7 @@ const primary = defineStyle({
   },
 
   _disabled: {
-    opacity: 0.8,
+    opacity: 0.5,
   },
 
   fontSize: 'sm',

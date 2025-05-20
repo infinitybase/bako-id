@@ -7,6 +7,7 @@ const useQueryResolveDomainRequests = (domain: string) => {
     queryKey: ['resolveDomain', domain],
     queryFn: async () => resolverContract?.addr(domain),
     enabled: !!domain && !!resolverContract,
+    refetchOnWindowFocus: false,
   });
 };
 

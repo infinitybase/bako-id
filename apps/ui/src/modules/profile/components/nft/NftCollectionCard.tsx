@@ -21,6 +21,7 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
     contractId,
     assetId,
     metadata: defaultMetadata,
+    collection,
     symbol,
   } = props.asset;
   const dialog = useDisclosure();
@@ -75,13 +76,21 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
         isOpen={dialog.isOpen}
         onClose={dialog.onClose}
         isOwner={isOwner}
+        collection={collection}
       />
 
       <NftCard.Root onClick={dialog.onOpen} cursor="pointer">
         {edition && <NftCard.EditionBadge edition={`#${edition}`} />}
         <NftCard.Image maxW="full" src={props.asset.image ?? image} />
         <NftCard.Content spacing={2}>
-          <Text fontSize="sm">{nftName}</Text>
+          <Text
+            fontSize="sm"
+            whiteSpace="nowrap"
+            textOverflow="ellipsis"
+            overflow="hidden"
+          >
+            {nftName}
+          </Text>
 
           {isOwner && (
             <Tooltip

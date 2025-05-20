@@ -1,3 +1,4 @@
+import BakoIdService from '@/services/bako-id';
 import { marketplaceService } from '@/services/marketplace';
 import { MarketplaceQueryKeys } from '@/utils/constants';
 import {
@@ -5,7 +6,9 @@ import {
   saveMetadataToLocalStorage,
 } from '@/utils/getOrderMetadata';
 import { getPagination } from '@/utils/pagination';
+import { Networks } from '@/utils/resolverNetwork';
 import { useQuery } from '@tanstack/react-query';
+import { uniqBy } from 'lodash';
 import { useChainId } from '../useChainId';
 
 type useListOrdersProps = { account?: string; page?: number; limit?: number };
@@ -22,7 +25,17 @@ export const useListOrdersByAccount = ({
       const { orders, total } = await marketplaceService.getOrdersByAccount({
         account: account!,
         page,
+        chainId: chainId ?? undefined,
       });
+
+      const sellers = uniqBy(orders, (order) => order.seller).map(
+        (order) => order.seller
+      );
+
+      const domains = await BakoIdService.names(
+        sellers,
+        chainId ?? Networks.MAINNET
+      );
 
       const ordersWithMetadata = await Promise.all(
         orders.map(async (order) => getOrderMetadata(order, chainId))
@@ -30,8 +43,15 @@ export const useListOrdersByAccount = ({
 
       saveMetadataToLocalStorage(ordersWithMetadata);
 
+      const ordersWithDomain = ordersWithMetadata.map((order) => ({
+        ...order,
+        sellerDomain: domains.names.find(
+          (domain) => domain.resolver === order.seller
+        )?.name,
+      }));
+
       return getPagination({
-        data: ordersWithMetadata,
+        data: ordersWithDomain,
         page,
         limit,
         total,

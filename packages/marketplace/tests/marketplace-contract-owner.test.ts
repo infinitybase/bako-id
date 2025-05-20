@@ -1,6 +1,6 @@
 import { TestAssetId } from 'fuels/test-utils';
 
-import { type Account, type WalletUnlocked, bn } from 'fuels';
+import { bn, type Account, type WalletUnlocked } from 'fuels';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Marketplace } from '../src/artifacts/contracts';
 import {
@@ -36,17 +36,17 @@ describe('Marketplace (Owner)', () => {
   it('should not allow a non-owner to add a valid asset', async () => {
     const asset = TestAssetId.A.value;
 
-    await expect(registerAsset(marketplace, asset, bn(0))).rejects.toThrow(
-      /NotOwner/,
-    );
+    await expect(
+      registerAsset(marketplace, asset, bn(0), bn(0))
+    ).rejects.toThrow(/NotOwner/);
   });
 
   it('should not allow a non-owner to adjust the fee of an asset', async () => {
     const asset = TestAssetId.A.value;
 
-    await expect(adjustFee(marketplace, asset, bn(0))).rejects.toThrow(
-      /NotOwner/,
-    );
+    await expect(
+      adjustFee(marketplace, asset, { FEE_0: bn(0) })
+    ).rejects.toThrow(/NotOwner/);
   });
 
   it('should transfer the ownership of the contract', async () => {
@@ -55,24 +55,24 @@ describe('Marketplace (Owner)', () => {
     await callAndWait(
       marketplace.functions.transfer_ownership({
         Address: { bits: nonOwner.address.toB256() },
-      }),
+      })
     );
 
     const asset = TestAssetId.A.value;
-    await expect(registerAsset(marketplace, asset, bn(0))).rejects.toThrow(
-      /NotOwner/,
-    );
+    await expect(
+      registerAsset(marketplace, asset, bn(0), bn(0))
+    ).rejects.toThrow(/NotOwner/);
   });
 
   it('should not allow a non-owner to pause the contract', async () => {
     await expect(callAndWait(marketplace.functions.pause())).rejects.toThrow(
-      /NotOwner/,
+      /NotOwner/
     );
   });
 
   it('should not allow a non-owner to unpause the contract', async () => {
     await expect(callAndWait(marketplace.functions.unpause())).rejects.toThrow(
-      /NotOwner/,
+      /NotOwner/
     );
   });
 });

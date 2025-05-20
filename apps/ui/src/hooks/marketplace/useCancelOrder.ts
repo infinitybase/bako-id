@@ -1,7 +1,7 @@
-import { useProfile } from '@/modules/profile/hooks/useProfile';
 import type { Order as ListOrder } from '@/types/marketplace';
 import { MarketplaceQueryKeys } from '@/utils/constants';
 import type { PaginationResult } from '@/utils/pagination';
+import { useAccount } from '@fuels/react';
 import { useQueryClient, type InfiniteData } from '@tanstack/react-query';
 import { useSearch } from '@tanstack/react-router';
 import { useChainId } from '../useChainId';
@@ -11,11 +11,11 @@ import { useMarketplace } from './useMarketplace';
 export const useCancelOrder = () => {
   const marketplaceContract = useMarketplace();
   const queryClient = useQueryClient();
-  const { domain } = useProfile();
+  const { account } = useAccount();
   const { chainId } = useChainId();
   const { page: pageUrl, search } = useSearch({ strict: false });
 
-  const address = domain?.Address?.bits || domain?.ContractId?.bits;
+  const address = account?.toLowerCase();
   const page = Number(pageUrl || 1);
 
   const {

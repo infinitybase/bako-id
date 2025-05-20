@@ -7,7 +7,19 @@ interface RootProps extends CardProps {
 
 export const Root = ({ children, ...props }: RootProps) => {
   return (
-    <Card p={0} borderRadius="4px" backdropFilter="none" {...props}>
+    <Card
+      p={0}
+      borderRadius="8px"
+      backdropFilter="none"
+      maxW={{
+        base: '215px',
+        sm: 'full',
+      }}
+      mx={{
+        base: 'auto',
+      }}
+      {...props}
+    >
       {children}
     </Card>
   );

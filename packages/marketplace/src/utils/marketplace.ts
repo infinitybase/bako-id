@@ -1,10 +1,15 @@
 import { TestAssetId, launchTestNode } from 'fuels/test-utils';
 
 import type { BN, FunctionInvocationScope } from 'fuels';
-import { type Marketplace, MarketplaceFactory } from '../artifacts/contracts';
+import {
+  MarketplaceFactory,
+  ResolverMockFactory,
+  type Marketplace,
+} from '../artifacts/contracts';
+import type { AdjustFeeTypeInput } from '../artifacts/contracts/Marketplace';
 
 export const callAndWait = async <T extends unknown[], R>(
-  method: FunctionInvocationScope<T, R>,
+  method: FunctionInvocationScope<T, R>
 ) => {
   const result = await method.call();
   return result.waitForResult();
@@ -12,37 +17,56 @@ export const callAndWait = async <T extends unknown[], R>(
 
 export const setup = async () => {
   const [feeAssetId] = TestAssetId.random(1);
-  const node = await launchTestNode({
-    contractsConfigs: [{ factory: MarketplaceFactory }],
-    walletsConfig: {
-      assets: [TestAssetId.A, TestAssetId.B, feeAssetId],
-    },
-  });
+  const walletsConfig = {
+    assets: [TestAssetId.A, TestAssetId.B, feeAssetId],
+  };
 
-  const [contract] = node.contracts;
+  const node = await launchTestNode({
+    walletsConfig,
+  });
   const [owner] = node.wallets;
 
-  const marketplace = contract as Marketplace;
+  const resolverContract = await ResolverMockFactory.deploy(owner);
+  const resolverContractId = resolverContract.contractId;
+  const resolver = (await resolverContract.waitForResult()).contract;
+  const marketplace = (
+    await (
+      await MarketplaceFactory.deploy(owner, {
+        configurableConstants: {
+          RESOLVER_CONTRACT_ID: resolverContractId,
+        },
+      })
+    ).waitForResult()
+  ).contract;
+
   const provider = node.provider;
 
   await callAndWait(
     marketplace.functions.initialize({
       Address: { bits: owner.address.toB256() },
-    }),
+    })
   );
 
-  return { node, marketplace, provider, feeAssetId: feeAssetId.value, owner };
+  return {
+    node,
+    marketplace,
+    provider,
+    feeAssetId: feeAssetId.value,
+    owner,
+    resolver,
+  };
 };
 
 export const registerAsset = async (
   marketplace: Marketplace,
   asset: string,
   fee: BN,
+  withBakoIdFee: BN
 ) => {
   const {
     logs: [assetAddedEvent],
   } = await callAndWait(
-    marketplace.functions.add_valid_asset({ bits: asset }, fee),
+    marketplace.functions.add_valid_asset({ bits: asset }, [fee, withBakoIdFee])
   );
 
   return assetAddedEvent;
@@ -51,7 +75,7 @@ export const registerAsset = async (
 export const adjustFee = async (
   marketplace: Marketplace,
   asset: string,
-  fee: BN,
+  fee: AdjustFeeTypeInput
 ) => {
   const {
     logs: [assetFeeAdjustedEvent],
@@ -63,7 +87,7 @@ export const adjustFee = async (
 export const createOrder = async (
   marketplace: Marketplace,
   itemAsset: string,
-  price: { asset: string; amount: number },
+  price: { asset: string; amount: number }
 ) => {
   const {
     logs: [orderCreatedEvent],
@@ -75,7 +99,7 @@ export const createOrder = async (
           amount: 1,
           assetId: itemAsset,
         },
-      }),
+      })
   );
 
   return orderCreatedEvent;

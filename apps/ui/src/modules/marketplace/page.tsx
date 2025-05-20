@@ -3,12 +3,12 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { Container, Stack } from '@chakra-ui/react';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useMemo } from 'react';
-import { OrderList, SearchBar } from './components';
+import { MarketplaceBanner, OrderList, SearchBar } from './components';
 
 export const MarketplacePage = () => {
   const navigate = useNavigate();
   const { search } = useSearch({ strict: false });
-  const debouncedSearch = useDebounce(search ?? '', 500);
+  const debouncedSearch = useDebounce<string>(search ?? '', 500);
   const { orders, isLoading, fetchNextPage, hasNextPage } = useListOrders({
     limit: 20,
     search: debouncedSearch,
@@ -30,11 +30,13 @@ export const MarketplacePage = () => {
 
   return (
     <Container
-      maxWidth="container.lg"
+      maxWidth="container.xl"
       py={8}
-      overflowY={{
-        base: 'scroll',
-        sm: 'auto',
+      overflowY="scroll"
+      sx={{
+        '&::-webkit-scrollbar': {
+          width: '0px',
+        },
       }}
       maxH="100vh"
       pb={{
@@ -43,6 +45,8 @@ export const MarketplacePage = () => {
       }}
     >
       <Stack gap={10}>
+        <MarketplaceBanner />
+
         <SearchBar onSearch={handleChangeSearch} />
 
         <OrderList

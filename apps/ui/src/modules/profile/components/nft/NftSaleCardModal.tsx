@@ -1,11 +1,14 @@
-import { EditIcon, useCustomToast } from '@/components';
+import UnknownAsset from '@/assets/unknown-asset.png';
+import { EditIcon, LightIcon, UserIcon, useCustomToast } from '@/components';
 import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
+import { ExchangeDolarIcon } from '@/components/icons/exchangeDolar';
 import { useExecuteOrder, useUpdateOrder } from '@/hooks/marketplace';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
 import { useAssetsBalance } from '@/hooks/useAssetsBalance';
-import type { Nft } from '@/types/marketplace';
+import type { Order } from '@/types/marketplace';
 import { blocklistMetadataKeys } from '@/utils/constants';
+import { formatAddress } from '@/utils/formatter';
 import {
   Button,
   Flex,
@@ -19,47 +22,39 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import { useConnectUI } from '@fuels/react';
+import { Link } from '@tanstack/react-router';
 import { bn } from 'fuels';
 import { entries } from 'lodash';
-import { useMemo, useState } from 'react';
-import { NftModal } from './modal';
+import { useCallback, useMemo, useState } from 'react';
 import { NftCardSaleForm, type NftSaleCardForm } from './NftCardSaleForm';
 import { NftListMetadata } from './NftListMetadata';
 import { NftMetadataBlock } from './NftMetadataBlock';
+import { NftModal } from './modal';
 
 interface NftSaleCardModalProps {
-  orderId: string;
+  order: Order;
+  value: string;
+  imageUrl: string;
   isOpen: boolean;
   onClose: () => void;
-  nft: Nft;
-  value: string;
   usdValue: string;
-  asset: {
-    id: string;
-    iconUrl: string;
-    name: string;
-    decimals?: number;
-  };
-  name: string;
-  imageUrl: string;
   onCancelOrder: () => Promise<void>;
   isCanceling?: boolean;
   isOwner: boolean;
+  withHandle: boolean;
 }
 
 export const NftSaleCardModal = ({
+  order,
   isOpen,
   onClose,
-  nft,
-  name,
-  imageUrl,
   onCancelOrder,
   isCanceling = false,
-  asset,
-  value,
-  orderId,
   usdValue,
+  imageUrl,
   isOwner,
+  value,
+  withHandle,
 }: NftSaleCardModalProps) => {
   const [isEditView, setIsEditView] = useState(false);
   const { connect, isConnected } = useConnectUI();
@@ -69,12 +64,17 @@ export const NftSaleCardModal = ({
   const { data: assetsBalance } = useAssetsBalance({ assets });
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder();
 
+  const assetFee = useMemo(
+    () => (withHandle ? order.asset?.fees[1] : order.asset?.fees[0]),
+    [order.asset?.fees, withHandle]
+  );
+
   const currentSellAssetBalance = useMemo(
     () =>
       assetsBalance
-        ?.find((item) => item.id === asset.id)
-        ?.balance.formatUnits(asset.decimals),
-    [assetsBalance, asset.id, asset.decimals]
+        ?.find((item) => item.id === order.asset?.id)
+        ?.balance.formatUnits(order.asset?.decimals),
+    [assetsBalance, order.asset?.id, order.asset?.decimals]
   );
 
   const notEnoughBalance = useMemo(() => {
@@ -84,45 +84,64 @@ export const NftSaleCardModal = ({
     return parsedValue > parsedBalance;
   }, [currentSellAssetBalance, value]);
 
-  const handleExecuteOrder = async () => {
+  const handleExecuteOrder = useCallback(async () => {
     if (!isConnected) {
       connect();
       onClose();
       return;
     }
     try {
-      await executeOrderAsync(orderId);
+      await executeOrderAsync(order.id);
       successToast({ title: 'Order executed successfully!' });
       onClose();
     } catch {
       errorToast({ title: 'Failed to execute order' });
     }
-  };
+  }, [
+    connect,
+    executeOrderAsync,
+    order.id,
+    onClose,
+    successToast,
+    errorToast,
+    isConnected,
+  ]);
 
   const metadataArray = useMemo(
     () =>
-      entries(nft.metadata ?? {})
+      entries(order.nft.metadata ?? {})
         .map(([key, value]) => ({
           label: key,
           value,
         }))
         .filter((item) => !blocklistMetadataKeys.includes(item.label)),
-    [nft]
+    [order.nft.metadata]
   );
 
-  const handleUpdateOrder = async (data: NftSaleCardForm) => {
-    try {
-      await updateOrderAsync({
-        sellPrice: bn.parseUnits(data.sellPrice.toString()),
-        sellAsset: data.sellAsset.id,
-        orderId,
-      });
-      successToast({ title: 'Order updated successfully!' });
-      onClose();
-    } catch {
-      errorToast({ title: 'Failed to update order' });
-    }
-  };
+  const handleUpdateOrder = useCallback(
+    async (data: NftSaleCardForm) => {
+      try {
+        await updateOrderAsync({
+          sellPrice: bn.parseUnits(data.sellPrice.toString()),
+          sellAsset: data.sellAsset.id,
+          orderId: order.id,
+        });
+        successToast({ title: 'Order updated successfully!' });
+        onClose();
+      } catch {
+        errorToast({ title: 'Failed to update order' });
+      }
+    },
+    [updateOrderAsync, order.id, successToast, errorToast, onClose]
+  );
+
+  const nftName = order.nft?.name ?? 'Unknown NFT';
+
+  const assetSymbolUrl = order.asset?.icon || UnknownAsset;
+
+  const handle = order.sellerDomain
+    ? `@${order.sellerDomain}`
+    : formatAddress(order.seller);
 
   return (
     <NftModal.Root isOpen={isOpen} onClose={onClose}>
@@ -137,7 +156,7 @@ export const NftSaleCardModal = ({
           md: 'hidden',
         }}
       >
-        <NftModal.Image w="full" src={imageUrl} alt={name} />
+        <NftModal.Image w="full" src={imageUrl} alt={nftName} />
         <Stack
           gap={8}
           w="full"
@@ -148,31 +167,68 @@ export const NftSaleCardModal = ({
           style={{ scrollbarWidth: 'none' }}
           maxH={{ md: '480px' }}
         >
-          <Heading>{name}</Heading>
+          <Heading>{nftName}</Heading>
           <Stack spacing={2}>
             <Text>Description</Text>
             <Text fontSize="sm" color="grey.subtitle" wordBreak="break-all">
-              {nft.description ?? 'Description not provided.'}
+              {order.nft?.description ?? 'Description not provided.'}
             </Text>
           </Stack>
 
           <Grid templateColumns="repeat(2, 1fr)" gap={4}>
+            {order.nft.id && (
+              <GridItem>
+                <NftMetadataBlock
+                  title="Asset ID"
+                  value={order.nft.id}
+                  icon={<BTCIcon />}
+                  isCopy
+                />
+              </GridItem>
+            )}
+
+            {order.nft.fuelMetadata?.collection && (
+              <GridItem>
+                <NftMetadataBlock
+                  title="Creator"
+                  value={order.nft.fuelMetadata?.collection}
+                  icon={<LightIcon />}
+                />
+              </GridItem>
+            )}
+
             <GridItem>
               <NftMetadataBlock
-                title="Token ID"
-                value={nft.edition?.replace('#', '') ?? ''}
-                icon={<BTCIcon />}
-                isCopy
-              />
-            </GridItem>
-            <GridItem>
-              <NftMetadataBlock
-                title="Contract ID"
-                value={nft.contractId ?? 'N/A'}
+                title="Contract address"
+                value={order.nft?.contractId ?? 'N/A'}
                 icon={<ContractIcon />}
                 isCopy
               />
             </GridItem>
+
+            {handle && (
+              <GridItem>
+                <Link
+                  to={`/profile/${order.sellerDomain ? order.sellerDomain : order.seller}`}
+                >
+                  <NftMetadataBlock
+                    title="Seller"
+                    value={handle}
+                    icon={<UserIcon />}
+                  />
+                </Link>
+              </GridItem>
+            )}
+
+            {assetFee && (
+              <GridItem>
+                <NftMetadataBlock
+                  title="Application Fee"
+                  value={`${bn(assetFee).formatUnits(2)}%`}
+                  icon={<ExchangeDolarIcon />}
+                />
+              </GridItem>
+            )}
           </Grid>
 
           {!isEditView && (
@@ -183,7 +239,7 @@ export const NftSaleCardModal = ({
             >
               <Flex alignItems="center" gap={2}>
                 <Image
-                  src={asset.iconUrl}
+                  src={assetSymbolUrl}
                   alt="Asset icon"
                   height={6}
                   width={6}
@@ -214,9 +270,10 @@ export const NftSaleCardModal = ({
               assets={assets}
               initialValues={{
                 sellAsset: {
-                  id: asset.id,
-                  icon: asset.iconUrl,
-                  name: asset.name,
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+                  id: order.asset?.id!,
+                  icon: assetSymbolUrl,
+                  name: order.asset?.name ?? 'Unknown',
                 },
                 sellPrice: Number(value),
               }}

@@ -1,11 +1,9 @@
 import { GraphQLClient } from 'graphql-request';
 import {
+  getSdk,
   type GQLAssetsQueryVariables,
   type GQLOrdersQueryVariables,
-  getSdk,
 } from '../graphql/generated/operations';
-
-const EMPTY_COUNT = 0;
 
 /**
  * @description Marketplace client
@@ -52,19 +50,9 @@ export class MarketplaceClient {
    * @returns {Promise<number>} - The orders count
    */
   async getOrdersCount(variables?: GQLOrdersQueryVariables): Promise<number> {
-    const { data } = await this.sdk.ordersAggregate(variables);
+    const { data } = await this.sdk.countOrders(variables);
 
-    return data.Order_aggregate.aggregate?.count ?? EMPTY_COUNT;
-  }
-
-  /**
-   * @description Get assets count
-   * @param {GQLAssetsQueryVariables} variables - The variables
-   * @returns {Promise<number>} - The assets count
-   */
-  async getAssetsCount(variables?: GQLAssetsQueryVariables): Promise<number> {
-    const { data } = await this.sdk.assetsAggregate(variables);
-
-    return data.Asset_aggregate.aggregate?.count ?? EMPTY_COUNT;
+    const total = data.Order.length;
+    return total;
   }
 }

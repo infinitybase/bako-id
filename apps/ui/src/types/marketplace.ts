@@ -3,19 +3,20 @@ import type { FuelAsset, Metadata } from '@/services/fuel-assets';
 export interface Asset {
   id: string;
   metadata: FuelAsset | null;
-  fee: string;
+  fees: [string, string];
   __typename: 'Asset';
 }
 
 export interface Order {
   __typename: 'Order';
   id: string;
-  asset: (FuelAsset & { id: string }) | null;
+  asset: (FuelAsset & { id: string; fees: [string, string] }) | null;
   amount: string;
   seller: string;
   itemPrice: string;
   itemAsset: string;
   status: string;
+  sellerDomain?: string;
   nft: {
     id: string;
     metadata: Record<string, string> & Metadata;

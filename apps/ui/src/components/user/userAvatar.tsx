@@ -133,6 +133,7 @@ const EditProfilePicAvatar = ({
               onError={() => setNoAvatarFromUrl(true)}
               onLoad={() => noAvatarFromUrl && setNoAvatarFromUrl(false)}
               rounded="lg"
+              key={avatar}
             />
             <AvatarGradientBox />
             <EditProfilePicButton />
@@ -181,6 +182,7 @@ const ProfileAvatar = ({
           onError={() => setNoAvatarFromUrl(true)}
           onLoad={() => setNoAvatarFromUrl(false)}
           rounded="lg"
+          key={avatar}
         />
       ) : (
         <Icon w="full" h="full" as={AvatarIcon} />
@@ -196,6 +198,7 @@ export const UserAvatar = ({
   isEditProfilePicModalOpen,
 }: UserAvatarProps) => {
   const [noAvatarFromUrl, setNoAvatarFromUrl] = useState(false);
+  const noCacheAvatarUrl = `${avatar}?t=${Date.now()}`;
 
   useEffect(() => {
     if (avatar) {
@@ -207,13 +210,13 @@ export const UserAvatar = ({
     <EditProfilePicAvatar
       noAvatarFromUrl={noAvatarFromUrl}
       setNoAvatarFromUrl={setNoAvatarFromUrl}
-      avatar={avatar}
+      avatar={noCacheAvatarUrl}
       isAvatarLoading={isAvatarLoading}
       onClick={onClick}
     />
   ) : (
     <ProfileAvatar
-      avatar={avatar}
+      avatar={noCacheAvatarUrl}
       isAvatarLoading={isAvatarLoading}
       noAvatarFromUrl={noAvatarFromUrl}
       setNoAvatarFromUrl={setNoAvatarFromUrl}

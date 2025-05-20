@@ -68,7 +68,7 @@ export const NftSearchAssetModal = ({
       isOpen={isOpen}
       onClose={onClose}
       modalTitle="Assets"
-      modalSubtitle="Send single or batch payments with multi assets. You can send multiple types of assets to different addresses."
+      modalSubtitle="Select the asset of your choice"
     >
       <Stack gap={6} w="full">
         <FormControl position="relative">

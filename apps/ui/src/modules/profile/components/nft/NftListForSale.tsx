@@ -1,35 +1,31 @@
 import { Card } from '@/components';
 import { CloseIcon } from '@/components/icons/closeIcon';
 import { Pagination } from '@/components/pagination';
-import { useListOrdersByAccount } from '@/hooks/marketplace';
-import {
-  Button,
-  Center,
-  Grid,
-  GridItem,
-  Heading,
-  Skeleton,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
+import type { Order } from '@/types/marketplace';
+import { formatAddress } from '@/utils/formatter';
+import type { PaginationResult } from '@/utils/pagination';
+import { Button, Grid, GridItem, Heading, Stack, Text } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
 import { useSearch } from '@tanstack/react-router';
-import { bn } from 'fuels';
-import { Fragment, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import NftSaleCard from './NftSaleCard';
 
 export const NftListForSale = ({
   domain,
+  orders,
   address,
-}: { domain: string; address: string }) => {
+  hiddenWhenEmpty = false,
+  withHandle,
+}: {
+  domain?: string;
+  orders: PaginationResult<Order> | undefined;
+  address: string;
+  hiddenWhenEmpty?: boolean;
+  withHandle: boolean;
+}) => {
   const [isDelistOrder, setIsDelistOrder] = useState(false);
   const { page } = useSearch({
     strict: false,
-  });
-
-  const { orders, isLoading } = useListOrdersByAccount({
-    account: address,
-    page: page || undefined,
   });
   const { wallet } = useWallet();
 
@@ -40,23 +36,22 @@ export const NftListForSale = ({
   const isEmptyOrders = !orders?.data?.length;
 
   const isOwner = useMemo(
-    () => wallet?.address.b256Address === address,
+    () => wallet?.address.b256Address.toLowerCase() === address.toLowerCase(),
     [wallet?.address.b256Address, address]
   );
 
   return (
-    <Card hidden={isEmptyOrders && !isLoading && !isOwner} gap={6}>
+    <Card hidden={isEmptyOrders && (hiddenWhenEmpty || !isOwner)} gap={6}>
       <Stack justifyContent="space-between" direction="row" alignItems="center">
         <Heading fontSize="lg">
           <Heading fontSize="lg" as="span" color="yellow.500">
-            @{domain}
+            {domain ? `@${domain}` : formatAddress(address)}
           </Heading>{' '}
-          for sale
+          {!isEmptyOrders ? 'for sale' : 'has nothing to sale'}
         </Heading>
 
-        {isOwner && (
+        {isOwner && !isEmptyOrders && (
           <Button
-            disabled={isEmptyOrders}
             size="sm"
             variant="ghosted"
             w="auto"
@@ -65,6 +60,11 @@ export const NftListForSale = ({
           >
             {isDelistOrder ? 'Done' : 'Delist'}
           </Button>
+        )}
+        {isEmptyOrders && (
+          <Text color="grey.200" fontSize="sm" textAlign={'center'}>
+            Choose NFTs below to list
+          </Text>
         )}
       </Stack>
 
@@ -77,56 +77,33 @@ export const NftListForSale = ({
         }}
         gap={6}
       >
-        {isLoading && (
-          <Fragment>
-            {Array.from({ length: 6 }, () => (
-              <GridItem key={crypto.randomUUID()}>
-                <Skeleton height="200px" width="full" rounded="lg" />
-              </GridItem>
-            ))}
-          </Fragment>
-        )}
-
         {orders?.data?.map((order) => (
           <GridItem key={order.id}>
             <NftSaleCard
-              orderId={order.id}
-              asset={order.asset}
-              value={bn(order.itemPrice).formatUnits(order.asset?.decimals)}
-              nft={order.nft}
+              order={order}
               showDelistButton={isDelistOrder}
               isOwner={isOwner}
               showBuyButton={!isOwner}
+              withHandle={withHandle}
             />
           </GridItem>
         ))}
-
-        {!isLoading && isEmptyOrders && (
-          <GridItem as={Center} py={10} colSpan={6} gridArea="6fr">
-            <Text
-              color="grey.200"
-              fontSize="xs"
-              maxW="172px"
-              textAlign={'center'}
-            >
-              It appears this user does not own any NFTs for sale yet.
-            </Text>
-          </GridItem>
-        )}
       </Grid>
-      <GridItem
-        colSpan={6}
-        display="flex"
-        justifyContent="end"
-        alignItems="center"
-      >
-        <Pagination
-          page={Number(page ?? 1)}
-          totalPages={orders?.totalPages}
-          hasNextPage={orders?.hasNextPage}
-          hasPreviousPage={orders?.hasPreviousPage}
-        />
-      </GridItem>
+      {!isEmptyOrders && (
+        <GridItem
+          colSpan={6}
+          display="flex"
+          justifyContent="end"
+          alignItems="center"
+        >
+          <Pagination
+            page={Number(page ?? 1)}
+            totalPages={orders?.totalPages}
+            hasNextPage={orders?.hasNextPage}
+            hasPreviousPage={orders?.hasPreviousPage}
+          />
+        </GridItem>
+      )}
     </Card>
   );
 };

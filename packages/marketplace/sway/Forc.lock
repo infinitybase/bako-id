@@ -11,6 +11,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "resolver-mock"
+source = "member"
+dependencies = [
+    "std",
+    "sway_libs",
+]
+
+[[package]]
 name = "standards"
 source = "git+https://github.com/FuelLabs/sway-standards?tag=v0.6.0#65e09f95ea8b9476b171a66c8a47108f352fa32c"
 dependencies = ["std"]

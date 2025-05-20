@@ -1,7 +1,7 @@
-import { useProfile } from '@/modules/profile/hooks/useProfile';
 import type { Order } from '@/types/marketplace';
 import { MarketplaceQueryKeys } from '@/utils/constants';
 import type { PaginationResult } from '@/utils/pagination';
+import { useAccount } from '@fuels/react';
 import { useQueryClient, type InfiniteData } from '@tanstack/react-query';
 import { useSearch } from '@tanstack/react-router';
 import { useChainId } from '../useChainId';
@@ -10,13 +10,13 @@ import { useMarketplace } from './useMarketplace';
 
 export const useExecuteOrder = () => {
   const marketplaceContract = useMarketplace();
-  const { domain } = useProfile();
+  const { account } = useAccount();
   const queryClient = useQueryClient();
   const { chainId } = useChainId();
   const { page: pageUrl, search } = useSearch({ strict: false });
-  const page = Number(pageUrl || 1);
 
-  const address = domain?.Address?.bits || domain?.ContractId?.bits;
+  const page = Number(pageUrl || 1);
+  const address = account?.toLowerCase();
 
   const {
     mutate: executeOrder,

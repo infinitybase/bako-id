@@ -4,8 +4,13 @@ export const blocklistMetadataKeys = ['name', 'image', 'description', 'uri'];
 
 export enum MarketplaceQueryKeys {
   ASSETS = 'assets',
+  ASSET = 'asset',
   ORDERS = 'orders',
   ALL_ORDERS = 'allOrders',
+}
+
+export enum BakoIDQueryKeys {
+  NAME = 'name',
 }
 
 export const ETH_ID =

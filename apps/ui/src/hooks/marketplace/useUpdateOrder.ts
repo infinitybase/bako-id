@@ -1,4 +1,3 @@
-import { useProfile } from '@/modules/profile/hooks/useProfile';
 import type { Order } from '@/types/marketplace';
 import { MarketplaceQueryKeys } from '@/utils/constants';
 import type { PaginationResult } from '@/utils/pagination';
@@ -6,6 +5,7 @@ import type { UpdateOrder } from '@bako-id/marketplace';
 import type { InfiniteData } from '@tanstack/react-query';
 import { useSearch } from '@tanstack/react-router';
 
+import { useAccount } from '@fuels/react';
 import { useChainId } from '../useChainId';
 import { useMutationWithPolling } from '../useMutationWithPolling';
 import { useMarketplace } from './useMarketplace';
@@ -15,10 +15,10 @@ type TUpdateOrder = UpdateOrder & { orderId: string };
 export const useUpdateOrder = () => {
   const marketplaceContract = useMarketplace();
   const { chainId } = useChainId();
-  const { domain } = useProfile();
+  const { account } = useAccount();
   const { page: urlPage, search } = useSearch({ strict: false });
 
-  const address = domain?.Address?.bits || domain?.ContractId?.bits;
+  const address = account?.toLowerCase();
   const page = Number(urlPage || 1);
 
   const {
@@ -40,6 +40,7 @@ export const useUpdateOrder = () => {
         ],
         isDataReady: (data, payload) => {
           if (!data) {
+            console.log('no data');
             return true;
           }
 

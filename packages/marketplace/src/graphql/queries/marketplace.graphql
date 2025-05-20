@@ -6,7 +6,7 @@ query assets($count: Int, $offset: Int, $where: Asset_bool_exp) {
 
 fragment Asset on Asset {
   id
-  fee
+  fees
 }
 
 query orders(
@@ -20,19 +20,9 @@ query orders(
   }
 }
 
-query ordersAggregate($where: Order_bool_exp) {
-  Order_aggregate(where: $where) {
-    aggregate {
-      count
-    }
-  }
-}
-
-query assetsAggregate($where: Asset_bool_exp) {
-  Asset_aggregate(where: $where) {
-    aggregate {
-      count
-    }
+query countOrders($count: Int, $offset: Int, $where: Order_bool_exp) {
+  Order(limit: $count, offset: $offset, where: $where) {
+    id
   }
 }
 

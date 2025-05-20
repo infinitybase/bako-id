@@ -1,8 +1,8 @@
+import { useResolverName } from '@/hooks';
 import NftSaleCard from '@/modules/profile/components/nft/NftSaleCard';
 import type { Order } from '@/types/marketplace';
 import { GridItem, Heading, SimpleGrid, Skeleton } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
-import { bn } from 'fuels';
 import { Fragment, useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 
@@ -22,6 +22,7 @@ export const OrderList = ({
   const { wallet } = useWallet();
   const { ref, inView } = useInView();
   const isEmptyOrders = !orders?.length;
+  const { data } = useResolverName();
 
   const address = useMemo(() => wallet?.address.b256Address, [wallet]);
 
@@ -36,31 +37,27 @@ export const OrderList = ({
       gap={3}
       pb={10}
       columns={{
-        lg: 6,
         md: 5,
         sm: 3,
-        base: 2,
+        base: 1,
       }}
     >
       {orders.map((order) => (
         <NftSaleCard
           key={order.id}
-          asset={order.asset}
-          orderId={order.id}
-          nft={order.nft}
+          order={order}
           showDelistButton={false}
-          value={bn(order.itemPrice).formatUnits(order.asset?.decimals)}
           isOwner={address === order.seller}
           showBuyButton
+          withHandle={!!data}
         />
       ))}
 
       <GridItem
         colSpan={{
-          lg: 6,
           md: 5,
           sm: 3,
-          base: 2,
+          base: 1,
         }}
         mb={10}
         ref={ref}
@@ -69,10 +66,9 @@ export const OrderList = ({
       {isEmptyOrders && !isLoadingOrders && (
         <GridItem
           colSpan={{
-            lg: 6,
             md: 5,
             sm: 3,
-            base: 2,
+            base: 1,
           }}
         >
           <Heading size="md" textAlign="center">
@@ -83,7 +79,7 @@ export const OrderList = ({
 
       {isLoadingOrders && (
         <Fragment>
-          {Array.from({ length: 12 }, () => (
+          {Array.from({ length: 5 }, () => (
             <Skeleton key={Math.random()} height="250px" borderRadius="lg" />
           ))}
         </Fragment>
