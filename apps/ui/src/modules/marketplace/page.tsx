@@ -47,7 +47,7 @@ export const MarketplacePage = () => {
       <Stack gap={10}>
         <MarketplaceBanner />
 
-        <SearchBar onSearch={handleChangeSearch} />
+        <SearchBar onSearch={handleChangeSearch} value={search as string} />
 
         <OrderList
           orders={data}

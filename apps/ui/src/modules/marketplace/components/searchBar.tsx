@@ -10,11 +10,13 @@ import {
 interface SeachBarProps {
   onSearch: (value: string) => void;
   placeholder?: string;
+  value: string;
 }
 
 export const SearchBar = ({
   onSearch,
-  placeholder = 'Search for ID',
+  placeholder = 'Search for asset id, seller address or handle',
+  value,
 }: SeachBarProps) => {
   return (
     <FormControl>
@@ -25,6 +27,7 @@ export const SearchBar = ({
           type="text"
           size="lg"
           variant="outlined"
+          value={value}
         />
 
         <FormLabel>{placeholder}</FormLabel>
