@@ -6,7 +6,16 @@ const primary = defineStyle({
   color: 'input.900',
   _hover: {
     opacity: 0.8,
+    _disabled: {
+      opacity: 0.8,
+      bgColor: 'button.500',
+    },
   },
+
+  _disabled: {
+    opacity: 0.5,
+  },
+
   fontSize: 'sm',
 });
 
@@ -57,6 +66,21 @@ const icon = defineStyle({
   fontSize: 'xl',
 });
 
+const customLink = defineStyle({
+  bgColor: 'transparent',
+  color: 'grey.100',
+  _hover: {
+    color: 'button.500',
+    bgColor: '#FFC0101A',
+  },
+  _active: {
+    color: 'button.500',
+    bgColor: '#FFC0101A',
+  },
+  fontSize: 'sm',
+  fontWeight: 'normal',
+});
+
 const baseStyle = defineStyle({
   borderRadius: 8,
   fontWeight: 'semibold',
@@ -74,6 +98,7 @@ const Button = defineStyleConfig({
     secondary,
     tertiary,
     ghosted,
+    customLink,
   },
 });
 

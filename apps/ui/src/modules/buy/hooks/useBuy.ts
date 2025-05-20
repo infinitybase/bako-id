@@ -89,7 +89,7 @@ export const useBuy = () => {
   };
 
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
+    let timeoutId: number;
 
     if (buyError) {
       timeoutId = setTimeout(() => {

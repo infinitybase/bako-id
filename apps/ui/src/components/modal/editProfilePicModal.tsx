@@ -1,20 +1,20 @@
 import { Box, Button, Flex, Input, Text } from '@chakra-ui/react';
 import { Dialog } from '../dialog';
 
-import { FileUploadIcon } from '../icons/fileUploadIcon';
-import { type ChangeEvent, type DragEvent, useRef, useState } from 'react';
-import { useCustomToast } from '../toast';
 import { useParams } from '@tanstack/react-router';
+import { type ChangeEvent, type DragEvent, useRef, useState } from 'react';
 import { useUpdateFile } from '../../hooks/useUploadFile';
+import { FileUploadIcon } from '../icons/fileUploadIcon';
+import { useCustomToast } from '../toast';
 
-import { ProgressButton } from '../buttons/progressButton';
-import { TrashIcon } from '../icons/trashIcon';
-import { useQuery } from '@tanstack/react-query';
 import { useProvider, useWallet } from '@fuels/react';
-import { parseURI } from '../../utils/formatter';
+import { useQuery } from '@tanstack/react-query';
+import { isB256 } from 'fuels';
 import { FuelAssetService } from '../../services/fuel-assets';
 import { B256HashLength } from '../../utils/b256HashLength';
-import { isB256 } from 'fuels';
+import { parseURI } from '../../utils/formatter';
+import { ProgressButton } from '../buttons/progressButton';
+import { TrashIcon } from '../icons/trashIcon';
 
 interface EditProfilePicModalProps {
   isOpen: boolean;
@@ -238,13 +238,13 @@ export const EditProfilePicModal = ({
           chainId: chainId!,
         });
 
-        let metadata: Record<string, string> = nft.metadata ?? {};
+        let metadata: Record<string, string> = nft?.metadata ?? {};
         const metadataEntries = Object.entries(metadata).filter(
           ([key]) => !key.toLowerCase().includes('uri')
         );
-        if (metadataEntries.length === 0 && nft.uri?.endsWith('.json')) {
+        if (metadataEntries.length === 0 && nft?.uri?.endsWith('.json')) {
           const metadataFormUri: Record<string, string> = await fetch(
-            parseURI(nft.uri)
+            parseURI(nft?.uri)
           )
             .then((res) => res.json())
             .catch(() => ({}));
