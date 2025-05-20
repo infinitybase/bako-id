@@ -6,7 +6,7 @@ import {
   getOrderMetadata,
   saveMetadataToLocalStorage,
 } from '@/utils/getOrderMetadata';
-import { getPagination, type PaginationResult } from '@/utils/pagination';
+import { type PaginationResult, getPagination } from '@/utils/pagination';
 import { Networks } from '@/utils/resolverNetwork';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { uniqBy } from 'lodash';
@@ -31,7 +31,7 @@ export const useListOrders = ({ limit, search }: useListOrdersProps) => {
       const { orders, total } = await marketplaceService.getOrders({
         page: pageParam as number,
         limit,
-        id: search,
+        search,
         chainId: chainId ?? undefined,
       });
       const sellers = uniqBy(orders, (order) => order.seller).map(

@@ -41,12 +41,12 @@ export class marketplaceService {
   static async getOrders({
     page,
     limit,
-    id,
+    search,
     chainId = Networks.MAINNET,
   }: {
     page: number | string;
     limit: number;
-    id?: string;
+    search?: string;
     chainId?: number;
   }): Promise<{
     orders: OrderResponse[];
@@ -56,7 +56,7 @@ export class marketplaceService {
     const url = constructUrl(`${BASE_API_URL}/${network}/marketplace/orders`, {
       page,
       limit,
-      id,
+      search,
     });
 
     const response = await fetch(url);
@@ -72,14 +72,18 @@ export class marketplaceService {
   }: {
     id: string;
     chainId?: number;
-  }): Promise<Asset> {
-    const network = resolveNetwork(chainId);
-    const response = await fetch(
-      `${BASE_API_URL}/${network}/marketplace/assets/${id}`
-    );
+  }): Promise<Asset | null> {
+    try {
+      const network = resolveNetwork(chainId);
+      const response = await fetch(
+        `${BASE_API_URL}/${network}/marketplace/assets/${id}`
+      );
 
-    const data = await response.json();
+      const data = await response.json();
 
-    return data;
+      return data;
+    } catch {
+      return null;
+    }
   }
 }
