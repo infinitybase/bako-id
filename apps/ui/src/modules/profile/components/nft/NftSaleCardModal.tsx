@@ -3,6 +3,7 @@ import { EditIcon, LightIcon, UserIcon, useCustomToast } from '@/components';
 import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
 import { ExchangeDolarIcon } from '@/components/icons/exchangeDolar';
+import { useResolverName } from '@/hooks';
 import { useExecuteOrder, useUpdateOrder } from '@/hooks/marketplace';
 import { useGetAsset } from '@/hooks/marketplace/useGetAsset';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
@@ -67,6 +68,9 @@ export const NftSaleCardModal = ({
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder();
   const { data: assetData, isLoading: isLoadingAsset } = useGetAsset(
     order.asset?.id || ''
+  );
+  const { data: sellerDomain, isLoading: isLoadingDomain } = useResolverName(
+    order.seller
   );
 
   const assetFee = useMemo(
@@ -144,8 +148,8 @@ export const NftSaleCardModal = ({
 
   const assetSymbolUrl = order.asset?.icon || UnknownAsset;
 
-  const handle = order.sellerDomain
-    ? `@${order.sellerDomain}`
+  const handle = sellerDomain
+    ? `@${sellerDomain}`
     : formatAddress(order.seller);
 
   return (
@@ -211,19 +215,19 @@ export const NftSaleCardModal = ({
               />
             </GridItem>
 
-            {handle && (
-              <GridItem>
+            <GridItem>
+              <Skeleton isLoaded={!isLoadingDomain} borderRadius="md">
                 <Link
-                  to={`/profile/${order.sellerDomain ? order.sellerDomain : order.seller}`}
+                  to={`/profile/${sellerDomain ? sellerDomain : order.seller}`}
                 >
                   <NftMetadataBlock
                     title="Seller"
-                    value={handle}
+                    value={handle as string}
                     icon={<UserIcon />}
                   />
                 </Link>
-              </GridItem>
-            )}
+              </Skeleton>
+            </GridItem>
 
             {(assetFee || isLoadingAsset) && (
               <GridItem>
