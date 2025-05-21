@@ -3,6 +3,7 @@ import NftSaleCard from '@/modules/profile/components/nft/NftSaleCard';
 import type { Order } from '@/types/marketplace';
 import { GridItem, Heading, SimpleGrid, Skeleton } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
+import { ZeroBytes32 } from 'fuels';
 import { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 
@@ -24,7 +25,7 @@ export const OrderList = ({
   const { wallet } = useWallet();
   const { ref, inView } = useInView();
   const isEmptyOrders = !orders?.length;
-  const { data } = useResolverName();
+  const { data } = useResolverName(wallet?.address.b256Address ?? ZeroBytes32);
 
   const address = useMemo(() => wallet?.address.b256Address, [wallet]);
 
@@ -55,6 +56,13 @@ export const OrderList = ({
         />
       ))}
 
+      {(isLoadingOrders || isFetchingNextPage) &&
+        Array.from({ length: 5 }, () => (
+          <GridItem key={Math.random()}>
+            <Skeleton height="250px" borderRadius="lg" />
+          </GridItem>
+        ))}
+
       <GridItem
         colSpan={{
           md: 5,
@@ -78,13 +86,6 @@ export const OrderList = ({
           </Heading>
         </GridItem>
       )}
-
-      {(isLoadingOrders || isFetchingNextPage) &&
-        Array.from({ length: 5 }, () => (
-          <GridItem key={Math.random()}>
-            <Skeleton height="250px" borderRadius="lg" />
-          </GridItem>
-        ))}
     </SimpleGrid>
   );
 };

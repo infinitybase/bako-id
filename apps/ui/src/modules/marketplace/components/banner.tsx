@@ -3,13 +3,14 @@ import { useResolverName } from '@/hooks';
 import { Box, Button, Heading, Image, Stack, Text } from '@chakra-ui/react';
 import { useAccount, useConnectUI } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
+import { ZeroBytes32 } from 'fuels';
 
 export const MarketplaceBanner = () => {
   const { account } = useAccount();
   const { connect } = useConnectUI();
   const navigate = useNavigate();
 
-  const { data, isLoading } = useResolverName();
+  const { data, isLoading } = useResolverName(account || ZeroBytes32);
 
   const handle = data || account;
 
