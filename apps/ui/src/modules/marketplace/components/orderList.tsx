@@ -42,6 +42,7 @@ export const OrderList = ({
       columns={{
         md: 5,
         sm: 3,
+        xs: 2,
         base: 1,
       }}
     >
