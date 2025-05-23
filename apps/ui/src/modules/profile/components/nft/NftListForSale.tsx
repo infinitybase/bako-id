@@ -8,7 +8,7 @@ import type { PaginationResult } from '@/utils/pagination';
 import { Button, Grid, GridItem, Heading, Stack, Text } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
 import { useSearch } from '@tanstack/react-router';
-import { Address, ZeroBytes32 } from 'fuels';
+import { ZeroBytes32 } from 'fuels';
 import { useMemo, useState } from 'react';
 import NftSaleCard from './NftSaleCard';
 
@@ -35,7 +35,7 @@ export const NftListForSale = ({
   const isEmptyOrders = !orders?.data?.length;
 
   const isOwner = useMemo(
-    () => wallet?.address.b256Address === new Address(address).b256Address,
+    () => wallet?.address.b256Address.toLowerCase() === address.toLowerCase(),
     [wallet?.address.b256Address, address]
   );
 
