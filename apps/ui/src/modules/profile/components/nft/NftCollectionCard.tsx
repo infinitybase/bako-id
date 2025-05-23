@@ -79,7 +79,7 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
         collection={collection}
       />
 
-      <NftCard.Root onClick={dialog.onOpen} cursor="pointer">
+      <NftCard.Root onClick={dialog.onOpen} cursor="pointer" maxW="150px">
         {edition && <NftCard.EditionBadge edition={`#${edition}`} />}
         <NftCard.Image maxW="full" src={props.asset.image ?? image} />
         <NftCard.Content spacing={2}>
