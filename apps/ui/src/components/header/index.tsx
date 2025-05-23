@@ -100,6 +100,7 @@ export const Header = () => {
               href="/marketplace"
               label="Marketplace"
               icon={<ExchangeBoxIcon w={4} h={4} />}
+              isBeta
             />
           )}
           {!isMobile && wallet !== null && !initialLoadState && (
