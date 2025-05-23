@@ -10,6 +10,7 @@ import { getExplorer } from '@/utils/getExplorer.ts';
 import type { PaginationResult } from '@/utils/pagination';
 import { Flex, Stack } from '@chakra-ui/react';
 import { Suspense } from 'react';
+import { ProfileMarketplaceBanner } from './ProfileMarketplaceBanner.tsx';
 import { NftCollections } from './nft/NftCollections.tsx';
 import { NftListForSale } from './nft/NftListForSale.tsx';
 import { ProfileCardLoadingSkeleton } from './profileCardLoadingSkeleton.tsx';
@@ -42,6 +43,8 @@ export const ProfileCards = ({
   };
   const { chainId } = useChainId();
   const explorerUrl = getExplorer(chainId);
+
+  const isEmptyOrders = !orders?.data.length;
 
   return loading || !owner ? (
     <ProfileCardLoadingSkeleton />
@@ -93,13 +96,16 @@ export const ProfileCards = ({
         <AccountsCard metadata={metadata} addAction={metadataModal.onOpen} />
       </Stack>
 
-      <NftListForSale
-        orders={orders}
-        domain={domainParam!}
-        address={domain}
-        withHandle={withHandle}
-        hiddenWhenEmpty
-      />
+      {isEmptyOrders && withHandle && <ProfileMarketplaceBanner />}
+
+      {!isEmptyOrders && (
+        <NftListForSale
+          orders={orders}
+          domain={domainParam!}
+          address={domain}
+          withHandle={withHandle}
+        />
+      )}
 
       <NftCollections resolver={domain!} chainId={chainId} />
     </Suspense>

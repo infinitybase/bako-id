@@ -35,12 +35,7 @@ export default function ProfileWithoutHandler({
       <Stack w="full" height="full" flex={1} gap={6} pb={10}>
         <ProfileHandleBanner />
 
-        <NftListForSale
-          address={address}
-          orders={orders}
-          hiddenWhenEmpty
-          withHandle={false}
-        />
+        <NftListForSale address={address} orders={orders} withHandle={false} />
 
         <NftCollections resolver={address} chainId={chainId} />
       </Stack>

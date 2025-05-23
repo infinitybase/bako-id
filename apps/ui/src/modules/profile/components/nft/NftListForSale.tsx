@@ -14,13 +14,11 @@ export const NftListForSale = ({
   domain,
   orders,
   address,
-  hiddenWhenEmpty = false,
   withHandle,
 }: {
   domain?: string;
   orders: PaginationResult<Order> | undefined;
   address: string;
-  hiddenWhenEmpty?: boolean;
   withHandle: boolean;
 }) => {
   const [isDelistOrder, setIsDelistOrder] = useState(false);
@@ -41,7 +39,7 @@ export const NftListForSale = ({
   );
 
   return (
-    <Card hidden={isEmptyOrders && (hiddenWhenEmpty || !isOwner)} gap={6}>
+    <Card hidden={isEmptyOrders && !isOwner} gap={6}>
       <Stack justifyContent="space-between" direction="row" alignItems="center">
         <Heading fontSize="lg">
           <Heading fontSize="lg" as="span" color="yellow.500">
