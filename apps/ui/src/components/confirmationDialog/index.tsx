@@ -1,3 +1,4 @@
+import type { ButtonProps } from '@chakra-ui/react';
 import { Dialog } from '../dialog';
 
 interface ConfirmationDialogProps {
@@ -7,6 +8,10 @@ interface ConfirmationDialogProps {
   title: string;
   children: React.ReactNode;
   isConfirming?: boolean;
+  confirmActionVariant?: ButtonProps['variant'];
+  confirmActionLabel?: string;
+  cancelActionLabel?: string;
+  cancelActionVariant?: ButtonProps['variant'];
 }
 
 export const ConfirmationDialog = ({
@@ -16,16 +21,34 @@ export const ConfirmationDialog = ({
   onConfirm,
   title,
   isConfirming,
+  confirmActionVariant = 'primary',
+  confirmActionLabel = 'Confirm',
+  cancelActionLabel = 'Cancel',
+  cancelActionVariant = 'secondary',
 }: ConfirmationDialogProps) => {
   return (
-    <Dialog.Modal isOpen={isOpen} onClose={onClose} modalTitle={title}>
+    <Dialog.Modal
+      size="md"
+      isOpen={isOpen}
+      onClose={onClose}
+      modalTitle={title}
+      gapBetweenBodyAndHeader="1"
+    >
       <Dialog.Body>{children}</Dialog.Body>
-      <Dialog.Actions>
-        <Dialog.SecondaryAction onClick={onClose} isDisabled={isConfirming}>
-          Cancel
+      <Dialog.Actions hideDivider mt={6}>
+        <Dialog.SecondaryAction
+          variant={cancelActionVariant}
+          onClick={onClose}
+          isDisabled={isConfirming}
+        >
+          {cancelActionLabel}
         </Dialog.SecondaryAction>
-        <Dialog.PrimaryAction isLoading={isConfirming} onClick={onConfirm}>
-          Confirm
+        <Dialog.PrimaryAction
+          isLoading={isConfirming}
+          onClick={onConfirm}
+          variant={confirmActionVariant}
+        >
+          {confirmActionLabel}
         </Dialog.PrimaryAction>
       </Dialog.Actions>
     </Dialog.Modal>

@@ -136,10 +136,11 @@ const NftSaleCard = ({
           onClose={delistModal.onClose}
           onConfirm={handleConfirmDelist}
           isConfirming={isCanceling}
+          confirmActionVariant="tertiary"
+          confirmActionLabel="Yes, delist NFT"
         >
-          <Text fontSize="sm" color="text.700">
-            Are you sure you want to delist this NFT? This action cannot be
-            undone.
+          <Text fontSize="sm" color="grey.subtitle">
+            Are you sure you want to delist this NFT?
           </Text>
         </ConfirmationDialog>
       )}

@@ -38,7 +38,8 @@ const secondary = defineStyle({
 const tertiary = defineStyle({
   bgColor: 'error.600',
   borderWidth: 1,
-  color: 'error.500',
+  borderColor: 'error.600',
+  color: 'input.600',
   _hover: {
     _disabled: {
       bgColor: 'initial',
