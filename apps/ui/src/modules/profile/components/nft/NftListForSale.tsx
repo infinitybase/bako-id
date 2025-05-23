@@ -1,12 +1,14 @@
 import { Card } from '@/components';
 import { CloseIcon } from '@/components/icons/closeIcon';
 import { Pagination } from '@/components/pagination';
+import { useResolverName } from '@/hooks';
 import type { Order } from '@/types/marketplace';
 import { formatAddress } from '@/utils/formatter';
 import type { PaginationResult } from '@/utils/pagination';
 import { Button, Grid, GridItem, Heading, Stack, Text } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
 import { useSearch } from '@tanstack/react-router';
+import { Address, ZeroBytes32 } from 'fuels';
 import { useMemo, useState } from 'react';
 import NftSaleCard from './NftSaleCard';
 
@@ -14,18 +16,17 @@ export const NftListForSale = ({
   domain,
   orders,
   address,
-  withHandle,
 }: {
   domain?: string;
   orders: PaginationResult<Order> | undefined;
   address: string;
-  withHandle: boolean;
 }) => {
   const [isDelistOrder, setIsDelistOrder] = useState(false);
   const { page } = useSearch({
     strict: false,
   });
   const { wallet } = useWallet();
+  const { data } = useResolverName(wallet?.address.b256Address || ZeroBytes32);
 
   const handleDelistOrder = () => {
     setIsDelistOrder((prev) => !prev);
@@ -34,12 +35,12 @@ export const NftListForSale = ({
   const isEmptyOrders = !orders?.data?.length;
 
   const isOwner = useMemo(
-    () => wallet?.address.b256Address.toLowerCase() === address.toLowerCase(),
+    () => wallet?.address.b256Address === new Address(address).b256Address,
     [wallet?.address.b256Address, address]
   );
 
   return (
-    <Card hidden={isEmptyOrders && !isOwner} gap={6}>
+    <Card hidden={isEmptyOrders && !isOwner} gap={6} order={isOwner ? 1 : 0}>
       <Stack justifyContent="space-between" direction="row" alignItems="center">
         <Heading fontSize="lg">
           <Heading fontSize="lg" as="span" color="yellow.500">
@@ -82,7 +83,7 @@ export const NftListForSale = ({
               showDelistButton={isDelistOrder}
               isOwner={isOwner}
               showBuyButton={!isOwner}
-              withHandle={withHandle}
+              withHandle={!!data}
             />
           </GridItem>
         ))}

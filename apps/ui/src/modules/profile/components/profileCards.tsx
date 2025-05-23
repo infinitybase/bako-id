@@ -103,7 +103,6 @@ export const ProfileCards = ({
           orders={orders}
           domain={domainParam!}
           address={domain}
-          withHandle={withHandle}
         />
       )}
 
