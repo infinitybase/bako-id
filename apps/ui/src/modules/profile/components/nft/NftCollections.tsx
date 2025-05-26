@@ -6,6 +6,7 @@ import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
 import { formatMetadataFromIpfs, parseURI } from '@/utils/formatter';
 import { Box, Flex, Grid, Heading } from '@chakra-ui/react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { isNil } from 'lodash';
 import { useMemo } from 'react';
 import ProfileWithoutAssets from '../profileWithoutAssets';
 import { NftCollectionCard } from './NftCollectionCard';
@@ -39,7 +40,7 @@ export const NftCollections = ({
           ([key]) => !['uri', 'image'].includes(key.toLowerCase())
         );
 
-        if (metadataEntries.length === 0 && nft.uri?.endsWith('.json')) {
+        if (metadataEntries.length === 0 && nft.uri) {
           const json: Record<string, string> = await fetch(parseURI(nft.uri))
             .then((res) => res.json())
             .catch(() => ({}));
@@ -69,7 +70,7 @@ export const NftCollections = ({
       });
     },
     select: (data) => data?.filter((a) => !!a.isNFT),
-    enabled: chainId !== undefined || chainId !== null,
+    enabled: !isNil(chainId),
   });
 
   const nftCollections = useMemo(
