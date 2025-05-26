@@ -10,13 +10,12 @@ export interface Asset {
 export interface Order {
   __typename: 'Order';
   id: string;
-  asset: (FuelAsset & { id: string; fees: [string, string] }) | null;
+  asset: (FuelAsset & { id: string }) | null;
   amount: string;
   seller: string;
   itemPrice: string;
   itemAsset: string;
   status: string;
-  sellerDomain?: string;
   nft: {
     id: string;
     metadata: Record<string, string> & Metadata;

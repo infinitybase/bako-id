@@ -4,17 +4,11 @@ import { useListAssets } from '@/hooks/marketplace/useListAssets';
 import { FuelAssetService, type FuelAsset } from '@/services/fuel-assets';
 import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
 import { formatMetadataFromIpfs, parseURI } from '@/utils/formatter';
-import {
-  Box,
-  Center,
-  Flex,
-  Grid,
-  GridItem,
-  Heading,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Flex, Grid, Heading } from '@chakra-ui/react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { isNil } from 'lodash';
 import { useMemo } from 'react';
+import ProfileWithoutAssets from '../profileWithoutAssets';
 import { NftCollectionCard } from './NftCollectionCard';
 
 const desiredOrder = ['Bako ID', 'Executoors'];
@@ -46,7 +40,7 @@ export const NftCollections = ({
           ([key]) => !['uri', 'image'].includes(key.toLowerCase())
         );
 
-        if (metadataEntries.length === 0 && nft.uri?.endsWith('.json')) {
+        if (metadataEntries.length === 0 && nft.uri) {
           const json: Record<string, string> = await fetch(parseURI(nft.uri))
             .then((res) => res.json())
             .catch(() => ({}));
@@ -76,7 +70,7 @@ export const NftCollections = ({
       });
     },
     select: (data) => data?.filter((a) => !!a.isNFT),
-    enabled: chainId !== undefined || chainId !== null,
+    enabled: !isNil(chainId),
   });
 
   const nftCollections = useMemo(
@@ -149,7 +143,8 @@ export const NftCollections = ({
           <Grid
             templateColumns={{
               base: 'repeat(1, 1fr)',
-              sm: 'repeat(2, 1fr)',
+              xs: 'repeat(2, 1fr)',
+              sm: 'repeat(3, 1fr)',
               md: 'repeat(4, 1fr)',
               lg: 'repeat(6, 1fr)',
             }}
@@ -161,18 +156,7 @@ export const NftCollections = ({
           </Grid>
         </Box>
       ))}
-      {!nftCollections?.length && (
-        <GridItem as={Center} py={10} colSpan={5} gridArea="5fr">
-          <Text
-            color="grey.200"
-            fontSize="xs"
-            maxW="172px"
-            textAlign={'center'}
-          >
-            It appears this user does not own any NFTs yet.
-          </Text>
-        </GridItem>
-      )}
+      {!nftCollections?.length && <ProfileWithoutAssets />}
     </Card>
   );
 };

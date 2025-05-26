@@ -1,4 +1,4 @@
-import { Button, type ButtonProps } from '@chakra-ui/react';
+import { Button, Text, type ButtonProps } from '@chakra-ui/react';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useMemo } from 'react';
 
@@ -7,12 +7,14 @@ interface NavLinkItemProps
   label: string;
   icon: React.ReactElement;
   href: string;
+  isBeta?: boolean;
 }
 
 export const NavLinkItem = ({
   href,
   icon,
   label,
+  isBeta = false,
   ...props
 }: NavLinkItemProps) => {
   const navigate = useNavigate();
@@ -32,6 +34,11 @@ export const NavLinkItem = ({
       {...props}
     >
       {label}
+      {isBeta && (
+        <Text as="span" opacity={0.5} ml={1}>
+          Beta
+        </Text>
+      )}
     </Button>
   );
 };

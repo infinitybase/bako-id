@@ -1,11 +1,20 @@
 import Banner from '@/assets/profile-handle-banner.png';
+import BannerMobile from '@/assets/profile-withou-handle-banner-mobile.png';
 import { Box, Button, Heading, Image, Stack, Text } from '@chakra-ui/react';
 import { Link } from '@tanstack/react-router';
 
 const ProfileHandleBanner = () => {
   return (
     <Box height="230px" position="relative">
-      <Box position="absolute" top="50%" left={10} transform="translateY(-50%)">
+      <Box
+        position="absolute"
+        top="50%"
+        left={{
+          base: 4,
+          sm: 10,
+        }}
+        transform="translateY(-50%)"
+      >
         <Stack spacing={4}>
           <Box>
             <Heading>
@@ -39,7 +48,20 @@ const ProfileHandleBanner = () => {
           </Button>
         </Stack>
       </Box>
-      <Image src={Banner} boxSize="full" objectFit="cover" borderRadius="8px" />
+      <Image
+        src={Banner}
+        boxSize="full"
+        objectFit="cover"
+        borderRadius="8px"
+        display={{ base: 'none', sm: 'block' }}
+      />
+      <Image
+        src={BannerMobile}
+        display={{ base: 'block', sm: 'none' }}
+        boxSize="full"
+        objectFit="cover"
+        borderRadius="8px"
+      />
     </Box>
   );
 };

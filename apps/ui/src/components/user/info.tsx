@@ -240,6 +240,7 @@ export const Info = ({
                   >
                     <Icon as={ExchangeBoxIcon} />
                     Marketplace
+                    <Text opacity={0.5}>Beta</Text>
                   </MenuItem>
                   <Divider w="95%" color="grey.300" mx="auto" />
                 </>

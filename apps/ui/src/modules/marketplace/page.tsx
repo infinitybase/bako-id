@@ -2,31 +2,35 @@ import { useListOrders } from '@/hooks/marketplace/useListOrders';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Container, Stack } from '@chakra-ui/react';
 import { useNavigate, useSearch } from '@tanstack/react-router';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { MarketplaceBanner, OrderList, SearchBar } from './components';
 
 export const MarketplacePage = () => {
   const navigate = useNavigate();
   const { search } = useSearch({ strict: false });
-  const debouncedSearch = useDebounce<string>(search ?? '', 500);
-  const { orders, isLoading, fetchNextPage, hasNextPage } = useListOrders({
-    limit: 20,
-    search: debouncedSearch,
-  });
+  const debouncedSearch = useDebounce<string>(search ?? '', 700);
+  const { orders, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useListOrders({
+      limit: 20,
+      search: debouncedSearch,
+    });
 
   const data = useMemo(
     () => orders?.pages?.flatMap((page) => page.data) ?? [],
     [orders]
   );
 
-  const handleChangeSearch = (search: string) => {
-    navigate({
-      search: {
-        // @ts-expect-error - TODO: add type for search in router schema
-        search,
-      },
-    });
-  };
+  const handleChangeSearch = useCallback(
+    (search: string) => {
+      navigate({
+        search: {
+          // @ts-expect-error - TODO: add type for search in router schema
+          search,
+        },
+      });
+    },
+    [navigate]
+  );
 
   return (
     <Container
@@ -47,13 +51,14 @@ export const MarketplacePage = () => {
       <Stack gap={10}>
         <MarketplaceBanner />
 
-        <SearchBar onSearch={handleChangeSearch} />
+        <SearchBar onChange={handleChangeSearch} value={search as string} />
 
         <OrderList
           orders={data}
           hasNextPage={hasNextPage}
           onFetchNextPage={fetchNextPage}
           isLoadingOrders={isLoading}
+          isFetchingNextPage={isFetchingNextPage}
         />
       </Stack>
     </Container>
