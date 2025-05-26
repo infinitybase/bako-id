@@ -44,7 +44,10 @@ export const NftListForSale = ({
   const isEmptyOrders = useMemo(() => !orders?.data?.length, [orders]);
 
   const isOwner = useMemo(
-    () => wallet?.address.equals(new Address(address)) || false,
+    () =>
+      address && wallet?.address
+        ? wallet?.address.equals(new Address(address))
+        : false,
     [wallet?.address, address]
   );
 
