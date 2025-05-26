@@ -9,8 +9,10 @@ import ProfileHandleBanner from './profileHandleBanner';
 
 export default function ProfileWithoutHandler({
   orders,
+  isLoadingOrders = false,
 }: {
   orders: PaginationResult<Order> | undefined;
+  isLoadingOrders?: boolean;
 }) {
   const { chainId } = useChainId();
   const { domain: domainParam } = useParams({ strict: false });
@@ -35,7 +37,11 @@ export default function ProfileWithoutHandler({
       <Stack w="full" height="full" flex={1} gap={6} pb={10}>
         <ProfileHandleBanner />
 
-        <NftListForSale address={address} orders={orders} />
+        <NftListForSale
+          address={address}
+          orders={orders}
+          isLoadingOrders={isLoadingOrders}
+        />
 
         <NftCollections resolver={address} chainId={chainId} />
       </Stack>
