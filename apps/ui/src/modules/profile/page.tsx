@@ -15,8 +15,8 @@ const Profile = () => {
   const isHandle = !isB256(domainParam);
   const {
     orders,
-    isLoading: isLoadingOrders,
     isPlaceholderData,
+    isFetched: isOrdersFetched,
   } = useListOrdersByAccount({
     account: isHandle ? owner?.Address?.bits : domainParam.toLowerCase(),
     page: page || undefined,
@@ -43,13 +43,13 @@ const Profile = () => {
           orders={orders}
           domain={domain.Address?.bits || domain.ContractId?.bits || ''}
           domainParam={domainParam}
-          isFetchingOrders={isLoadingOrders || isPlaceholderData}
+          isFetchingOrders={isPlaceholderData || !isOrdersFetched}
           owner={owner?.Address?.bits || owner?.ContractId?.bits || ''}
         />
       ) : (
         <ProfileWithoutHandler
           orders={orders}
-          isLoadingOrders={isLoadingOrders || isPlaceholderData}
+          isLoadingOrders={!isOrdersFetched || isPlaceholderData}
         />
       )}
     </>

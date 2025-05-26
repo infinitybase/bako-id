@@ -9,7 +9,7 @@ import type { Order } from '@/types/marketplace';
 import { getExplorer } from '@/utils/getExplorer.ts';
 import type { PaginationResult } from '@/utils/pagination';
 import { Flex, Stack } from '@chakra-ui/react';
-import { Suspense } from 'react';
+import { Suspense, useMemo } from 'react';
 import { ProfileMarketplaceBanner } from './ProfileMarketplaceBanner.tsx';
 import { NftCollections } from './nft/NftCollections.tsx';
 import { NftListForSale } from './nft/NftListForSale.tsx';
@@ -44,9 +44,11 @@ export const ProfileCards = ({
   const { chainId } = useChainId();
   const explorerUrl = getExplorer(chainId);
 
-  const isEmptyOrders = !orders?.data.length;
-  const showMarketplaceBanner =
-    isEmptyOrders && withHandle && !isFetchingOrders;
+  const isEmptyOrders = useMemo(() => !orders?.data.length, [orders]);
+  const showMarketplaceBanner = useMemo(
+    () => isEmptyOrders && withHandle && !isFetchingOrders,
+    [isEmptyOrders, withHandle, isFetchingOrders]
+  );
 
   return loading || !owner ? (
     <ProfileCardLoadingSkeleton />
