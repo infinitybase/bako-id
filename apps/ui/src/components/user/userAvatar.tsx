@@ -7,8 +7,8 @@ import {
   type BoxProps,
   type FlexProps,
 } from '@chakra-ui/react';
-import { AvatarIcon, EditIcon } from '../icons';
 import { useEffect, useState } from 'react';
+import { AvatarIcon, EditIcon } from '../icons';
 
 interface UserAvatarProps {
   avatar?: string | null;
@@ -198,11 +198,12 @@ export const UserAvatar = ({
   isEditProfilePicModalOpen,
 }: UserAvatarProps) => {
   const [noAvatarFromUrl, setNoAvatarFromUrl] = useState(false);
-  const noCacheAvatarUrl = `${avatar}?t=${Date.now()}`;
+  const [noCacheAvatarUrl, setNoCacheAvatarUrl] = useState('');
 
   useEffect(() => {
     if (avatar) {
       setNoAvatarFromUrl(false);
+      setNoCacheAvatarUrl(`${avatar}?t=${Date.now()}`);
     }
   }, [avatar]);
 
@@ -210,13 +211,13 @@ export const UserAvatar = ({
     <EditProfilePicAvatar
       noAvatarFromUrl={noAvatarFromUrl}
       setNoAvatarFromUrl={setNoAvatarFromUrl}
-      avatar={noCacheAvatarUrl}
+      avatar={avatar ? noCacheAvatarUrl : undefined}
       isAvatarLoading={isAvatarLoading}
       onClick={onClick}
     />
   ) : (
     <ProfileAvatar
-      avatar={noCacheAvatarUrl}
+      avatar={avatar ? noCacheAvatarUrl : undefined}
       isAvatarLoading={isAvatarLoading}
       noAvatarFromUrl={noAvatarFromUrl}
       setNoAvatarFromUrl={setNoAvatarFromUrl}
