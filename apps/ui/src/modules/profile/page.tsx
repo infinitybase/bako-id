@@ -41,7 +41,7 @@ const Profile = () => {
       {userWithDomain ? (
         <ProfileWithHandler
           orders={orders}
-          domain={domain.Address?.bits || domain.ContractId?.bits || ''}
+          domain={domain}
           domainParam={domainParam}
           isFetchingOrders={isPlaceholderData || !isOrdersFetched}
           owner={owner?.Address?.bits || owner?.ContractId?.bits || ''}

@@ -43,7 +43,7 @@ export const TokenCard = ({ token }: { token: RegistryContractToken }) => {
               // isDisabled={!isMyDomain}
               onClick={() =>
                 window.open(
-                  `${explorerUrl}/account/${domain?.Address?.bits ?? domain?.ContractId?.bits}${ExplorerTypes.ASSETS}`
+                  `${explorerUrl}/account/${domain}${ExplorerTypes.ASSETS}`
                 )
               }
             >
