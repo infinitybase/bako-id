@@ -3,6 +3,7 @@ import { CloseIcon } from '@/components/icons/closeIcon';
 import { Pagination } from '@/components/pagination';
 import { useResolverName } from '@/hooks';
 import type { Order } from '@/types/marketplace';
+import { AddressUtils } from '@/utils/address';
 import { formatAddress } from '@/utils/formatter';
 import type { PaginationResult } from '@/utils/pagination';
 import {
@@ -15,7 +16,7 @@ import {
 } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
 import { useSearch } from '@tanstack/react-router';
-import { Address, ZeroBytes32 } from 'fuels';
+import { ZeroBytes32 } from 'fuels';
 import { useMemo, useState } from 'react';
 import NftSaleCard from './NftSaleCard';
 
@@ -44,10 +45,7 @@ export const NftListForSale = ({
   const isEmptyOrders = useMemo(() => !orders?.data?.length, [orders]);
 
   const isOwner = useMemo(
-    () =>
-      address && wallet?.address
-        ? wallet?.address.equals(new Address(address))
-        : false,
+    () => AddressUtils.isEqual(wallet?.address.b256Address, address),
     [wallet?.address, address]
   );
 
