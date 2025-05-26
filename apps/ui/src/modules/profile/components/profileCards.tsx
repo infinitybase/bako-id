@@ -19,23 +19,23 @@ type ProfileCardsProps = {
   domainParam: string;
   domain: string;
   owner: string;
-  isLoading: boolean;
   orders: PaginationResult<Order> | undefined;
   withHandle: boolean;
+  isFetchingOrders?: boolean;
 };
 
 export const ProfileCards = ({
   domain,
   domainParam,
-  isLoading: loadingDomain,
   owner,
   orders,
   withHandle,
+  isFetchingOrders,
 }: ProfileCardsProps) => {
   const { metadataModal, metadata, setUpdatedMetadata, loadingMetadata } =
     useMetadata();
 
-  const loading = loadingDomain || loadingMetadata;
+  const loading = loadingMetadata;
 
   const handleOnSuccess = () => {
     metadataModal.onClose();
@@ -45,6 +45,8 @@ export const ProfileCards = ({
   const explorerUrl = getExplorer(chainId);
 
   const isEmptyOrders = !orders?.data.length;
+  const showMarketplaceBanner =
+    isEmptyOrders && withHandle && !isFetchingOrders;
 
   return loading || !owner ? (
     <ProfileCardLoadingSkeleton />
@@ -96,13 +98,14 @@ export const ProfileCards = ({
         <AccountsCard metadata={metadata} addAction={metadataModal.onOpen} />
       </Stack>
 
-      {isEmptyOrders && withHandle && <ProfileMarketplaceBanner />}
+      {showMarketplaceBanner && <ProfileMarketplaceBanner />}
 
       {!isEmptyOrders && (
         <NftListForSale
-          orders={orders}
           domain={domainParam!}
           address={domain}
+          isLoadingOrders={isFetchingOrders}
+          orders={orders}
         />
       )}
 

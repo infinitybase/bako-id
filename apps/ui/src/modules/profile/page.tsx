@@ -9,29 +9,32 @@ import ProfileWithoutHandler from './components/profileWithoutHandler';
 import { useProfile } from './hooks/useProfile';
 
 const Profile = () => {
-  const { domain, domainParam, isLoadingDomain, owner } = useProfile();
-  const { page } = useSearch({
-    strict: false,
-  });
+  const { domain, domainParam, isLoadingDomain, owner, domainMethods } =
+    useProfile();
+  const { page } = useSearch({ strict: false });
   const isHandle = !isB256(domainParam);
-  const { orders, isLoading: isLoadingOrders } = useListOrdersByAccount({
+  const {
+    orders,
+    isLoading: isLoadingOrders,
+    isPlaceholderData,
+  } = useListOrdersByAccount({
     account: isHandle ? owner?.Address?.bits : domainParam.toLowerCase(),
     page: page || undefined,
   });
-
-  const userWithDomain = !!domain;
 
   const SkeletonComponent = isHandle
     ? ProfileCardLoadingSkeleton
     : ProfileWithoutHandlerSkeleton;
 
-  if (isLoadingDomain || isLoadingOrders) {
+  if (isLoadingDomain || !domainMethods.isFetched) {
     return (
       <ProfileContainer>
         <SkeletonComponent />
       </ProfileContainer>
     );
   }
+
+  const userWithDomain = !!domain;
 
   return (
     <>
@@ -40,11 +43,14 @@ const Profile = () => {
           orders={orders}
           domain={domain.Address?.bits || domain.ContractId?.bits || ''}
           domainParam={domainParam}
-          isLoadingDomain={isLoadingDomain}
+          isFetchingOrders={isLoadingOrders || isPlaceholderData}
           owner={owner?.Address?.bits || owner?.ContractId?.bits || ''}
         />
       ) : (
-        <ProfileWithoutHandler orders={orders} />
+        <ProfileWithoutHandler
+          orders={orders}
+          isLoadingOrders={isLoadingOrders || isPlaceholderData}
+        />
       )}
     </>
   );
