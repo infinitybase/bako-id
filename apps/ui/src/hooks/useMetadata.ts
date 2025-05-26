@@ -1,4 +1,4 @@
-import { type MetadataKeys, RegistryContract } from '@bako-id/sdk';
+import { RegistryContract, type MetadataKeys } from '@bako-id/sdk';
 import { useDisclosure } from '@chakra-ui/react';
 import { useProvider, useWallet } from '@fuels/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -25,7 +25,7 @@ export type MetadataResponse =
 
 export const useMetadata = (handleOnSuccess?: () => void) => {
   const [updatedMetadata, setUpdatedMetadata] = useState<MetadataKeyValue[]>(
-    [],
+    []
   );
   const { domain } = useParams({ strict: false });
   const { provider } = useProvider();
@@ -42,14 +42,9 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
     ],
     queryFn: async () => {
       try {
-        let registryContract: RegistryContract;
+        const _prodivder = provider || new Provider(VITE_PROVIDER_URL);
 
-        if (provider) {
-          registryContract = RegistryContract.create(provider);
-        } else {
-          const provider = new Provider(import.meta.env.VITE_PROVIDER_URL);
-          registryContract = RegistryContract.create(provider);
-        }
+        const registryContract = RegistryContract.create(_prodivder);
 
         const metadata = await registryContract.getMetadata(domain);
 
@@ -75,7 +70,7 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
         ...updatedMetadata.reduce(
           // biome-ignore lint/performance/noAccumulatingSpread: <explanation>
           (acc, { key, value }) => ({ ...acc, [key]: value }),
-          {},
+          {}
         ),
       };
 
