@@ -33,6 +33,7 @@
     "@graphql-codegen/typescript-operations": "^4.4.0",
     "@shared/tsup": "workspace:*",
     "ts-node": "^10.9.2",
-    "vitest": "^3.1.1"
+    "vitest": "^3.1.1",
+    "bakosafe": "0.1.9"
   }
 }
