@@ -74,7 +74,7 @@ export const NftSaleCardModal = ({
   );
 
   const assetFee = useMemo(
-    () => (withHandle ? assetData?.fees[1] : assetData?.fees[0]),
+    () => (withHandle ? assetData?.fees?.[1] : assetData?.fees?.[0]),
     [assetData, withHandle]
   );
 

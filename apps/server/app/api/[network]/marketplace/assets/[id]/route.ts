@@ -12,11 +12,15 @@ export async function GET(
         network: {
           _eq: network,
         },
-        id: {
+        asset: {
           _eq: id,
         },
       },
     });
+
+    if (!asset) {
+      return Response.json({ error: 'Asset not found' }, { status: 404 });
+    }
 
     return Response.json(asset, { status: 200 });
   } catch {

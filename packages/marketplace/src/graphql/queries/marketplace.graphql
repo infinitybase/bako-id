@@ -1,11 +1,12 @@
 query assets($count: Int, $offset: Int, $where: Asset_bool_exp) {
   Asset(limit: $count, offset: $offset, where: $where) {
-    ...Asset
+    id: asset
+    fees
   }
 }
 
 fragment Asset on Asset {
-  id
+  asset
   fees
 }
 
