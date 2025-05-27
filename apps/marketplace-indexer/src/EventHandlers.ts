@@ -14,8 +14,17 @@ const parseNetworkName = (chainId: number): 'MAINNET' | 'TESTNET' => {
   }
 };
 
+const generateCustomUniqueId = (prefix: string, bits: string): string => {
+  // Generate a unique ID based on the prefix and bits
+  return `${prefix}-${bits}`;
+};
+
 Marketplace.AssetFeeAdjustedEvent.handler(async ({ event, context }) => {
-  const asset = await context.Asset.get(event.params.asset.bits);
+  const id = generateCustomUniqueId(
+    parseNetworkName(event.chainId),
+    event.params.asset.bits
+  );
+  const asset = await context.Asset.get(id);
   if (asset) {
     context.Asset.set({
       ...asset,
@@ -27,7 +36,8 @@ Marketplace.AssetFeeAdjustedEvent.handler(async ({ event, context }) => {
 Marketplace.AssetAddedEvent2.handler(async ({ event, context }) => {
   const network = parseNetworkName(event.chainId);
   context.Asset.set({
-    id: event.params.asset.bits,
+    asset: event.params.asset.bits,
+    id: generateCustomUniqueId(network, event.params.asset.bits),
     fees: event.params.fee,
     network,
   });
