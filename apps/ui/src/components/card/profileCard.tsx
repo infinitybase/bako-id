@@ -2,7 +2,6 @@ import { CheckIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
-  type ButtonProps,
   Flex,
   Menu,
   MenuButton,
@@ -11,8 +10,11 @@ import {
   Text,
   useClipboard,
   useMediaQuery,
+  type ButtonProps,
 } from '@chakra-ui/react';
+import { useMemo } from 'react';
 import { Card } from '.';
+import { useChainId } from '../../hooks/useChainId.ts';
 import { ExplorerTypes } from '../../types';
 import { twitterLink } from '../../utils/formatter.ts';
 import { getExplorer } from '../../utils/getExplorer';
@@ -22,7 +24,6 @@ import { CopyIcon } from '../icons/copyIcon.tsx';
 import { ShareIcon } from '../icons/shareicon.tsx';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
 import { UserAvatar } from '../user/userAvatar.tsx';
-import { useChainId } from '../../hooks/useChainId.ts';
 
 interface IProfileCard {
   domainName: string | null;
@@ -62,21 +63,27 @@ export const ProfileCard = ({
 }: IProfileCard) => {
   const [isLowerThanMobile] = useMediaQuery('(max-width: 25em)');
   const { isMyDomain: isOwner } = useSidebar();
-
-  const nickname = metadata?.find(
-    (m) => m.key === MetadataKeys.CONTACT_NICKNAME
-  );
-  const shortBio = metadata?.find((m) => m.key === MetadataKeys.CONTACT_BIO);
-  const avatar = metadata?.find((m) => m.key === MetadataKeys.AVATAR);
-
   const { chainId } = useChainId();
-  const explorerUrl = getExplorer(chainId);
-
   const {
     hasCopied,
     onCopy,
     value: profileLink,
   } = useClipboard(`https://bako.id/${domainName}`);
+
+  const nickname = useMemo(
+    () => metadata?.find((m) => m.key === MetadataKeys.CONTACT_NICKNAME),
+    [metadata]
+  );
+  const shortBio = useMemo(
+    () => metadata?.find((m) => m.key === MetadataKeys.CONTACT_BIO),
+    [metadata]
+  );
+  const avatar = useMemo(
+    () => metadata?.find((m) => m.key === MetadataKeys.AVATAR),
+    [metadata]
+  );
+
+  const explorerUrl = getExplorer(chainId);
 
   const Actions = (
     <>

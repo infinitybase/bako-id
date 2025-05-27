@@ -3,7 +3,9 @@ import { EditIcon, LightIcon, UserIcon, useCustomToast } from '@/components';
 import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
 import { ExchangeDolarIcon } from '@/components/icons/exchangeDolar';
+import { useResolverName } from '@/hooks';
 import { useExecuteOrder, useUpdateOrder } from '@/hooks/marketplace';
+import { useGetAsset } from '@/hooks/marketplace/useGetAsset';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
 import { useAssetsBalance } from '@/hooks/useAssetsBalance';
 import type { Order } from '@/types/marketplace';
@@ -17,6 +19,7 @@ import {
   Heading,
   IconButton,
   Image,
+  Skeleton,
   Stack,
   Text,
   Tooltip,
@@ -63,10 +66,16 @@ export const NftSaleCardModal = ({
   const { assets } = useListAssets();
   const { data: assetsBalance } = useAssetsBalance({ assets });
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder();
+  const { data: assetData, isLoading: isLoadingAsset } = useGetAsset(
+    order.asset?.id || ''
+  );
+  const { data: sellerDomain, isLoading: isLoadingDomain } = useResolverName(
+    order.seller
+  );
 
   const assetFee = useMemo(
-    () => (withHandle ? order.asset?.fees[1] : order.asset?.fees[0]),
-    [order.asset?.fees, withHandle]
+    () => (withHandle ? assetData?.fees[1] : assetData?.fees[0]),
+    [assetData, withHandle]
   );
 
   const currentSellAssetBalance = useMemo(
@@ -139,8 +148,8 @@ export const NftSaleCardModal = ({
 
   const assetSymbolUrl = order.asset?.icon || UnknownAsset;
 
-  const handle = order.sellerDomain
-    ? `@${order.sellerDomain}`
+  const handle = sellerDomain
+    ? `@${sellerDomain}`
     : formatAddress(order.seller);
 
   return (
@@ -206,27 +215,29 @@ export const NftSaleCardModal = ({
               />
             </GridItem>
 
-            {handle && (
-              <GridItem>
+            <GridItem>
+              <Skeleton isLoaded={!isLoadingDomain} borderRadius="md">
                 <Link
-                  to={`/profile/${order.sellerDomain ? order.sellerDomain : order.seller}`}
+                  to={`/profile/${sellerDomain ? sellerDomain : order.seller}`}
                 >
                   <NftMetadataBlock
                     title="Seller"
-                    value={handle}
+                    value={handle as string}
                     icon={<UserIcon />}
                   />
                 </Link>
-              </GridItem>
-            )}
+              </Skeleton>
+            </GridItem>
 
-            {assetFee && (
+            {(assetFee || isLoadingAsset) && (
               <GridItem>
-                <NftMetadataBlock
-                  title="Application Fee"
-                  value={`${bn(assetFee).formatUnits(2)}%`}
-                  icon={<ExchangeDolarIcon />}
-                />
+                <Skeleton isLoaded={!isLoadingAsset} borderRadius="md">
+                  <NftMetadataBlock
+                    title="Application Fee"
+                    value={`${bn(assetFee).formatUnits(2)}%`}
+                    icon={<ExchangeDolarIcon />}
+                  />
+                </Skeleton>
               </GridItem>
             )}
           </Grid>

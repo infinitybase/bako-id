@@ -1,4 +1,3 @@
-import BakoIdService from '@/services/bako-id';
 import { marketplaceService } from '@/services/marketplace';
 import type { Order } from '@/types/marketplace';
 import { MarketplaceQueryKeys } from '@/utils/constants';
@@ -7,15 +6,13 @@ import {
   saveMetadataToLocalStorage,
 } from '@/utils/getOrderMetadata';
 import { getPagination, type PaginationResult } from '@/utils/pagination';
-import { Networks } from '@/utils/resolverNetwork';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { uniqBy } from 'lodash';
 import { useChainId } from '../useChainId';
 
 type useListOrdersProps = { page?: number; limit: number; search?: string };
 
 export const useListOrders = ({ limit, search }: useListOrdersProps) => {
-  const { chainId } = useChainId();
+  const { chainId, isLoading } = useChainId();
 
   const { data: orders, ...rest } = useInfiniteQuery<PaginationResult<Order>>({
     queryKey: [MarketplaceQueryKeys.ALL_ORDERS, chainId, search],
@@ -31,16 +28,9 @@ export const useListOrders = ({ limit, search }: useListOrdersProps) => {
       const { orders, total } = await marketplaceService.getOrders({
         page: pageParam as number,
         limit,
-        id: search,
+        search,
         chainId: chainId ?? undefined,
       });
-      const sellers = uniqBy(orders, (order) => order.seller).map(
-        (order) => order.seller
-      );
-      const domains = await BakoIdService.names(
-        sellers,
-        chainId ?? Networks.MAINNET
-      );
 
       const ordersWithMetadata = await Promise.all(
         orders.map(async (order) => await getOrderMetadata(order, chainId))
@@ -48,22 +38,15 @@ export const useListOrders = ({ limit, search }: useListOrdersProps) => {
 
       saveMetadataToLocalStorage(ordersWithMetadata);
 
-      const ordersWithDomain = ordersWithMetadata.map((order) => ({
-        ...order,
-        sellerDomain: domains.names.find(
-          (domain) =>
-            domain.resolver.toLowerCase() === order.seller.toLowerCase()
-        )?.name,
-      }));
-
       return getPagination({
-        data: ordersWithDomain,
+        data: ordersWithMetadata,
         page: pageParam as number,
         limit,
         total,
       });
     },
     placeholderData: (data) => data,
+    enabled: !isLoading,
   });
 
   return { orders, ...rest };

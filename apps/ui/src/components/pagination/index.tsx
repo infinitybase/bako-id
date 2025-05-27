@@ -7,6 +7,7 @@ interface PaginationProps {
   totalPages?: number;
   hasNextPage?: boolean;
   hasPreviousPage?: boolean;
+  isLoading?: boolean;
 }
 
 export const Pagination = ({
@@ -14,6 +15,7 @@ export const Pagination = ({
   totalPages = 1,
   hasNextPage = false,
   hasPreviousPage = false,
+  isLoading = false,
 }: PaginationProps) => {
   return (
     <>
@@ -23,20 +25,28 @@ export const Pagination = ({
       <IconButton
         aria-label="Previous Page"
         variant="unstyled"
-        disabled={!hasPreviousPage}
+        disabled={!hasPreviousPage || isLoading}
         size="sm"
       >
-        <Link search={{ page: page - 1 }} to="." disabled={!hasPreviousPage}>
+        <Link
+          search={{ page: page - 1 }}
+          to="."
+          disabled={!hasPreviousPage || isLoading}
+        >
           <ChevronLeftIcon fontSize="2xl" />
         </Link>
       </IconButton>
       <IconButton
         aria-label="Next Page"
         variant="unstyled"
-        disabled={!hasNextPage}
+        disabled={!hasNextPage || isLoading}
         size="sm"
       >
-        <Link search={{ page: page + 1 }} to="." disabled={!hasNextPage}>
+        <Link
+          search={{ page: page + 1 }}
+          to="."
+          disabled={!hasNextPage || isLoading}
+        >
           <ChevronRightIcon fontSize="2xl" />
         </Link>
       </IconButton>

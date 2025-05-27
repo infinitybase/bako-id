@@ -1,7 +1,6 @@
-import { FuelAssetService, type FuelAsset } from '@/services/fuel-assets';
-import { marketplaceService } from '@/services/marketplace';
+import { type FuelAsset, FuelAssetService } from '@/services/fuel-assets';
 import type { Order } from '@/types/marketplace';
-import { assignIn, concat, isEmpty, merge, uniqBy } from 'lodash';
+import { assignIn, concat, merge, uniqBy } from 'lodash';
 import { ASSETS_METADATA_STORAGE_KEY } from './constants';
 import { formatMetadataFromIpfs, parseURI } from './formatter';
 import { getLocalStorage, setLocalStorage } from './localStorage';
@@ -43,14 +42,14 @@ export const getOrderMetadata = async (
   chainId: number | null | undefined
 ): Promise<Order> => {
   const assetMetadata = await getAssetMetadata(order.asset, chainId);
-  const assetData = await marketplaceService.getAssetById({
-    id: order.asset,
-    chainId: chainId!,
-  });
   const fuelMetadata = await getAssetMetadata(order.itemAsset, chainId);
   const ipfsMetadata: Record<string, string> = fuelMetadata?.ipfs || {};
 
-  if (isEmpty(ipfsMetadata) && fuelMetadata?.uri?.endsWith('.json')) {
+  const filteredMetadata = Object.keys(ipfsMetadata).filter(
+    (key) => !['image', 'uri'].includes(key)
+  );
+
+  if (!filteredMetadata.length && fuelMetadata?.uri) {
     const json: Record<string, string> = await fetch(fuelMetadata.uri)
       .then(async (res) => await res.json())
       .catch(() => ({}));
@@ -65,7 +64,6 @@ export const getOrderMetadata = async (
       ? {
           ...assetMetadata,
           id: order.asset,
-          fees: assetData.fees,
         }
       : null,
     nft: {

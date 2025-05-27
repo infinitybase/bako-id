@@ -39,7 +39,7 @@ export const Connect = ({
         className="transition-all-05"
       >
         {isConnecting && <Text>Connecting...</Text>}
-        {!isConnecting && !account && (
+        {!isConnecting && !wallet && (
           <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
             {!isMobile && (
               <Icon

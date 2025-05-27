@@ -19,6 +19,11 @@ class AddressUtils {
     if (!address) return;
     return `${address.slice(0, size)}...${address.slice(-4)}`;
   }
+
+  static isEqual(address1: string | undefined, address2: string | undefined) {
+    if (!address1 || !address2) return false;
+    return address1.toLowerCase() === address2.toLowerCase();
+  }
 }
 
 export { AddressUtils };

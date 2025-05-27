@@ -15,11 +15,6 @@ export const getContractId = (
   chainId: number,
   name: MarketplaceContractsName
 ) => {
-  // TODO -> remove this when deploying to mainnet
-  if (chainId === 9889) {
-    return '0x0000000000000000000000000000000000000000000000000000000000000000';
-  }
-
   const chainIdStr = chainId.toString();
   const contract = (contracts as ContractsMap)[chainIdStr]?.[name];
 
@@ -27,5 +22,14 @@ export const getContractId = (
     throw new Error(`Contract ${name} not found for chainId ${chainId}`);
   }
 
+  return contract;
+};
+
+export const _getContractId = (
+  chainId: number,
+  name: MarketplaceContractsName
+) => {
+  const chainIdStr = chainId.toString();
+  const contract = (contracts as ContractsMap)[chainIdStr]?.[name];
   return contract;
 };

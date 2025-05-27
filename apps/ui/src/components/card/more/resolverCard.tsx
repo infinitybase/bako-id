@@ -68,7 +68,7 @@ export const ResolverCard = () => {
           <CardBody mt={4}>
             <TextValue
               leftAction="address"
-              content={domain?.Address?.bits ?? domain?.ContractId?.bits ?? ''}
+              content={domain ?? ''}
               // rightAction={
               //   <Explorer
               //     explorerUrl={`${explorerUrl}/account/`}
@@ -88,7 +88,7 @@ export const ResolverCard = () => {
           onClose={() => action.onClose()}
           domain={`${domainParam}`}
           isLoading={isPending}
-          resolver={domain?.Address?.bits ?? domain?.ContractId?.bits ?? ''}
+          resolver={domain ?? ''}
           onConfirm={(resolver) => handleChangeResolver(resolver)}
         />
       </Suspense>

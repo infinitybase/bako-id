@@ -11,10 +11,7 @@ export const Root = ({ children, ...props }: RootProps) => {
       p={0}
       borderRadius="8px"
       backdropFilter="none"
-      maxW={{
-        base: '215px',
-        sm: 'full',
-      }}
+      maxW="400px"
       mx={{
         base: 'auto',
       }}

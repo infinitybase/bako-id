@@ -1,15 +1,17 @@
+import BannerMobile from '@/assets/marketplace-banner-mobile.png';
 import Banner from '@/assets/marketplace-banner.png';
 import { useResolverName } from '@/hooks';
 import { Box, Button, Heading, Image, Stack, Text } from '@chakra-ui/react';
 import { useAccount, useConnectUI } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
+import { ZeroBytes32 } from 'fuels';
 
 export const MarketplaceBanner = () => {
   const { account } = useAccount();
   const { connect } = useConnectUI();
   const navigate = useNavigate();
 
-  const { data, isLoading } = useResolverName();
+  const { data, isLoading } = useResolverName(account || ZeroBytes32);
 
   const handle = data || account;
 
@@ -25,16 +27,42 @@ export const MarketplaceBanner = () => {
 
   return (
     <Box height="230px" position="relative">
-      <Box position="absolute" top="50%" left={10} transform="translateY(-50%)">
-        <Stack spacing={4}>
+      <Box
+        position="absolute"
+        top="50%"
+        left={{
+          md: 10,
+          base: 4,
+        }}
+        transform="translateY(-50%)"
+      >
+        <Stack
+          spacing={{
+            base: 10,
+            sm: 4,
+          }}
+        >
           <Box>
-            <Heading>
+            <Heading
+              fontSize={{
+                md: '3xl',
+                base: '2xl',
+              }}
+            >
               List. Sell.{' '}
               <Text as="span" color="#F5F5F54D">
                 Repeat.
               </Text>
             </Heading>
-            <Text color="grey.100">Trading NFTs has never been this easy.</Text>
+            <Text
+              maxW={{
+                base: '190px',
+                md: 'none',
+              }}
+              color="grey.100"
+            >
+              Trading NFTs has never been this easy.
+            </Text>
           </Box>
 
           <Button
@@ -52,7 +80,25 @@ export const MarketplaceBanner = () => {
           </Button>
         </Stack>
       </Box>
-      <Image src={Banner} boxSize="full" objectFit="cover" borderRadius="8px" />
+      <Image
+        src={Banner}
+        boxSize="full"
+        objectFit="cover"
+        borderRadius="8px"
+        objectPosition={{
+          sm: '80% 50%',
+          base: '50% 50%',
+          md: '50% 50%',
+        }}
+        display={{ base: 'none', sm: 'block' }}
+      />
+      <Image
+        src={BannerMobile}
+        display={{ base: 'block', sm: 'none' }}
+        boxSize="full"
+        objectFit="cover"
+        borderRadius="8px"
+      />
     </Box>
   );
 };

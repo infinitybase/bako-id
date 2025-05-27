@@ -41,4 +41,19 @@ export default class BakoIdService {
       return null;
     }
   }
+
+  static async addr(address: string, chainId: number): Promise<string | null> {
+    try {
+      const network = resolveNetwork(chainId);
+      const url = `${BASE_API_URL}/${network}/addr/${address}`;
+
+      const response = await fetch(url);
+
+      const data = await response.json();
+
+      return data.address;
+    } catch {
+      return null;
+    }
+  }
 }

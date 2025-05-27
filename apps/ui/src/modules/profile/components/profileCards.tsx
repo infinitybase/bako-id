@@ -9,7 +9,8 @@ import type { Order } from '@/types/marketplace';
 import { getExplorer } from '@/utils/getExplorer.ts';
 import type { PaginationResult } from '@/utils/pagination';
 import { Flex, Stack } from '@chakra-ui/react';
-import { Suspense } from 'react';
+import { Suspense, useMemo } from 'react';
+import { ProfileMarketplaceBanner } from './ProfileMarketplaceBanner.tsx';
 import { NftCollections } from './nft/NftCollections.tsx';
 import { NftListForSale } from './nft/NftListForSale.tsx';
 import { ProfileCardLoadingSkeleton } from './profileCardLoadingSkeleton.tsx';
@@ -18,23 +19,23 @@ type ProfileCardsProps = {
   domainParam: string;
   domain: string;
   owner: string;
-  isLoading: boolean;
   orders: PaginationResult<Order> | undefined;
   withHandle: boolean;
+  isFetchingOrders?: boolean;
 };
 
 export const ProfileCards = ({
   domain,
   domainParam,
-  isLoading: loadingDomain,
   owner,
   orders,
   withHandle,
+  isFetchingOrders,
 }: ProfileCardsProps) => {
   const { metadataModal, metadata, setUpdatedMetadata, loadingMetadata } =
     useMetadata();
 
-  const loading = loadingDomain || loadingMetadata;
+  const loading = loadingMetadata;
 
   const handleOnSuccess = () => {
     metadataModal.onClose();
@@ -42,6 +43,12 @@ export const ProfileCards = ({
   };
   const { chainId } = useChainId();
   const explorerUrl = getExplorer(chainId);
+
+  const isEmptyOrders = useMemo(() => !orders?.data.length, [orders]);
+  const showMarketplaceBanner = useMemo(
+    () => isEmptyOrders && withHandle && !isFetchingOrders,
+    [isEmptyOrders, withHandle, isFetchingOrders]
+  );
 
   return loading || !owner ? (
     <ProfileCardLoadingSkeleton />
@@ -93,13 +100,16 @@ export const ProfileCards = ({
         <AccountsCard metadata={metadata} addAction={metadataModal.onOpen} />
       </Stack>
 
-      <NftListForSale
-        orders={orders}
-        domain={domainParam!}
-        address={domain}
-        withHandle={withHandle}
-        hiddenWhenEmpty
-      />
+      {showMarketplaceBanner && <ProfileMarketplaceBanner />}
+
+      {!isEmptyOrders && (
+        <NftListForSale
+          domain={domainParam!}
+          address={domain}
+          isLoadingOrders={isFetchingOrders}
+          orders={orders}
+        />
+      )}
 
       <NftCollections resolver={domain!} chainId={chainId} />
     </Suspense>

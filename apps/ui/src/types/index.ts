@@ -110,3 +110,10 @@ export type TokenInfo = {
 export interface ResolverDomainResponse {
   name: string;
 }
+
+export interface RegistryContractToken {
+  subId: string;
+  assetId: string;
+  image: string | undefined;
+  contractId: string;
+}

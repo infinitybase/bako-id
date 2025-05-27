@@ -1,22 +1,18 @@
 import BakoIdService from '@/services/bako-id';
 import { BakoIDQueryKeys } from '@/utils/constants';
 import { Networks } from '@/utils/resolverNetwork';
-import { useAccount } from '@fuels/react';
 import { useQuery } from '@tanstack/react-query';
-import { ZeroBytes32 } from 'fuels';
-import { isNil } from 'lodash';
 import { useChainId } from './useChainId';
 
-export const useResolverName = () => {
-  const { account } = useAccount();
-  const { chainId } = useChainId();
+export const useResolverName = (account: string) => {
+  const { chainId, isFetched } = useChainId();
 
   const { data, isLoading, ...rest } = useQuery({
-    queryKey: [BakoIDQueryKeys.NAME, account ?? ZeroBytes32, chainId],
+    queryKey: [BakoIDQueryKeys.NAME, account, chainId],
     queryFn: async () => {
       return BakoIdService.name(account!, chainId ?? Networks.MAINNET);
     },
-    enabled: !!account && !isNil(chainId),
+    enabled: !!account && isFetched,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });

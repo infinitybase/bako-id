@@ -33,6 +33,7 @@ export const Image = ({ src, alt, ...rest }: ImageProps) => {
           onLoad={handleOnLoad}
           fallbackSrc={EmptyImg.src}
           fallbackStrategy="onError"
+          aspectRatio="1/1"
           borderRadius="lg"
           {...rest}
         />

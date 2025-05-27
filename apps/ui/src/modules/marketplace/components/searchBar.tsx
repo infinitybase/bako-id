@@ -6,25 +6,29 @@ import {
   InputGroup,
   InputRightElement,
 } from '@chakra-ui/react';
+import { memo } from 'react';
 
-interface SeachBarProps {
-  onSearch: (value: string) => void;
+interface SearchBarProps {
+  onChange: (value: string) => void;
   placeholder?: string;
+  value: string;
 }
 
-export const SearchBar = ({
-  onSearch,
-  placeholder = 'Search for ID',
-}: SeachBarProps) => {
+const SearchBar = ({
+  onChange,
+  placeholder = 'Search for asset id, seller address or handle',
+  value,
+}: SearchBarProps) => {
   return (
     <FormControl>
       <InputGroup position="relative">
         <Input
-          onChange={(e) => onSearch(e.target.value)}
+          onChange={(e) => onChange(e.target.value)}
           placeholder=" "
           type="text"
           size="lg"
           variant="outlined"
+          value={value}
         />
 
         <FormLabel>{placeholder}</FormLabel>
@@ -41,3 +45,5 @@ export const SearchBar = ({
     </FormControl>
   );
 };
+
+export default memo(SearchBar);

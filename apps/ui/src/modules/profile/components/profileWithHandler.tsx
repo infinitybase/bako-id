@@ -9,15 +9,15 @@ import { ProfileCards } from './profileCards';
 export default function ProfileWithHandler({
   domain,
   domainParam,
-  isLoadingDomain,
   owner,
   orders,
+  isFetchingOrders,
 }: {
   domain: string;
   domainParam: string;
-  isLoadingDomain: boolean;
   owner: string;
   orders: PaginationResult<Order> | undefined;
+  isFetchingOrders: boolean;
 }) {
   const { isMobile } = useScreenSize();
   const drawer = useDisclosure();
@@ -78,10 +78,10 @@ export default function ProfileWithHandler({
               <ProfileCards
                 domain={domain}
                 domainParam={domainParam}
-                isLoading={isLoadingDomain}
                 owner={owner}
                 orders={orders}
                 withHandle
+                isFetchingOrders={isFetchingOrders}
               />
             </Box>
           </Center>
