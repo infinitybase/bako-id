@@ -20,7 +20,11 @@ const generateCustomUniqueId = (prefix: string, bits: string): string => {
 };
 
 Marketplace.AssetFeeAdjustedEvent.handler(async ({ event, context }) => {
-  const asset = await context.Asset.get(event.params.asset.bits);
+  const id = generateCustomUniqueId(
+    parseNetworkName(event.chainId),
+    event.params.asset.bits
+  );
+  const asset = await context.Asset.get(id);
   if (asset) {
     context.Asset.set({
       ...asset,
