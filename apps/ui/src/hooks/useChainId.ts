@@ -1,5 +1,7 @@
-import { type UseNamedQueryParams, useProvider } from '@fuels/react';
+import { useProvider, type UseNamedQueryParams } from '@fuels/react';
 import { useQuery } from '@tanstack/react-query';
+import { Provider } from 'fuels';
+import { useMemo } from 'react';
 
 type UseChainParams<TName extends string, TData> = {
   /**
@@ -9,12 +11,17 @@ type UseChainParams<TName extends string, TData> = {
 };
 
 export const useChainId = (
-  params?: UseChainParams<'chainId', number | null>,
+  params?: UseChainParams<'chainId', number | null>
 ) => {
-  const { provider } = useProvider();
+  const { provider: fuelProvider } = useProvider();
+
+  const provider = useMemo(
+    () => fuelProvider || new Provider(import.meta.env.VITE_PROVIDER_URL),
+    [fuelProvider]
+  );
 
   const { data, ...rest } = useQuery({
-    queryKey: ['chainId', provider?.url],
+    queryKey: ['chainId', provider],
     queryFn: async () => {
       try {
         const currentFuelChain = await provider?.getChainId();
