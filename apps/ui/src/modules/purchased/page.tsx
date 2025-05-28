@@ -181,6 +181,8 @@ export const Purchased = ({
           gap={4}
           p={2}
           color="info.200"
+          borderColor="info.950"
+          borderWidth="1px"
           lineHeight="shorter"
         >
           <InfoIcon fontSize="xl" />
