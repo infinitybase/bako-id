@@ -27,7 +27,7 @@ type UseCollectionsProps = {
 type NFTMetadata = Record<string, string>;
 type CachedMetadata = Record<string, NFTMetadata>;
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 18;
 
 export const useCollections = ({
   address,
