@@ -15,7 +15,7 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
-import { useSearch } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { ZeroBytes32 } from 'fuels';
 import { useMemo, useState } from 'react';
 import NftSaleCard from './NftSaleCard';
@@ -32,14 +32,18 @@ export const NftListForSale = ({
   orders: PaginationResult<Order> | undefined;
 }) => {
   const [isDelistOrder, setIsDelistOrder] = useState(false);
-  const { page } = useSearch({
-    strict: false,
-  });
+  const { page } = useSearch({ strict: false });
+  const navigate = useNavigate();
   const { wallet } = useWallet();
   const { data } = useResolverName(wallet?.address.b256Address || ZeroBytes32);
 
   const handleDelistOrder = () => {
     setIsDelistOrder((prev) => !prev);
+  };
+
+  const handlePageChange = (page: number) => {
+    // @ts-expect-error - TODO: add type for page in router schema
+    navigate({ search: { page } });
   };
 
   const isEmptyOrders = useMemo(() => !orders?.data?.length, [orders]);
@@ -114,6 +118,7 @@ export const NftListForSale = ({
           hasNextPage={orders?.hasNextPage}
           hasPreviousPage={orders?.hasPreviousPage}
           isLoading={isLoadingOrders}
+          onPageChange={handlePageChange}
         />
       </GridItem>
     </Card>
