@@ -66,7 +66,6 @@ export const NftSaleCardModal = ({
             isCanceling={isCanceling}
             onClose={onClose}
             usdValue={usdValue}
-            userWithHandle={withHandle}
             value={value}
             onEdit={handleChangeStepToSell}
           />

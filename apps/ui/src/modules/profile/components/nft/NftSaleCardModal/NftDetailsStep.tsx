@@ -2,10 +2,8 @@ import UnknownAsset from '@/assets/unknown-asset.png';
 import { EditIcon, LightIcon, UserIcon, useCustomToast } from '@/components';
 import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
-import { ExchangeDolarIcon } from '@/components/icons/exchangeDolar';
 import { useResolverName } from '@/hooks';
 import { useExecuteOrder } from '@/hooks/marketplace';
-import { useGetAsset } from '@/hooks/marketplace/useGetAsset';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
 import { useAssetsBalance } from '@/hooks/useAssetsBalance';
 import type { Order } from '@/types/marketplace';
@@ -26,7 +24,6 @@ import {
 } from '@chakra-ui/react';
 import { useConnectUI } from '@fuels/react';
 import { Link } from '@tanstack/react-router';
-import { bn } from 'fuels';
 import { entries } from 'lodash';
 import { useCallback, useMemo } from 'react';
 import { NftListMetadata } from '../NftListMetadata';
@@ -35,7 +32,6 @@ import { NftMetadataBlock } from '../NftMetadataBlock';
 export default function NftDetailsStep({
   onClose,
   order,
-  userWithHandle,
   value,
   isOwner,
   usdValue,
@@ -45,7 +41,6 @@ export default function NftDetailsStep({
 }: {
   order: Order;
   onClose: () => void;
-  userWithHandle: boolean;
   value: string;
   isOwner: boolean;
   usdValue: string;
@@ -60,16 +55,8 @@ export default function NftDetailsStep({
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
     order.seller
   );
-  const { data: assetData, isLoading: isLoadingAsset } = useGetAsset(
-    order.asset?.id || ''
-  );
   const { data: sellerDomain, isLoading: isLoadingDomain } = useResolverName(
     order.seller
-  );
-
-  const assetFee = useMemo(
-    () => (userWithHandle ? assetData?.fees?.[1] : assetData?.fees?.[0]),
-    [assetData, userWithHandle]
   );
 
   const currentSellAssetBalance = useMemo(
@@ -190,18 +177,6 @@ export default function NftDetailsStep({
             </Link>
           </Skeleton>
         </GridItem>
-
-        {(assetFee || isLoadingAsset) && (
-          <GridItem>
-            <Skeleton isLoaded={!isLoadingAsset} borderRadius="md">
-              <NftMetadataBlock
-                title="Application Fee"
-                value={`${bn(assetFee).formatUnits(2)}%`}
-                icon={<ExchangeDolarIcon />}
-              />
-            </Skeleton>
-          </GridItem>
-        )}
       </Grid>
 
       <Stack direction="row" alignItems="center" justifyContent="space-between">
