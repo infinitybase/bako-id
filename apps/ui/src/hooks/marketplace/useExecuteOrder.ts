@@ -1,22 +1,19 @@
 import type { Order } from '@/types/marketplace';
 import { MarketplaceQueryKeys } from '@/utils/constants';
 import type { PaginationResult } from '@/utils/pagination';
-import { useAccount } from '@fuels/react';
 import { useQueryClient, type InfiniteData } from '@tanstack/react-query';
 import { useSearch } from '@tanstack/react-router';
 import { useChainId } from '../useChainId';
 import { useMutationWithPolling } from '../useMutationWithPolling';
 import { useMarketplace } from './useMarketplace';
 
-export const useExecuteOrder = () => {
+export const useExecuteOrder = (sellerAddr: string) => {
   const marketplaceContract = useMarketplace();
-  const { account } = useAccount();
   const queryClient = useQueryClient();
   const { chainId } = useChainId();
   const { page: pageUrl, search } = useSearch({ strict: false });
 
   const page = Number(pageUrl || 1);
-  const address = account?.toLowerCase();
 
   const {
     mutate: executeOrder,
@@ -36,16 +33,18 @@ export const useExecuteOrder = () => {
       {
         getQueryKey: () => [
           MarketplaceQueryKeys.ORDERS,
-          address,
+          sellerAddr,
           page,
           chainId,
         ],
         isDataReady: (data: PaginationResult<Order> | undefined, orderId) => {
-          if (!data) return true;
+          if (!data) {
+            return true;
+          }
 
           const order = data.data.find((order) => order.id === orderId);
 
-          return !!order;
+          return !order;
         },
       },
       {
