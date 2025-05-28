@@ -244,7 +244,7 @@ export default function NftDetailsStep({
             variant="primary"
             py={4}
             isLoading={isExecuting}
-            disabled={notEnoughBalance}
+            disabled={notEnoughBalance || isExecuting}
             onClick={handleExecuteOrder}
           >
             Buy
