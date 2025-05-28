@@ -3,9 +3,9 @@ import { ContractIcon } from '@/components/icons/contracticon';
 import { parseURI } from '@/utils';
 import { Box, Flex, Heading, Stack, Text } from '@chakra-ui/react';
 import { useMemo } from 'react';
-import { NftModal } from './modal';
 import { NftListMetadata } from './NftListMetadata';
 import { NftMetadataBlock } from './NftMetadataBlock';
+import { NftModal } from './modal';
 
 interface NftCardModalProps {
   assetId: string;
@@ -57,7 +57,7 @@ export const NftCollectionCardModal = ({
           maxH={{ md: '480px' }}
         >
           <Heading fontSize="xl">{nftName}</Heading>
-          <Stack spacing={6} flex={1} mt={6} maxH="full" overflowY="hidden">
+          <Stack spacing={6} flex={1} mt={6} maxH="full">
             <Box>
               <Heading fontSize="md">Description</Heading>
               <Text mt={3} fontSize="sm" color="section.500">

@@ -1,5 +1,6 @@
 import { marketplaceClient } from '@/services/marketplace';
 import { OrderStatus } from '@/types/marketplace';
+import { resolverNetworkByChainId } from '@/utils';
 import { getOrderMetadata } from './getOrderMetadata';
 import { getPagination } from './pagination';
 
@@ -8,12 +9,16 @@ export const getInitialOrders = async (
   chainId: number,
   page: number
 ) => {
+  const network = resolverNetworkByChainId(chainId);
   const where = {
     seller: {
       _eq: address,
     },
     status: {
       _eq: OrderStatus.CREATED,
+    },
+    network: {
+      _eq: network,
     },
   };
 
