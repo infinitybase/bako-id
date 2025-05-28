@@ -68,7 +68,7 @@ export default function NftDetailsStep({
   );
 
   const assetFee = useMemo(
-    () => (userWithHandle ? assetData?.fees[1] : assetData?.fees[0]),
+    () => (userWithHandle ? assetData?.fees?.[1] : assetData?.fees?.[0]),
     [assetData, userWithHandle]
   );
 
