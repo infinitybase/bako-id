@@ -43,7 +43,7 @@ export default function NftFormStep({
   );
 
   return (
-    <Stack w="full" spacing={6}>
+    <Stack w="full" spacing={4} h="480px">
       <Heading>{name}</Heading>
 
       <Text color="grey.subtitle">
