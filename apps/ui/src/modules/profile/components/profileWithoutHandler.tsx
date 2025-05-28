@@ -1,4 +1,3 @@
-import { useChainId } from '@/hooks/useChainId';
 import type { Order } from '@/types/marketplace';
 import type { PaginationResult } from '@/utils/pagination';
 import { Container, Stack } from '@chakra-ui/react';
@@ -14,7 +13,6 @@ export default function ProfileWithoutHandler({
   orders: PaginationResult<Order> | undefined;
   isLoadingOrders?: boolean;
 }) {
-  const { chainId } = useChainId();
   const { domain: domainParam } = useParams({ strict: false });
 
   const address = domainParam.toLowerCase();
@@ -43,7 +41,7 @@ export default function ProfileWithoutHandler({
           isLoadingOrders={isLoadingOrders}
         />
 
-        <NftCollections resolver={address} chainId={chainId} />
+        <NftCollections resolver={address} />
       </Stack>
     </Container>
   );
