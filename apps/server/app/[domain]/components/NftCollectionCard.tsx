@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 import nftEmpty from '@/assets/nft-empty.png';
 import type { FuelAsset } from '@/services/fuel-assets';
-import { formatAddress } from '@/utils';
+import { formatAddress, parseURI } from '@/utils';
 import { NftCollectionCardModal } from './NftCollectionCardModal';
 import { NftCard } from './card';
 
@@ -22,13 +22,15 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
 
   const hasSrc20Name = name && symbol;
 
-  const nftName = (
-    <>
-      {hasSrc20Name && `${symbol} ${name}`}
-      {!hasSrc20Name && defaultMetadata?.name && defaultMetadata.name}
-      {!hasSrc20Name && !defaultMetadata?.name && formatAddress(assetId)}
-    </>
-  );
+  const nftName = useMemo(() => {
+    if (hasSrc20Name) {
+      return `${symbol} ${name}`;
+    }
+    if (defaultMetadata?.name) {
+      return defaultMetadata.name;
+    }
+    return formatAddress(assetId) || 'Unknown NFT';
+  }, [hasSrc20Name, symbol, name, defaultMetadata?.name, assetId]);
 
   const edition = defaultMetadata?.edition;
 
@@ -44,9 +46,13 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
         onClose={dialog.onClose}
       />
 
-      <NftCard.Root onClick={dialog.onOpen} cursor="pointer">
+      <NftCard.Root
+        onClick={dialog.onOpen}
+        cursor="pointer"
+        position="relative"
+      >
         {edition && <NftCard.EditionBadge edition={`#${edition}`} />}
-        <NftCard.Image maxW="full" src={props.asset.image ?? image} />
+        <NftCard.Image src={props.asset.image ?? image} alt={nftName} />
         <NftCard.Content spacing={2}>
           <Text fontSize="sm">{nftName}</Text>
         </NftCard.Content>

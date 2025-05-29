@@ -1,27 +1,31 @@
 import EmptyImg from '@/assets/nft-empty.png';
-import {
-  Image as ChakraImg,
-  Skeleton,
-  type ImageProps,
-} from '@chakra-ui/react';
-import { useState } from 'react';
+import { Skeleton } from '@chakra-ui/react';
+import NextImage, { type ImageProps } from 'next/image';
+import { useMemo, useState } from 'react';
 
 export const Image = ({ ...props }: ImageProps) => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [status, setStatus] = useState<'loading' | 'error' | 'idle'>('loading');
 
   const handleOnLoad = () => {
-    setIsLoading(false);
+    setStatus('idle');
   };
 
+  const handleOnError = () => {
+    setStatus('error');
+  };
+
+  const isLoading = useMemo(() => status === 'loading', [status]);
+  const isError = useMemo(() => status === 'error', [status]);
+
   return (
-    <Skeleton isLoaded={!isLoading}>
-      <ChakraImg
+    <Skeleton isLoaded={!isLoading} position="relative" aspectRatio="1/1">
+      <NextImage
         onLoad={handleOnLoad}
-        fallbackSrc={EmptyImg.src}
-        fallbackStrategy="onError"
-        borderTopRadius="8px"
-        aspectRatio="1/1"
+        onError={handleOnError}
+        style={{ borderTopRightRadius: '8px', borderTopLeftRadius: '8px' }}
         {...props}
+        src={isError ? EmptyImg.src : props.src!}
+        fill
       />
     </Skeleton>
   );

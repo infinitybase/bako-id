@@ -1,6 +1,6 @@
 import { CopyText } from '@/components/copy';
 import { formatAddress } from '@/utils';
-import { Box, Flex, type FlexProps, Icon, Text } from '@chakra-ui/react';
+import { Box, Flex, Icon, Text, type FlexProps } from '@chakra-ui/react';
 import { isB256 } from 'fuels';
 import type { ReactNode } from 'react';
 
@@ -54,7 +54,7 @@ export const NftMetadataBlock = ({
         {title}
       </Text>
       <Flex gap={2}>
-        <Text fontSize="xs">
+        <Text fontSize="xs" overflowWrap="anywhere">
           {isB256(value!) ? formatAddress(value!, 9) : value}
         </Text>
         {isCopy && <CopyText value={value!} />}

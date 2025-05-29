@@ -19,6 +19,7 @@ export const EditionBadge = ({ edition, ...props }: EditionBadgeProps) => {
       fontWeight="semibold"
       letterSpacing="0.5px"
       fontSize="sm"
+      zIndex={2}
       {...props}
     >
       {edition}

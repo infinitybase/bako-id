@@ -69,7 +69,7 @@ export const NftSaleCardModal = ({
           md: 'hidden',
         }}
       >
-        <NftModal.Image w="full" src={imageUrl} alt={name} />
+        <NftModal.Image src={imageUrl} alt={name} />
         <Stack
           gap={8}
           w="full"
