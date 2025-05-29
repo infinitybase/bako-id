@@ -112,4 +112,16 @@ export const formatMetadataFromIpfs = (metadata: Record<string, string>) => {
   return metadataObject;
 };
 
+export const fetchMetadata = async (
+  uri: string
+): Promise<Record<string, string>> => {
+  try {
+    const response = await fetch(parseURI(uri));
+    const json = await response.json();
+    return json;
+  } catch {
+    return {};
+  }
+};
+
 export { formatAddress, formatTimeWithTimeZone };
