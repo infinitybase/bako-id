@@ -10,7 +10,7 @@ import { NftModal } from './modal';
 interface NftCardModalProps {
   assetId: string;
   contractId?: string;
-  nftName: React.ReactNode;
+  nftName: string;
   metadata?: Record<string, string>;
   image: string;
   isOpen: boolean;
@@ -46,7 +46,7 @@ export const NftCollectionCardModal = ({
           md: 'hidden',
         }}
       >
-        <NftModal.Image w="full" src={parseURI(image)} alt="NFT image" />
+        <NftModal.Image src={parseURI(image)} alt={nftName} />
         <Stack
           w="full"
           overflowY={{
