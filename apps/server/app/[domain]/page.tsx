@@ -83,7 +83,7 @@ export default async function Page({ params, searchParams }: Props) {
     resolverAddress?.Address?.bits || resolverAddress?.ContractId?.bits;
 
   const ordersPage = Number((await searchParams).page ?? 1);
-  const initialOrders = await getInitialOrders(address!, chainId, ordersPage);
+  const initialOrders = await getInitialOrders(address, chainId, ordersPage);
 
   return <ProfilePage chainId={chainId} initialOrders={initialOrders} />;
 }

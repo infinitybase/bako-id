@@ -4,11 +4,21 @@ import { resolverNetworkByChainId } from '@/utils';
 import { getOrderMetadata } from './getOrderMetadata';
 import { getPagination } from './pagination';
 
+const LIMIT = 12;
+
 export const getInitialOrders = async (
-  address: string,
+  address: string | undefined,
   chainId: number,
   page: number
 ) => {
+  if (!address) {
+    return getPagination({
+      data: [],
+      page,
+      limit: LIMIT,
+      total: 0,
+    });
+  }
   const network = resolverNetworkByChainId(chainId);
   const where = {
     seller: {
@@ -22,12 +32,11 @@ export const getInitialOrders = async (
     },
   };
 
-  const limit = 12;
   const total = await marketplaceClient.getOrdersCount({ where });
   const orders = await marketplaceClient.getOrders({
     where,
-    count: limit,
-    offset: (page - 1) * limit,
+    count: LIMIT,
+    offset: (page - 1) * LIMIT,
   });
 
   const ordersWithMetadata = await Promise.all(
@@ -37,7 +46,7 @@ export const getInitialOrders = async (
   return getPagination({
     data: ordersWithMetadata,
     page,
-    limit,
+    limit: LIMIT,
     total,
   });
 };
