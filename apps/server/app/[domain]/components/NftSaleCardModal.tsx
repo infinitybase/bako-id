@@ -14,9 +14,9 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { useMemo } from 'react';
-import { NftModal } from './modal';
 import { NftListMetadata } from './NftListMetadata';
 import { NftMetadataBlock } from './NftMetadataBlock';
+import { NftModal } from './modal';
 
 interface NftSaleCardModalProps {
   orderId: string;
@@ -91,8 +91,8 @@ export const NftSaleCardModal = ({
           <Grid templateColumns="repeat(2, 1fr)" gap={4}>
             <GridItem>
               <NftMetadataBlock
-                title="Token ID"
-                value={nft.edition?.replace('#', '') ?? ''}
+                title="Asset ID"
+                value={nft.id}
                 icon={<BTCIcon />}
                 isCopy
               />

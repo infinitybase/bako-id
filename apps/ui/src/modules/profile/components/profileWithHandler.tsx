@@ -73,7 +73,7 @@ export default function ProfileWithHandler({
               maxH={['80vh', '80vh', '75vh', '80vh']}
               display="flex"
               flexDirection="column"
-              gap={12}
+              gap={6}
             >
               <ProfileCards
                 domain={domain}

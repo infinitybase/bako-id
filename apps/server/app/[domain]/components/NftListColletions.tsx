@@ -3,10 +3,10 @@
 import { Card } from '@/components/card';
 import { metadataArrayToObject } from '@/helpers/metadata';
 import { queryClient } from '@/providers';
-import { type FuelAsset, FuelAssetService } from '@/services/fuel-assets';
+import { FuelAssetService, type FuelAsset } from '@/services/fuel-assets';
 import { parseURI } from '@/utils';
 import { contractsId } from '@bako-id/contracts';
-import { Box, Flex, Grid, Heading, HStack, Skeleton } from '@chakra-ui/react';
+import { Box, Flex, Grid, HStack, Heading, Skeleton } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { NftCollectionCard } from './NftCollectionCard';
@@ -38,7 +38,7 @@ export const NftListCollections = ({
           ([key]) => !['uri', 'image'].includes(key.toLowerCase())
         );
 
-        if (metadataEntries.length === 0 && nft.uri?.endsWith('.json')) {
+        if (metadataEntries.length === 0 && nft.uri) {
           const json: Record<string, string> = await fetch(parseURI(nft.uri))
             .then((res) => res.json())
             .catch(() => ({}));
@@ -128,8 +128,6 @@ export const NftListCollections = ({
         }) ?? [],
     [data]
   );
-
-  console.log({ nftCollections });
 
   if (isLoading) {
     return (

@@ -23,8 +23,7 @@ export const getPagination = <T>({
 }: PaginationProps<T>): PaginationResult<T> => {
   const hasNextPage = page * limit < total;
   const totalPages = Math.ceil(total / limit);
-  // if page = 3 and totalPages = 2 => hasPreviousPage = false but is true because has page 2
-  const hasPreviousPage = totalPages > 1 ? page > 1 : false;
+  const hasPreviousPage = page > 1;
 
   return {
     data,
