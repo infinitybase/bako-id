@@ -53,8 +53,13 @@ export const NftListForSale = ({
     [wallet?.address, address]
   );
 
+  const userWithoutHandle = useMemo(() => !data, [data]);
+
+  const hiddenCard =
+    (isEmptyOrders && !isOwner) || (isEmptyOrders && userWithoutHandle);
+
   return (
-    <Card hidden={isEmptyOrders && !isOwner} gap={6} order={isOwner ? 1 : 0}>
+    <Card hidden={hiddenCard} gap={6} order={isOwner ? 1 : 0}>
       <Stack justifyContent="space-between" direction="row" alignItems="center">
         <Heading fontSize="lg">
           <Heading fontSize="lg" as="span" color="yellow.500">

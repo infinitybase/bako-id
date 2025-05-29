@@ -28,9 +28,9 @@ export const NftListForSale = ({
     page: '1',
   });
 
-  const { orders, isLoading } = useListOrders({
+  const { orders, isLoading, isPlaceholderData } = useListOrders({
     account: address,
-    page: query.page ? Number(query.page) : undefined,
+    page: Number(query.page ?? '1'),
     chainId,
     initialOrders,
   });
@@ -64,7 +64,7 @@ export const NftListForSale = ({
         }}
         gap={6}
       >
-        {isLoading && (
+        {(isLoading || isPlaceholderData) && (
           <Fragment>
             {Array.from({ length: 6 }, () => (
               <GridItem key={crypto.randomUUID()}>
@@ -74,16 +74,17 @@ export const NftListForSale = ({
           </Fragment>
         )}
 
-        {orders?.data?.map((order) => (
-          <GridItem key={order.id}>
-            <NftSaleCard
-              orderId={order.id}
-              asset={order.asset}
-              value={bn(order.itemPrice).formatUnits(order.asset?.decimals)}
-              nft={order.nft}
-            />
-          </GridItem>
-        ))}
+        {!isPlaceholderData &&
+          orders?.data?.map((order) => (
+            <GridItem key={order.id}>
+              <NftSaleCard
+                orderId={order.id}
+                asset={order.asset}
+                value={bn(order.itemPrice).formatUnits(order.asset?.decimals)}
+                nft={order.nft}
+              />
+            </GridItem>
+          ))}
 
         {isEmptyOrders && !isLoading && (
           <GridItem colSpan={6} textAlign="center">
@@ -103,6 +104,7 @@ export const NftListForSale = ({
           totalPages={orders?.totalPages}
           hasNextPage={orders?.hasNextPage}
           hasPreviousPage={orders?.hasPreviousPage}
+          isFetching={isLoading || isPlaceholderData}
         />
       </GridItem>
     </Card>

@@ -88,3 +88,19 @@ export const fetchMetadata = async (
     return {};
   }
 };
+
+export const resolverNetworkByChainId = (chainId: number) => {
+  switch (chainId) {
+    case 9889:
+      return Networks.MAINNET;
+    case 0:
+      return Networks.TESTNET;
+    default:
+      throw new Error(`Unsupported chain ID: ${chainId}`);
+  }
+};
+
+export enum NetworkId {
+  MAINNET = 9889,
+  TESTNET = 0,
+}

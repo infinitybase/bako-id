@@ -1,3 +1,4 @@
+import { NetworkId, resolverNetworkByChainId } from '@/utils';
 import type { OrderResponse } from './getOrderMetadata';
 
 interface RequestOptions extends RequestInit {
@@ -26,8 +27,12 @@ export const getOrders = async (
   params?: Record<string, string>
 ) => {
   const queryParams = new URLSearchParams(params).toString();
+  const chainId = params?.chainId;
+  const network = resolverNetworkByChainId(
+    Number(chainId || NetworkId.MAINNET)
+  );
   const response = await request<{ orders: OrderResponse[]; total: number }>({
-    url: `/api/marketplace/orders/${address}?${queryParams}`,
+    url: `/api/${network}/marketplace/orders/${address}?${queryParams}`,
     method: 'GET',
   });
 

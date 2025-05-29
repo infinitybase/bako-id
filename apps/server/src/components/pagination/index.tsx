@@ -7,7 +7,7 @@ interface PaginationProps {
   hasNextPage?: boolean;
   hasPreviousPage?: boolean;
   onPageChange: (page: number) => void;
-  isLoading?: boolean;
+  isFetching?: boolean;
 }
 
 export const Pagination = ({
@@ -16,7 +16,7 @@ export const Pagination = ({
   hasNextPage = false,
   hasPreviousPage = false,
   onPageChange,
-  isLoading = false,
+  isFetching,
 }: PaginationProps) => {
   return (
     <>
@@ -26,7 +26,7 @@ export const Pagination = ({
       <IconButton
         aria-label="Previous Page"
         variant="unstyled"
-        disabled={!hasPreviousPage || isLoading}
+        disabled={!hasPreviousPage || isFetching}
         size="sm"
         onClick={() => onPageChange(page - 1)}
       >
@@ -35,7 +35,7 @@ export const Pagination = ({
       <IconButton
         aria-label="Next Page"
         variant="unstyled"
-        disabled={!hasNextPage || isLoading}
+        disabled={!hasNextPage || isFetching}
         size="sm"
         onClick={() => onPageChange(page + 1)}
       >

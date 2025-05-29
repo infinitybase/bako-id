@@ -120,7 +120,7 @@ export const NftListCollections = ({
             hasPreviousPage={page > 1}
             page={page}
             totalPages={totalPages}
-            isLoading={isPlaceholderData}
+            isFetching={isPlaceholderData}
           />
         </Stack>
       )}

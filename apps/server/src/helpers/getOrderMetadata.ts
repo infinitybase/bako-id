@@ -47,7 +47,7 @@ export const getOrderMetadata = async (
   const fuelMetadata = await getAssetMetadata(order.itemAsset, chainId);
   const ipfsMetadata: Record<string, string> = {};
 
-  if (fuelMetadata?.uri?.endsWith('.json')) {
+  if (fuelMetadata?.uri) {
     const json: Record<string, string> = await fetch(fuelMetadata.uri)
       .then((res) => res.json())
       .catch(() => ({}));
