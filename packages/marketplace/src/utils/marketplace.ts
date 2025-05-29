@@ -6,7 +6,10 @@ import {
   ResolverMockFactory,
   type Marketplace,
 } from '../artifacts/contracts';
-import type { AdjustFeeTypeInput } from '../artifacts/contracts/Marketplace';
+import type {
+  AdjustFeeTypeInput,
+  WithdrawFeeEventOutput,
+} from '../artifacts/contracts/Marketplace';
 
 export const callAndWait = async <T extends unknown[], R>(
   method: FunctionInvocationScope<T, R>
@@ -103,4 +106,18 @@ export const createOrder = async (
   );
 
   return orderCreatedEvent;
+};
+
+export const withdrawFees = async (
+  marketplace: Marketplace,
+  recipient: string,
+  asset: string
+): Promise<WithdrawFeeEventOutput> => {
+  const {
+    logs: [withdrawFeeEvent],
+  } = await callAndWait(
+    marketplace.functions.withdraw_fees({ bits: recipient }, { bits: asset })
+  );
+
+  return withdrawFeeEvent;
 };
