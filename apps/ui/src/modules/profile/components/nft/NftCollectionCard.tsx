@@ -13,6 +13,7 @@ import { NftCard } from './card';
 interface NftCollectionCardProps {
   asset: FuelAsset & { image?: string };
   assets: Asset[];
+  resolver: string;
 }
 
 export const NftCollectionCard = (props: NftCollectionCardProps) => {
@@ -45,8 +46,8 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
   const hasSrc20Name = name && symbol;
   const ownerDomain = wallet?.address.b256Address;
   const isOwner = useMemo(
-    () => ownerDomain === props.asset.owner,
-    [ownerDomain, props.asset.owner]
+    () => ownerDomain === props.resolver,
+    [ownerDomain, props.resolver]
   );
 
   const isBakoIdNft = useMemo(
