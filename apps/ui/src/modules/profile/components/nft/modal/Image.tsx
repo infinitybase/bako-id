@@ -5,19 +5,27 @@ import {
   Skeleton,
   type ImageProps,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 export const Image = ({ src, alt, ...rest }: ImageProps) => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [status, setStatus] = useState<'loading' | 'error' | 'idle'>('loading');
 
   const handleOnLoad = () => {
-    setIsLoading(false);
+    setStatus('idle');
   };
+
+  const handleOnError = () => {
+    setStatus('error');
+  };
+
+  const isLoading = useMemo(() => status === 'loading', [status]);
+  const isError = useMemo(() => status === 'error', [status]);
 
   return (
     <Box
       boxSize={{
-        base: '330px',
+        base: 'full',
+        sm: '330px',
         md: 'full',
       }}
       minH={{
@@ -28,13 +36,14 @@ export const Image = ({ src, alt, ...rest }: ImageProps) => {
     >
       <Skeleton isLoaded={!isLoading}>
         <ChakraImage
-          src={src}
           alt={alt}
           onLoad={handleOnLoad}
           fallbackSrc={EmptyImg}
+          onError={handleOnError}
           borderRadius="lg"
           aspectRatio="1/1"
           {...rest}
+          src={isError ? EmptyImg : src}
         />
       </Skeleton>
     </Box>
