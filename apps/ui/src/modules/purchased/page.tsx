@@ -1,4 +1,8 @@
+import { InfoIcon } from '@/components/icons/infoIcon';
+import { TransactionDomainDetailsModal } from '@/components/modal/transactionDetails';
+import { calculatePeriodYears } from '@/utils/calculator';
 import {
+  Alert,
   Box,
   Button,
   Card,
@@ -11,8 +15,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
-import { useNavigate } from '@tanstack/react-router';
-import { type TransactionResult, bn } from 'fuels';
+import { bn, type TransactionResult } from 'fuels';
 import { TwitterShareButton } from 'react-share';
 import {
   CheckoutCard,
@@ -22,12 +25,10 @@ import {
 } from '../../components';
 import { TransactionsDetailsButton } from '../../components/buttons/transactionsDetailsButton';
 import { ViewOnExplorerButton } from '../../components/buttons/viewOnExploreButton';
-import { TransactionDomainDetailsModal } from '../../components/modal/transactionDetails';
+import { useChainId } from '../../hooks/useChainId';
 import { useGetGracePeriod } from '../../hooks/useGetGracePeriod';
 import { useScreenSize } from '../../hooks/useScreenSize';
-import { calculatePeriodYears } from '../../utils/calculator';
 import { getExplorer } from '../../utils/getExplorer';
-import { useChainId } from '../../hooks/useChainId';
 
 interface IPurchased {
   domain: string;
@@ -44,7 +45,6 @@ export const Purchased = ({
   const { wallet } = useWallet();
   const modal = useDisclosure();
   const { isMobile } = useScreenSize();
-  const navigate = useNavigate();
 
   const { chainId } = useChainId();
   const explorerUrl = getExplorer(chainId);
@@ -52,7 +52,7 @@ export const Purchased = ({
   const year = calculatePeriodYears(dates?.timestamp, dates?.gracePeriod);
 
   const mainOperation = transaction.operations.find(
-    (op) => op.assetsSent && op.from?.address === wallet?.address.toB256(),
+    (op) => op.assetsSent && op.from?.address === wallet?.address.toB256()
   );
 
   const totalAmountPaidForNFT =
@@ -62,11 +62,11 @@ export const Purchased = ({
     ?.add(totalAmountPaidForNFT)
     .format();
 
-  const navigateToMyHandle = () => {
-    navigate({
-      to: `/profile/${domain.replace('@', '')}`,
-    });
-  };
+  // const navigateToMyHandle = () => {
+  //   navigate({
+  //     to: `/profile/${domain.replace('@', '')}`,
+  //   });
+  // };
 
   return (
     <Box
@@ -173,14 +173,30 @@ export const Purchased = ({
             </TwitterShareButton>
           </Button>
         </Stack>
-        <Button
+        <Alert
+          rounded="lg"
+          variant="solid"
+          bg="info.900"
+          fontSize="xs"
+          gap={2}
+          p={2}
+          color="info.200"
+          borderColor="info.950"
+          borderWidth="1px"
+          lineHeight="shorter"
+        >
+          <InfoIcon fontSize="xl" />
+          After purchase, the transaction may take 1–2 minutes to process.
+          Refresh the page afterward to see your Handle...
+        </Alert>
+        {/* <Button
           variant="secondary"
           borderColor="grey.100"
           color="grey.100"
           onClick={navigateToMyHandle}
         >
           Go to my Handle
-        </Button>
+        </Button> */}
       </Card>
       <TransactionDomainDetailsModal
         modalTitle="Transaction Details"
