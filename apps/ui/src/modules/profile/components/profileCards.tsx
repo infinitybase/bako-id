@@ -111,7 +111,7 @@ export const ProfileCards = ({
         />
       )}
 
-      <NftCollections resolver={domain!} chainId={chainId} />
+      <NftCollections resolver={domain!} />
     </Suspense>
   );
 };

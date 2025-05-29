@@ -77,6 +77,18 @@ export const resolveNetwork = {
   [Networks.MAINNET]: new Provider('https://mainnet.fuel.network/v1/graphql'),
 };
 
+export const fetchMetadata = async (
+  uri: string
+): Promise<Record<string, string>> => {
+  try {
+    const response = await fetch(parseURI(uri));
+    const json = await response.json();
+    return json;
+  } catch {
+    return {};
+  }
+};
+
 export const resolverNetworkByChainId = (chainId: number) => {
   switch (chainId) {
     case 9889:
