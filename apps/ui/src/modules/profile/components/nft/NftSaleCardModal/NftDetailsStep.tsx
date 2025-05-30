@@ -51,7 +51,9 @@ export default function NftDetailsStep({
   const { connect, isConnected } = useConnectUI();
   const { errorToast, successToast } = useCustomToast();
   const { assets } = useListAssets();
-  const { data: assetsBalance } = useAssetsBalance({ assets });
+  const { data: assetsBalance, isLoading: isLoadingBalance } = useAssetsBalance(
+    { assets }
+  );
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
     order.seller
   );
@@ -63,7 +65,7 @@ export default function NftDetailsStep({
     () =>
       assetsBalance
         ?.find((item) => item.id === order.asset?.id)
-        ?.balance.formatUnits(order.asset?.decimals),
+        ?.balance.formatUnits(order.asset?.decimals) || '0',
     [assetsBalance, order.asset?.id, order.asset?.decimals]
   );
 
@@ -214,17 +216,19 @@ export default function NftDetailsStep({
       )}
 
       {!isOwner && (
-        <Tooltip label={notEnoughBalance ? 'Not enough balance' : ''}>
-          <Button
-            variant="primary"
-            py={4}
-            isLoading={isExecuting}
-            disabled={notEnoughBalance || isExecuting}
-            onClick={handleExecuteOrder}
-          >
-            Buy
-          </Button>
-        </Tooltip>
+        <Skeleton isLoaded={!isLoadingBalance} borderRadius="md">
+          <Tooltip label={notEnoughBalance ? 'Not enough balance' : ''}>
+            <Button
+              variant="primary"
+              py={4}
+              isLoading={isExecuting}
+              disabled={notEnoughBalance || isExecuting}
+              onClick={handleExecuteOrder}
+            >
+              Buy
+            </Button>
+          </Tooltip>
+        </Skeleton>
       )}
 
       <NftListMetadata metadata={metadataArray} />

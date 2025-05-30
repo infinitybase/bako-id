@@ -35,8 +35,17 @@ export default function NftFormStep({
         });
         successToast({ title: 'Order created successfully!' });
         onClose();
-      } catch {
-        errorToast({ title: 'Failed to create order. Please try again.' });
+      } catch (e) {
+        const insufficientFundsError =
+          e instanceof Error && e?.message?.includes('Insufficient funds');
+        errorToast({
+          title: insufficientFundsError
+            ? 'Insufficient funds'
+            : 'Failed to create order. Please try again.',
+          description: insufficientFundsError
+            ? 'Not enough ethereum to cover the transaction fee'
+            : undefined,
+        });
       }
     },
     [assetId, createOrderAsync, errorToast, onClose, successToast]
