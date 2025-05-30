@@ -77,11 +77,21 @@ const NftSaleCard = ({
     [usdValue]
   );
 
-  const nftPrice = useMemo(() => Number(value), [value]);
+  const removeRightZeros = useCallback((num: string) => {
+    const parts = num.split('.');
+    if (parts.length === 2) {
+      parts[1] = parts[1].replace(/0+$/, '');
+      if (parts[1] === '') {
+        return parts[0]; // Return only the integer part if decimal part is empty
+      }
+      return parts.join('.');
+    }
+    return num; // Return the original number if no decimal part
+  }, []);
 
-  const valueWithoutRigthZeros = useMemo(
-    () => Number(value).toString(),
-    [value]
+  const nftPrice = useMemo(
+    () => removeRightZeros(value),
+    [value, removeRightZeros]
   );
 
   const assetSymbolUrl = order.asset?.icon || UnknownAsset;
@@ -153,7 +163,7 @@ const NftSaleCard = ({
           onClose={onClose}
           onCancelOrder={handleCancelOrder}
           isCanceling={isCanceling}
-          value={valueWithoutRigthZeros}
+          value={nftPrice}
           usdValue={currency}
           isOwner={isOwner}
           withHandle={withHandle}
