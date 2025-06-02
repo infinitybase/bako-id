@@ -3,7 +3,7 @@ import { getOrder } from '@/helpers/queries';
 import { ResolverContract } from '@bako-id/sdk';
 import { Provider } from 'fuels';
 import type { Metadata } from 'next';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 
 type Params = {
   params: Promise<{ orderId: string; domain: string }>;
@@ -46,11 +46,13 @@ export async function generateMetadata({ params }: Params) {
   return metadata;
 }
 
-const BAKO_MARKETPLACE_URL =
-  process.env.NEXT_PUBLIC_BAKO_MARKETPLACE_URL || 'https://localhost:5173';
+// const BAKO_MARKETPLACE_URL =
+//   process.env.NEXT_PUBLIC_BAKO_MARKETPLACE_URL || 'https://localhost:5173';
 
 export default async function Page({ params }: Params) {
   const { orderId } = await params;
+  console.log('Order ID:', orderId);
   // Maybe redirect in middleware
-  redirect(`${BAKO_MARKETPLACE_URL}/marketplace/order/${orderId}`);
+  // redirect(`${BAKO_MARKETPLACE_URL}/marketplace/order/${orderId}`);
+  return null;
 }
