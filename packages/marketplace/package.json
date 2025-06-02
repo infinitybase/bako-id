@@ -17,6 +17,7 @@
     "build": "tsup",
     "build:sway": "pnpm fuels build",
     "contract:deploy": "ts-node scripts/deploy.ts",
+    "contract:asset": "ts-node scripts/add-asset.ts",
     "codegen": "gql-gen --config codegen.sdk.ts"
   },
   "license": "ISC",

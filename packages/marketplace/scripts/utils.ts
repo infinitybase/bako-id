@@ -1,4 +1,4 @@
-import { Account, Provider, Src14OwnedProxy, Src14OwnedProxyFactory, ZeroBytes32 } from 'fuels';
+import { Account, bn, Provider, Src14OwnedProxy, Src14OwnedProxyFactory, ZeroBytes32 } from 'fuels';
 import { _getContractId, callAndWait, ContractsMap } from '../src/utils';
 import { MarketplaceFactory } from '../src/artifacts';
 import bakoContracts from '../../contracts/src/artifacts/contracts-fuel.json';
@@ -92,3 +92,45 @@ export const deployMarketplace = async (config: DeployConfig) => {
 
   return contract;
 };
+
+export const mainnetAssets = [
+  {
+    // Fuel
+    assetId: '0x1d5d97005e41cae2187a895fd8eab0506111e0e2f3331cd3912c15c24e3c1d82',
+    baseFee: bn(4).mul(100),
+    discountedFee: bn(3).mul(100)
+  },
+  {
+    // USDC
+    assetId: '0x286c479da40dc953bddc3bb4c453b608bba2e0ac483b077bd475174115395e6b',
+    baseFee: bn(4).mul(100),
+    discountedFee: bn(3).mul(100)
+  },
+  {
+    // USDT
+    assetId: '0xa0265fb5c32f6e8db3197af3c7eb05c48ae373605b8165b6f4a51c5b0ba4812e',
+    baseFee: bn(4).mul(100),
+    discountedFee: bn(3).mul(100)
+  },
+  {
+    // ETH
+    assetId: '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07',
+    baseFee: bn(4).mul(100),
+    discountedFee: bn(3).mul(100)
+  },
+];
+
+export const getAssetsConfig = (chainId: number) => {
+  if (chainId === 9889) {
+    return mainnetAssets;
+  }
+
+  return [
+    {
+      // ETH
+      assetId: '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07',
+      baseFee: bn(4).mul(100),
+      discountedFee: bn(3).mul(100)
+    }
+  ]
+}
