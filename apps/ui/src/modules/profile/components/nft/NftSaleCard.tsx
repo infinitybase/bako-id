@@ -17,6 +17,7 @@ interface NftSaleCardProps {
   isOwner: boolean;
   showBuyButton: boolean;
   withHandle: boolean;
+  openModalOnClick?: boolean;
 }
 
 const NftSaleCard = ({
@@ -24,11 +25,12 @@ const NftSaleCard = ({
   showDelistButton,
   isOwner,
   showBuyButton,
+  openModalOnClick = true,
   withHandle,
 }: NftSaleCardProps) => {
   const { successToast, errorToast } = useCustomToast();
   const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
-  const { isOpen, onClose } = useDisclosure();
+  const { isOpen, onClose, onOpen } = useDisclosure();
   const delistModal = useDisclosure();
 
   const handleCancelOrder = useCallback(async () => {
@@ -85,8 +87,14 @@ const NftSaleCard = ({
   const imageUrl = order.nft?.image || nftEmpty;
   const name = order.nft?.name || 'Unknown NFT';
 
+  const handleCardClick = () => {
+    if (openModalOnClick) {
+      onOpen();
+    }
+  };
+
   return (
-    <NftCard.Root cursor="pointer" minH="240px">
+    <NftCard.Root onClick={handleCardClick} cursor="pointer" minH="240px">
       {order.nft?.edition && (
         <NftCard.EditionBadge edition={order.nft?.edition} />
       )}

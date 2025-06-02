@@ -1,13 +1,27 @@
 import { NftModal } from '@/modules/profile/components/nft/modal';
-import { Skeleton } from '@chakra-ui/react';
+import { SimpleGrid, Skeleton, Stack } from '@chakra-ui/react';
 
-export const OrderSkeleton = ({ handleClose }: { handleClose: () => void }) => {
+export const OrderSkeleton = () => {
   return (
-    <NftModal.Root isOpen onClose={handleClose}>
-      <NftModal.Content h="540px">
-        <NftModal.Image w="full" src="" alt="Loading..." />
-        <Skeleton height="full" />
-      </NftModal.Content>
-    </NftModal.Root>
+    <>
+      <NftModal.Image w="full" src="" alt="Loading..." />
+      <Stack spacing={4} direction="column" w="full">
+        <Skeleton height="30px" w="100px" />
+        <Skeleton height="10px" w="160px" />
+        <Skeleton height="150px" w="full" />
+        <SimpleGrid templateColumns="repeat(2, 1fr)" gap={4} w="full">
+          <Skeleton height="60px" w="full" rounded="md" />
+          <Skeleton height="60px" w="full" rounded="md" />
+          <Skeleton height="60px" w="full" rounded="md" />
+          <Skeleton height="60px" w="full" rounded="md" />
+        </SimpleGrid>
+        <Stack direction="row" spacing={4} w="full" alignItems="center">
+          <Skeleton height="30px" w="30px" rounded="full" />
+          <Skeleton height="20px" w="210px" />
+          <Skeleton height="20px" w="20px" ml="auto" />
+        </Stack>
+        <Skeleton height="40px" w="full" />
+      </Stack>
+    </>
   );
 };

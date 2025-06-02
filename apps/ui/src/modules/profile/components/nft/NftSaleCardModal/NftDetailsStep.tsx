@@ -28,6 +28,7 @@ import { entries } from 'lodash';
 import { useCallback, useMemo } from 'react';
 import { NftListMetadata } from '../NftListMetadata';
 import { NftMetadataBlock } from '../NftMetadataBlock';
+import ShareOrder from '../ShareOrder';
 
 export default function NftDetailsStep({
   onClose,
@@ -190,16 +191,17 @@ export default function NftDetailsStep({
           <Text fontSize="sm" color="grey.subtitle">
             ~ {usdValue}
           </Text>
+          {isOwner && (
+            <IconButton
+              variant="icon"
+              aria-label="Edit order"
+              icon={<EditIcon />}
+              onClick={() => onEdit()}
+            />
+          )}
         </Flex>
 
-        {isOwner && (
-          <IconButton
-            variant="icon"
-            aria-label="Edit order"
-            icon={<EditIcon />}
-            onClick={() => onEdit()}
-          />
-        )}
+        <ShareOrder orderId={order.id} />
       </Stack>
 
       {isOwner && (

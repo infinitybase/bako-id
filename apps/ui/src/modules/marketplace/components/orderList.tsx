@@ -55,6 +55,7 @@ export const OrderList = ({
             isOwner={address === order.seller}
             showBuyButton
             withHandle={!!data}
+            openModalOnClick={false}
           />
         </Link>
       ))}

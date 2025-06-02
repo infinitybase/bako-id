@@ -1,15 +1,14 @@
 import nftEmpty from '@/assets/nft-empty.png';
 import { useCustomToast } from '@/components';
-import { useCancelOrder, useListOrder } from '@/hooks/marketplace';
+import { useResolverName } from '@/hooks';
+import { useCancelOrder, useGetOrder } from '@/hooks/marketplace';
 import { NftSaleCardModal } from '@/modules/profile/components/nft/NftSaleCardModal';
-import { NftModal } from '@/modules/profile/components/nft/modal';
 import { removeRightZeros } from '@/utils/removeRightZeros';
-import { Skeleton, useDisclosure } from '@chakra-ui/react';
+import { useDisclosure } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
-import { useNavigate, useParams } from '@tanstack/react-router';
-import { bn } from 'fuels';
+import { Navigate, useNavigate, useParams } from '@tanstack/react-router';
+import { ZeroBytes32, bn } from 'fuels';
 import { useCallback, useMemo } from 'react';
-import { OrderSkeleton } from './components/orderSkeleton';
 
 export default function OrderPage() {
   const navigate = useNavigate();
@@ -18,8 +17,11 @@ export default function OrderPage() {
   const { wallet } = useWallet();
   const { successToast, errorToast } = useCustomToast();
   const { cancelOrderAsync, isPending: isCancelling } = useCancelOrder();
+  const { data, isLoading: isResolvingName } = useResolverName(
+    wallet?.address.b256Address || ZeroBytes32
+  );
 
-  const { order, isLoading } = useListOrder({ id: orderId });
+  const { order, isLoading, isFetched } = useGetOrder({ id: orderId });
 
   const handleClose = useCallback(() => {
     navigate({
@@ -40,8 +42,7 @@ export default function OrderPage() {
         description: 'Your order has been successfully cancelled.',
       });
       handleClose();
-    } catch (error) {
-      console.log(error);
+    } catch {
       errorToast({
         title: 'Error cancelling order',
         description: 'An error occurred while cancelling your order.',
@@ -78,36 +79,23 @@ export default function OrderPage() {
 
   const imageUrl = order?.nft?.image || nftEmpty;
 
-  if (isLoading) {
-    return <OrderSkeleton handleClose={handleClose} />;
+  if (!order && isFetched) {
+    return <Navigate to="/marketplace" replace />;
   }
-
-  if (!order) {
-    console.log('order not found');
-    return (
-      <NftModal.Root isOpen onClose={handleClose}>
-        <NftModal.Content h="540px">
-          <NftModal.Image w="full" src="" alt="Order not found" />
-          <Skeleton height="full" />
-        </NftModal.Content>
-      </NftModal.Root>
-    );
-  }
-
-  console.log(order);
 
   return (
     <NftSaleCardModal
       isOpen
       onClose={handleClose}
-      order={order}
+      order={order!}
       imageUrl={imageUrl}
       usdValue={currency}
       onCancelOrder={handleConfirmDelist}
       value={nftPrice}
-      isOwner={order.seller === currentAddress}
-      withHandle={false}
+      isOwner={order?.seller === currentAddress}
+      withHandle={!!data}
       isCanceling={isCancelling}
+      isLoadingOrder={isLoading || isResolvingName}
     />
   );
 }
