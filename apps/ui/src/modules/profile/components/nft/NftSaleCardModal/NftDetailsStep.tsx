@@ -201,7 +201,10 @@ export default function NftDetailsStep({
           )}
         </Flex>
 
-        <ShareOrder orderId={order.id} />
+        <ShareOrder
+          orderId={order.id}
+          sellerDomain={handle?.replace('@', '')}
+        />
       </Stack>
 
       {isOwner && (

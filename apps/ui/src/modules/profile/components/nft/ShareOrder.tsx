@@ -10,13 +10,17 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 
-export default function ShareOrder({ orderId }: { orderId: string }) {
+export default function ShareOrder({
+  orderId,
+  sellerDomain,
+}: { orderId: string; sellerDomain?: string }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { successToast } = useCustomToast();
 
   const handleCopyLink = () => {
+    const BASE_APP_URL = import.meta.env.VITE_API_URL;
     navigator.clipboard.writeText(
-      `https://marketplace.fuels.network/order/${orderId}`
+      `${BASE_APP_URL.replace('/api', '')}/${sellerDomain}/marketplace/${orderId}`
     );
     successToast({
       title: 'Link copied',
