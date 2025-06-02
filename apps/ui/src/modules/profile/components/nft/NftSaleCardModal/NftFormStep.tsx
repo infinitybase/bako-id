@@ -32,7 +32,10 @@ export default function NftFormStep({
     async (data: NftSaleCardForm) => {
       try {
         await updateOrderAsync({
-          sellPrice: bn.parseUnits(data.sellPrice.toString()),
+          sellPrice: bn.parseUnits(
+            data.sellPrice.toString(),
+            data.sellAsset.decimals
+          ),
           sellAsset: data.sellAsset.id,
           orderId: order.id,
         });
@@ -60,6 +63,7 @@ export default function NftFormStep({
             id: order.asset?.id!,
             icon: assetSymbolUrl,
             name: order.asset?.name ?? 'Unknown',
+            decimals: order.asset?.decimals,
           },
           // TODO: fix this value type
           sellPrice: value as unknown as number, // prevent broken js bilion number

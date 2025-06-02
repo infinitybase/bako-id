@@ -33,6 +33,7 @@ export type NftSaleCardForm = {
     name: string;
     id: string;
     icon?: string;
+    decimals?: number;
   };
   sellPrice: number;
 };
@@ -76,6 +77,7 @@ export const NftCardSaleForm = ({
     id: findDefaultAsset?.id,
     name: findDefaultAsset?.metadata?.name,
     icon: findDefaultAsset?.metadata?.icon,
+    decimals: findDefaultAsset?.metadata?.decimals,
   };
 
   const handleClearAmount = () => {

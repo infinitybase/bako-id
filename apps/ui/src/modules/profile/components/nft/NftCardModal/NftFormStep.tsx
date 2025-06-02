@@ -30,7 +30,10 @@ export default function NftFormStep({
         await createOrderAsync({
           itemAsset: assetId,
           itemAmount: bn(1),
-          sellPrice: bn.parseUnits(data.sellPrice.toString()),
+          sellPrice: bn.parseUnits(
+            data.sellPrice.toString(),
+            data.sellAsset.decimals
+          ),
           sellAsset: data.sellAsset.id,
         });
         successToast({ title: 'Order created successfully!' });

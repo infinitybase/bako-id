@@ -38,8 +38,7 @@ const NftSaleCard = ({
         description: 'Your order has been successfully cancelled.',
       });
       onClose();
-    } catch (error) {
-      console.log(error);
+    } catch {
       errorToast({
         title: 'Error cancelling order',
         description: 'An error occurred while cancelling your order.',
