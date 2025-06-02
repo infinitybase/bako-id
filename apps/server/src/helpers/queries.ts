@@ -38,3 +38,23 @@ export const getOrders = async (
 
   return response;
 };
+
+const BASE_APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+
+export const getOrder = async (
+  address: string,
+  orderId: string,
+  chainId: number
+) => {
+  try {
+    const network = resolverNetworkByChainId(chainId);
+    const response = await request<OrderResponse>({
+      url: `${BASE_APP_URL}/api/${network}/marketplace/orders/${address}/${orderId}`,
+      method: 'GET',
+    });
+
+    return response;
+  } catch {
+    return null;
+  }
+};
