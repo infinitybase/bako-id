@@ -4,9 +4,9 @@ import { getOrderMetadata } from '@/utils/getOrderMetadata';
 import { useQuery } from '@tanstack/react-query';
 import { useChainId } from '../useChainId';
 
-type useListOrderProps = { id: string };
+type useGetOrderProps = { id: string };
 
-export const useListOrder = ({ id }: useListOrderProps) => {
+export const useGetOrder = ({ id }: useGetOrderProps) => {
   const { chainId, isLoading } = useChainId();
 
   const { data: order, ...rest } = useQuery({
@@ -18,7 +18,7 @@ export const useListOrder = ({ id }: useListOrderProps) => {
       });
 
       if (!order) {
-        throw new Error('Order not found');
+        return null;
       }
 
       const orderWithMetadata = await getOrderMetadata(order, chainId);
