@@ -4,6 +4,7 @@ import UnknownAsset from '@/assets/unknown-asset.png';
 import { ConfirmationDialog, useCustomToast } from '@/components';
 import { useCancelOrder } from '@/hooks/marketplace';
 import type { Order } from '@/types/marketplace';
+import { removeRightZeros } from '@/utils/removeRightZeros';
 import { Button, Heading, Image, Text, useDisclosure } from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { useCallback, useMemo, type MouseEvent } from 'react';
@@ -27,7 +28,7 @@ const NftSaleCard = ({
 }: NftSaleCardProps) => {
   const { successToast, errorToast } = useCustomToast();
   const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onClose } = useDisclosure();
   const delistModal = useDisclosure();
 
   const handleCancelOrder = useCallback(async () => {
@@ -77,22 +78,7 @@ const NftSaleCard = ({
     [usdValue]
   );
 
-  const removeRightZeros = useCallback((num: string) => {
-    const parts = num.split('.');
-    if (parts.length === 2) {
-      parts[1] = parts[1].replace(/0+$/, '');
-      if (parts[1] === '') {
-        return parts[0]; // Return only the integer part if decimal part is empty
-      }
-      return parts.join('.');
-    }
-    return num; // Return the original number if no decimal part
-  }, []);
-
-  const nftPrice = useMemo(
-    () => removeRightZeros(value),
-    [value, removeRightZeros]
-  );
+  const nftPrice = useMemo(() => removeRightZeros(value), [value]);
 
   const assetSymbolUrl = order.asset?.icon || UnknownAsset;
 
@@ -100,7 +86,7 @@ const NftSaleCard = ({
   const name = order.nft?.name || 'Unknown NFT';
 
   return (
-    <NftCard.Root onClick={onOpen} cursor="pointer" minH="240px">
+    <NftCard.Root cursor="pointer" minH="240px">
       {order.nft?.edition && (
         <NftCard.EditionBadge edition={order.nft?.edition} />
       )}
