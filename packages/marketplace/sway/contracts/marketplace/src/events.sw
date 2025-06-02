@@ -71,3 +71,10 @@ pub struct OrderEditedEvent {
     /// New price in the requested asset
     pub new_price: u64,
 }
+
+pub struct WithdrawFeeEvent {
+    /// The amount of fees withdrawn
+    pub amount: u64,
+    /// The asset ID of the fees withdrawn
+    pub asset_id: AssetId,
+}
