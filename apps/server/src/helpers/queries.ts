@@ -39,7 +39,9 @@ export const getOrders = async (
   return response;
 };
 
-const BASE_APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+const BASE_APP_URL =
+  process.env.NEXT_PUBLIC_APP_URL ||
+  'https://bako-id-server-77oesmflf-infinity-base.vercel.app/';
 
 export const getOrder = async (orderId: string, chainId: number) => {
   try {
