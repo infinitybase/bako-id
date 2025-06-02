@@ -81,6 +81,10 @@ export class marketplaceService {
 
       const data = await response.json();
 
+      if (response.status !== 200) {
+        return null;
+      }
+
       return data;
     } catch {
       return null;
