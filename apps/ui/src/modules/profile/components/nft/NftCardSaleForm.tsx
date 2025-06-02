@@ -107,7 +107,7 @@ export const NftCardSaleForm = ({
   const currentValue = watch('sellPrice');
 
   const valueToReceive = useMemo(() => {
-    if (!currentSellAsset || !currentValue) return 0;
+    if (!currentSellAsset || !currentValue) return '0';
 
     const valueInBaseUnits = bn.parseUnits(
       currentValue.toString(),
@@ -118,6 +118,17 @@ export const NftCardSaleForm = ({
 
     return valueAfterFee.formatUnits(currentSellAsset.metadata?.decimals || 9);
   }, [currentValue, currentSellAsset, currentFee]);
+
+  const currentReceiveAmountInUsd = useMemo(() => {
+    const valueToReceiveInNumber = Number(valueToReceive);
+    if (!currentSellAsset || Number.isNaN(valueToReceiveInNumber)) return '-';
+    const amount =
+      (currentSellAsset?.metadata?.rate || 0) * valueToReceiveInNumber;
+    return `~ ${amount.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    })}`;
+  }, [currentSellAsset, valueToReceive]);
 
   return (
     <Grid
@@ -261,7 +272,7 @@ export const NftCardSaleForm = ({
       </GridItem>
 
       <GridItem colSpan={2}>
-        <Card p={4}>
+        <Card p={4} pb={1}>
           <Stack spacing={4}>
             <Flex justifyContent="space-between" alignItems="center">
               <Text fontSize="xs" color="grey.subtitle">
@@ -284,13 +295,18 @@ export const NftCardSaleForm = ({
             <Divider />
 
             <Flex justifyContent="space-between" alignItems="center">
-              <Text fontSize="xs" color="grey.subtitle">
+              <Text fontSize="xs" color="grey.subtitle" alignSelf="flex-start">
                 You will receive
               </Text>
-              <Text fontSize="xs" color="grey.100">
-                {Number(valueToReceive) || '0'}{' '}
-                {currentSellAsset?.metadata?.symbol}
-              </Text>
+              <Stack gap={0} alignItems="flex-end">
+                <Text fontSize="xs" color="grey.100">
+                  {Number(valueToReceive) || '0'}{' '}
+                  {currentSellAsset?.metadata?.symbol}
+                </Text>
+                <Text fontSize="2xs" color="grey.subtitle">
+                  {currentReceiveAmountInUsd}
+                </Text>
+              </Stack>
             </Flex>
           </Stack>
         </Card>
