@@ -32,7 +32,7 @@ export const getOrders = async (
     Number(chainId || NetworkId.MAINNET)
   );
   const response = await request<{ orders: OrderResponse[]; total: number }>({
-    url: `/api/${network}/marketplace/account/${address}/orders?${queryParams}`,
+    url: `/api/${network}/marketplace/${address}/orders?${queryParams}`,
     method: 'GET',
   });
 
