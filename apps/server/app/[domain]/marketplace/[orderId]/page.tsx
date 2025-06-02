@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Params) {
     openGraph: {
       title,
       description,
-      images: orderWithMetadata.nft.metadata.image,
+      images: orderWithMetadata.nft.image,
     },
   };
   return metadata;
