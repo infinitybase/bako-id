@@ -70,12 +70,13 @@ export const deployContractsSafe = async () => {
     }
   }
 
+  contract.account = account;
   console.log("Adding assets...");
   const assets = getAssetsConfig(await provider.getChainId());
   const batchCall = assets.map(asset =>
     contract.functions.add_valid_asset({ bits: asset.assetId }, [asset.baseFee, asset.discountedFee]));
 
-  await callAndWait(marketplace.multiCall(batchCall));
+  await callAndWait(contract.multiCall(batchCall));
   console.info("Assets added successfully.");
 
   return {
