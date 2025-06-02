@@ -27,7 +27,6 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
   } = props.asset;
   const dialog = useDisclosure();
   const { wallet } = useWallet();
-  console.log(props.asset.name, props.asset);
 
   const image = useMemo(
     () => props.asset.image || nftEmpty,

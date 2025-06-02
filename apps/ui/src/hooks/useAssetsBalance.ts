@@ -4,10 +4,10 @@ import { useQuery } from '@tanstack/react-query';
 import { bn } from 'fuels';
 
 export const useAssetsBalance = ({ assets }: { assets: Asset[] }) => {
-  const { wallet } = useWallet();
+  const { wallet, isFetched } = useWallet();
 
   const { data, isLoading, ...rest } = useQuery({
-    queryKey: ['balances'],
+    queryKey: ['balances', isFetched, assets],
     queryFn: async () => {
       if (wallet) {
         const { balances } = await wallet.getBalances();
@@ -23,6 +23,7 @@ export const useAssetsBalance = ({ assets }: { assets: Asset[] }) => {
         });
       }
     },
+    enabled: !!wallet && isFetched,
   });
 
   return { data, isLoading, ...rest };

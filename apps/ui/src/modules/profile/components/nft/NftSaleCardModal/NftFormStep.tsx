@@ -61,7 +61,8 @@ export default function NftFormStep({
             icon: assetSymbolUrl,
             name: order.asset?.name ?? 'Unknown',
           },
-          sellPrice: Number(value),
+          // TODO: fix this value type
+          sellPrice: value as unknown as number, // prevent broken js bilion number
         }}
       />
 
