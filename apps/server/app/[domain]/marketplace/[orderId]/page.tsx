@@ -1,6 +1,5 @@
 import { getOrderMetadata } from '@/helpers/getOrderMetadata';
 import { getOrder } from '@/helpers/queries';
-import { ResolverContract } from '@bako-id/sdk';
 import { Provider } from 'fuels';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -10,19 +9,10 @@ type Params = {
 };
 
 export async function generateMetadata({ params }: Params) {
-  const { orderId, domain } = await params;
+  const { orderId } = await params;
   const provider = new Provider(process.env.NEXT_PUBLIC_PROVIDER_URL!);
   const chainId = await provider.getChainId();
-  const resolver = ResolverContract.create(provider);
-  const resolverResponse = await resolver.addr(domain.replace('@', ''));
-  const address =
-    resolverResponse?.Address?.bits || resolverResponse?.ContractId?.bits;
-
-  if (!address) {
-    return notFound();
-  }
-
-  const order = await getOrder(address, orderId, chainId);
+  const order = await getOrder(orderId, chainId);
 
   if (!order) {
     return notFound();

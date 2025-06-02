@@ -41,15 +41,11 @@ export const getOrders = async (
 
 const BASE_APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
-export const getOrder = async (
-  address: string,
-  orderId: string,
-  chainId: number
-) => {
+export const getOrder = async (orderId: string, chainId: number) => {
   try {
     const network = resolverNetworkByChainId(chainId);
     const response = await request<OrderResponse>({
-      url: `${BASE_APP_URL}/api/${network}/marketplace/orders/${address}/${orderId}`,
+      url: `${BASE_APP_URL}/api/${network}/marketplace/orders/${orderId}`,
       method: 'GET',
     });
 
