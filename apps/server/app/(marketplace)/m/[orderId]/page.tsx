@@ -48,12 +48,8 @@ export async function generateMetadata({ params }: Params) {
   return metadata;
 }
 
-// const BAKO_MARKETPLACE_URL =
-//   process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:5173';
-
-export default async function Page({ params }: Params) {
-  const { orderId } = await params;
-  console.log('orderId', orderId);
+export default async function Page() {
+  // const { orderId } = await params;
   // Maybe redirect in middleware
   // redirect(`${BAKO_MARKETPLACE_URL}/marketplace/order/${orderId}`);
   return null;
