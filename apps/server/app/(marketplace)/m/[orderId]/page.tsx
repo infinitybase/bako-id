@@ -38,7 +38,6 @@ export async function generateMetadata({ params }: Params) {
       description,
       images: orderWithMetadata.nft.image,
     },
-    url: `${process.env.NEXT_PUBLIC_APP_URL}/marketplace/order/${orderId}`,
     twitter: {
       title,
       description,
