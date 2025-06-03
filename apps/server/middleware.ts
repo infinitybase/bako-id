@@ -11,17 +11,6 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect('https://www.bako.id/');
   }
 
-  if (pathname.includes('/m/')) {
-    const BAKO_MARKETPLACE_URL = process.env.NEXT_PUBLIC_APP_URL;
-    if (!BAKO_MARKETPLACE_URL) {
-      throw new Error('NEXT_PUBLIC_APP_URL is not defined');
-    }
-    const orderId = pathname.split('/m/')[1];
-    return NextResponse.redirect(
-      `${BAKO_MARKETPLACE_URL}/marketplace/order/${orderId}`
-    );
-  }
-
   response.headers.set('Access-Control-Allow-Origin', '*');
   response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   response.headers.set(

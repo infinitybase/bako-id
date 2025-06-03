@@ -4,6 +4,7 @@ import { removeRightZeros } from '@/utils';
 import { Provider, bn } from 'fuels';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import Redirect from './Redirect';
 
 type Params = {
   params: Promise<{ orderId: string; domain: string }>;
@@ -48,9 +49,7 @@ export async function generateMetadata({ params }: Params) {
   return metadata;
 }
 
-export default async function Page() {
-  // const { orderId } = await params;
-  // Maybe redirect in middleware
-  // redirect(`${BAKO_MARKETPLACE_URL}/marketplace/order/${orderId}`);
-  return null;
+export default async function Page({ params }: Params) {
+  const { orderId } = await params;
+  return <Redirect orderId={orderId} />;
 }
