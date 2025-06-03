@@ -80,7 +80,6 @@ export default function NftDetailsStep({
   const handleExecuteOrder = useCallback(async () => {
     if (!isConnected) {
       connect();
-      onClose();
       return;
     }
     try {
@@ -219,12 +218,14 @@ export default function NftDetailsStep({
 
       {!isOwner && (
         <Skeleton isLoaded={!isLoadingBalance} borderRadius="md">
-          <Tooltip label={notEnoughBalance ? 'Not enough balance' : ''}>
+          <Tooltip
+            label={notEnoughBalance && isConnected ? 'Not enough balance' : ''}
+          >
             <Button
               variant="primary"
               py={4}
               isLoading={isExecuting}
-              disabled={notEnoughBalance || isExecuting}
+              disabled={(notEnoughBalance && isConnected) || isExecuting}
               onClick={handleExecuteOrder}
             >
               Buy
