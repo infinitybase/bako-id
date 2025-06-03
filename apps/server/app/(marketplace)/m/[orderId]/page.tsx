@@ -1,6 +1,7 @@
 import { getOrderMetadata } from '@/helpers/getOrderMetadata';
 import { getOrder } from '@/helpers/queries';
-import { Provider } from 'fuels';
+import { removeRightZeros } from '@/utils';
+import { Provider, bn } from 'fuels';
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
@@ -19,7 +20,12 @@ export async function generateMetadata({ params }: Params) {
   }
   const orderWithMetadata = await getOrderMetadata(order, chainId);
 
-  const title = `${orderWithMetadata.nft.metadata.name} | Bako Identity`;
+  const itemPrice = bn(orderWithMetadata.itemPrice).formatUnits(
+    orderWithMetadata.asset?.decimals
+  );
+  const value = removeRightZeros(itemPrice);
+  const assetSymbol = orderWithMetadata.asset?.symbol;
+  const title = `${orderWithMetadata.nft.metadata.name} | ${value} ${assetSymbol} | Bako Identity`;
   const description =
     orderWithMetadata.nft.metadata.description ||
     'Explore this NFT on Bako Identity';
@@ -32,13 +38,19 @@ export async function generateMetadata({ params }: Params) {
       description,
       images: orderWithMetadata.nft.image,
     },
+    url: `${process.env.NEXT_PUBLIC_APP_URL}/marketplace/order/${orderId}`,
+    twitter: {
+      title,
+      description,
+      images: orderWithMetadata.nft.image,
+      card: 'summary_large_image',
+    },
   };
   return metadata;
 }
 
 const BAKO_MARKETPLACE_URL =
-  process.env.NEXT_PUBLIC_BAKO_MARKETPLACE_URL ||
-  'https://bako-id-hev3tq8xs-infinity-base.vercel.app/';
+  process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:5173';
 
 export default async function Page({ params }: Params) {
   const { orderId } = await params;
