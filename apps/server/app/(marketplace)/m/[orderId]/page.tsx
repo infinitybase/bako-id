@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Params) {
 
 const BAKO_MARKETPLACE_URL =
   process.env.NEXT_PUBLIC_BAKO_MARKETPLACE_URL ||
-  'https://bako-id-lzo8vtf0b-infinity-base.vercel.app';
+  'https://bako-id-hev3tq8xs-infinity-base.vercel.app/';
 
 export default async function Page({ params }: Params) {
   const { orderId } = await params;
