@@ -5,6 +5,7 @@ import { ContractIcon } from '@/components/icons/contracticon';
 import { blacklistMetadataKeys } from '@/helpers/constant';
 import type { Nft } from '@/types/marketplace';
 import {
+  Button,
   Flex,
   Grid,
   GridItem,
@@ -13,6 +14,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import Link from 'next/link';
 import { useMemo } from 'react';
 import { NftListMetadata } from './NftListMetadata';
 import { NftMetadataBlock } from './NftMetadataBlock';
@@ -44,6 +46,7 @@ export const NftSaleCardModal = ({
   asset,
   value,
   usdValue,
+  orderId,
 }: NftSaleCardModalProps) => {
   const metadataArray = useMemo(
     () =>
@@ -127,6 +130,15 @@ export const NftSaleCardModal = ({
               </Text>
             </Flex>
           </Stack>
+
+          <Button
+            variant="primary"
+            as={Link}
+            href={`${process.env.NEXT_PUBLIC_APP_URL}/marketplace/order/${orderId}`}
+            py={2}
+          >
+            Buy
+          </Button>
 
           <NftListMetadata metadata={metadataArray} />
         </Stack>
