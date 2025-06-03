@@ -32,8 +32,8 @@ export type IdentityInput = Enum<{ Address: AddressInput, ContractId: ContractId
 export type IdentityOutput = Enum<{ Address: AddressOutput, ContractId: ContractIdOutput }>;
 export enum InitializationErrorInput { CannotReinitialized = 'CannotReinitialized' };
 export enum InitializationErrorOutput { CannotReinitialized = 'CannotReinitialized' };
-export type MarketplaceErrorInput = Enum<{ AssetNotValid: AssetIdInput, OrderAlreadyExists: string, InsufficientBalance: AssetIdInput, ItemNotFound: AssetIdInput, ItemNotValid: AssetIdInput, ItemAmountIsZero: undefined, OrderNotOwned: undefined, OrderNotFound: undefined, OrderAssetNotMatch: [AssetIdInput, AssetIdInput], OrderAmountNotMatch: [], PriceNotPositive: undefined }>;
-export type MarketplaceErrorOutput = Enum<{ AssetNotValid: AssetIdOutput, OrderAlreadyExists: string, InsufficientBalance: AssetIdOutput, ItemNotFound: AssetIdOutput, ItemNotValid: AssetIdOutput, ItemAmountIsZero: void, OrderNotOwned: void, OrderNotFound: void, OrderAssetNotMatch: [AssetIdOutput, AssetIdOutput], OrderAmountNotMatch: [], PriceNotPositive: void }>;
+export type MarketplaceErrorInput = Enum<{ AssetNotValid: AssetIdInput, OrderAlreadyExists: string, InsufficientBalance: AssetIdInput, ItemNotFound: AssetIdInput, ItemNotValid: AssetIdInput, ItemAmountIsZero: undefined, OrderNotOwned: undefined, OrderNotFound: undefined, OrderAssetNotMatch: [AssetIdInput, AssetIdInput], OrderAmountNotMatch: [], PriceNotPositive: undefined, AssetFeeEmpty: AssetIdInput }>;
+export type MarketplaceErrorOutput = Enum<{ AssetNotValid: AssetIdOutput, OrderAlreadyExists: string, InsufficientBalance: AssetIdOutput, ItemNotFound: AssetIdOutput, ItemNotValid: AssetIdOutput, ItemAmountIsZero: void, OrderNotOwned: void, OrderNotFound: void, OrderAssetNotMatch: [AssetIdOutput, AssetIdOutput], OrderAmountNotMatch: [], PriceNotPositive: void, AssetFeeEmpty: AssetIdOutput }>;
 export enum PauseErrorInput { Paused = 'Paused', NotPaused = 'NotPaused' };
 export enum PauseErrorOutput { Paused = 'Paused', NotPaused = 'NotPaused' };
 export enum ReentrancyErrorInput { NonReentrant = 'NonReentrant' };
@@ -63,6 +63,8 @@ export type OwnershipSetInput = { new_owner: IdentityInput };
 export type OwnershipSetOutput = { new_owner: IdentityOutput };
 export type OwnershipTransferredInput = { new_owner: IdentityInput, previous_owner: IdentityInput };
 export type OwnershipTransferredOutput = { new_owner: IdentityOutput, previous_owner: IdentityOutput };
+export type WithdrawFeeEventInput = { amount: BigNumberish, asset_id: AssetIdInput };
+export type WithdrawFeeEventOutput = { amount: BN, asset_id: AssetIdOutput };
 
 export type MarketplaceConfigurables = Partial<{
   RESOLVER_CONTRACT_ID: string;
@@ -169,19 +171,29 @@ const abi = {
       "metadataTypeId": 17
     },
     {
+      "type": "struct events::WithdrawFeeEvent",
+      "concreteTypeId": "8c286cb0961098b18dec95331a6bbbf8ddd875173abf3f1a4f3ca2851610590d",
+      "metadataTypeId": 18
+    },
+    {
+      "type": "struct std::address::Address",
+      "concreteTypeId": "f597b637c3b0f588fb8d7086c6f4735caa3122b85f0423b82e489f9bb58e2308",
+      "metadataTypeId": 19
+    },
+    {
       "type": "struct std::asset_id::AssetId",
       "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974",
-      "metadataTypeId": 19
+      "metadataTypeId": 20
     },
     {
       "type": "struct sway_libs::ownership::events::OwnershipSet",
       "concreteTypeId": "e1ef35033ea9d2956f17c3292dea4a46ce7d61fdf37bbebe03b7b965073f43b5",
-      "metadataTypeId": 21
+      "metadataTypeId": 22
     },
     {
       "type": "struct sway_libs::ownership::events::OwnershipTransferred",
       "concreteTypeId": "b3fffbcb3158d7c010c31b194b60fb7857adb4ad61bdcf4b8b42958951d9f308",
-      "metadataTypeId": 22
+      "metadataTypeId": 23
     },
     {
       "type": "u64",
@@ -209,11 +221,11 @@ const abi = {
       "components": [
         {
           "name": "__tuple_element",
-          "typeId": 19
+          "typeId": 20
         },
         {
           "name": "__tuple_element",
-          "typeId": 19
+          "typeId": 20
         }
       ]
     },
@@ -237,7 +249,7 @@ const abi = {
       "components": [
         {
           "name": "AssetNotValid",
-          "typeId": 19
+          "typeId": 20
         },
         {
           "name": "OrderAlreadyExists",
@@ -245,15 +257,15 @@ const abi = {
         },
         {
           "name": "InsufficientBalance",
-          "typeId": 19
+          "typeId": 20
         },
         {
           "name": "ItemNotFound",
-          "typeId": 19
+          "typeId": 20
         },
         {
           "name": "ItemNotValid",
-          "typeId": 19
+          "typeId": 20
         },
         {
           "name": "ItemAmountIsZero",
@@ -278,6 +290,10 @@ const abi = {
         {
           "name": "PriceNotPositive",
           "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "AssetFeeEmpty",
+          "typeId": 20
         }
       ]
     },
@@ -297,11 +313,11 @@ const abi = {
       "components": [
         {
           "name": "Address",
-          "typeId": 18
+          "typeId": 19
         },
         {
           "name": "ContractId",
-          "typeId": 20
+          "typeId": 21
         }
       ]
     },
@@ -366,7 +382,7 @@ const abi = {
       "components": [
         {
           "name": "asset",
-          "typeId": 19
+          "typeId": 20
         },
         {
           "name": "fee",
@@ -380,7 +396,7 @@ const abi = {
       "components": [
         {
           "name": "asset",
-          "typeId": 19
+          "typeId": 20
         },
         {
           "name": "fee",
@@ -394,7 +410,7 @@ const abi = {
       "components": [
         {
           "name": "asset",
-          "typeId": 19
+          "typeId": 20
         },
         {
           "name": "amount",
@@ -410,7 +426,7 @@ const abi = {
         },
         {
           "name": "item_asset",
-          "typeId": 19
+          "typeId": 20
         }
       ]
     },
@@ -448,7 +464,7 @@ const abi = {
         },
         {
           "name": "new_asset",
-          "typeId": 19
+          "typeId": 20
         },
         {
           "name": "new_price",
@@ -474,7 +490,7 @@ const abi = {
         },
         {
           "name": "asset",
-          "typeId": 19
+          "typeId": 20
         },
         {
           "name": "fee",
@@ -483,17 +499,21 @@ const abi = {
       ]
     },
     {
-      "type": "struct std::address::Address",
+      "type": "struct events::WithdrawFeeEvent",
       "metadataTypeId": 18,
       "components": [
         {
-          "name": "bits",
-          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+          "name": "amount",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "asset_id",
+          "typeId": 20
         }
       ]
     },
     {
-      "type": "struct std::asset_id::AssetId",
+      "type": "struct std::address::Address",
       "metadataTypeId": 19,
       "components": [
         {
@@ -503,7 +523,7 @@ const abi = {
       ]
     },
     {
-      "type": "struct std::contract_id::ContractId",
+      "type": "struct std::asset_id::AssetId",
       "metadataTypeId": 20,
       "components": [
         {
@@ -513,8 +533,18 @@ const abi = {
       ]
     },
     {
-      "type": "struct sway_libs::ownership::events::OwnershipSet",
+      "type": "struct std::contract_id::ContractId",
       "metadataTypeId": 21,
+      "components": [
+        {
+          "name": "bits",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        }
+      ]
+    },
+    {
+      "type": "struct sway_libs::ownership::events::OwnershipSet",
+      "metadataTypeId": 22,
       "components": [
         {
           "name": "new_owner",
@@ -524,7 +554,7 @@ const abi = {
     },
     {
       "type": "struct sway_libs::ownership::events::OwnershipTransferred",
-      "metadataTypeId": 22,
+      "metadataTypeId": 23,
       "components": [
         {
           "name": "new_owner",
@@ -573,6 +603,29 @@ const abi = {
         }
       ],
       "name": "adjust_fee",
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read",
+            "write"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "recipient",
+          "concreteTypeId": "f597b637c3b0f588fb8d7086c6f4735caa3122b85f0423b82e489f9bb58e2308"
+        },
+        {
+          "name": "asset",
+          "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974"
+        }
+      ],
+      "name": "withdraw_fees",
       "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
       "attributes": [
         {
@@ -793,6 +846,10 @@ const abi = {
       "concreteTypeId": "8ec71dbeaa645b2b14b88caffc532ebdbbb161e6c75c27bb98b4409a6cb4755a"
     },
     {
+      "logId": "10099441670066051249",
+      "concreteTypeId": "8c286cb0961098b18dec95331a6bbbf8ddd875173abf3f1a4f3ca2851610590d"
+    },
+    {
       "logId": "5557842539076482339",
       "concreteTypeId": "4d216c57b3357523323f59401c7355785b41bdf832f6e1106272186b94797038"
     },
@@ -834,7 +891,7 @@ const abi = {
     {
       "name": "RESOLVER_CONTRACT_ID",
       "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b",
-      "offset": 37928
+      "offset": 40936
     }
   ]
 };
@@ -849,6 +906,7 @@ export class MarketplaceInterface extends Interface {
   declare functions: {
     add_valid_asset: FunctionFragment;
     adjust_fee: FunctionFragment;
+    withdraw_fees: FunctionFragment;
     cancel_order: FunctionFragment;
     create_order: FunctionFragment;
     edit_order: FunctionFragment;
@@ -870,6 +928,7 @@ export class Marketplace extends __Contract {
   declare functions: {
     add_valid_asset: InvokeFunction<[asset: AssetIdInput, fee: [BigNumberish, BigNumberish]], void>;
     adjust_fee: InvokeFunction<[asset: AssetIdInput, fee_change: AdjustFeeTypeInput], void>;
+    withdraw_fees: InvokeFunction<[recipient: AddressInput, asset: AssetIdInput], void>;
     cancel_order: InvokeFunction<[order_id: string], void>;
     create_order: InvokeFunction<[asset: AssetIdInput, price: BigNumberish], void>;
     edit_order: InvokeFunction<[order_id: string, asset: AssetIdInput, price: BigNumberish], void>;

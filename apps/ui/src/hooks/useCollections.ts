@@ -44,7 +44,9 @@ export const useCollections = ({
         chainId: chainId!,
       });
 
-      return data.filter((a) => !!a.isNFT) as NFTWithImage[];
+      return data.filter(
+        (a) => !!a.isNFT && Number(a.amount) > 0
+      ) as NFTWithImage[];
     },
     enabled: !isNil(chainId),
   });

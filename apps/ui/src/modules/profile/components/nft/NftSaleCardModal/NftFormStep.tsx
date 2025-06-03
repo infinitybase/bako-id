@@ -32,7 +32,10 @@ export default function NftFormStep({
     async (data: NftSaleCardForm) => {
       try {
         await updateOrderAsync({
-          sellPrice: bn.parseUnits(data.sellPrice.toString()),
+          sellPrice: bn.parseUnits(
+            data.sellPrice.toString(),
+            data.sellAsset.decimals
+          ),
           sellAsset: data.sellAsset.id,
           orderId: order.id,
         });
@@ -45,7 +48,7 @@ export default function NftFormStep({
     [updateOrderAsync, order.id, successToast, errorToast, onClose]
   );
   return (
-    <Stack w="full" spacing={6}>
+    <Stack w="full" spacing={4}>
       <Heading>{name}</Heading>
       <Text color="grey.subtitle">
         Select new asset and price for your listing.
@@ -60,18 +63,14 @@ export default function NftFormStep({
             id: order.asset?.id!,
             icon: assetSymbolUrl,
             name: order.asset?.name ?? 'Unknown',
+            decimals: order.asset?.decimals,
           },
           // TODO: fix this value type
           sellPrice: value as unknown as number, // prevent broken js bilion number
         }}
       />
 
-      <Stack
-        direction="row"
-        spacing={6}
-        justifyContent="space-between"
-        mt="auto"
-      >
+      <Stack direction="row" justifyContent="space-between" mt="auto">
         <Button type="button" variant="secondary" onClick={onCancel}>
           Cancel
         </Button>

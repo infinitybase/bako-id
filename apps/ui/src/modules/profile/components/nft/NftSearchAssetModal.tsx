@@ -58,6 +58,7 @@ export const NftSearchAssetModal = ({
     id: string;
     name?: string;
     icon?: string;
+    decimals?: number;
   }) => {
     onSelect(asset);
     onClose();
@@ -118,6 +119,7 @@ export const NftSearchAssetModal = ({
                       asset.metadata?.symbol ??
                       'Unknown Asset',
                     icon: asset.metadata?.icon ?? UnknownAsset,
+                    decimals: asset.metadata?.decimals,
                   })
                 }
               >

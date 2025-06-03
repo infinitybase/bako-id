@@ -29,6 +29,7 @@ use events::{
     OrderEditedEvent,
     OrderExecutedEvent,
     OrderId,
+    WithdrawFeeEvent,
 };
 
 /// Possible error conditions in the marketplace contract
@@ -55,6 +56,8 @@ pub enum MarketplaceError {
     OrderAmountNotMatch: (u64, u64),
     /// The provided price is not positive (zero ou negativo)
     PriceNotPositive: (),
+    /// withdraw fee error
+    AssetFeeEmpty: AssetId,
 }
 
 pub enum AdjustFeeType {
@@ -158,6 +161,17 @@ abi FeeManager {
     /// * `AssetFeeAdjustedEvent`: Emitted when the fee is successfully adjusted
     #[storage(read, write)]
     fn adjust_fee(asset: AssetId, fee: AdjustFeeType);
+
+    /// Transfer fee to owner
+    ///
+    /// # Arguments
+    /// * `asset`: The asset ID from which to collect the fee
+    /// * `recipient`: The address to which the fee will be sent
+    ///
+    /// # Events
+    /// * `WithdrawFeeEvent`: Emitted when the fee is successfully collected
+    #[storage(read, write)]
+    fn withdraw_fees(recipient: Address, asset: AssetId);
 }
 
 /// Interface for managing ownership of the marketplace contract
@@ -250,6 +264,24 @@ impl FeeManager for Contract {
             fee: new_fee,
         });
     }
+
+    #[storage(read, write)]
+    fn withdraw_fees(recipient: Address, asset: AssetId) {
+        only_owner();
+        let fee = storage.collected_fees.get(asset).try_read();
+        require(fee.is_some(), MarketplaceError::AssetFeeEmpty(asset));
+        let fee = fee.unwrap();
+
+        require(fee > 0, MarketplaceError::AssetFeeEmpty(asset));
+
+        transfer(Identity::Address(recipient), asset, fee);
+        storage.collected_fees.remove(asset);
+
+        log(WithdrawFeeEvent {
+            asset_id: asset,
+            amount: fee,
+        });
+    }
 }
 
 impl Marketplace for Contract {
@@ -332,8 +364,12 @@ impl Marketplace for Contract {
         transfer(buyer, order.item_asset, order.amount);
 
         let (seller_amount, fee) = _split_fee(amount, buyer, asset);
+
+        let existing_fee = storage.collected_fees.get(asset).try_read().unwrap_or(0);
+        let new_total_fee = existing_fee + fee;
+
         transfer(order.seller, asset, seller_amount);
-        storage.collected_fees.insert(asset, fee);
+        storage.collected_fees.insert(asset, new_total_fee);
 
         storage.orders.remove(order_id);
 
