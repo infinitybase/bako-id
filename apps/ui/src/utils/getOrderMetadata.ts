@@ -80,9 +80,7 @@ export const getOrderMetadata = async (
       id: order.itemAsset,
       edition: ipfsMetadata?.edition ? `#${ipfsMetadata.edition}` : undefined,
       name: metadata.name,
-      image: fuelMetadata?.metadata?.image
-        ? parseURI(fuelMetadata?.metadata?.image)
-        : undefined,
+      image: metadata?.image ? parseURI(metadata?.image) : undefined,
       description: ipfsMetadata?.description,
     },
   };

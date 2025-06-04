@@ -1,4 +1,4 @@
-import { Provider, type Account, type BN } from 'fuels';
+import { type Account, type BN, Provider } from 'fuels';
 import { Marketplace } from '../artifacts';
 import { callAndWait, getContractId } from '../utils';
 
@@ -168,9 +168,7 @@ export class MarketplaceContract {
    * @returns {Promise<Order | null>} - The order
    */
   async getOrder(orderId: string): Promise<Order | null> {
-    const { value } = await callAndWait(
-      this.marketplace.functions.get_order(orderId)
-    );
+    const { value } = await this.marketplace.functions.get_order(orderId).get();
 
     if (!value) {
       return null;
