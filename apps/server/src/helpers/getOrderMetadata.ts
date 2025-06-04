@@ -51,10 +51,12 @@ export const getOrderMetadata = async (
     const json: Record<string, string> = await fetch(fuelMetadata.uri)
       .then((res) => res.json())
       .catch(() => ({}));
-    assignIn(ipfsMetadata, formatMetadataFromIpfs(json));
+    assignIn(ipfsMetadata, json);
   }
 
-  const metadata = merge(ipfsMetadata, fuelMetadata?.metadata ?? {});
+  const metadata = formatMetadataFromIpfs(
+    merge(ipfsMetadata, fuelMetadata?.metadata ?? {})
+  );
 
   return {
     ...order,
