@@ -200,7 +200,10 @@ export default function NftDetailsStep({
           )}
         </Flex>
 
-        <ShareOrder orderId={order.id} />
+        <ShareOrder
+          orderId={order.id}
+          nftName={order.nft.name ?? 'Unknown NFT'}
+        />
       </Stack>
 
       {isOwner && (
