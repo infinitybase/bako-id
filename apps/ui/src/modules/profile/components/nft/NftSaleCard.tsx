@@ -5,7 +5,14 @@ import { ConfirmationDialog, useCustomToast } from '@/components';
 import { useCancelOrder } from '@/hooks/marketplace';
 import type { Order } from '@/types/marketplace';
 import { removeRightZeros } from '@/utils/removeRightZeros';
-import { Button, Heading, Image, Text, useDisclosure } from '@chakra-ui/react';
+import {
+  Button,
+  Heading,
+  Image,
+  Text,
+  Tooltip,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { useCallback, useMemo, type MouseEvent } from 'react';
 import { NftSaleCardModal } from './NftSaleCardModal';
@@ -116,7 +123,9 @@ const NftSaleCard = ({
           fontSize="md"
           color="text.700"
         >
-          <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
+          <Tooltip label={order.asset?.name}>
+            <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
+          </Tooltip>
           {nftPrice}
         </Heading>
         {order.asset?.rate && (
