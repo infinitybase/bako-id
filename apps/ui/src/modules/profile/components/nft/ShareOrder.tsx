@@ -5,6 +5,7 @@ import { twitterLink } from '@/utils/formatter';
 import {
   Menu,
   MenuButton,
+  MenuDivider,
   MenuItem,
   MenuList,
   Text,
@@ -30,7 +31,7 @@ export default function ShareOrder({
   };
 
   return (
-    <Menu isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
+    <Menu isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement="top-end">
       <MenuButton>
         <ShareIcon2 />
       </MenuButton>
@@ -38,7 +39,7 @@ export default function ShareOrder({
         <MenuItem
           bg="input.600"
           cursor="pointer"
-          icon={<TwitterIcon />}
+          icon={<TwitterIcon fontSize="md" />}
           onClick={() => {
             window.open(
               twitterLink(orderLink, {
@@ -50,10 +51,11 @@ export default function ShareOrder({
         >
           <Text>Share on X</Text>
         </MenuItem>
+        <MenuDivider />
         <MenuItem
           bg="input.600"
           cursor="pointer"
-          icon={<CopyIcon />}
+          icon={<CopyIcon fontSize="md" />}
           onClick={handleCopyLink}
         >
           <Text>Copy sale link</Text>
