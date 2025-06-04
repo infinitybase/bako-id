@@ -95,7 +95,7 @@ export default function OrderPage() {
       isOwner={order?.seller === currentAddress}
       withHandle={!!data}
       isCanceling={isCancelling}
-      isLoadingOrder={isLoading || isResolvingName}
+      isLoadingOrder={isLoading || isResolvingName || !isFetched}
     />
   );
 }
