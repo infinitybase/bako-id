@@ -1,4 +1,4 @@
-import { type MetadataKeys, RegistryContract } from '@bako-id/sdk';
+import { RegistryContract, type MetadataKeys } from '@bako-id/sdk';
 import { useDisclosure } from '@chakra-ui/react';
 import { useProvider, useWallet } from '@fuels/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -42,16 +42,9 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
     ],
     queryFn: async () => {
       try {
-        let registryContract: RegistryContract;
+        const _prodivder = provider || new Provider(VITE_PROVIDER_URL);
 
-        if (provider) {
-          registryContract = RegistryContract.create(provider);
-        } else {
-          const provider = await Provider.create(
-            import.meta.env.VITE_PROVIDER_URL
-          );
-          registryContract = RegistryContract.create(provider);
-        }
+        const registryContract = RegistryContract.create(_prodivder);
 
         const metadata = await registryContract.getMetadata(domain);
 
@@ -65,6 +58,7 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
       }
     },
     enabled: !!domain,
+    refetchOnWindowFocus: false,
   });
 
   const handleSaveRequest = useMutation({
@@ -117,6 +111,7 @@ export const useMetadata = (handleOnSuccess?: () => void) => {
   return {
     metadata: handleListRequest.data,
     loadingMetadata: handleListRequest.isLoading,
+    fetchingMetadata: handleListRequest.isFetching,
     metadataModal,
     transactionModal,
     handleSaveRequest,

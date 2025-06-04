@@ -11,19 +11,22 @@ import {
   MenuItem,
   MenuList,
   Text,
+  useMediaQuery,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
-import type { AbstractAddress } from 'fuels';
+import type { Address } from 'fuels';
 import { useState } from 'react';
 import accoutIcon from '../../assets/account-icon.svg';
 import { BeginnersGuide } from '../icons/beginnersGuide.tsx';
 import { FileIcon } from '../icons/fileIcon.tsx';
 // import { HowToSendCrypto } from '../icons/howToSendCrypto.tsx';
+import { ExchangeBoxIcon } from '../icons/exchangeBoxIcon.tsx';
 import { LogoutIcon } from '../icons/logoutIcon.tsx';
 import { MiningCrypto } from '../icons/miningCrypto.tsx';
 import { MoreBako } from '../icons/moreBako.tsx';
 import { SmallCloseIcon } from '../icons/smallCloseIcon.tsx';
+import { UserIcon } from '../icons/userIcon.tsx';
 import { TermsOfUseDialog } from '../termsOfUseDialog/index.tsx';
 import { useCustomToast } from '../toast/index.tsx';
 
@@ -32,12 +35,13 @@ export const Info = ({
   account,
 }: {
   name: string;
-  account: string | AbstractAddress;
+  account: string | Address;
 }) => {
   const {
     fuel: { disconnect },
   } = useFuel();
   const navigate = useNavigate();
+  const [isMobile] = useMediaQuery('(max-width: 48em)');
   const { successToast } = useCustomToast();
   const [showTerms, setShowTerms] = useState(false);
 
@@ -59,6 +63,8 @@ export const Info = ({
     await disconnect();
     navigate({ to: '/' });
   };
+
+  const isDomain = !name?.includes('...');
 
   const icon = (
     <Box
@@ -88,6 +94,7 @@ export const Info = ({
               as={Button}
               variant="ghost"
               rounded="md"
+              minW="fit-content"
               _focus={{}}
               _hover={{}}
               _focusVisible={{}}
@@ -193,6 +200,51 @@ export const Info = ({
                 My Handles
               </MenuItem>
               <Divider w="95%" color="grey.300" mx="auto" />
+
+              {/* Profile */}
+              <MenuItem
+                p={2}
+                bgColor="transparent"
+                color="grey.200"
+                my={2}
+                gap={2}
+                onClick={() =>
+                  navigate({ to: `/profile/${isDomain ? name : account}` })
+                }
+                _hover={{
+                  cursor: 'pointer',
+                  color: 'button.500',
+                  opacity: 0.9,
+                }}
+              >
+                <Icon as={UserIcon} />
+                Profile
+              </MenuItem>
+              <Divider w="95%" color="grey.300" mx="auto" />
+
+              {/* Marketplace */}
+              {isMobile && (
+                <>
+                  <MenuItem
+                    p={2}
+                    bgColor="transparent"
+                    color="grey.200"
+                    my={2}
+                    gap={2}
+                    onClick={() => navigate({ to: '/marketplace' })}
+                    _hover={{
+                      cursor: 'pointer',
+                      color: 'button.500',
+                      opacity: 0.9,
+                    }}
+                  >
+                    <Icon as={ExchangeBoxIcon} />
+                    Marketplace
+                    <Text opacity={0.5}>Beta</Text>
+                  </MenuItem>
+                  <Divider w="95%" color="grey.300" mx="auto" />
+                </>
+              )}
 
               {/* Notifications */}
               {/* <MenuItem

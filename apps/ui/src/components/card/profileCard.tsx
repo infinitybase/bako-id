@@ -2,9 +2,7 @@ import { CheckIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
-  type ButtonProps,
   Flex,
-  Icon,
   Menu,
   MenuButton,
   MenuItem,
@@ -12,29 +10,26 @@ import {
   Text,
   useClipboard,
   useMediaQuery,
+  type ButtonProps,
 } from '@chakra-ui/react';
-import { useProvider } from '@fuels/react';
+import { useMemo } from 'react';
 import { Card } from '.';
+import { useChainId } from '../../hooks/useChainId.ts';
 import { ExplorerTypes } from '../../types';
 import { twitterLink } from '../../utils/formatter.ts';
 import { getExplorer } from '../../utils/getExplorer';
 import { MetadataKeys } from '../../utils/metadataKeys';
-import {
-  AvatarIcon,
-  // DisabledXBadgeIcon,
-  EditIcon,
-  ExploreIcon,
-  TwitterIcon,
-  // FarcasterBadgeIcon,
-} from '../icons';
+import { EditIcon, ExploreIcon, TwitterIcon } from '../icons';
 import { CopyIcon } from '../icons/copyIcon.tsx';
 import { ShareIcon } from '../icons/shareicon.tsx';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
+import { UserAvatar } from '../user/userAvatar.tsx';
 
 interface IProfileCard {
   domainName: string | null;
   domain: string;
   metadata: { key: string; value: string | undefined }[] | undefined;
+  isMetadataLoading: boolean;
   editAction: () => void;
 }
 
@@ -47,7 +42,6 @@ const ButtonAction = ({ rightIcon, ...props }: ButtonProps) => (
     fontWeight="normal"
     fontSize={['sm', 'sm']}
     position="relative"
-    // h={9}
     justifyContent={{
       base: 'center',
       md: 'space-between',
@@ -65,27 +59,31 @@ export const ProfileCard = ({
   domainName,
   metadata,
   editAction,
+  isMetadataLoading,
 }: IProfileCard) => {
   const [isLowerThanMobile] = useMediaQuery('(max-width: 25em)');
   const { isMyDomain: isOwner } = useSidebar();
-
-  const nickname = metadata?.find(
-    (m) => m.key === MetadataKeys.CONTACT_NICKNAME
-  );
-  const shortBio = metadata?.find((m) => m.key === MetadataKeys.CONTACT_BIO);
-  const avatar = metadata?.find((m) => m.key === MetadataKeys.AVATAR);
-
-  // const handle = handles?.find((handle) => handle.name === domainName);
-
-  const { provider } = useProvider();
-
-  const explorerUrl = getExplorer(provider?.getChainId());
-
+  const { chainId } = useChainId();
   const {
     hasCopied,
     onCopy,
     value: profileLink,
   } = useClipboard(`https://bako.id/${domainName}`);
+
+  const nickname = useMemo(
+    () => metadata?.find((m) => m.key === MetadataKeys.CONTACT_NICKNAME),
+    [metadata]
+  );
+  const shortBio = useMemo(
+    () => metadata?.find((m) => m.key === MetadataKeys.CONTACT_BIO),
+    [metadata]
+  );
+  const avatar = useMemo(
+    () => metadata?.find((m) => m.key === MetadataKeys.AVATAR),
+    [metadata]
+  );
+
+  const explorerUrl = getExplorer(chainId);
 
   const Actions = (
     <>
@@ -138,7 +136,6 @@ export const ProfileCard = ({
             fontWeight="normal"
             fontSize={['sm', 'sm']}
             position="relative"
-            // h={9}
             flexDir="row"
             bgColor={isLowerThanMobile ? 'transparent' : undefined}
           >
@@ -215,22 +212,11 @@ export const ProfileCard = ({
       zIndex={1}
     >
       <Flex w="full">
-        {avatar ? (
-          <Box
-            minW={32}
-            h={32}
-            rounded="lg"
-            mr={4}
-            bgImage={`url(${avatar.value})`}
-            bgSize="cover"
-            bgPosition="center"
-            bgRepeat="no-repeat"
-            border="1.5px solid"
-            borderColor={'button.500'}
-          />
-        ) : (
-          <Icon w={32} h={32} rounded="lg" mr={4} as={AvatarIcon} />
-        )}
+        <UserAvatar
+          avatar={avatar?.value}
+          isAvatarLoading={isMetadataLoading}
+        />
+
         <Flex
           gap={4}
           alignItems={isLowerThanMobile ? 'flex-start' : 'flex-start'}
@@ -244,7 +230,12 @@ export const ProfileCard = ({
             </Text>
 
             {nickname?.value && (
-              <Text fontSize={['sm', 'md']} color="grey.200" ml={0.5}>
+              <Text
+                fontSize={['sm', 'md']}
+                color="grey.200"
+                ml={0.5}
+                maxW={{ base: '80%', sm: 'full' }}
+              >
                 {nickname.value}
               </Text>
             )}

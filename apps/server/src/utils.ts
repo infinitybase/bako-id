@@ -1,4 +1,5 @@
 import type { Identity } from '@/types';
+import { Provider } from 'fuels';
 
 export const validateNetwork = (network: string) => {
   const networks: Record<string, { url: string; chainId: number }> = {
@@ -64,3 +65,42 @@ export const parseURI = (uri: string) => {
 
   return uri;
 };
+
+export enum Networks {
+  MAINNET = 'MAINNET',
+  TESTNET = 'TESTNET',
+}
+export type NetworkName = 'MAINNET' | 'TESTNET';
+
+export const resolveNetwork = {
+  [Networks.TESTNET]: new Provider('https://testnet.fuel.network/v1/graphql'),
+  [Networks.MAINNET]: new Provider('https://mainnet.fuel.network/v1/graphql'),
+};
+
+export const fetchMetadata = async (
+  uri: string
+): Promise<Record<string, string>> => {
+  try {
+    const response = await fetch(parseURI(uri));
+    const json = await response.json();
+    return json;
+  } catch {
+    return {};
+  }
+};
+
+export const resolverNetworkByChainId = (chainId: number) => {
+  switch (chainId) {
+    case 9889:
+      return Networks.MAINNET;
+    case 0:
+      return Networks.TESTNET;
+    default:
+      throw new Error(`Unsupported chain ID: ${chainId}`);
+  }
+};
+
+export enum NetworkId {
+  MAINNET = 9889,
+  TESTNET = 0,
+}

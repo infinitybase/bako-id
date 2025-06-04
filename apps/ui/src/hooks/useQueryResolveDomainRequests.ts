@@ -1,12 +1,16 @@
+import BakoIdService from '@/services/bako-id';
+import { Networks } from '@/utils/resolverNetwork';
 import { useQuery } from '@tanstack/react-query';
-import { useResolverContract } from './sdk';
+import { useChainId } from './useChainId';
 
 const useQueryResolveDomainRequests = (domain: string) => {
-  const resolverContract = useResolverContract();
+  const { chainId, isFetched } = useChainId();
   return useQuery({
-    queryKey: ['resolveDomain', domain],
-    queryFn: async () => resolverContract?.addr(domain),
-    enabled: !!domain && !!resolverContract,
+    queryKey: ['resolveDomain', domain, chainId],
+    queryFn: async () =>
+      BakoIdService.addr(domain, chainId ?? Networks.MAINNET),
+    enabled: !!domain && isFetched,
+    refetchOnWindowFocus: false,
   });
 };
 

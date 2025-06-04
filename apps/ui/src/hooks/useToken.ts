@@ -7,8 +7,9 @@ import { Provider } from 'fuels';
 export const useToken = () => {
   const { domain } = useParams({ strict: false });
   const { provider } = useProvider();
+  console.log('use token call', domain, provider);
 
-  const { data } = useQuery({
+  const { data, ...rest } = useQuery({
     queryKey: ['token', domain],
     queryFn: async () => {
       try {
@@ -17,13 +18,11 @@ export const useToken = () => {
         if (provider) {
           registryContract = RegistryContract.create(provider);
         } else {
-          const provider = await Provider.create(
-            import.meta.env.VITE_PROVIDER_URL
-          );
+          const provider = new Provider(import.meta.env.VITE_PROVIDER_URL);
           registryContract = RegistryContract.create(provider);
         }
 
-        return registryContract.token(domain);
+        return await registryContract.token(domain);
       } catch (e) {
         console.log(e);
         throw e;
@@ -34,5 +33,6 @@ export const useToken = () => {
 
   return {
     token: data,
+    ...rest,
   };
 };

@@ -1,3 +1,9 @@
+import { ExploreIcon } from '@/components/icons/explore';
+import { ActionDomainModal } from '@/components/modal/actionDomainModal';
+import { useChainId } from '@/hooks/useChainId';
+import { useProfile } from '@/modules/profile/hooks/useProfile';
+import { ExplorerTypes, type RegistryContractToken } from '@/types';
+import { getExplorer } from '@/utils/getExplorer';
 import {
   Button,
   CardBody,
@@ -7,23 +13,15 @@ import {
   Heading,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useProvider } from '@fuels/react';
 import { Card } from '..';
-import { useToken } from '../../../hooks/useToken';
-import { useProfile } from '../../../modules/profile/hooks/useProfile';
-import { ExplorerTypes } from '../../../types';
-import { getExplorer } from '../../../utils/getExplorer';
-import { ExploreIcon } from '../../icons/explore';
-import { ActionDomainModal } from '../../modal/actionDomainModal';
 import { TokenBody } from './tokenBody';
 
-export const TokenCard = () => {
-  const { token } = useToken();
+export const TokenCard = ({ token }: { token: RegistryContractToken }) => {
   const { domain, domainParam } = useProfile();
   const action = useDisclosure();
-  const { provider } = useProvider();
+  const { chainId } = useChainId();
 
-  const explorerUrl = getExplorer(provider?.getChainId());
+  const explorerUrl = getExplorer(chainId);
 
   return (
     <>
@@ -45,7 +43,7 @@ export const TokenCard = () => {
               // isDisabled={!isMyDomain}
               onClick={() =>
                 window.open(
-                  `${explorerUrl}/account/${domain?.Address?.bits ?? domain?.ContractId?.bits}${ExplorerTypes.ASSETS}`
+                  `${explorerUrl}/account/${domain}${ExplorerTypes.ASSETS}`
                 )
               }
             >
@@ -58,7 +56,7 @@ export const TokenCard = () => {
           <TokenBody
             onOpen={action.onOpen}
             contractId={token?.contractId ?? ''}
-            subId={token?.subId ?? ''}
+            subId={token?.subId}
           />
         </CardBody>
       </Card>

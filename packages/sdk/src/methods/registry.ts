@@ -3,11 +3,14 @@ import {
   Account,
   DateTime,
   type Provider,
-  TransactionStatus,
   getMintedAssetId,
   getRandomB256,
   sha256,
   toUtf8Bytes,
+  type BN,
+  type ScriptTransactionRequest,
+  type TransactionResult,
+  type TransactionResponse,
 } from 'fuels';
 
 import {
@@ -93,7 +96,7 @@ export class RegistryContract {
   static create(accountOrProvider: Account | Provider) {
     let provider: Provider;
 
-    if (accountOrProvider instanceof Account) {
+    if ('provider' in accountOrProvider) {
       provider = accountOrProvider.provider;
     } else {
       provider = accountOrProvider;
@@ -103,7 +106,13 @@ export class RegistryContract {
     return new RegistryContract(contractId, accountOrProvider);
   }
 
-  async register(params: RegisterPayload) {
+  async register(params: RegisterPayload): Promise<{
+    gasUsed: BN;
+    transactionId: string;
+    transactionResult: TransactionResult;
+    transactionResponse: TransactionResponse;
+    assetId: string;
+  }> {
     const { domain, period, resolver } = params;
 
     if (!this.account) {
@@ -113,11 +122,12 @@ export class RegistryContract {
     const domainName = assertValidDomain(domain);
     const resolverInput = await this.getIdentity(resolver);
     const amount = await checkAccountBalance(this.account, domainName, period);
+    const assetId = await this.provider.getBaseAssetId();
     const registerCall = await this.contract.functions
       .register(domainName, resolverInput, period)
       .addContracts([this.managerContract, this.nftContract])
       .callParams({
-        forward: { amount, assetId: this.provider.getBaseAssetId() },
+        forward: { amount, assetId },
       })
       .call();
 
@@ -136,7 +146,7 @@ export class RegistryContract {
     };
   }
 
-  async changeOwner(payload: ChangeAddressPayload) {
+  async changeOwner(payload: ChangeAddressPayload): Promise<TransactionResult> {
     const { domain, address } = payload;
 
     if (!this.account) {
@@ -155,7 +165,9 @@ export class RegistryContract {
     return transactionResult;
   }
 
-  async changeResolver(payload: ChangeAddressPayload) {
+  async changeResolver(
+    payload: ChangeAddressPayload
+  ): Promise<TransactionResult> {
     const { domain, address } = payload;
 
     if (!this.account) {
@@ -174,7 +186,11 @@ export class RegistryContract {
     return transactionResult;
   }
 
-  async simulate(params: SimulatePayload) {
+  async simulate(params: SimulatePayload): Promise<{
+    fee: BN;
+    price: BN;
+    transactionRequest: ScriptTransactionRequest;
+  }> {
     const { domain, period } = params;
 
     const account = getFakeAccount(this.provider);
@@ -186,10 +202,12 @@ export class RegistryContract {
       Address: { bits: getRandomB256() },
     };
 
+    const assetId = await this.provider.getBaseAssetId();
+
     const transactionRequest = await contract.functions
       .register(domainName, resolverInput, period)
       .callParams({
-        forward: { amount, assetId: this.provider.getBaseAssetId() },
+        forward: { amount, assetId },
       })
       .getTransactionRequest();
 
@@ -225,7 +243,7 @@ export class RegistryContract {
   async setMetadata(
     domain: string,
     metadata: Partial<Record<MetadataKeys, string>>
-  ) {
+  ): Promise<TransactionResult> {
     if (!this.account) {
       throw new Error('Account is required to setMetadata');
     }
@@ -249,7 +267,7 @@ export class RegistryContract {
       )
       .call();
     const { transactionResult } = await multiCall.waitForResult();
-    return transactionResult.status === TransactionStatus.success;
+    return transactionResult;
   }
 
   async getMetadata(domain: string) {

@@ -5,6 +5,7 @@ import {
   connectRoute,
   homeRoute,
   learnMoreRoute,
+  marketplaceRoute,
   moreRoute,
   myHandlesRoute,
   profileRoute,
@@ -18,6 +19,7 @@ const routeTree = rootRoute.addChildren([
   moreRoute,
   learnMoreRoute,
   myHandlesRoute,
+  marketplaceRoute,
 ]);
 
 export const router = createRouter({

@@ -1,5 +1,8 @@
+import { getInitialOrders } from '@/helpers/getInitialOrders';
 import { FuelAssetService } from '@/services/fuel-assets';
 import { parseURI } from '@/utils';
+import { ResolverContract } from '@bako-id/sdk';
+import { Provider } from 'fuels';
 import type { Metadata } from 'next';
 import { getResolver } from '../api/[network]/addr/[name]/resolver';
 import { ProfilePage } from './page-component';
@@ -69,6 +72,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function Page() {
-  return <ProfilePage />;
+export default async function Page({ params, searchParams }: Props) {
+  const provider = new Provider(process.env.NEXT_PUBLIC_PROVIDER_URL!);
+  const chainId = await provider.getChainId();
+  const domain = (await params).domain.replace('@', '');
+  const resolver = ResolverContract.create(provider);
+  const resolverAddress = await resolver.addr(domain);
+
+  const address =
+    resolverAddress?.Address?.bits || resolverAddress?.ContractId?.bits;
+
+  const ordersPage = Number((await searchParams).page ?? 1);
+  const initialOrders = await getInitialOrders(address, chainId, ordersPage);
+
+  return <ProfilePage chainId={chainId} initialOrders={initialOrders} />;
 }
