@@ -137,53 +137,11 @@ export default function NftDetailsStep({
         </Text>
       </Stack>
 
-      <Grid templateColumns="repeat(2, 1fr)" gap={4}>
-        {order.nft.id && (
-          <GridItem>
-            <NftMetadataBlock
-              title="Asset ID"
-              value={order.nft.id}
-              icon={<BTCIcon />}
-              isCopy
-            />
-          </GridItem>
-        )}
-
-        {order.nft.fuelMetadata?.collection && (
-          <GridItem>
-            <NftMetadataBlock
-              title="Creator"
-              value={order.nft.fuelMetadata?.collection}
-              icon={<LightIcon />}
-            />
-          </GridItem>
-        )}
-
-        <GridItem>
-          <NftMetadataBlock
-            title="Contract address"
-            value={order.nft?.contractId ?? 'N/A'}
-            icon={<ContractIcon />}
-            isCopy
-          />
-        </GridItem>
-
-        <GridItem>
-          <Skeleton isLoaded={!isLoadingDomain} borderRadius="md">
-            <Link to={`/profile/${sellerDomain ? sellerDomain : order.seller}`}>
-              <NftMetadataBlock
-                title="Seller"
-                value={handle as string}
-                icon={<UserIcon />}
-              />
-            </Link>
-          </Skeleton>
-        </GridItem>
-      </Grid>
-
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Flex alignItems="center" gap={2}>
-          <Image src={assetSymbolUrl} alt="Asset icon" height={6} width={6} />
+          <Tooltip label={order.asset?.name}>
+            <Image src={assetSymbolUrl} alt="Asset icon" height={6} width={6} />
+          </Tooltip>
           <Text fontSize="sm" color="grey.title" fontWeight="semibold">
             {value}
           </Text>
@@ -236,6 +194,50 @@ export default function NftDetailsStep({
           </Tooltip>
         </Skeleton>
       )}
+
+      <Grid templateColumns="repeat(2, 1fr)" gap={4}>
+        {order.nft.id && (
+          <GridItem>
+            <NftMetadataBlock
+              title="Asset ID"
+              value={order.nft.id}
+              icon={<BTCIcon />}
+              isCopy
+            />
+          </GridItem>
+        )}
+
+        {order.nft.fuelMetadata?.collection && (
+          <GridItem>
+            <NftMetadataBlock
+              title="Creator"
+              value={order.nft.fuelMetadata?.collection}
+              icon={<LightIcon />}
+            />
+          </GridItem>
+        )}
+
+        <GridItem>
+          <NftMetadataBlock
+            title="Contract address"
+            value={order.nft?.contractId ?? 'N/A'}
+            icon={<ContractIcon />}
+            isCopy
+          />
+        </GridItem>
+
+        <GridItem>
+          <Skeleton isLoaded={!isLoadingDomain} borderRadius="md">
+            <Link to={`/profile/${sellerDomain ? sellerDomain : order.seller}`}>
+              <NftMetadataBlock
+                title="Seller"
+                value={handle as string}
+                icon={<UserIcon />}
+              />
+            </Link>
+          </Skeleton>
+        </GridItem>
+      </Grid>
 
       <NftListMetadata metadata={metadataArray} />
     </Stack>
