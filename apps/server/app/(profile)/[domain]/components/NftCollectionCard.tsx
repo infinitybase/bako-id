@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 import nftEmpty from '@/assets/nft-empty.png';
 import type { FuelAsset } from '@/services/fuel-assets';
-import { formatAddress, parseURI } from '@/utils';
+import { formatAddress } from '@/utils';
 import { NftCollectionCardModal } from './NftCollectionCardModal';
 import { NftCard } from './card';
 
@@ -44,6 +44,7 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
         image={image}
         isOpen={dialog.isOpen}
         onClose={dialog.onClose}
+        collection={props.asset.collection}
       />
 
       <NftCard.Root
