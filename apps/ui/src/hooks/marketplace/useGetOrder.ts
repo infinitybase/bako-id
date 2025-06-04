@@ -7,7 +7,7 @@ import { useChainId } from '../useChainId';
 type useGetOrderProps = { id: string };
 
 export const useGetOrder = ({ id }: useGetOrderProps) => {
-  const { chainId, isLoading } = useChainId();
+  const { chainId, isLoading, isFetched } = useChainId();
 
   const { data: order, ...rest } = useQuery({
     queryKey: [MarketplaceQueryKeys.ORDER, chainId, id],
@@ -25,7 +25,7 @@ export const useGetOrder = ({ id }: useGetOrderProps) => {
 
       return orderWithMetadata;
     },
-    enabled: !isLoading,
+    enabled: !isLoading && isFetched,
   });
 
   return { order, ...rest };
