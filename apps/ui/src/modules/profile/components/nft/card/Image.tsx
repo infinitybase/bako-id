@@ -22,14 +22,7 @@ export const Image = ({ ...props }: ImageProps) => {
   const isError = useMemo(() => status === 'error', [status]);
 
   return (
-    <Box
-      h={{
-        xl: '150px',
-      }}
-      overflow="hidden"
-      mx="auto"
-      borderTopRadius="lg"
-    >
+    <Box borderTopRadius="lg">
       <Skeleton isLoaded={!isLoading}>
         <ChakraImg
           onLoad={handleOnLoad}
@@ -37,6 +30,9 @@ export const Image = ({ ...props }: ImageProps) => {
           onError={handleOnError}
           borderTopRadius="8px"
           aspectRatio="1/1"
+          boxSize={{
+            xl: '160px',
+          }}
           {...props}
           src={isError ? EmptyImg : props.src}
         />
