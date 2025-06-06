@@ -34,14 +34,14 @@ const NftSaleCard = ({
     try {
       await cancelOrderAsync(order.id);
       successToast({
-        title: 'Order cancelled',
+        title: 'Delisted successfully',
         description: 'Your order has been successfully cancelled.',
       });
       onClose();
     } catch {
       errorToast({
-        title: 'Error cancelling order',
-        description: 'An error occurred while cancelling your order.',
+        title: 'Error delisting order',
+        description: 'An error occurred while delisting your order.',
       });
     }
   }, [cancelOrderAsync, order.id, successToast, errorToast, onClose]);
