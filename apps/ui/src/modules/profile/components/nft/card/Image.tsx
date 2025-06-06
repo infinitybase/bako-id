@@ -28,7 +28,7 @@ export const Image = ({ ...props }: ImageProps) => {
       }}
       overflow="hidden"
       mx="auto"
-      borderRadius="lg"
+      borderTopRadius="lg"
     >
       <Skeleton isLoaded={!isLoading}>
         <ChakraImg
