@@ -6,7 +6,6 @@ import type { NFTWithImage } from '@/hooks/useCollections';
 import type { Asset } from '@/types/marketplace';
 import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
 import { formatAddress } from '@/utils/formatter';
-import { useWallet } from '@fuels/react';
 import { NftCardModal } from './NftCardModal';
 import { NftCard } from './card';
 
@@ -14,6 +13,7 @@ interface NftCollectionCardProps {
   asset: NFTWithImage;
   assets: Asset[];
   resolver: string;
+  isOwner: boolean;
 }
 
 export const NftCollectionCard = (props: NftCollectionCardProps) => {
@@ -26,7 +26,6 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
     symbol,
   } = props.asset;
   const dialog = useDisclosure();
-  const { wallet } = useWallet();
 
   const image = useMemo(
     () => props.asset.image || nftEmpty,
@@ -34,12 +33,6 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
   );
 
   const hasSrc20Name = name && symbol;
-  const ownerDomain = wallet?.address.b256Address;
-  const isOwner = useMemo(
-    () => ownerDomain === props.resolver,
-    [ownerDomain, props.resolver]
-  );
-
   const isBakoIdNft = useMemo(
     () => BAKO_CONTRACTS_IDS.includes(contractId!),
     [contractId]
@@ -66,7 +59,7 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
         image={image}
         isOpen={dialog.isOpen}
         onClose={dialog.onClose}
-        isOwner={isOwner}
+        isOwner={props.isOwner}
         collection={collection}
       />
 
@@ -84,7 +77,7 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
             {nftName}
           </Text>
 
-          {isOwner && (
+          {props.isOwner && (
             <Tooltip
               label={isBakoIdNft ? 'This NFT is not allowed to be sold' : ''}
             >
