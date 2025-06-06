@@ -23,9 +23,10 @@ export const Image = ({ ...props }: ImageProps) => {
 
   return (
     <Box
-      minH={{
+      h={{
         lg: '150px',
       }}
+      overflow="hidden"
       mx="auto"
       borderRadius="lg"
     >
