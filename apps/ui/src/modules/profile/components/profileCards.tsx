@@ -104,7 +104,6 @@ export const ProfileCards = ({
 
       {!isEmptyOrders && (
         <NftListForSale
-          domain={domainParam!}
           address={domain}
           isLoadingOrders={isFetchingOrders}
           orders={orders}

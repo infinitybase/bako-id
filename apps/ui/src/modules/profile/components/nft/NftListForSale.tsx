@@ -4,7 +4,6 @@ import { Pagination } from '@/components/pagination';
 import { useResolverName } from '@/hooks';
 import type { Order } from '@/types/marketplace';
 import { AddressUtils } from '@/utils/address';
-import { formatAddress } from '@/utils/formatter';
 import type { PaginationResult } from '@/utils/pagination';
 import {
   Button,
@@ -21,12 +20,10 @@ import { useMemo, useState } from 'react';
 import NftSaleCard from './NftSaleCard';
 
 export const NftListForSale = ({
-  domain,
   address,
   isLoadingOrders,
   orders,
 }: {
-  domain?: string;
   address: string;
   isLoadingOrders?: boolean;
   orders: PaginationResult<Order> | undefined;
@@ -61,12 +58,7 @@ export const NftListForSale = ({
   return (
     <Card hidden={hiddenCard} gap={6} order={isOwner ? 1 : 0}>
       <Stack justifyContent="space-between" direction="row" alignItems="center">
-        <Heading fontSize="lg">
-          <Heading fontSize="lg" as="span" color="yellow.500">
-            {domain ? `@${domain}` : formatAddress(address)}
-          </Heading>{' '}
-          for sale
-        </Heading>
+        <Heading fontSize="lg">For sale</Heading>
 
         {isOwner && (
           <Button
