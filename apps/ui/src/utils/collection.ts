@@ -25,8 +25,8 @@ export function groupNftsByCollection(nfts: NFTWithImage[]): NFTCollection[] {
       assets,
     }))
     .sort((a, b) => {
-      if (a.name === 'Bako ID') return -1;
-      if (b.name === 'Bako ID') return 1;
+      if (a.name === 'Bako ID') return 1;
+      if (b.name === 'Bako ID') return -1;
       if (a.name === 'Other') return 1;
       if (b.name === 'Other') return -1;
       return a.name.localeCompare(b.name);
