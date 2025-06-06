@@ -7,7 +7,10 @@ export const Root = ({ isOpen, onClose, children, ...rest }: ModalProps) => {
       onClose={onClose}
       isCentered
       variant="glassmorphic"
-      size="5xl"
+      size={{
+        base: 'full',
+        sm: '5xl',
+      }}
       blockScrollOnMount
       autoFocus={false}
       {...rest}
