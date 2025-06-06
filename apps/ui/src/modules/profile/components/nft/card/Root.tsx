@@ -13,7 +13,7 @@ export const Root = ({ children, ...props }: RootProps) => {
       backdropFilter="none"
       maxW="400px"
       minW={{
-        lg: '150px',
+        xl: '150px',
       }}
       mx={{
         base: 'auto',

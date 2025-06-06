@@ -24,7 +24,7 @@ export const Image = ({ ...props }: ImageProps) => {
   return (
     <Box
       h={{
-        lg: '150px',
+        xl: '150px',
       }}
       overflow="hidden"
       mx="auto"
