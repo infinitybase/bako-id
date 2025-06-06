@@ -7,7 +7,7 @@ import {
 } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 
-export const Image = ({ ...props }: ImageProps) => {
+export const Image = ({ boxSize = { xl: '160px ' }, ...props }: ImageProps) => {
   const [status, setStatus] = useState<'loading' | 'error' | 'idle'>('loading');
 
   const handleOnLoad = () => {
@@ -30,9 +30,7 @@ export const Image = ({ ...props }: ImageProps) => {
           onError={handleOnError}
           borderTopRadius="8px"
           aspectRatio="1/1"
-          boxSize={{
-            xl: '160px',
-          }}
+          boxSize={boxSize}
           {...props}
           src={isError ? EmptyImg : props.src}
         />
