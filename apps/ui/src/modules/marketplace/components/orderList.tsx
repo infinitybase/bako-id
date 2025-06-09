@@ -54,6 +54,9 @@ export const OrderList = ({
           isOwner={address === order.seller}
           showBuyButton
           withHandle={!!data}
+          imageSize={{
+            xl: '260px',
+          }}
         />
       ))}
 
