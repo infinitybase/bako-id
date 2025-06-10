@@ -12,6 +12,7 @@ import {
   Text,
   Tooltip,
   useDisclosure,
+  type BoxProps,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { useCallback, useMemo, type MouseEvent } from 'react';
@@ -25,6 +26,7 @@ interface NftSaleCardProps {
   showBuyButton: boolean;
   withHandle: boolean;
   openModalOnClick?: boolean;
+  imageSize?: BoxProps['boxSize'];
 }
 
 const NftSaleCard = ({
@@ -34,6 +36,7 @@ const NftSaleCard = ({
   showBuyButton,
   openModalOnClick = true,
   withHandle,
+  imageSize,
 }: NftSaleCardProps) => {
   const { successToast, errorToast } = useCustomToast();
   const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
@@ -44,14 +47,14 @@ const NftSaleCard = ({
     try {
       await cancelOrderAsync(order.id);
       successToast({
-        title: 'Order cancelled',
+        title: 'Delisted successfully',
         description: 'Your order has been successfully cancelled.',
       });
       onClose();
     } catch {
       errorToast({
-        title: 'Error cancelling order',
-        description: 'An error occurred while cancelling your order.',
+        title: 'Error delisting order',
+        description: 'An error occurred while delisting your order.',
       });
     }
   }, [cancelOrderAsync, order.id, successToast, errorToast, onClose]);
@@ -105,7 +108,7 @@ const NftSaleCard = ({
         <NftCard.EditionBadge edition={order.nft?.edition} />
       )}
       {showDelistButton && <NftCard.DelistButton onDelist={handleDelist} />}
-      <NftCard.Image src={imageUrl} />
+      <NftCard.Image boxSize={imageSize} src={imageUrl} />
       <NftCard.Content spacing={2}>
         <Text
           fontSize="sm"
