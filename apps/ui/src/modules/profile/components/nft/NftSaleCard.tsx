@@ -4,11 +4,13 @@ import UnknownAsset from '@/assets/unknown-asset.png';
 import { ConfirmationDialog, useCustomToast } from '@/components';
 import { useCancelOrder } from '@/hooks/marketplace';
 import type { Order } from '@/types/marketplace';
+import { removeRightZeros } from '@/utils/removeRightZeros';
 import {
   Button,
   Heading,
   Image,
   Text,
+  Tooltip,
   useDisclosure,
   type BoxProps,
 } from '@chakra-ui/react';
@@ -23,6 +25,7 @@ interface NftSaleCardProps {
   isOwner: boolean;
   showBuyButton: boolean;
   withHandle: boolean;
+  openModalOnClick?: boolean;
   imageSize?: BoxProps['boxSize'];
 }
 
@@ -31,12 +34,13 @@ const NftSaleCard = ({
   showDelistButton,
   isOwner,
   showBuyButton,
+  openModalOnClick = true,
   withHandle,
   imageSize,
 }: NftSaleCardProps) => {
   const { successToast, errorToast } = useCustomToast();
   const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onClose, onOpen } = useDisclosure();
   const delistModal = useDisclosure();
 
   const handleCancelOrder = useCallback(async () => {
@@ -85,30 +89,21 @@ const NftSaleCard = ({
     [usdValue]
   );
 
-  const removeRightZeros = useCallback((num: string) => {
-    const parts = num.split('.');
-    if (parts.length === 2) {
-      parts[1] = parts[1].replace(/0+$/, '');
-      if (parts[1] === '') {
-        return parts[0]; // Return only the integer part if decimal part is empty
-      }
-      return parts.join('.');
-    }
-    return num; // Return the original number if no decimal part
-  }, []);
-
-  const nftPrice = useMemo(
-    () => removeRightZeros(value),
-    [value, removeRightZeros]
-  );
+  const nftPrice = useMemo(() => removeRightZeros(value), [value]);
 
   const assetSymbolUrl = order.asset?.icon || UnknownAsset;
 
   const imageUrl = order.nft?.image || nftEmpty;
   const name = order.nft?.name || 'Unknown NFT';
 
+  const handleCardClick = () => {
+    if (openModalOnClick) {
+      onOpen();
+    }
+  };
+
   return (
-    <NftCard.Root onClick={onOpen} cursor="pointer" minH="240px">
+    <NftCard.Root onClick={handleCardClick} cursor="pointer" minH="240px">
       {order.nft?.edition && (
         <NftCard.EditionBadge edition={order.nft?.edition} />
       )}
@@ -131,7 +126,9 @@ const NftSaleCard = ({
           fontSize="md"
           color="text.700"
         >
-          <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
+          <Tooltip label={order.asset?.name}>
+            <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
+          </Tooltip>
           {nftPrice}
         </Heading>
         {order.asset?.rate && (

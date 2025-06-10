@@ -1,4 +1,5 @@
 import UnknownAsset from '@/assets/unknown-asset.png';
+import { OrderSkeleton } from '@/modules/marketplace/order/components/orderSkeleton';
 import type { Order } from '@/types/marketplace';
 import { useState } from 'react';
 import { NftModal } from '../modal';
@@ -6,7 +7,7 @@ import NftDetailsStep from './NftDetailsStep';
 import NftFormStep from './NftFormStep';
 
 interface NftSaleCardModalProps {
-  order: Order;
+  order: Order | undefined;
   value: string;
   imageUrl: string;
   isOpen: boolean;
@@ -14,6 +15,7 @@ interface NftSaleCardModalProps {
   usdValue: string;
   onCancelOrder: () => Promise<void>;
   isCanceling?: boolean;
+  isLoadingOrder?: boolean;
   isOwner: boolean;
   withHandle: boolean;
 }
@@ -28,6 +30,7 @@ export const NftSaleCardModal = ({
   imageUrl,
   isOwner,
   value,
+  isLoadingOrder = false,
   withHandle,
 }: NftSaleCardModalProps) => {
   const [step, setStep] = useState(0);
@@ -40,8 +43,8 @@ export const NftSaleCardModal = ({
     setStep(0);
   };
 
-  const nftName = order.nft?.name ?? 'Unknown NFT';
-  const assetSymbolUrl = order.asset?.icon || UnknownAsset;
+  const nftName = order?.nft?.name ?? 'Unknown NFT';
+  const assetSymbolUrl = order?.asset?.icon || UnknownAsset;
 
   return (
     <NftModal.Root isOpen={isOpen} onClose={onClose}>
@@ -56,33 +59,37 @@ export const NftSaleCardModal = ({
           md: 'hidden',
         }}
       >
-        <NftModal.Image w="full" src={imageUrl} alt={nftName} />
+        {isLoadingOrder && <OrderSkeleton />}
+        {!isLoadingOrder && order && (
+          <>
+            <NftModal.Image w="full" src={imageUrl} alt={nftName} />
 
-        {step === 0 && (
-          <NftDetailsStep
-            order={order}
-            isOwner={isOwner}
-            onCancelOrder={onCancelOrder}
-            isCanceling={isCanceling}
-            onClose={onClose}
-            usdValue={usdValue}
-            value={value}
-            onEdit={handleChangeStepToSell}
-          />
+            {step === 0 && (
+              <NftDetailsStep
+                order={order}
+                isOwner={isOwner}
+                onCancelOrder={onCancelOrder}
+                isCanceling={isCanceling}
+                onClose={onClose}
+                usdValue={usdValue}
+                value={value}
+                onEdit={handleChangeStepToSell}
+              />
+            )}
+
+            {step === 1 && (
+              <NftFormStep
+                assetSymbolUrl={assetSymbolUrl}
+                order={order}
+                value={value}
+                onClose={onClose}
+                name={nftName}
+                onCancel={handleChangeStepToDetails}
+                userWithHandle={withHandle}
+              />
+            )}
+          </>
         )}
-
-        {step === 1 && (
-          <NftFormStep
-            assetSymbolUrl={assetSymbolUrl}
-            order={order}
-            value={value}
-            onClose={onClose}
-            name={nftName}
-            onCancel={handleChangeStepToDetails}
-            userWithHandle={withHandle}
-          />
-        )}
-
         <NftModal.CloseIcon onClose={onClose} />
       </NftModal.Content>
     </NftModal.Root>

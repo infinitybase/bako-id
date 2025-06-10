@@ -4,7 +4,7 @@ import nftEmpty from '@/assets/nft-empty.png';
 import UnknownAsset from '@/assets/unknown-asset.png';
 import type { FuelAsset } from '@/services/fuel-assets';
 import type { Nft } from '@/types/marketplace';
-import { Heading, Image, Text, useDisclosure } from '@chakra-ui/react';
+import { Button, Heading, Image, Text, useDisclosure } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { NftSaleCardModal } from './NftSaleCardModal';
 import { NftCard } from './card';
@@ -69,6 +69,9 @@ const NftSaleCard = ({ value, orderId, nft, asset }: NftSaleCardProps) => {
             {currency}
           </Text>
         )}
+        <Button variant="primary" py={2} height="auto">
+          Buy
+        </Button>
       </NftCard.Content>
 
       {isOpen && (

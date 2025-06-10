@@ -17,7 +17,7 @@ export class marketplaceService {
     const limit = 12;
     const network = resolveNetwork(chainId);
     const response = await fetch(
-      `${BASE_API_URL}/${network}/marketplace/orders/${account}?page=${page}&limit=${limit}`
+      `${BASE_API_URL}/${network}/marketplace/${account}/orders?page=${page}&limit=${limit}`
     );
 
     const data = await response.json();
@@ -64,6 +64,31 @@ export class marketplaceService {
     const data = await response.json();
 
     return data;
+  }
+
+  static async getOrderById({
+    id,
+    chainId = Networks.MAINNET,
+  }: {
+    id: string;
+    chainId?: number;
+  }): Promise<OrderResponse | null> {
+    try {
+      const network = resolveNetwork(chainId);
+      const response = await fetch(
+        `${BASE_API_URL}/${network}/marketplace/orders/${id}`
+      );
+
+      const data = await response.json();
+
+      if (response.status !== 200) {
+        return null;
+      }
+
+      return data;
+    } catch {
+      return null;
+    }
   }
 
   static async getAssetById({
