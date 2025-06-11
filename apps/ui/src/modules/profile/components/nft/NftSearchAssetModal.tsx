@@ -2,7 +2,9 @@ import UnknownAsset from '@/assets/unknown-asset.png';
 import { Dialog } from '@/components';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
 import { useAssetsBalance } from '@/hooks/useAssetsBalance';
+import type { Asset } from '@/types/marketplace';
 import { FUEL_ASSET_ID } from '@/utils/constants';
+import { removeRightZeros } from '@/utils/removeRightZeros';
 import { CloseIcon } from '@chakra-ui/icons';
 import {
   Badge,
@@ -19,18 +21,20 @@ import {
   Text,
   useToken,
 } from '@chakra-ui/react';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 interface NftSearchAssetModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSelect: (asset: { id: string; name?: string; icon?: string }) => void;
+  userWithHandle: boolean;
 }
 
 export const NftSearchAssetModal = ({
   isOpen,
   onClose,
   onSelect,
+  userWithHandle,
 }: NftSearchAssetModalProps) => {
   const [search, setSearch] = useState('');
   const { assets, isLoading: isAssetsLoading } = useListAssets();
@@ -67,6 +71,15 @@ export const NftSearchAssetModal = ({
     onSelect(asset);
     onClose();
   };
+
+  const getFeePercentage = useCallback(
+    (asset: Asset) => {
+      const fee = userWithHandle ? asset.fees?.[1] : asset.fees?.[0];
+      if (!fee) return '0';
+      return removeRightZeros((Number(fee) / 100).toFixed(2));
+    },
+    [userWithHandle]
+  );
 
   return (
     <Dialog.Modal
@@ -143,9 +156,9 @@ export const NftSearchAssetModal = ({
                       py={1}
                       px={2}
                       color="yellow-light"
-                      title="0% Fee"
+                      title={`${userWithHandle ? asset.fees?.[1] : asset.fees?.[0]} Fee`}
                     >
-                      0% Fee
+                      {getFeePercentage(asset)}% Fee
                     </Badge>
                   )}
                 </Flex>

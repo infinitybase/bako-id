@@ -159,7 +159,7 @@ export const NftCardSaleForm = ({
                     top="50%"
                     boxSize="18px"
                     src={field.value.icon}
-                    alt=""
+                    alt={field.value.name}
                   />
                 )}
                 <InputGroup position="relative">
@@ -203,6 +203,7 @@ export const NftCardSaleForm = ({
                 onClose={onClose}
                 isOpen={isOpen}
                 onSelect={field.onChange}
+                userWithHandle={userWithHandle}
               />
             </>
           )}
