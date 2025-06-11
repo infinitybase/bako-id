@@ -2,8 +2,10 @@ import UnknownAsset from '@/assets/unknown-asset.png';
 import { Dialog } from '@/components';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
 import { useAssetsBalance } from '@/hooks/useAssetsBalance';
+import { FUEL_ASSET_ID } from '@/utils/constants';
 import { CloseIcon } from '@chakra-ui/icons';
 import {
+  Badge,
   CircularProgress,
   Divider,
   Flex,
@@ -15,6 +17,7 @@ import {
   ListItem,
   Stack,
   Text,
+  useToken,
 } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 
@@ -31,6 +34,7 @@ export const NftSearchAssetModal = ({
 }: NftSearchAssetModalProps) => {
   const [search, setSearch] = useState('');
   const { assets, isLoading: isAssetsLoading } = useListAssets();
+  const [yellowLight] = useToken('colors', ['yellow-light']);
 
   const { data, isLoading: isBalancesLoading } = useAssetsBalance({ assets });
 
@@ -123,15 +127,27 @@ export const NftSearchAssetModal = ({
                   })
                 }
               >
-                <Flex alignItems="center">
+                <Flex alignItems="center" gap={2}>
                   <Image
                     src={asset.metadata?.icon ?? UnknownAsset}
                     alt={asset.metadata?.name ?? 'Unknown Asset'}
                     boxSize="24px"
                     borderRadius="full"
-                    mr={2}
                   />
                   <Text>{asset.metadata?.name}</Text>
+                  {asset.id === FUEL_ASSET_ID && (
+                    <Badge
+                      variant="outline"
+                      shadow="none"
+                      borderColor={`${yellowLight}26`}
+                      py={1}
+                      px={2}
+                      color="yellow-light"
+                      title="0% Fee"
+                    >
+                      0% Fee
+                    </Badge>
+                  )}
                 </Flex>
 
                 <Stack spacing={1} direction="row" alignItems="center">
