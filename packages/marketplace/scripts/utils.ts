@@ -1,9 +1,9 @@
 import { Account, bn, Provider, Src14OwnedProxy, Src14OwnedProxyFactory, ZeroBytes32 } from 'fuels';
-import { _getContractId, callAndWait, ContractsMap } from '../src/utils';
-import { MarketplaceFactory } from '../src/artifacts';
-import bakoContracts from '../../contracts/src/artifacts/contracts-fuel.json';
-import path from 'node:path';
 import fs from 'node:fs';
+import path from 'node:path';
+import bakoContracts from '../../contracts/src/artifacts/contracts-fuel.json';
+import { MarketplaceFactory } from '../src/artifacts';
+import { _getContractId, callAndWait, ContractsMap } from '../src/utils';
 
 const CONTRACTS_FILE = "contract.json";
 const CONTRACTS_PATH = path.join(__dirname, "..", "src", "artifacts");
@@ -131,6 +131,12 @@ export const getAssetsConfig = (chainId: number) => {
       assetId: '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07',
       baseFee: bn(4).mul(100),
       discountedFee: bn(3).mul(100)
+    },
+    {
+      // FUEL
+      assetId: '0x324d0c35a4299ef88138a656d5272c5a3a9ccde2630ae055dacaf9d13443d53b',
+      baseFee: bn(1).mul(100), // 1%
+      discountedFee: bn(0).mul(100) // 0%
     }
   ]
 }

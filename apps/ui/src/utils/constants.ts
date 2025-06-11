@@ -18,6 +18,8 @@ export enum BakoIDQueryKeys {
 
 export const ETH_ID =
   '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07';
+export const FUEL_ASSET_ID =
+  '0x324d0c35a4299ef88138a656d5272c5a3a9ccde2630ae055dacaf9d13443d53b';
 
 export const ORDERS_ASSETS_METADATA_STORAGE_KEY = '@bako-id/orders-assets';
 export const COLLECTION_ASSETS_METADATA_STORAGE_KEY =
