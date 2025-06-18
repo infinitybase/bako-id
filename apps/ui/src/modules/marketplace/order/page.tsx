@@ -3,7 +3,6 @@ import { useCustomToast } from '@/components';
 import { useResolverName } from '@/hooks';
 import { useCancelOrder, useGetOrder } from '@/hooks/marketplace';
 import { NftSaleCardModal } from '@/modules/profile/components/nft/NftSaleCardModal';
-import { removeRightZeros } from '@/utils/removeRightZeros';
 import { useDisclosure } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
 import { Navigate, useNavigate, useParams } from '@tanstack/react-router';
@@ -58,7 +57,11 @@ export default function OrderPage() {
   const rate = useMemo(() => order?.asset?.rate ?? 0, [order?.asset?.rate]);
 
   const value = useMemo(
-    () => bn(order?.itemPrice).formatUnits(order?.asset?.decimals),
+    () =>
+      bn(order?.itemPrice).format({
+        units: order?.asset?.decimals,
+        precision: 2,
+      }),
     [order?.itemPrice, order?.asset?.decimals]
   );
 
@@ -75,7 +78,7 @@ export default function OrderPage() {
     [usdValue]
   );
 
-  const nftPrice = useMemo(() => removeRightZeros(value), [value]);
+  const nftPrice = value;
 
   const imageUrl = order?.nft?.image || nftEmpty;
 

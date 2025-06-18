@@ -24,6 +24,7 @@ import {
 } from '@chakra-ui/react';
 import { useConnectUI } from '@fuels/react';
 import { Link } from '@tanstack/react-router';
+import { bn } from 'fuels';
 import { entries } from 'lodash';
 import { useCallback, useMemo } from 'react';
 import { NftListMetadata } from '../NftListMetadata';
@@ -72,9 +73,9 @@ export default function NftDetailsStep({
 
   const notEnoughBalance = useMemo(() => {
     if (!currentSellAssetBalance) return false;
-    const parsedValue = Number.parseFloat(value);
-    const parsedBalance = Number.parseFloat(currentSellAssetBalance);
-    return parsedValue > parsedBalance;
+    const parsedValue = bn.parseUnits(value);
+    const parsedBalance = bn.parseUnits(currentSellAssetBalance);
+    return parsedValue.gt(parsedBalance);
   }, [currentSellAssetBalance, value]);
 
   const handleExecuteOrder = useCallback(async () => {
