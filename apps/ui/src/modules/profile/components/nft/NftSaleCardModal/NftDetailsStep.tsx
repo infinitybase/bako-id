@@ -64,18 +64,14 @@ export default function NftDetailsStep({
   );
 
   const currentSellAssetBalance = useMemo(
-    () =>
-      assetsBalance
-        ?.find((item) => item.id === order.asset?.id)
-        ?.balance.formatUnits(order.asset?.decimals) || '0',
-    [assetsBalance, order.asset?.id, order.asset?.decimals]
+    () => assetsBalance?.find((item) => item.id === order.asset?.id)?.balance,
+    [assetsBalance, order.asset?.id]
   );
 
   const notEnoughBalance = useMemo(() => {
     if (!currentSellAssetBalance) return false;
     const parsedValue = bn.parseUnits(value);
-    const parsedBalance = bn.parseUnits(currentSellAssetBalance);
-    return parsedValue.gt(parsedBalance);
+    return parsedValue.gt(currentSellAssetBalance);
   }, [currentSellAssetBalance, value]);
 
   const handleExecuteOrder = useCallback(async () => {
