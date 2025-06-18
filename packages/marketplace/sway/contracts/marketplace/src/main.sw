@@ -363,7 +363,7 @@ impl Marketplace for Contract {
         let buyer = msg_sender().unwrap();
         transfer(buyer, order.item_asset, order.amount);
 
-        let (seller_amount, fee) = _split_fee(amount, buyer, asset);
+        let (seller_amount, fee) = _split_fee(amount, order.seller, asset);
 
         let existing_fee = storage.collected_fees.get(asset).try_read().unwrap_or(0);
         let new_total_fee = existing_fee + fee;
