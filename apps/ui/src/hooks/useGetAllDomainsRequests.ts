@@ -11,11 +11,11 @@ const useGetAllDomainRequests = () => {
   return useQuery({
     queryKey: ['getAllDomains', wallet?.address.toB256() ?? ZeroBytes32],
     queryFn: async () => {
-      const bakoIDClient = new BakoIDClient(
-        wallet!.provider,
-        import.meta.env.VITE_API_URL
+      const bakoIDClient = new BakoIDClient(import.meta.env.VITE_API_URL);
+      return bakoIDClient.records(
+        wallet!.address.toB256(),
+        await wallet!.provider.getChainId(),
       );
-      return bakoIDClient.records(wallet!.address.toB256());
     },
     enabled: !!wallet,
   });

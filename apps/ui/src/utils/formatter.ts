@@ -92,4 +92,36 @@ export const twitterLink = (
     related: related.length > 0 ? related.join(',') : undefined,
   })}`;
 
+export const formatMetadataFromIpfs = (metadata: Record<string, string>) => {
+  const metadataEntries = Object.entries(metadata).filter(
+    ([key]) => !key.toLowerCase().includes('uri')
+  );
+  const metadataObject: Record<string, string> = {};
+  for (const [key, value] of metadataEntries) {
+    if (Array.isArray(value)) {
+      const metadataValueRecord = metadataArrayToObject(value, key);
+      Object.assign(metadataObject, metadataValueRecord);
+      delete metadataObject[key];
+      continue;
+    }
+    if (metadataObject[key] === undefined) {
+      const metadataValue = value as string;
+      metadataObject[key] = metadataValue as string;
+    }
+  }
+  return metadataObject;
+};
+
+export const fetchMetadata = async (
+  uri: string
+): Promise<Record<string, string>> => {
+  try {
+    const response = await fetch(parseURI(uri));
+    const json = await response.json();
+    return json;
+  } catch {
+    return {};
+  }
+};
+
 export { formatAddress, formatTimeWithTimeZone };

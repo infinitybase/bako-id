@@ -1,4 +1,4 @@
-import { BakoIDClient, RegistryContract } from '@bako-id/sdk';
+import { RegistryContract } from '@bako-id/sdk';
 import { useProvider } from '@fuels/react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
@@ -7,31 +7,22 @@ import { Provider } from 'fuels';
 export const useToken = () => {
   const { domain } = useParams({ strict: false });
   const { provider } = useProvider();
+  console.log('use token call', domain, provider);
 
-  const { data } = useQuery({
+  const { data, ...rest } = useQuery({
     queryKey: ['token', domain],
     queryFn: async () => {
       try {
         let registryContract: RegistryContract;
 
         if (provider) {
-          const client = new BakoIDClient(
-            provider,
-            import.meta.env.VITE_API_URL
-          );
-          registryContract = RegistryContract.create(provider, client);
+          registryContract = RegistryContract.create(provider);
         } else {
-          const provider = await Provider.create(
-            import.meta.env.VITE_PROVIDER_URL
-          );
-          const client = new BakoIDClient(
-            provider,
-            import.meta.env.VITE_API_URL
-          );
-          registryContract = RegistryContract.create(provider, client);
+          const provider = new Provider(import.meta.env.VITE_PROVIDER_URL);
+          registryContract = RegistryContract.create(provider);
         }
 
-        return registryContract.token(domain);
+        return await registryContract.token(domain);
       } catch (e) {
         console.log(e);
         throw e;
@@ -42,5 +33,6 @@ export const useToken = () => {
 
   return {
     token: data,
+    ...rest,
   };
 };

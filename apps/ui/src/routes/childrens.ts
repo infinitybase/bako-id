@@ -1,3 +1,5 @@
+import OrderPage from '@/modules/marketplace/order/page.tsx';
+import { MarketplacePage } from '@/modules/marketplace/page.tsx';
 import { createRoute } from '@tanstack/react-router';
 import { NotConnected } from '../components';
 import { Buy } from '../modules/buy/page.tsx';
@@ -48,4 +50,16 @@ export const myHandlesRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: MyHandles,
   path: '/my-handles',
+});
+
+export const marketplaceRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  component: MarketplacePage,
+  path: '/marketplace',
+});
+
+export const orderRoute = createRoute({
+  getParentRoute: () => marketplaceRoute,
+  component: OrderPage,
+  path: '/order/$orderId',
 });

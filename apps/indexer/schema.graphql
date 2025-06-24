@@ -5,19 +5,19 @@ enum Network {
 }
 
 type Records {
-    id: ID!
-    name: String!
-    owner: String!
-    resolver: String!
-    name_hash: String!
-    timestamp: String!
-    period: Int!
-    network: Network!
+  id: ID!
+  name: String!
+  owner: String!
+  resolver: String!
+  name_hash: String!
+  timestamp: String!
+  period: Int!
+  network: Network!
 }
 
 type AddressResolver {
-    id: ID!
-    name: String!
-    resolver: String!
-    record: Records! @index
+  id: ID!
+  name: String!
+  resolver: String!
+  record: Records! @index
 }

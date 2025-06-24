@@ -1,0 +1,28 @@
+enum Network {
+  MAINNET
+  TESTNET
+}
+
+enum OrderStatus {
+  CREATED
+  COMPLETED
+  CANCELLED
+}
+
+type Order {
+  id: ID!
+  asset: String!
+  amount: BigInt!
+  seller: String!
+  itemPrice: BigInt!
+  itemAsset: String!
+  status: OrderStatus!
+  network: Network!
+}
+
+type Asset {
+  id: ID!
+  asset: String!
+  fees: [BigInt!]!
+  network: Network!
+}

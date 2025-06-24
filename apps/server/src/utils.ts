@@ -1,4 +1,5 @@
 import type { Identity } from '@/types';
+import { Provider } from 'fuels';
 
 export const validateNetwork = (network: string) => {
   const networks: Record<string, { url: string; chainId: number }> = {
@@ -63,4 +64,55 @@ export const parseURI = (uri: string) => {
   if (isIPFS(uri)) return `${IPFStoHTTP(uri)}?t=${now}`;
 
   return uri;
+};
+
+export enum Networks {
+  MAINNET = 'MAINNET',
+  TESTNET = 'TESTNET',
+}
+export type NetworkName = 'MAINNET' | 'TESTNET';
+
+export const resolveNetwork = {
+  [Networks.TESTNET]: new Provider('https://testnet.fuel.network/v1/graphql'),
+  [Networks.MAINNET]: new Provider('https://mainnet.fuel.network/v1/graphql'),
+};
+
+export const fetchMetadata = async (
+  uri: string
+): Promise<Record<string, string>> => {
+  try {
+    const response = await fetch(parseURI(uri));
+    const json = await response.json();
+    return json;
+  } catch {
+    return {};
+  }
+};
+
+export const resolverNetworkByChainId = (chainId: number) => {
+  switch (chainId) {
+    case 9889:
+      return Networks.MAINNET;
+    case 0:
+      return Networks.TESTNET;
+    default:
+      throw new Error(`Unsupported chain ID: ${chainId}`);
+  }
+};
+
+export enum NetworkId {
+  MAINNET = 9889,
+  TESTNET = 0,
+}
+
+export const removeRightZeros = (num: string) => {
+  const parts = num.split('.');
+  if (parts.length === 2) {
+    parts[1] = parts[1].replace(/0+$/, '');
+    if (parts[1] === '') {
+      return parts[0]; // Return only the integer part if decimal part is empty
+    }
+    return parts.join('.');
+  }
+  return num; // Return the original number if no decimal part
 };

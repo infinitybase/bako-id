@@ -3,6 +3,7 @@ export * from './auth';
 export * from './buttons';
 export * from './buy';
 export * from './card';
+export * from './confirmationDialog';
 export * from './connector';
 export * from './dialog';
 export * from './drawer';

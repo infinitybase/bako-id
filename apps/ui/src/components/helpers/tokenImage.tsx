@@ -1,14 +1,17 @@
+import empty from '@/assets/nft-empty.png';
 import {
   Image as ChakraImage,
   Flex,
-  type ImageProps,
   Spinner,
+  type ImageProps,
+  type ResponsiveValue,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 
 interface TokenImageProps extends ImageProps {
-  src: string;
+  src?: string;
   spinnerSize?: string;
+  spinnerTopPosition?: ResponsiveValue<number | string>;
 }
 
 export const TokenImage = ({ src, ...props }: TokenImageProps) => {
@@ -21,13 +24,15 @@ export const TokenImage = ({ src, ...props }: TokenImageProps) => {
           boxSize={props.spinnerSize ?? '100px'}
           mx="auto"
           left={props.spinnerSize ? 12 : 'unset'}
+          top={props.spinnerTopPosition}
           position="absolute"
         />
       )}
       <ChakraImage
         onLoad={() => setIsGeneratingImage(false)}
         sx={{ display: isGeneratingImage ? 'none' : 'block' }}
-        src={src}
+        src={src ?? empty}
+        fallbackSrc={empty}
         w={['17rem', '50%', '50%', '55%']}
         h="fit"
         {...props}

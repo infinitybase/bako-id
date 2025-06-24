@@ -25,6 +25,9 @@ const floating = defineStyle({
     {
       ...activeLabelStyles,
     },
+  '.chakra-input__group:not(:has(input:placeholder-shown)) + label': {
+    ...activeLabelStyles,
+  },
   '&:not(:has(label)) select': {
     py: 2,
   },

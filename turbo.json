@@ -6,9 +6,19 @@
       "cache": true
     },
     "build": {
-      "dependsOn": ["^build:sway", "^build"],
+      "dependsOn": ["codegen:sdk", "^build"],
       "outputs": ["dist/**", ".next/**"],
-      "cache": true
+      "env": [
+        "API_URL",
+        "VITE_API_URL",
+        "NEXT_PUBLIC_API_URL",
+        "NEXT_PUBLIC_APP_URL",
+        "AWS_REGION",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "GRAPHQL_MARKETPLACE_API_URL"
+      ],
+      "cache": false
     },
     "docs:build": {
       "dependsOn": ["^docs:build"],
@@ -22,6 +32,11 @@
       "dependsOn": ["^build", "^test", "pretest"],
       "outputLogs": "new-only",
       "cache": false
+    },
+    "codegen:sdk": {
+      "env": ["GRAPHQL_API_URL"],
+      "outputs": ["src/generated/**/*.ts"],
+      "cache": true
     }
   }
 }

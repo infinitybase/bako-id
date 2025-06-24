@@ -9,7 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.779.0",
     "@bako-id/contracts": "workspace:*",
+    "@bako-id/graphql": "workspace:*",
+    "@bako-id/marketplace": "workspace:*",
     "@bako-id/sdk": "workspace:*",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/next-js": "^2.4.2",
@@ -20,8 +23,9 @@
     "aws-sdk": "^2.1691.0",
     "date-fns": "^3.6.0",
     "framer-motion": "^11.3.4",
-    "fuels": "0.96.1",
+    "fuels": "0.100.1",
     "jest": "^29.6.4",
+    "lodash": "^4.17.21",
     "next": "15.0.2",
     "react": "^18.2.0"
   },
@@ -29,6 +33,7 @@
     "@types/jest": "^29.5.11",
     "@types/node": "^20",
     "@types/react": "^18.2.43",
+    "@types/lodash": "^4.17.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "ts-jest": "^29.1.1",

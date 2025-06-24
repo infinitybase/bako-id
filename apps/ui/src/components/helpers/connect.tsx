@@ -1,26 +1,30 @@
 import { Box, Button, Icon, Text } from '@chakra-ui/react';
-import { useConnectUI } from '@fuels/react';
+import { useAccount, useConnectUI, useWallet } from '@fuels/react';
 import { useScreenSize } from '../../hooks/useScreenSize';
 import { WalletIcon } from '../icons/wallet';
+import { Info } from '../user';
 
-export const Connect = () => {
+export const Connect = ({
+  isLoading,
+  domain,
+}: {
+  isLoading: boolean;
+  domain: string;
+}) => {
   const { isMobile } = useScreenSize();
-  const { connect, isConnected, isConnecting } = useConnectUI();
 
-  // if (isConnecting) {
-  //   return (
-  //     <Skeleton height="2.5rem" w="7rem" rounded={8}>
-  //       <Text>Connecting...</Text>
-  //     </Skeleton>
-  //   );
-  // }
+  const { connect, isConnecting, isConnected } = useConnectUI();
+  const { account } = useAccount();
+  const { wallet } = useWallet({
+    account,
+  });
 
-  if (isConnected) {
+  if (isLoading) {
     return null;
   }
 
-  return (
-    <>
+  if (!isConnected && !wallet) {
+    return (
       <Button
         onClick={connect}
         alignItems="center"
@@ -35,7 +39,7 @@ export const Connect = () => {
         className="transition-all-05"
       >
         {isConnecting && <Text>Connecting...</Text>}
-        {!isConnecting && !isConnected && (
+        {!isConnecting && !wallet && (
           <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
             {!isMobile && (
               <Icon
@@ -59,12 +63,8 @@ export const Connect = () => {
           </Box>
         )}
       </Button>
-      {/*<DrawerConnector*/}
-      {/*  isOpen={connectors.drawer.isOpen}*/}
-      {/*  onClose={connectors.drawer.onClose}*/}
-      {/*  onSelect={connectors.select}*/}
-      {/*  connectors={connectors.item}*/}
-      {/*/>*/}
-    </>
-  );
+    );
+  }
+
+  return <Info name={domain!} account={wallet?.address ?? ' '} />;
 };

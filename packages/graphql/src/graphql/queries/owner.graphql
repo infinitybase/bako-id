@@ -1,0 +1,11 @@
+query owner($name: String, $network: network) {
+    Records(
+        limit: 1
+        where: {
+            name: { _eq: $name },
+            network: { _eq: $network }
+        }
+    ) {
+        owner
+    }
+}

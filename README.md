@@ -29,10 +29,10 @@ yarn install fuels @bako-id/sdk
 import { BakoIDClient } from '@bako-id/sdk';
 import { Provider } from 'fuels';
 
-const provider = await Provider.create('https://testnet.fuel.network/v1/graphql');
-const client = new BakoIDClient(provider.url);
+const provider = new Provider('https://testnet.fuel.network/v1/graphql');
+const client = new BakoIDClient();
 
-const resolverAddress = await client.resolver('bakoid'); 
+const resolverAddress = await client.resolver('bakoid', await provider.getChainId()); 
 console.log(resolverAddress); // 0x000000...
 ```
 
@@ -42,11 +42,22 @@ console.log(resolverAddress); // 0x000000...
 import { BakoIDClient } from '@bako-id/sdk';
 import { Provider } from 'fuels';
 
-const provider = await Provider.create('https://testnet.fuel.network/v1/graphql');
-const client = new BakoIDClient(provider.url);
+const provider = new Provider('https://testnet.fuel.network/v1/graphql');
+const client = new BakoIDClient();
 
-const name = await client.name('0x000000...'); 
+const name = await client.name('0x000000...', await provider.getChainId()); 
 console.log(name); // @bakoid
+```
+
+### Profile URL
+
+```ts
+import { BakoIDClient } from '@bako-id/sdk';
+import { Provider } from 'fuels';
+
+const client = new BakoIDClient();
+const profileUrl = await client.profile('@bakoid'); 
+console.log(profileUrl); // https://bako.id/bakoid
 ```
 
 ## 📜 License

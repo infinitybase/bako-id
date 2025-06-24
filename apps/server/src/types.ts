@@ -18,3 +18,16 @@ export type Identity = {
     bits: string;
   };
 };
+
+export interface UploaderEventLog {
+  file_hash: string;
+  handle: string;
+  sender: {
+    bits: string;
+  };
+  owner: {
+    Address: {
+      bits: string;
+    };
+  };
+}
