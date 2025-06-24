@@ -8,13 +8,13 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { Card, ImportDataIcon } from '..';
+import { NSDialog } from '../../modules/ens/components/dialog';
 import { MetadataKeys } from '../../utils/metadataKeys';
 import { getMetadataRedirects } from '../../utils/metadatas';
 import { CopyText } from '../helpers/copy';
 import { Explorer } from '../helpers/explorer';
 import { VerifiedAccountInput } from '../inputs/verifiedAccount';
 import { useSidebar } from '../sidebar/hooks/useSidebar';
-import { NSDialog } from '../../modules/ens/components/dialog';
 
 interface AccountsCardProps {
   metadata: { key: string; value: string | undefined }[] | undefined;
@@ -77,7 +77,7 @@ export const AccountsCard = ({ metadata, addAction }: AccountsCardProps) => {
       />
 
       <Card
-        w={['full', 'full', 'full', '50%']}
+        w={['full', 'full', 'full', 'full', '50%']}
         h={['fit-content', 'fit-content', 'fit-content', 'auto']}
         display="flex"
         backdropFilter="blur(6px)"

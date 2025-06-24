@@ -22,6 +22,18 @@ const nextConfig = {
       },
     ];
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'assets.bako.id'
+      },
+      {
+        protocol: 'https',
+        hostname: '**'
+      }
+    ]
+  }
 };
 
 export default nextConfig;

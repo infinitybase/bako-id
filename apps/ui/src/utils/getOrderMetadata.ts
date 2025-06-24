@@ -1,7 +1,8 @@
-import { type FuelAsset, FuelAssetService } from '@/services/fuel-assets';
+import { FuelAssetService, type FuelAsset } from '@/services/fuel-assets';
 import type { Order } from '@/types/marketplace';
 import { assignIn, concat, merge, uniqBy } from 'lodash';
-import { ASSETS_METADATA_STORAGE_KEY } from './constants';
+import { determineCollection } from './collection';
+import { ORDERS_ASSETS_METADATA_STORAGE_KEY } from './constants';
 import { formatMetadataFromIpfs, parseURI } from './formatter';
 import { getLocalStorage, setLocalStorage } from './localStorage';
 
@@ -20,7 +21,7 @@ export const getAssetMetadata = async (
   chainId?: number | null
 ): Promise<AssetMetadata> => {
   const metadataByStorage = getLocalStorage<CachedMetadata>(
-    ASSETS_METADATA_STORAGE_KEY
+    ORDERS_ASSETS_METADATA_STORAGE_KEY
   );
 
   const metadataByCache = metadataByStorage?.[assetId] || null;
@@ -53,10 +54,16 @@ export const getOrderMetadata = async (
     const json: Record<string, string> = await fetch(fuelMetadata.uri)
       .then(async (res) => await res.json())
       .catch(() => ({}));
-    assignIn(ipfsMetadata, formatMetadataFromIpfs(json));
+    assignIn(ipfsMetadata, json);
   }
 
-  const metadata = merge(ipfsMetadata, fuelMetadata?.metadata ?? {});
+  const metadata = formatMetadataFromIpfs(
+    merge(ipfsMetadata, fuelMetadata?.metadata ?? {})
+  );
+
+  if (fuelMetadata) {
+    fuelMetadata.collection = determineCollection(fuelMetadata);
+  }
 
   return {
     ...order,
@@ -72,10 +79,8 @@ export const getOrderMetadata = async (
       contractId: fuelMetadata?.contractId,
       id: order.itemAsset,
       edition: ipfsMetadata?.edition ? `#${ipfsMetadata.edition}` : undefined,
-      name: fuelMetadata?.name,
-      image: fuelMetadata?.metadata?.image
-        ? parseURI(fuelMetadata?.metadata?.image)
-        : undefined,
+      name: metadata.name,
+      image: metadata?.image ? parseURI(metadata?.image) : undefined,
       description: ipfsMetadata?.description,
     },
   };
@@ -101,7 +106,7 @@ export const saveMetadataToLocalStorage = (orders: Order[]) => {
 
   const metadata = concat(uniqueAssets, nftAssets);
   const metadataByStorage =
-    getLocalStorage<CachedMetadata>(ASSETS_METADATA_STORAGE_KEY) || {};
+    getLocalStorage<CachedMetadata>(ORDERS_ASSETS_METADATA_STORAGE_KEY) || {};
 
   const newMetadata = metadata.reduce((acc, asset) => {
     const { id, ...rest } = asset;
@@ -114,7 +119,7 @@ export const saveMetadataToLocalStorage = (orders: Order[]) => {
   }, {} as CachedMetadata);
 
   setLocalStorage(
-    ASSETS_METADATA_STORAGE_KEY,
+    ORDERS_ASSETS_METADATA_STORAGE_KEY,
     merge(metadataByStorage, newMetadata)
   );
 };

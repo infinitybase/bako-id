@@ -4,7 +4,6 @@ import { Pagination } from '@/components/pagination';
 import { useResolverName } from '@/hooks';
 import type { Order } from '@/types/marketplace';
 import { AddressUtils } from '@/utils/address';
-import { formatAddress } from '@/utils/formatter';
 import type { PaginationResult } from '@/utils/pagination';
 import {
   Button,
@@ -15,31 +14,33 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
-import { useSearch } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { ZeroBytes32 } from 'fuels';
 import { useMemo, useState } from 'react';
 import NftSaleCard from './NftSaleCard';
 
 export const NftListForSale = ({
-  domain,
   address,
   isLoadingOrders,
   orders,
 }: {
-  domain?: string;
   address: string;
   isLoadingOrders?: boolean;
   orders: PaginationResult<Order> | undefined;
 }) => {
   const [isDelistOrder, setIsDelistOrder] = useState(false);
-  const { page } = useSearch({
-    strict: false,
-  });
+  const { page } = useSearch({ strict: false });
+  const navigate = useNavigate();
   const { wallet } = useWallet();
   const { data } = useResolverName(wallet?.address.b256Address || ZeroBytes32);
 
   const handleDelistOrder = () => {
     setIsDelistOrder((prev) => !prev);
+  };
+
+  const handlePageChange = (page: number) => {
+    // @ts-expect-error - TODO: add type for page in router schema
+    navigate({ search: { page } });
   };
 
   const isEmptyOrders = useMemo(() => !orders?.data?.length, [orders]);
@@ -49,15 +50,15 @@ export const NftListForSale = ({
     [wallet?.address, address]
   );
 
+  const userWithoutHandle = useMemo(() => !data, [data]);
+
+  const hiddenCard =
+    (isEmptyOrders && !isOwner) || (isEmptyOrders && userWithoutHandle);
+
   return (
-    <Card hidden={isEmptyOrders && !isOwner} gap={6} order={isOwner ? 1 : 0}>
+    <Card hidden={hiddenCard} gap={6} order={isOwner ? 1 : 0}>
       <Stack justifyContent="space-between" direction="row" alignItems="center">
-        <Heading fontSize="lg">
-          <Heading fontSize="lg" as="span" color="yellow.500">
-            {domain ? `@${domain}` : formatAddress(address)}
-          </Heading>{' '}
-          for sale
-        </Heading>
+        <Heading fontSize="lg">For sale</Heading>
 
         {isOwner && (
           <Button
@@ -76,8 +77,9 @@ export const NftListForSale = ({
         templateColumns={{
           base: 'repeat(1, 1fr)',
           sm: 'repeat(2, 1fr)',
-          md: 'repeat(4, 1fr)',
-          lg: 'repeat(6, 1fr)',
+          md: 'repeat(3, 1fr)',
+          lg: 'repeat(4, 1fr)',
+          xl: 'repeat(6, 1fr)',
         }}
         gap={6}
       >
@@ -114,6 +116,7 @@ export const NftListForSale = ({
           hasNextPage={orders?.hasNextPage}
           hasPreviousPage={orders?.hasPreviousPage}
           isLoading={isLoadingOrders}
+          onPageChange={handlePageChange}
         />
       </GridItem>
     </Card>

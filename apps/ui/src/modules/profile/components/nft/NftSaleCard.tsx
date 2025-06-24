@@ -4,7 +4,16 @@ import UnknownAsset from '@/assets/unknown-asset.png';
 import { ConfirmationDialog, useCustomToast } from '@/components';
 import { useCancelOrder } from '@/hooks/marketplace';
 import type { Order } from '@/types/marketplace';
-import { Button, Heading, Image, Text, useDisclosure } from '@chakra-ui/react';
+import { removeRightZeros } from '@/utils/removeRightZeros';
+import {
+  Button,
+  Heading,
+  Image,
+  Text,
+  Tooltip,
+  useDisclosure,
+  type BoxProps,
+} from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { useCallback, useMemo, type MouseEvent } from 'react';
 import { NftSaleCardModal } from './NftSaleCardModal';
@@ -16,6 +25,8 @@ interface NftSaleCardProps {
   isOwner: boolean;
   showBuyButton: boolean;
   withHandle: boolean;
+  openModalOnClick?: boolean;
+  imageSize?: BoxProps['boxSize'];
 }
 
 const NftSaleCard = ({
@@ -23,26 +34,27 @@ const NftSaleCard = ({
   showDelistButton,
   isOwner,
   showBuyButton,
+  openModalOnClick = true,
   withHandle,
+  imageSize,
 }: NftSaleCardProps) => {
   const { successToast, errorToast } = useCustomToast();
   const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onClose, onOpen } = useDisclosure();
   const delistModal = useDisclosure();
 
   const handleCancelOrder = useCallback(async () => {
     try {
       await cancelOrderAsync(order.id);
       successToast({
-        title: 'Order cancelled',
+        title: 'Delisted successfully',
         description: 'Your order has been successfully cancelled.',
       });
       onClose();
-    } catch (error) {
-      console.log(error);
+    } catch {
       errorToast({
-        title: 'Error cancelling order',
-        description: 'An error occurred while cancelling your order.',
+        title: 'Error delisting order',
+        description: 'An error occurred while delisting your order.',
       });
     }
   }, [cancelOrderAsync, order.id, successToast, errorToast, onClose]);
@@ -77,25 +89,26 @@ const NftSaleCard = ({
     [usdValue]
   );
 
-  const nftPrice = useMemo(() => Number(value), [value]);
-
-  const valueWithoutRigthZeros = useMemo(
-    () => Number(value).toString(),
-    [value]
-  );
+  const nftPrice = useMemo(() => removeRightZeros(value), [value]);
 
   const assetSymbolUrl = order.asset?.icon || UnknownAsset;
 
   const imageUrl = order.nft?.image || nftEmpty;
   const name = order.nft?.name || 'Unknown NFT';
 
+  const handleCardClick = () => {
+    if (openModalOnClick) {
+      onOpen();
+    }
+  };
+
   return (
-    <NftCard.Root onClick={onOpen} cursor="pointer" minH="240px">
+    <NftCard.Root onClick={handleCardClick} cursor="pointer" minH="240px">
       {order.nft?.edition && (
         <NftCard.EditionBadge edition={order.nft?.edition} />
       )}
       {showDelistButton && <NftCard.DelistButton onDelist={handleDelist} />}
-      <NftCard.Image src={imageUrl} />
+      <NftCard.Image boxSize={imageSize} src={imageUrl} />
       <NftCard.Content spacing={2}>
         <Text
           fontSize="sm"
@@ -113,7 +126,9 @@ const NftSaleCard = ({
           fontSize="md"
           color="text.700"
         >
-          <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
+          <Tooltip label={order.asset?.name}>
+            <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
+          </Tooltip>
           {nftPrice}
         </Heading>
         {order.asset?.rate && (
@@ -153,7 +168,7 @@ const NftSaleCard = ({
           onClose={onClose}
           onCancelOrder={handleCancelOrder}
           isCanceling={isCanceling}
-          value={valueWithoutRigthZeros}
+          value={nftPrice}
           usdValue={currency}
           isOwner={isOwner}
           withHandle={withHandle}

@@ -1,14 +1,9 @@
-import { LightIcon, useCustomToast } from '@/components';
+import { LightIcon } from '@/components/icons';
 import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
-import { useCreateOrder } from '@/hooks/marketplace';
-import type { Asset } from '@/types/marketplace';
-import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
-import { parseURI } from '@/utils/formatter';
+import { parseURI } from '@/utils';
 import { Box, Grid, GridItem, Heading, Stack, Text } from '@chakra-ui/react';
-import { bn } from 'fuels';
-import { useCallback, useMemo } from 'react';
-import { NftCardSaleForm, type NftSaleCardForm } from './NftCardSaleForm';
+import { useMemo } from 'react';
 import { NftListMetadata } from './NftListMetadata';
 import { NftMetadataBlock } from './NftMetadataBlock';
 import { NftModal } from './modal';
@@ -16,17 +11,15 @@ import { NftModal } from './modal';
 interface NftCardModalProps {
   assetId: string;
   contractId?: string;
-  nftName: React.ReactNode;
+  nftName: string;
   metadata?: Record<string, string>;
   image: string;
   isOpen: boolean;
   onClose: () => void;
-  assets: Asset[];
-  isOwner: boolean;
   collection?: string;
 }
 
-export const NftCardModal = ({
+export const NftCollectionCardModal = ({
   assetId,
   nftName,
   contractId,
@@ -34,41 +27,14 @@ export const NftCardModal = ({
   image,
   isOpen,
   onClose,
-  assets,
-  isOwner,
   collection,
 }: NftCardModalProps) => {
-  const { createOrderAsync, isPending } = useCreateOrder();
-  const { successToast, errorToast } = useCustomToast();
   const metadataArray = useMemo(() => {
     return Object.entries(metadata ?? {}).map(([key, value]) => ({
       label: key,
       value,
     }));
   }, [metadata]);
-
-  const handleCreateOrder = useCallback(
-    async (data: NftSaleCardForm) => {
-      try {
-        await createOrderAsync({
-          itemAsset: assetId,
-          itemAmount: bn(1),
-          sellPrice: bn.parseUnits(data.sellPrice.toString()),
-          sellAsset: data.sellAsset.id,
-        });
-        successToast({ title: 'Order created successfully!' });
-        onClose();
-      } catch {
-        errorToast({ title: 'Failed to create order. Please try again.' });
-      }
-    },
-    [assetId, createOrderAsync, errorToast, onClose, successToast]
-  );
-
-  const isBakoIdNft = useMemo(
-    () => BAKO_CONTRACTS_IDS.includes(contractId!),
-    [contractId]
-  );
 
   return (
     <NftModal.Root onClose={onClose} isOpen={isOpen}>
@@ -83,7 +49,7 @@ export const NftCardModal = ({
           md: 'hidden',
         }}
       >
-        <NftModal.Image w="full" src={parseURI(image)} alt="NFT image" />
+        <NftModal.Image src={parseURI(image)} alt={nftName} />
         <Stack
           w="full"
           overflowY={{
@@ -97,33 +63,26 @@ export const NftCardModal = ({
           <Stack spacing={6} flex={1} mt={6} maxH="full">
             <Box>
               <Heading fontSize="md">Description</Heading>
-              <Text
-                mt={3}
-                fontSize="sm"
-                color="section.500"
-                wordBreak="break-all"
-              >
+              <Text mt={3} fontSize="sm" color="section.500">
                 {metadata?.description ?? 'Description not provided.'}
               </Text>
             </Box>
 
             <Grid templateColumns="repeat(2, 1fr)" gap={4}>
-              {assetId && (
-                <GridItem>
-                  <NftMetadataBlock
-                    icon={<BTCIcon />}
-                    value={assetId}
-                    title="Asset ID"
-                    isCopy
-                  />
-                </GridItem>
-              )}
+              <GridItem>
+                <NftMetadataBlock
+                  icon={<BTCIcon />}
+                  value={assetId}
+                  title="Asset ID"
+                  isCopy
+                />
+              </GridItem>
 
               {collection && (
                 <GridItem>
                   <NftMetadataBlock
-                    value={collection}
                     title="Creator"
+                    value={collection}
                     icon={<LightIcon />}
                   />
                 </GridItem>
@@ -139,13 +98,6 @@ export const NftCardModal = ({
               </GridItem>
             </Grid>
 
-            {!isBakoIdNft && isOwner && (
-              <NftCardSaleForm
-                onSubmit={handleCreateOrder}
-                isLoading={isPending}
-                assets={assets}
-              />
-            )}
             <NftListMetadata metadata={metadataArray} />
           </Stack>
         </Stack>

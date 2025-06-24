@@ -1,10 +1,12 @@
 'use client';
 
+import { LightIcon } from '@/components/icons';
 import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
 import { blacklistMetadataKeys } from '@/helpers/constant';
 import type { Nft } from '@/types/marketplace';
 import {
+  Button,
   Flex,
   Grid,
   GridItem,
@@ -13,10 +15,11 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import Link from 'next/link';
 import { useMemo } from 'react';
-import { NftModal } from './modal';
 import { NftListMetadata } from './NftListMetadata';
 import { NftMetadataBlock } from './NftMetadataBlock';
+import { NftModal } from './modal';
 
 interface NftSaleCardModalProps {
   orderId: string;
@@ -44,6 +47,7 @@ export const NftSaleCardModal = ({
   asset,
   value,
   usdValue,
+  orderId,
 }: NftSaleCardModalProps) => {
   const metadataArray = useMemo(
     () =>
@@ -69,7 +73,7 @@ export const NftSaleCardModal = ({
           md: 'hidden',
         }}
       >
-        <NftModal.Image w="full" src={imageUrl} alt={name} />
+        <NftModal.Image src={imageUrl} alt={name} />
         <Stack
           gap={8}
           w="full"
@@ -91,12 +95,23 @@ export const NftSaleCardModal = ({
           <Grid templateColumns="repeat(2, 1fr)" gap={4}>
             <GridItem>
               <NftMetadataBlock
-                title="Token ID"
-                value={nft.edition?.replace('#', '') ?? ''}
+                title="Asset ID"
+                value={nft.id}
                 icon={<BTCIcon />}
                 isCopy
               />
             </GridItem>
+
+            {nft.fuelMetadata?.collection && (
+              <GridItem>
+                <NftMetadataBlock
+                  title="Creator"
+                  value={nft.fuelMetadata?.collection}
+                  icon={<LightIcon />}
+                />
+              </GridItem>
+            )}
+
             <GridItem>
               <NftMetadataBlock
                 title="Contract ID"
@@ -127,6 +142,15 @@ export const NftSaleCardModal = ({
               </Text>
             </Flex>
           </Stack>
+
+          <Button
+            variant="primary"
+            as={Link}
+            href={`${process.env.NEXT_PUBLIC_APP_URL}/marketplace/order/${orderId}`}
+            py={2}
+          >
+            Buy
+          </Button>
 
           <NftListMetadata metadata={metadataArray} />
         </Stack>

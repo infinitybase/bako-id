@@ -54,7 +54,7 @@ export const NftMetadataBlock = ({
         {title}
       </Text>
       <Flex gap={2}>
-        <Text fontSize="xs">
+        <Text fontSize="xs" overflowWrap="anywhere">
           {isB256(value!) ? formatAddress(value!, 9) : value}
         </Text>
         {isCopy && <CopyText value={value!} />}

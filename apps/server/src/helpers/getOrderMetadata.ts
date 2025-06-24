@@ -2,6 +2,7 @@ import { FuelAssetService } from '@/services/fuel-assets';
 import type { Order } from '@/types/marketplace';
 import { parseURI } from '@/utils';
 import { assignIn, merge } from 'lodash';
+import { determineCollection } from './collection';
 import { metadataArrayToObject } from './metadata';
 
 export type OrderResponse = Omit<Order, 'nft' | 'asset'> & {
@@ -47,7 +48,7 @@ export const getOrderMetadata = async (
   const fuelMetadata = await getAssetMetadata(order.itemAsset, chainId);
   const ipfsMetadata: Record<string, string> = {};
 
-  if (fuelMetadata?.uri?.endsWith('.json')) {
+  if (fuelMetadata?.uri) {
     const json: Record<string, string> = await fetch(fuelMetadata.uri)
       .then((res) => res.json())
       .catch(() => ({}));
@@ -55,6 +56,10 @@ export const getOrderMetadata = async (
   }
 
   const metadata = merge(ipfsMetadata, fuelMetadata?.metadata ?? {});
+
+  if (fuelMetadata) {
+    fuelMetadata.collection = determineCollection(fuelMetadata);
+  }
 
   return {
     ...order,
@@ -66,14 +71,13 @@ export const getOrderMetadata = async (
       : null,
     nft: {
       metadata,
+      fuelMetadata,
       ipfs: ipfsMetadata,
       contractId: fuelMetadata?.contractId,
       id: order.itemAsset,
       edition: ipfsMetadata?.edition ? `#${ipfsMetadata.edition}` : undefined,
-      name: fuelMetadata?.name,
-      image: fuelMetadata?.metadata?.image
-        ? parseURI(fuelMetadata?.metadata?.image)
-        : undefined,
+      name: metadata?.name,
+      image: metadata?.image ? parseURI(metadata?.image) : undefined,
       description: ipfsMetadata?.description,
     },
   };

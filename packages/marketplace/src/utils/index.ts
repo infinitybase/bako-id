@@ -1,11 +1,11 @@
-import type { FunctionInvocationScope } from 'fuels';
+import type { FunctionInvocationScope, MultiCallInvocationScope } from 'fuels';
 import contracts from '../artifacts/contract.json';
 
 export type MarketplaceContractsName = 'marketplace';
 export type ContractsMap = Record<string, Record<string, string>>;
 
 export const callAndWait = async <T extends unknown[], R>(
-  method: FunctionInvocationScope<T, R>
+  method: FunctionInvocationScope<T, R> | MultiCallInvocationScope<R>
 ) => {
   const result = await method.call();
   return result.waitForResult();

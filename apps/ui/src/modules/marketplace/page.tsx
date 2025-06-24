@@ -1,7 +1,7 @@
 import { useListOrders } from '@/hooks/marketplace/useListOrders';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Container, Stack } from '@chakra-ui/react';
-import { useNavigate, useSearch } from '@tanstack/react-router';
+import { Outlet, useNavigate, useSearch } from '@tanstack/react-router';
 import { useCallback, useMemo } from 'react';
 import { MarketplaceBanner, OrderList, SearchBar } from './components';
 
@@ -61,6 +61,8 @@ export const MarketplacePage = () => {
           isFetchingNextPage={isFetchingNextPage}
         />
       </Stack>
+      {/* Render the Outlet for nested routes */}
+      <Outlet />
     </Container>
   );
 };

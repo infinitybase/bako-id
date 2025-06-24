@@ -1,6 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { IconButton, Text } from '@chakra-ui/react';
-import { Link } from '@tanstack/react-router';
 
 interface PaginationProps {
   page?: number;
@@ -8,6 +7,7 @@ interface PaginationProps {
   hasNextPage?: boolean;
   hasPreviousPage?: boolean;
   isLoading?: boolean;
+  onPageChange: (page: number) => void;
 }
 
 export const Pagination = ({
@@ -16,6 +16,7 @@ export const Pagination = ({
   hasNextPage = false,
   hasPreviousPage = false,
   isLoading = false,
+  onPageChange,
 }: PaginationProps) => {
   return (
     <>
@@ -26,29 +27,19 @@ export const Pagination = ({
         aria-label="Previous Page"
         variant="unstyled"
         disabled={!hasPreviousPage || isLoading}
+        onClick={() => onPageChange(page - 1)}
         size="sm"
       >
-        <Link
-          search={{ page: page - 1 }}
-          to="."
-          disabled={!hasPreviousPage || isLoading}
-        >
-          <ChevronLeftIcon fontSize="2xl" />
-        </Link>
+        <ChevronLeftIcon fontSize="2xl" />
       </IconButton>
       <IconButton
         aria-label="Next Page"
         variant="unstyled"
         disabled={!hasNextPage || isLoading}
         size="sm"
+        onClick={() => onPageChange(page + 1)}
       >
-        <Link
-          search={{ page: page + 1 }}
-          to="."
-          disabled={!hasNextPage || isLoading}
-        >
-          <ChevronRightIcon fontSize="2xl" />
-        </Link>
+        <ChevronRightIcon fontSize="2xl" />
       </IconButton>
     </>
   );

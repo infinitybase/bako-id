@@ -68,7 +68,10 @@ export const ProfileCards = ({
         display="flex"
         h="fit-content"
         spacing={6}
-        direction={['column', 'column', 'column', 'row']}
+        direction={{
+          base: 'column',
+          lg: 'row',
+        }}
         w="full"
       >
         <Flex w="full" h="full" flexDirection="column" gap={[4, 4, 4, 6]}>
@@ -104,14 +107,13 @@ export const ProfileCards = ({
 
       {!isEmptyOrders && (
         <NftListForSale
-          domain={domainParam!}
           address={domain}
           isLoadingOrders={isFetchingOrders}
           orders={orders}
         />
       )}
 
-      <NftCollections resolver={domain!} chainId={chainId} />
+      <NftCollections resolver={domain!} />
     </Suspense>
   );
 };

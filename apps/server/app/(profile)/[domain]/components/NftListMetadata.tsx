@@ -14,7 +14,14 @@ export const NftListMetadata = ({ metadata }: NftListMetadataProps) => {
   return (
     <Stack spacing={2}>
       <Text>Metadata</Text>
-      <Flex gap={2} flexWrap="wrap">
+      <Flex
+        gap={2}
+        flexWrap="wrap"
+        flexDirection={{
+          base: 'column',
+          sm: 'row',
+        }}
+      >
         {metadata.map((item) => (
           <NftMetadataBlock
             key={item.value}

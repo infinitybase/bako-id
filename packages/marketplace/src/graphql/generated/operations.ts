@@ -28,6 +28,7 @@ export type Scalars = {
 /** columns and relationships of "Asset" */
 export type GQLAsset = {
   __typename: 'Asset';
+  asset: Scalars['String']['output'];
   db_write_timestamp?: Maybe<Scalars['timestamp']['output']>;
   fees: Array<Scalars['numeric']['output']>;
   id: Scalars['String']['output'];
@@ -39,6 +40,7 @@ export type GQLAsset_Bool_Exp = {
   _and?: InputMaybe<Array<GQLAsset_Bool_Exp>>;
   _not?: InputMaybe<GQLAsset_Bool_Exp>;
   _or?: InputMaybe<Array<GQLAsset_Bool_Exp>>;
+  asset?: InputMaybe<GQLString_Comparison_Exp>;
   db_write_timestamp?: InputMaybe<GQLTimestamp_Comparison_Exp>;
   fees?: InputMaybe<GQLNumeric_Array_Comparison_Exp>;
   id?: InputMaybe<GQLString_Comparison_Exp>;
@@ -47,6 +49,7 @@ export type GQLAsset_Bool_Exp = {
 
 /** Ordering options when selecting data from "Asset". */
 export type GQLAsset_Order_By = {
+  asset?: InputMaybe<GQLOrder_By>;
   db_write_timestamp?: InputMaybe<GQLOrder_By>;
   fees?: InputMaybe<GQLOrder_By>;
   id?: InputMaybe<GQLOrder_By>;
@@ -55,6 +58,8 @@ export type GQLAsset_Order_By = {
 
 /** select columns of table "Asset" */
 export enum GQLAsset_Select_Column {
+  /** column name */
+  Asset = 'asset',
   /** column name */
   DbWriteTimestamp = 'db_write_timestamp',
   /** column name */
@@ -75,6 +80,7 @@ export type GQLAsset_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type GQLAsset_Stream_Cursor_Value_Input = {
+  asset?: InputMaybe<Scalars['String']['input']>;
   db_write_timestamp?: InputMaybe<Scalars['timestamp']['input']>;
   fees?: InputMaybe<Array<Scalars['numeric']['input']>>;
   id?: InputMaybe<Scalars['String']['input']>;
@@ -1260,9 +1266,9 @@ export type GQLAssetsQueryVariables = Exact<{
 }>;
 
 
-export type GQLAssetsQuery = { __typename: 'query_root', Asset: Array<{ __typename: 'Asset', id: string, fees: Array<string> }> };
+export type GQLAssetsQuery = { __typename: 'query_root', Asset: Array<{ __typename: 'Asset', fees: Array<string>, id: string }> };
 
-export type GQLAssetFragment = { __typename: 'Asset', id: string, fees: Array<string> };
+export type GQLAssetFragment = { __typename: 'Asset', asset: string, fees: Array<string> };
 
 export type GQLOrdersQueryVariables = Exact<{
   count?: InputMaybe<Scalars['Int']['input']>;
@@ -1287,7 +1293,7 @@ export type GQLOrderFragment = { __typename: 'Order', id: string, asset: string,
 
 export const AssetFragmentDoc = gql`
     fragment Asset on Asset {
-  id
+  asset
   fees
 }
     `;
@@ -1305,10 +1311,11 @@ export const OrderFragmentDoc = gql`
 export const AssetsDocument = gql`
     query assets($count: Int, $offset: Int, $where: Asset_bool_exp) {
   Asset(limit: $count, offset: $offset, where: $where) {
-    ...Asset
+    id: asset
+    fees
   }
 }
-    ${AssetFragmentDoc}`;
+    `;
 export const OrdersDocument = gql`
     query orders($count: Int, $offset: Int, $where: Order_bool_exp, $sort: [Order_order_by!]) {
   Order(limit: $count, offset: $offset, where: $where, order_by: $sort) {

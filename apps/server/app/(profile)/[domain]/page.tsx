@@ -4,7 +4,7 @@ import { parseURI } from '@/utils';
 import { ResolverContract } from '@bako-id/sdk';
 import { Provider } from 'fuels';
 import type { Metadata } from 'next';
-import { getResolver } from '../api/[network]/addr/[name]/resolver';
+import { getResolver } from '../../api/[network]/addr/[name]/resolver';
 import { ProfilePage } from './page-component';
 
 type Props = {
@@ -83,7 +83,7 @@ export default async function Page({ params, searchParams }: Props) {
     resolverAddress?.Address?.bits || resolverAddress?.ContractId?.bits;
 
   const ordersPage = Number((await searchParams).page ?? 1);
-  const initialOrders = await getInitialOrders(address!, chainId, ordersPage);
+  const initialOrders = await getInitialOrders(address, chainId, ordersPage);
 
   return <ProfilePage chainId={chainId} initialOrders={initialOrders} />;
 }
