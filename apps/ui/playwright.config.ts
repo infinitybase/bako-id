@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
@@ -14,15 +14,8 @@ export default defineConfig({
   use: {
     headless: true,
     screenshot: process.env.CI ? 'off' : 'only-on-failure',
-    video: process.env.CI ? 'on-first-retry' : 'on',
     trace: process.env.CI ? 'on-first-retry' : 'retain-on-failure',
     baseURL: 'https://preview.bako.id/',
+    permissions: ['clipboard-read', 'clipboard-write'],
   },
-
-  projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-  ],
 });
