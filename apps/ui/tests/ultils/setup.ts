@@ -1,11 +1,11 @@
 import {
   downloadFuel,
   FuelWalletTestHelper,
-  getByAriaLabel,
+  getButtonByText,
   test,
 } from '@fuels/playwright-utils';
 import type { BrowserContext, Page } from '@playwright/test';
-import { Provider, Wallet } from 'fuels';
+import { Mnemonic, Provider, Wallet } from 'fuels';
 
 export class E2ETestUtils {
   static FUEL_WALLET_VERSION = '0.46.1';
@@ -27,9 +27,6 @@ export class E2ETestUtils {
       provider,
     );
 
-    const fixedMnemonic =
-      'test test test test test test test test test test test test';
-
     const fuelWalletTestHelper = await FuelWalletTestHelper.walletSetup({
       context,
       fuelExtensionId: extensionId,
@@ -38,7 +35,7 @@ export class E2ETestUtils {
         chainId: await provider.getChainId(),
       },
       chainName: (await provider.getChain()).name,
-      mnemonic: fixedMnemonic,
+      mnemonic: Mnemonic.generate(),
     });
 
     await config.page.goto('/');
@@ -54,6 +51,6 @@ export class E2ETestUtils {
     const { fuelWalletTestHelper, page } = config;
     await page.waitForTimeout(2000);
     const popupPage = await fuelWalletTestHelper.getWalletPopupPage();
-    await getByAriaLabel(popupPage, 'Submit').click();
+    await getButtonByText(popupPage, 'Submit').click();
   }
 }

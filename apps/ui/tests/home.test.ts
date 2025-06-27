@@ -1,7 +1,11 @@
 import { expect, FuelWalletTestHelper, test } from '@fuels/playwright-utils';
 import { E2ETestUtils } from './ultils/setup';
 import { randomUUID, WalletUnlocked } from 'fuels';
-import { createNewHandle, transfer } from './ultils/helpers';
+import {
+  createNewHandle,
+  returnFundsToGenesisWallet,
+  transfer,
+} from './ultils/helpers';
 
 await E2ETestUtils.downloadFuelExtension({ test });
 
@@ -20,17 +24,27 @@ test.describe('Home Page', () => {
     genesisWallet = E2EUtils.genesisWallet;
   });
 
-  test('search an existing profile', async ({ page }) => {
-    await page.goto('/');
-    await expect(page.getByText('Search new Handle')).toBeVisible();
+  test.afterEach(async ({ extensionId, context }) => {
+    const genesisAddress = genesisWallet.address.toString();
 
-    await page
-      .getByRole('textbox', { name: 'Search for an available Handle' })
-      .fill('@limpacache');
-    await expect(page.getByText('Registered')).toBeVisible();
-    await page.getByRole('button', { name: 'Continue' }).click();
-    await page.goto('https://preview.bako.id/profile/pengus');
+    await returnFundsToGenesisWallet({
+      context,
+      extensionId,
+      genesisAddress,
+    });
   });
+
+  // test('search an existing profile', async ({ page }) => {
+  //   await page.goto('/');
+  //   await expect(page.getByText('Search new Handle')).toBeVisible();
+
+  //   await page
+  //     .getByRole('textbox', { name: 'Search for an available Handle' })
+  //     .fill('@pengus');
+  //   await expect(page.getByText('Registered')).toBeVisible();
+  //   await page.getByRole('button', { name: 'Continue' }).click();
+  //   await page.goto('https://preview.bako.id/profile/pengus');
+  // });
 
   test.only('connect wallet and create a new handle', async ({ page }) => {
     await expect(page.getByText('Search new Handle')).toBeVisible();
@@ -55,7 +69,6 @@ test.describe('Home Page', () => {
     await expect(page.getByText('Handles0.001 ETH')).toBeVisible();
 
     const { value, connectedAddress } = await createNewHandle(page);
-    console.log(value, connectedAddress);
     await transfer(genesisWallet, value, connectedAddress);
 
     await page.getByRole('button', { name: 'Confirm Transaction' }).click();
