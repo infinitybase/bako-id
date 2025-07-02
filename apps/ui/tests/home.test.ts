@@ -34,19 +34,30 @@ test.describe('Home Page', () => {
     });
   });
 
-  // test('search an existing profile', async ({ page }) => {
-  //   await page.goto('/');
-  //   await expect(page.getByText('Search new Handle')).toBeVisible();
+  test('search an existing profile', async ({ page, context }) => {
+    await expect(page.getByText('Search new Handle')).toBeVisible();
 
-  //   await page
-  //     .getByRole('textbox', { name: 'Search for an available Handle' })
-  //     .fill('@pengus');
-  //   await expect(page.getByText('Registered')).toBeVisible();
-  //   await page.getByRole('button', { name: 'Continue' }).click();
-  //   await page.goto('https://preview.bako.id/profile/pengus');
-  // });
+    await page
+      .getByRole('textbox', { name: 'Search for an available Handle' })
+      .fill('@pengus');
+    await expect(page.getByText('Registered')).toBeVisible();
+    await page.getByRole('button', { name: 'Continue' }).click();
+    await page.goto('https://preview.bako.id/profile/pengus');
 
-  test.only('connect wallet and create a new handle', async ({ page }) => {
+    await expect(page.getByRole('heading', { name: 'For sale' })).toBeVisible();
+    await expect(page.getByText('owner0xbd58281c...8ebc4')).toBeVisible();
+
+    const [secondTab] = await Promise.all([
+      context.waitForEvent('page'),
+      page.getByRole('button', { name: 'Explorer' }).click(),
+    ]);
+
+    await secondTab.waitForLoadState();
+
+    await secondTab.getByRole('heading', { name: 'Account' }).click();
+  });
+
+  test('connect wallet and create a new handle', async ({ page }) => {
     await expect(page.getByText('Search new Handle')).toBeVisible();
 
     await page.getByRole('button', { name: 'Connect Wallet' }).click();

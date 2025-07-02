@@ -8,7 +8,7 @@ export default defineConfig({
   workers: 1,
   timeout: 180000,
   expect: {
-    timeout: 6000,
+    timeout: 8000,
   },
   reporter: process.env.CI ? 'blob' : 'html',
   use: {
