@@ -1,4 +1,5 @@
 import { MarketplacePage } from '@/modules/marketplace/page.tsx';
+import { CollectionPage } from '@/modules/marketplace/components/collectionPage.tsx';
 import { createRoute } from '@tanstack/react-router';
 import { NotConnected } from '../components';
 import { Buy } from '../modules/buy/page.tsx';
@@ -55,4 +56,15 @@ export const marketplaceRoute = createRoute({
   getParentRoute: () => rootRoute,
   component: MarketplacePage,
   path: '/marketplace',
+});
+
+export const marketplaceCollectionRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  component: CollectionPage,
+  path: '/marketplace/collection/$collectionId',
+  context(ctx) {
+    return {
+      collectionId: ctx.params.collectionId,
+    };
+  },
 });

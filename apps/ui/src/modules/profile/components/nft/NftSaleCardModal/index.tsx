@@ -1,13 +1,14 @@
 import UnknownAsset from '@/assets/unknown-asset.png';
-import type { Order } from '@/types/marketplace';
+import type { Orders } from '@/types/marketplace';
 import { useState } from 'react';
 import { NftModal } from '../modal';
+import { useGetOrder } from '@/hooks/marketplace/useGetOrder';
 import NftDetailsStep from './NftDetailsStep';
 import NftFormStep from './NftFormStep';
 
 interface NftSaleCardModalProps {
-  order: Order;
-  value: string;
+  order: Orders;
+  value: number;
   imageUrl: string;
   isOpen: boolean;
   onClose: () => void;
@@ -32,6 +33,8 @@ export const NftSaleCardModal = ({
 }: NftSaleCardModalProps) => {
   const [step, setStep] = useState(0);
 
+  const { order: orderData } = useGetOrder({ orderId: order.id });
+
   const handleChangeStepToSell = () => {
     setStep(1);
   };
@@ -40,8 +43,8 @@ export const NftSaleCardModal = ({
     setStep(0);
   };
 
-  const nftName = order.nft?.name ?? 'Unknown NFT';
-  const assetSymbolUrl = order.asset?.icon || UnknownAsset;
+  const nftName = orderData?.data?.asset?.name ?? 'Unknown NFT';
+  const assetSymbolUrl = orderData?.data?.price?.image || UnknownAsset;
 
   return (
     <NftModal.Root isOpen={isOpen} onClose={onClose}>
@@ -58,9 +61,9 @@ export const NftSaleCardModal = ({
       >
         <NftModal.Image w="full" src={imageUrl} alt={nftName} />
 
-        {step === 0 && (
+        {step === 0 && orderData?.data && (
           <NftDetailsStep
-            order={order}
+            order={orderData?.data}
             isOwner={isOwner}
             onCancelOrder={onCancelOrder}
             isCanceling={isCanceling}
@@ -71,10 +74,10 @@ export const NftSaleCardModal = ({
           />
         )}
 
-        {step === 1 && (
+        {step === 1 && orderData?.data && (
           <NftFormStep
             assetSymbolUrl={assetSymbolUrl}
-            order={order}
+            order={orderData?.data}
             value={value}
             onClose={onClose}
             name={nftName}

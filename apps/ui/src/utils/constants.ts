@@ -7,6 +7,10 @@ export enum MarketplaceQueryKeys {
   ASSET = 'asset',
   ORDERS = 'orders',
   ALL_ORDERS = 'allOrders',
+  ALL_COLLECTIONS = 'allCollections',
+  COLLECTION = 'collection',
+  COLLECTION_ORDERS = 'collectionOrders',
+  ORDER = 'order',
 }
 
 export enum BakoIDQueryKeys {

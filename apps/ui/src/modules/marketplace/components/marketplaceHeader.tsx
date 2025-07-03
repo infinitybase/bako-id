@@ -1,0 +1,92 @@
+import { Button, Center, Flex } from '@chakra-ui/react';
+import {
+  useAccount,
+  useConnectUI,
+  useDisconnect,
+  useIsConnected,
+  useWallet,
+} from '@fuels/react';
+import { useNavigate } from '@tanstack/react-router';
+import { useEffect, useMemo, useState } from 'react';
+import { useGetPrimaryHandleName } from '../../../hooks';
+import { formatAddress } from '../../../utils/formatter';
+import { MarketplaceConnect } from './connectButton';
+
+export const MarketplaceHeader = () => {
+  const [initialLoadState, setInitialLoadState] = useState(true);
+
+  const navigate = useNavigate();
+
+  const { isConnecting, connectors, isConnected } = useConnectUI();
+  const { account } = useAccount();
+
+  const { isPending: disconnectLoading } = useDisconnect();
+
+  const { isFetching } = useIsConnected();
+
+  const { wallet } = useWallet({
+    account,
+  });
+
+  const isAdapterLoading = useMemo(() => {
+    return isFetching && connectors.length === 0 && !account;
+  }, [isFetching, connectors, account]);
+
+  const isWalletLoading = useMemo(() => {
+    return isConnecting || disconnectLoading || isAdapterLoading;
+  }, [isConnecting, disconnectLoading, isAdapterLoading]);
+
+  const { data: primaryHandle, isLoading: isPrimaryHandleLoading } =
+    useGetPrimaryHandleName();
+
+  useEffect(() => {
+    if (!isWalletLoading && wallet && !isPrimaryHandleLoading) {
+      setInitialLoadState(false);
+    }
+
+    // This is necessary to turn the state to false when users refresh the page in the home and aren't connected,
+    // due the wallet request only happens when user is actually connected.
+    // We can't depends on the isPrimaryHandleLoading state either, because it also needs the wallet to complete the request.
+    if (!isConnected && !isWalletLoading) {
+      setInitialLoadState(false);
+    }
+  }, [isWalletLoading, wallet, isPrimaryHandleLoading, isConnected]);
+
+  const domain = primaryHandle ?? formatAddress(wallet?.address.toB256() ?? '');
+
+  const goHome = () => {
+    navigate({ to: '/' }).then();
+  };
+
+  return (
+    <Center
+      as="header"
+      w="100vw"
+      minH="48px"
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+      padding="16px 32px"
+    >
+      <Flex align="center">
+        <Button
+          onClick={goHome}
+          background="transparent"
+          color="#fff"
+          padding="6px 14px"
+          borderRadius="3px"
+          fontSize="12px"
+          letterSpacing="1px"
+          fontWeight={400}
+          cursor="pointer"
+          border="1px solid #fff"
+          _hover={{ background: 'rgba(255,255,255,0.06)' }}
+          className="transition-all-05"
+        >
+          LOGOTYPE
+        </Button>
+      </Flex>
+      <MarketplaceConnect isLoading={initialLoadState} domain={domain!} />
+    </Center>
+  );
+};

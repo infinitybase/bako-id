@@ -4,10 +4,6 @@ import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
 import { useResolverName } from '@/hooks';
 import { useExecuteOrder } from '@/hooks/marketplace';
-import { useListAssets } from '@/hooks/marketplace/useListAssets';
-import { useAssetsBalance } from '@/hooks/useAssetsBalance';
-import type { Order } from '@/types/marketplace';
-import { blocklistMetadataKeys } from '@/utils/constants';
 import { formatAddress } from '@/utils/formatter';
 import {
   Button,
@@ -24,10 +20,12 @@ import {
 } from '@chakra-ui/react';
 import { useConnectUI } from '@fuels/react';
 import { Link } from '@tanstack/react-router';
-import { entries } from 'lodash';
 import { useCallback, useMemo } from 'react';
 import { NftListMetadata } from '../NftListMetadata';
 import { NftMetadataBlock } from '../NftMetadataBlock';
+import type { Order } from '@/types/marketplace';
+import { useGetWalletBalance } from '@/modules/marketplace/hooks/useGetWalletBalance';
+import { bn } from 'fuels';
 
 export default function NftDetailsStep({
   onClose,
@@ -41,7 +39,7 @@ export default function NftDetailsStep({
 }: {
   order: Order;
   onClose: () => void;
-  value: string;
+  value: number;
   isOwner: boolean;
   usdValue: string;
   onCancelOrder: () => Promise<void>;
@@ -50,10 +48,9 @@ export default function NftDetailsStep({
 }) {
   const { connect, isConnected } = useConnectUI();
   const { errorToast, successToast } = useCustomToast();
-  const { assets } = useListAssets();
-  const { data: assetsBalance, isLoading: isLoadingBalance } = useAssetsBalance(
-    { assets }
-  );
+  const { data: walletBalance, isLoading: isLoadingWalletBalance } =
+    useGetWalletBalance();
+
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
     order.seller
   );
@@ -61,20 +58,14 @@ export default function NftDetailsStep({
     order.seller
   );
 
-  const currentSellAssetBalance = useMemo(
-    () =>
-      assetsBalance
-        ?.find((item) => item.id === order.asset?.id)
-        ?.balance.formatUnits(order.asset?.decimals) || '0',
-    [assetsBalance, order.asset?.id, order.asset?.decimals]
-  );
+  const walletAssetBalance = walletBalance?.balances
+    .find((balance) => balance.assetId === order.price.assetId)
+    ?.amount.toString();
 
   const notEnoughBalance = useMemo(() => {
-    if (!currentSellAssetBalance) return false;
-    const parsedValue = Number.parseFloat(value);
-    const parsedBalance = Number.parseFloat(currentSellAssetBalance);
-    return parsedValue > parsedBalance;
-  }, [currentSellAssetBalance, value]);
+    if (isLoadingWalletBalance) return false;
+    return !bn(walletAssetBalance).gte(order.price.raw.toString());
+  }, [walletAssetBalance, isLoadingWalletBalance, order.price.raw]);
 
   const handleExecuteOrder = useCallback(async () => {
     if (!isConnected) {
@@ -99,20 +90,9 @@ export default function NftDetailsStep({
     isConnected,
   ]);
 
-  const metadataArray = useMemo(
-    () =>
-      entries(order.nft.metadata ?? {})
-        .map(([key, value]) => ({
-          label: key,
-          value,
-        }))
-        .filter((item) => !blocklistMetadataKeys.includes(item.label)),
-    [order.nft.metadata]
-  );
+  const nftName = order.asset?.name ?? 'Unknown NFT';
 
-  const nftName = order.nft?.name ?? 'Unknown NFT';
-
-  const assetSymbolUrl = order.asset?.icon || UnknownAsset;
+  const assetSymbolUrl = order.price.image || UnknownAsset;
 
   const handle = sellerDomain
     ? `@${sellerDomain}`
@@ -133,27 +113,27 @@ export default function NftDetailsStep({
       <Stack spacing={2}>
         <Text>Description</Text>
         <Text fontSize="sm" color="grey.subtitle" wordBreak="break-all">
-          {order.nft?.description ?? 'Description not provided.'}
+          {order.asset?.metadata?.description ?? 'Description not provided.'}
         </Text>
       </Stack>
 
       <Grid templateColumns="repeat(2, 1fr)" gap={4}>
-        {order.nft.id && (
+        {order.asset.id && (
           <GridItem>
             <NftMetadataBlock
               title="Asset ID"
-              value={order.nft.id}
+              value={order.asset.id}
               icon={<BTCIcon />}
               isCopy
             />
           </GridItem>
         )}
 
-        {order.nft.fuelMetadata?.collection && (
+        {order.collection?.name && (
           <GridItem>
             <NftMetadataBlock
               title="Creator"
-              value={order.nft.fuelMetadata?.collection}
+              value={order.collection.name}
               icon={<LightIcon />}
             />
           </GridItem>
@@ -162,7 +142,7 @@ export default function NftDetailsStep({
         <GridItem>
           <NftMetadataBlock
             title="Contract address"
-            value={order.nft?.contractId ?? 'N/A'}
+            value={order.collection?.address ?? 'N/A'}
             icon={<ContractIcon />}
             isCopy
           />
@@ -216,7 +196,7 @@ export default function NftDetailsStep({
       )}
 
       {!isOwner && (
-        <Skeleton isLoaded={!isLoadingBalance} borderRadius="md">
+        <Skeleton isLoaded={!isLoadingWalletBalance} borderRadius="md">
           <Tooltip label={notEnoughBalance ? 'Not enough balance' : ''}>
             <Button
               variant="primary"
@@ -231,7 +211,7 @@ export default function NftDetailsStep({
         </Skeleton>
       )}
 
-      <NftListMetadata metadata={metadataArray} />
+      <NftListMetadata metadata={order?.asset?.metadata.attributes} />
     </Stack>
   );
 }

@@ -1,0 +1,68 @@
+import { MarketplaceQueryKeys } from '@/utils/constants';
+import type { PaginationResult } from '@/utils/pagination';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useChainId } from '../useChainId';
+import { newMarketplaceService } from '@/services/new-marketplace';
+import { Networks } from '@/utils/resolverNetwork';
+import type { Collection } from '@/types/marketplace';
+
+type useGetCollectionsProps = {
+  page?: number;
+  limit: number;
+  search?: string;
+  sortValue: string;
+  sortDirection: 'asc' | 'desc';
+};
+
+export const useGetCollections = ({
+  limit,
+  search,
+  sortValue,
+  sortDirection,
+}: useGetCollectionsProps) => {
+  const { chainId, isLoading } = useChainId();
+
+  const { data: collections, ...rest } = useInfiniteQuery<
+    PaginationResult<Collection>
+  >({
+    queryKey: [
+      MarketplaceQueryKeys.ALL_COLLECTIONS,
+      chainId,
+      search,
+      sortValue,
+      sortDirection,
+    ],
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const { page, totalPages } = lastPage;
+      if (page < totalPages) {
+        return page + 1;
+      }
+      return undefined;
+    },
+    queryFn: async ({ pageParam = 1 }) => {
+      const { data } = await newMarketplaceService.listCollections({
+        page: pageParam as number,
+        limit,
+        search,
+        chainId: chainId ?? Networks.MAINNET,
+        sortValue,
+        sortDirection,
+      });
+
+      return {
+        data: data.items,
+        page: data.pagination.page,
+        limit: data.pagination.limit,
+        total: data.pagination.total,
+        totalPages: data.pagination.totalPages,
+        hasNextPage: data.pagination.hasNext,
+        hasPreviousPage: data.pagination.hasPrev,
+      };
+    },
+    placeholderData: (data) => data,
+    enabled: !isLoading,
+  });
+
+  return { collections, ...rest };
+};

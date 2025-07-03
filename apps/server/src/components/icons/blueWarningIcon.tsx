@@ -4,7 +4,6 @@ const BlueWarningIcon = createIcon({
   displayName: 'BlueWarningIcon',
   viewBox: '0 0 18 18',
   path: (
-    // biome-ignore lint/a11y/noSvgWithoutTitle: <explanation>
     <svg
       width="18"
       height="18"

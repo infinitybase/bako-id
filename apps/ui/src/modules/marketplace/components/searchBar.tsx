@@ -28,7 +28,9 @@ const SearchBar = ({
           type="text"
           size="lg"
           variant="outlined"
+          bg="input.600"
           value={value}
+          border="grey.600"
         />
 
         <FormLabel>{placeholder}</FormLabel>
