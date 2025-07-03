@@ -28,6 +28,7 @@ type NFTMetadata = Record<string, string>;
 type CachedMetadata = Record<string, NFTMetadata>;
 
 const PAGE_SIZE = 18;
+export const REMOVED_OWNER_NFT = 'removedOwnerNft';
 
 export const useCollections = ({
   address,

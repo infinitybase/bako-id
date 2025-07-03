@@ -2,12 +2,13 @@ import { Card } from '@/components';
 import { Pagination } from '@/components/pagination';
 import { NFTCollectionSkeleton } from '@/components/skeletons/nftCollectionSkeleton';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
-import { useCollections } from '@/hooks/useCollections';
+import { REMOVED_OWNER_NFT, useCollections } from '@/hooks/useCollections';
 import { Box, Flex, Grid, Heading, Stack } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
 import { useMemo, useState } from 'react';
 import ProfileWithoutAssets from '../profileWithoutAssets';
 import { NftCollectionCard } from './NftCollectionCard';
+import { getLocalStorage } from '@/utils/localStorage';
 
 export const NftCollections = ({
   resolver,
@@ -72,15 +73,21 @@ export const NftCollections = ({
             }}
             gap={6}
           >
-            {collection.assets.map((a) => (
-              <NftCollectionCard
-                key={a.assetId}
-                asset={a}
-                assets={assets}
-                resolver={resolver}
-                isOwner={isOwner}
-              />
-            ))}
+            {collection.assets.map((a) => {
+              if (getLocalStorage(REMOVED_OWNER_NFT) === a.name) {
+                return null;
+              }
+
+              return (
+                <NftCollectionCard
+                  key={a.assetId}
+                  asset={a}
+                  assets={assets}
+                  resolver={resolver}
+                  isOwner={isOwner}
+                />
+              );
+            })}
           </Grid>
         </Box>
       ))}

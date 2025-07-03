@@ -91,6 +91,7 @@ export const ProfileCards = ({
           >
             <OwnershipCard
               owner={owner ?? ''}
+              domainName={domainParam}
               explorerUrl={`${explorerUrl}/account/`}
             />
 
