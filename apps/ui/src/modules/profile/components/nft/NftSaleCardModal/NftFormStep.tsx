@@ -1,11 +1,11 @@
 import { useCustomToast } from '@/components';
 import { useUpdateOrder } from '@/hooks/marketplace';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
-import type { Order } from '@/types/marketplace';
 import { Button, Heading, Stack, Text } from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { useCallback } from 'react';
 import { NftCardSaleForm, type NftSaleCardForm } from '../NftCardSaleForm';
+import type { Order } from '@/types/marketplace';
 
 export default function NftFormStep({
   assetSymbolUrl,
@@ -17,7 +17,7 @@ export default function NftFormStep({
   userWithHandle,
 }: {
   order: Order;
-  value: string;
+  value: number;
   assetSymbolUrl: string;
   onClose: () => void;
   name: string;
@@ -59,14 +59,13 @@ export default function NftFormStep({
         userWithHandle={userWithHandle}
         initialValues={{
           sellAsset: {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-            id: order.asset?.id!,
+            id: order.asset.id,
             icon: assetSymbolUrl,
-            name: order.asset?.name ?? 'Unknown',
-            decimals: order.asset?.decimals,
+            name: order.asset.name ?? 'Unknown',
+            // TODO: Remove this decimals in the marketplace profile page
+            decimals: 9,
           },
-          // TODO: fix this value type
-          sellPrice: value as unknown as number, // prevent broken js bilion number
+          sellPrice: value,
         }}
       />
 

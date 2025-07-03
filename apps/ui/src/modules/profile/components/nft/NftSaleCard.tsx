@@ -3,15 +3,15 @@ import nftEmpty from '@/assets/nft-empty.png';
 import UnknownAsset from '@/assets/unknown-asset.png';
 import { ConfirmationDialog, useCustomToast } from '@/components';
 import { useCancelOrder } from '@/hooks/marketplace';
-import type { Order } from '@/types/marketplace';
 import { Button, Heading, Image, Text, useDisclosure } from '@chakra-ui/react';
-import { bn } from 'fuels';
 import { useCallback, useMemo, type MouseEvent } from 'react';
 import { NftSaleCardModal } from './NftSaleCardModal';
 import { NftCard } from './card';
+import { parseURI } from '@/utils/formatter';
+import type { Orders } from '@/types/marketplace';
 
 interface NftSaleCardProps {
-  order: Order;
+  order: Orders;
   showDelistButton: boolean;
   isOwner: boolean;
   showBuyButton: boolean;
@@ -56,15 +56,6 @@ const NftSaleCard = ({
     delistModal.onClose();
   };
 
-  const rate = useMemo(() => order.asset?.rate ?? 0, [order.asset?.rate]);
-
-  const value = useMemo(
-    () => bn(order.itemPrice).formatUnits(order.asset?.decimals),
-    [order.itemPrice, order.asset?.decimals]
-  );
-
-  const usdValue = useMemo(() => Number(value) * rate, [value, rate]);
-
   const currency = useMemo(
     () =>
       Intl.NumberFormat('en-US', {
@@ -72,37 +63,20 @@ const NftSaleCard = ({
         maximumFractionDigits: 2,
         style: 'currency',
         currency: 'USD',
-      }).format(Number(usdValue)),
-    [usdValue]
+      }).format(Number(order.price.usd)),
+    [order.price.usd]
   );
 
-  const removeRightZeros = useCallback((num: string) => {
-    const parts = num.split('.');
-    if (parts.length === 2) {
-      parts[1] = parts[1].replace(/0+$/, '');
-      if (parts[1] === '') {
-        return parts[0]; // Return only the integer part if decimal part is empty
-      }
-      return parts.join('.');
-    }
-    return num; // Return the original number if no decimal part
-  }, []);
+  const assetSymbolUrl = order.price.image || UnknownAsset;
 
-  const nftPrice = useMemo(
-    () => removeRightZeros(value),
-    [value, removeRightZeros]
-  );
-
-  const assetSymbolUrl = order.asset?.icon || UnknownAsset;
-
-  const imageUrl = order.nft?.image || nftEmpty;
-  const name = order.nft?.name || 'Unknown NFT';
+  const imageUrl = parseURI(order.asset?.image) || nftEmpty;
+  const name = order.asset.name || 'Unknown NFT';
 
   return (
     <NftCard.Root onClick={onOpen} cursor="pointer" minH="240px">
-      {order.nft?.edition && (
+      {/* {order.nft?.edition && (
         <NftCard.EditionBadge edition={order.nft?.edition} />
-      )}
+      )} */}
       {showDelistButton && <NftCard.DelistButton onDelist={handleDelist} />}
       <NftCard.Image src={imageUrl} />
       <NftCard.Content spacing={2}>
@@ -123,9 +97,9 @@ const NftSaleCard = ({
           color="text.700"
         >
           <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
-          {nftPrice}
+          {order.price.amount}
         </Heading>
-        {order.asset?.rate && (
+        {order.price.usd && (
           <Text color="grey.subtitle" fontSize="sm">
             {currency}
           </Text>
@@ -162,7 +136,7 @@ const NftSaleCard = ({
           onClose={onClose}
           onCancelOrder={handleCancelOrder}
           isCanceling={isCanceling}
-          value={nftPrice}
+          value={order.price.amount}
           usdValue={currency}
           isOwner={isOwner}
           withHandle={withHandle}

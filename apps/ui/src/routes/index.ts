@@ -6,6 +6,7 @@ import {
   homeRoute,
   learnMoreRoute,
   marketplaceRoute,
+  marketplaceCollectionRoute,
   moreRoute,
   myHandlesRoute,
   profileRoute,
@@ -20,6 +21,7 @@ const routeTree = rootRoute.addChildren([
   learnMoreRoute,
   myHandlesRoute,
   marketplaceRoute,
+  marketplaceCollectionRoute,
 ]);
 
 export const router = createRouter({
