@@ -36,11 +36,16 @@ export const NftCollections = ({
     [ownerDomain, resolver]
   );
 
-  const emptyCollections = useMemo(
-    () => collections.length === 0,
-    [collections]
-  );
+  const emptyCollections = useMemo(() => {
+  if (collections.length === 0) return true;
 
+  const removedName = getLocalStorage(REMOVED_OWNER_NFT);
+  return !collections.some((c) =>
+    c.assets.some((a) => a.name !== removedName)
+  );
+}, [collections]);
+
+  
   if (isLoading) {
     return <NFTCollectionSkeleton />;
   }
@@ -53,7 +58,9 @@ export const NftCollections = ({
       backdropFilter="blur(6px)"
       flexDirection="column"
       boxShadow="lg"
-      hidden={!isLoadingWallet && !isOwner && emptyCollections}
+      hidden={
+        !isLoadingWallet && !isOwner && emptyCollections
+      }
     >
       <Flex mb={6} alignItems="center" justify="space-between">
         <Heading fontSize="lg">NFT</Heading>
