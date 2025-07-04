@@ -22,8 +22,9 @@ import { Explorer } from '../helpers/explorer';
 interface IOwnershipCard {
   owner: string | null;
   explorerUrl: string;
+  domainName: string;
 }
-export const OwnershipCard = ({ owner, explorerUrl }: IOwnershipCard) => {
+export const OwnershipCard = ({ owner, explorerUrl, domainName }: IOwnershipCard) => {
   const { domain } = useParams({ strict: false });
   const { dates, isLoading } = useGetGracePeriod(domain.replace('@', ''));
   const { account } = useAccount();
@@ -78,6 +79,7 @@ export const OwnershipCard = ({ owner, explorerUrl }: IOwnershipCard) => {
         )}
         <OwnershipDialog
           doamin={domain}
+          domainName={domainName ?? ''}
           isOpen={dialog.isOpen}
           onClose={dialog.onClose}
         />
