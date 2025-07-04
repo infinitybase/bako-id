@@ -65,7 +65,7 @@ export default function OrderPage() {
     [order?.itemPrice, order?.asset?.decimals]
   );
 
-  const usdValue = useMemo(() => Number(value) * rate, [value, rate]);
+  const usdValue = useMemo(() => Number(value.replace(/,/g, '')) * rate, [value, rate]);
 
   const currency = useMemo(
     () =>
