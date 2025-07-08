@@ -1,7 +1,7 @@
 query names($addresses:  [String!], $network: network) {
-    Records(
+    AddressResolver(
         where: {
-            network: {_eq: $network},
+            record: { network: { _eq: $network } }
             _and: {
                 resolver: {
                     _in: $addresses
