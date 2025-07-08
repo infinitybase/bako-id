@@ -2,7 +2,7 @@ import type {
   Collection,
   MarketplacePaginatedResponse,
   Order,
-  Orders,
+  OrdersList,
 } from '@/types/marketplace';
 import { constructUrl } from '@/utils/constructUrl';
 import { Networks, resolveNetwork } from '@/utils/resolverNetwork';
@@ -68,7 +68,7 @@ export class newMarketplaceService {
     chainId?: number;
     sortValue: string;
     sortDirection: 'asc' | 'desc';
-  }): Promise<MarketplacePaginatedResponse<Orders>> {
+  }): Promise<MarketplacePaginatedResponse<OrdersList>> {
     const network = resolveNetwork(chainId);
 
     const url = constructUrl(
@@ -113,6 +113,37 @@ export class newMarketplaceService {
       orderBy: sortValue,
       orderDirection: sortDirection,
     });
+
+    const response = await fetch(url);
+
+    const data = await response.json();
+
+    return data;
+  }
+
+  static async listUserOrders({
+    page,
+    chainId = Networks.MAINNET,
+    sellerAddress,
+    limit,
+  }: {
+    page: number | string;
+    chainId: number;
+    limit?: number;
+    sellerAddress: string;
+  }): Promise<MarketplacePaginatedResponse<OrdersList>> {
+    const network = resolveNetwork(chainId);
+
+    const url = constructUrl(
+      `${BASE_API_URL}/${network}/user/orders/${sellerAddress}`,
+      {
+        page,
+        limit: limit ?? 10,
+        orderBy: 'createdAt',
+        orderDirection: 'desc',
+        sellerAddress,
+      }
+    );
 
     const response = await fetch(url);
 

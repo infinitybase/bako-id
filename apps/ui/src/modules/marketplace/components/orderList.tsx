@@ -1,6 +1,6 @@
 import { useResolverName } from '@/hooks';
 import NftSaleCard from '@/modules/profile/components/nft/NftSaleCard';
-import type { Orders } from '@/types/marketplace';
+import type { OrdersList } from '@/types/marketplace';
 import { GridItem, Heading, SimpleGrid, Skeleton } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
 import { ZeroBytes32 } from 'fuels';
@@ -8,7 +8,7 @@ import { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 interface OrderListProps {
-  orders: Orders[];
+  orders: OrdersList[];
   onFetchNextPage: () => void;
   hasNextPage: boolean;
   isLoadingOrders?: boolean;

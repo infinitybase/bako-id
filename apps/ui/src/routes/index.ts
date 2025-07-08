@@ -10,6 +10,7 @@ import {
   moreRoute,
   myHandlesRoute,
   profileRoute,
+  marketplaceProfileRoute,
 } from './childrens.ts';
 
 const routeTree = rootRoute.addChildren([
@@ -22,6 +23,7 @@ const routeTree = rootRoute.addChildren([
   myHandlesRoute,
   marketplaceRoute,
   marketplaceCollectionRoute,
+  marketplaceProfileRoute,
 ]);
 
 export const router = createRouter({

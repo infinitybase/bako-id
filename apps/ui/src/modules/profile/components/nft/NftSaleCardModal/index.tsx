@@ -1,5 +1,5 @@
 import UnknownAsset from '@/assets/unknown-asset.png';
-import type { Orders } from '@/types/marketplace';
+import type { OrdersList } from '@/types/marketplace';
 import { useState } from 'react';
 import { NftModal } from '../modal';
 import { useGetOrder } from '@/hooks/marketplace/useGetOrder';
@@ -7,7 +7,7 @@ import NftDetailsStep from './NftDetailsStep';
 import NftFormStep from './NftFormStep';
 
 interface NftSaleCardModalProps {
-  order: Orders;
+  order: OrdersList;
   value: number;
   imageUrl: string;
   isOpen: boolean;

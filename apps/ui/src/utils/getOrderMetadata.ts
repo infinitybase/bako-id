@@ -1,15 +1,18 @@
 import { FuelAssetService, type FuelAsset } from '@/services/fuel-assets';
-import type { Order } from '@/types/marketplace';
 import { assignIn, concat, merge, uniqBy } from 'lodash';
 import { ORDERS_ASSETS_METADATA_STORAGE_KEY } from './constants';
 import { formatMetadataFromIpfs, parseURI } from './formatter';
 import { getLocalStorage, setLocalStorage } from './localStorage';
+import type { OrderFromFuel } from '@/types/marketplace';
 
-export type OrderResponse = Omit<Order, 'nft' | 'asset' | 'sellerDomain'> & {
+export type OrderResponse = Omit<
+  OrderFromFuel,
+  'nft' | 'asset' | 'sellerDomain'
+> & {
   asset: string;
 };
 
-type AssetMetadata =
+export type AssetMetadata =
   | (FuelAsset & { id: string; ipfs?: Record<string, string> })
   | null;
 
@@ -40,7 +43,7 @@ export const getAssetMetadata = async (
 export const getOrderMetadata = async (
   order: OrderResponse,
   chainId: number | null | undefined
-): Promise<Order> => {
+): Promise<OrderFromFuel> => {
   const assetMetadata = await getAssetMetadata(order.asset, chainId);
   const fuelMetadata = await getAssetMetadata(order.itemAsset, chainId);
   const ipfsMetadata: Record<string, string> = fuelMetadata?.ipfs || {};
@@ -81,7 +84,7 @@ export const getOrderMetadata = async (
   };
 };
 
-export const saveMetadataToLocalStorage = (orders: Order[]) => {
+export const saveMetadataToLocalStorage = (orders: OrderFromFuel[]) => {
   const uniqueAssets = uniqBy(
     orders
       .filter((order) => order.asset)

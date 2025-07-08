@@ -1,8 +1,8 @@
-import { useScreenSize } from '@/hooks/useScreenSize';
 import { Box, Button, Icon, Text } from '@chakra-ui/react';
 import { useAccount, useConnectUI, useWallet } from '@fuels/react';
-import { Info } from '@/components/user';
 import { WalletIcon2 } from '@/modules/marketplace/components/icons/wallet2';
+import { formatAddress } from '@/utils/formatter';
+import { ConnectButtonMenu } from './connectButtonMenu';
 
 export const MarketplaceConnect = ({
   isLoading,
@@ -11,8 +11,6 @@ export const MarketplaceConnect = ({
   isLoading: boolean;
   domain: string;
 }) => {
-  const { isMobile } = useScreenSize();
-
   const { connect, isConnecting, isConnected } = useConnectUI();
   const { account } = useAccount();
   const { wallet } = useWallet({
@@ -22,6 +20,12 @@ export const MarketplaceConnect = ({
   if (isLoading) {
     return null;
   }
+
+  const isDomain = !domain?.includes('...');
+
+  const name = isDomain
+    ? domain
+    : formatAddress(wallet?.address.toB256() ?? '');
 
   if (!isConnected && !wallet) {
     return (
@@ -51,29 +55,20 @@ export const MarketplaceConnect = ({
           <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
             <Text>Connect Wallet</Text>
 
-            {!isMobile && (
-              <Icon
-                as={WalletIcon2}
-                alignSelf="center"
-                h={4}
-                w={4}
-                color="#F5F5F5"
-              />
-            )}
-            {isMobile && (
-              <Icon
-                as={WalletIcon2}
-                alignSelf="center"
-                h={4}
-                w={4}
-                color="#F5F5F5"
-              />
-            )}
+            <Icon
+              as={WalletIcon2}
+              alignSelf="center"
+              h={4}
+              w={4}
+              color="#F5F5F5"
+            />
           </Box>
         )}
       </Button>
     );
   }
 
-  return <Info name={domain!} account={wallet?.address ?? ' '} />;
+  return (
+    <ConnectButtonMenu name={name ?? ''} account={wallet?.address ?? ''} />
+  );
 };

@@ -36,7 +36,7 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
   const hasSrc20Name = name && symbol;
   const ownerDomain = wallet?.address.b256Address;
   const isOwner = useMemo(
-    () => ownerDomain === props.resolver,
+    () => ownerDomain?.toLowerCase() === props.resolver.toLowerCase(),
     [ownerDomain, props.resolver]
   );
 
@@ -89,7 +89,7 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
               label={isBakoIdNft ? 'This NFT is not allowed to be sold' : ''}
             >
               <Button mt={2} disabled={isBakoIdNft} variant="primary" size="sm">
-                Sell
+                List
               </Button>
             </Tooltip>
           )}

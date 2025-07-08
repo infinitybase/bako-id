@@ -6,7 +6,7 @@ import { MarketplaceBanner, SearchBar } from './components';
 import { CollectionList } from './components/collectionList';
 
 import { useGetCollections } from '@/hooks/marketplace/useListCollections';
-import type { Collection } from '@/services/new-marketplace';
+import type { Collection } from '@/types/marketplace';
 
 export const MarketplacePage = () => {
   const navigate = useNavigate();

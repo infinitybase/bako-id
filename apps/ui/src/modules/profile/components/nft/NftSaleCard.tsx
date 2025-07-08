@@ -8,10 +8,10 @@ import { useCallback, useMemo, type MouseEvent } from 'react';
 import { NftSaleCardModal } from './NftSaleCardModal';
 import { NftCard } from './card';
 import { parseURI } from '@/utils/formatter';
-import type { Orders } from '@/types/marketplace';
+import type { OrdersList } from '@/types/marketplace';
 
 interface NftSaleCardProps {
-  order: Orders;
+  order: OrdersList;
   showDelistButton: boolean;
   isOwner: boolean;
   showBuyButton: boolean;

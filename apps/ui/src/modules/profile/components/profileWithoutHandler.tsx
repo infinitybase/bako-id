@@ -1,5 +1,4 @@
-import type { Order } from '@/types/marketplace';
-import type { PaginationResult } from '@/utils/pagination';
+import type { OrdersList } from '@/types/marketplace';
 import { Container, Stack } from '@chakra-ui/react';
 import { useParams } from '@tanstack/react-router';
 import { NftCollections } from './nft/NftCollections';
@@ -9,9 +8,15 @@ import ProfileHandleBanner from './profileHandleBanner';
 export default function ProfileWithoutHandler({
   orders,
   isLoadingOrders = false,
+  paginationInfos,
 }: {
-  orders: PaginationResult<Order> | undefined;
+  orders: OrdersList[] | undefined;
   isLoadingOrders?: boolean;
+  paginationInfos: {
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
 }) {
   const { domain: domainParam } = useParams({ strict: false });
 
@@ -39,6 +44,7 @@ export default function ProfileWithoutHandler({
           address={address}
           orders={orders}
           isLoadingOrders={isLoadingOrders}
+          paginationInfos={paginationInfos}
         />
 
         <NftCollections resolver={address} />

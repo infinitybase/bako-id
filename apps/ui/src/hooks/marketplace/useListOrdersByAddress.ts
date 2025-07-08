@@ -1,40 +1,31 @@
 import { MarketplaceQueryKeys } from '@/utils/constants';
-import type { PaginationResult } from '@/utils/pagination';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useChainId } from '../useChainId';
 import { newMarketplaceService } from '@/services/new-marketplace';
 import { Networks } from '@/utils/resolverNetwork';
 import type { OrdersList } from '@/types/marketplace';
+import type { PaginationResult } from '@/utils/pagination';
 
-type UseGetCollectionOrdersProps = {
+type useListOrdersByAddressProps = {
   page?: number;
-  limit: number;
-  search?: string;
-  sortValue: string;
-  sortDirection: 'asc' | 'desc';
-  collectionId: string;
+  limit?: number;
+  sellerAddress: string;
 };
 
-export const useGetCollectionOrders = ({
+export const useListOrdersByAddress = ({
+  sellerAddress,
+  page = 0,
   limit,
-  search,
-  sortValue,
-  sortDirection,
-  collectionId,
-}: UseGetCollectionOrdersProps) => {
-  const { chainId, isLoading } = useChainId();
+}: useListOrdersByAddressProps) => {
+  const { chainId, isLoading: isLoadingChainId } = useChainId();
 
-  const { data: collectionOrders, ...rest } = useInfiniteQuery<
-    PaginationResult<OrdersList>
-  >({
-    queryKey: [
-      MarketplaceQueryKeys.COLLECTION_ORDERS,
-      chainId,
-      search,
-      sortValue,
-      sortDirection,
-    ],
-    initialPageParam: 0,
+  const {
+    data: orders,
+    isLoading: isLoadingOrders,
+    ...rest
+  } = useInfiniteQuery<PaginationResult<OrdersList>>({
+    queryKey: [MarketplaceQueryKeys.USER_ORDERS, chainId, sellerAddress, page],
+    initialPageParam: page,
     getNextPageParam: (lastPage) => {
       const { page, totalPages } = lastPage;
       if (page < totalPages) {
@@ -42,15 +33,12 @@ export const useGetCollectionOrders = ({
       }
       return undefined;
     },
-    queryFn: async ({ pageParam = 0 }) => {
-      const { data } = await newMarketplaceService.getCollectionOrders({
+    queryFn: async ({ pageParam }) => {
+      const { data } = await newMarketplaceService.listUserOrders({
         page: pageParam as number,
-        limit,
-        search,
-        collectionId,
         chainId: chainId ?? Networks.MAINNET,
-        sortValue,
-        sortDirection,
+        limit: limit ?? 10,
+        sellerAddress,
       });
 
       return {
@@ -64,8 +52,12 @@ export const useGetCollectionOrders = ({
       };
     },
     placeholderData: (data) => data,
-    enabled: !isLoading,
+    enabled: !isLoadingChainId && !!sellerAddress,
   });
 
-  return { collectionOrders, ...rest };
+  return {
+    orders,
+    isLoading: !sellerAddress ? true : isLoadingOrders,
+    ...rest,
+  };
 };
