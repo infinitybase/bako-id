@@ -1,6 +1,7 @@
 import type {
   Collection,
   MarketplacePaginatedResponse,
+  MarketplacePaginatedResponseUserOrders,
   Order,
   OrdersList,
 } from '@/types/marketplace';
@@ -131,7 +132,7 @@ export class newMarketplaceService {
     chainId: number;
     limit?: number;
     sellerAddress: string;
-  }): Promise<MarketplacePaginatedResponse<OrdersList>> {
+  }): Promise<MarketplacePaginatedResponseUserOrders<OrdersList>> {
     const network = resolveNetwork(chainId);
 
     const url = constructUrl(

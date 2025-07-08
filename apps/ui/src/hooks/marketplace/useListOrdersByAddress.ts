@@ -12,6 +12,11 @@ type useListOrdersByAddressProps = {
   sellerAddress: string;
 };
 
+type UserOrdersResponse = PaginationResult<OrdersList> & {
+  totalOrdersUsdPrice: number;
+  notListedTotalUsdPrice: number;
+};
+
 export const useListOrdersByAddress = ({
   sellerAddress,
   page = 0,
@@ -23,7 +28,7 @@ export const useListOrdersByAddress = ({
     data: orders,
     isLoading: isLoadingOrders,
     ...rest
-  } = useInfiniteQuery<PaginationResult<OrdersList>>({
+  } = useInfiniteQuery<UserOrdersResponse>({
     queryKey: [MarketplaceQueryKeys.USER_ORDERS, chainId, sellerAddress, page],
     initialPageParam: page,
     getNextPageParam: (lastPage) => {
@@ -49,6 +54,8 @@ export const useListOrdersByAddress = ({
         totalPages: data.pagination.totalPages,
         hasNextPage: data.pagination.hasNext,
         hasPreviousPage: data.pagination.hasPrev,
+        totalOrdersUsdPrice: data.totalOrdersUsdPrice,
+        notListedTotalUsdPrice: data.notListedTotalUsdPrice,
       };
     },
     placeholderData: (data) => data,

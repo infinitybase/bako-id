@@ -24,8 +24,14 @@ export const ProfilePage = () => {
     fetchNextPage,
     isFetchingNextPage,
   } = useListOrdersByAddress({
+    page: 0,
     sellerAddress: owner.toLowerCase(),
   });
+
+  const totalUsdValue =
+    (orders?.pages?.[0]?.totalOrdersUsdPrice ?? 0) +
+    (orders?.pages?.[0]?.notListedTotalUsdPrice ?? 0);
+
   const data = useMemo(
     () => orders?.pages?.flatMap((page) => page.data) ?? [],
     [orders]
@@ -61,8 +67,7 @@ export const ProfilePage = () => {
         <ProfilePageBanner
           name={name}
           nftQuantity={data.length + notListedCollections.length}
-          // TODO: Create the new endpoint to sum this total
-          usdValue={0}
+          usdValue={totalUsdValue}
         />
 
         <ProfileNfts

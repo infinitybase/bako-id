@@ -4,3 +4,5 @@ export * from './useExecuteOrder';
 export * from './useListOrdersByAccount';
 export * from './useMarketplace';
 export * from './useUpdateOrder';
+export * from './useGetOrder';
+export * from './useListOrdersByAddress';

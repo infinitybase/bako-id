@@ -9,7 +9,7 @@ import { More } from '../modules/profile/components/more/page.tsx';
 import { Profile } from '../modules/profile/page.tsx';
 import { rootRoute } from './__root.ts';
 import { ProfilePage } from '@/modules/marketplace/components/profilePage.tsx';
-import { CollectionPage } from '@/modules/marketplace/components/collectionPage.tsx';
+import { CollectionPage } from '@/modules/marketplace/collections/page.tsx';
 
 export const homeRoute = createRoute({
   getParentRoute: () => rootRoute,

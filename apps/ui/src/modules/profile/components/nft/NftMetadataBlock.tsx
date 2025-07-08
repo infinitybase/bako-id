@@ -27,7 +27,7 @@ export const NftMetadataBlock = ({
     background="input.600"
     position="relative"
     _before={
-      isUrl(value) && ['image', 'avatar'].includes(title.toLowerCase())
+      isUrl(value) && ['image', 'avatar'].includes(title?.toLowerCase() ?? '')
         ? {
             content: '""',
             display: 'block',
