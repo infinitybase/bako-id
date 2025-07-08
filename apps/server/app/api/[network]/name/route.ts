@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     });
 
     return NextResponse.json({
-      names: data.Records ?? [],
+      names: data.AddressResolver ?? [],
     });
   } catch (e) {
     return NextResponse.json(
