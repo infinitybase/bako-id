@@ -58,7 +58,7 @@ test.describe('Home Page', () => {
     await secondTab.getByRole('heading', { name: 'Account' }).click();
   });
 
-  test.only('create new Bako user', async ({ page }) => {
+  test('create new Bako user', async ({ page }) => {
     await test.step('connect wallet', async () => {
       await expect(page.getByText('Search new Handle')).toBeVisible();
       await page.getByRole('button', { name: 'Connect Wallet' }).click();

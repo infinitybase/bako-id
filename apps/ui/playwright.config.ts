@@ -10,7 +10,7 @@ export default defineConfig({
   expect: {
     timeout: 8000,
   },
-  reporter: process.env.CI ? 'blob' : 'html',
+  reporter: 'html',
   use: {
     headless: true,
     screenshot: process.env.CI ? 'off' : 'only-on-failure',
