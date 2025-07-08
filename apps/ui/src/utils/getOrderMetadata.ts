@@ -1,5 +1,6 @@
 import { FuelAssetService, type FuelAsset } from '@/services/fuel-assets';
 import { assignIn, concat, merge, uniqBy } from 'lodash';
+import { determineCollection } from './collection';
 import { ORDERS_ASSETS_METADATA_STORAGE_KEY } from './constants';
 import { formatMetadataFromIpfs, parseURI } from './formatter';
 import { getLocalStorage, setLocalStorage } from './localStorage';
@@ -62,6 +63,10 @@ export const getOrderMetadata = async (
   const metadata = formatMetadataFromIpfs(
     merge(ipfsMetadata, fuelMetadata?.metadata ?? {})
   );
+
+  if (fuelMetadata) {
+    fuelMetadata.collection = determineCollection(fuelMetadata);
+  }
 
   return {
     ...order,

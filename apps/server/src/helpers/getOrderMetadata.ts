@@ -2,6 +2,7 @@ import { FuelAssetService } from '@/services/fuel-assets';
 import type { Order } from '@/types/marketplace';
 import { parseURI } from '@/utils';
 import { assignIn, merge } from 'lodash';
+import { determineCollection } from './collection';
 import { metadataArrayToObject } from './metadata';
 
 export type OrderResponse = Omit<Order, 'nft' | 'asset'> & {
@@ -58,6 +59,10 @@ export const getOrderMetadata = async (
     merge(ipfsMetadata, fuelMetadata?.metadata ?? {})
   );
 
+  if (fuelMetadata) {
+    fuelMetadata.collection = determineCollection(fuelMetadata);
+  }
+
   return {
     ...order,
     asset: assetMetadata
@@ -68,6 +73,7 @@ export const getOrderMetadata = async (
       : null,
     nft: {
       metadata,
+      fuelMetadata,
       ipfs: ipfsMetadata,
       contractId: fuelMetadata?.contractId,
       id: order.itemAsset,

@@ -3,6 +3,7 @@ import { NFTCollectionSkeleton } from '@/components/skeletons/nftCollectionSkele
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
 import { useCollections } from '@/hooks/useCollections';
 import { Box, Flex, Grid, Heading, Stack } from '@chakra-ui/react';
+import { useWallet } from '@fuels/react';
 import { useMemo, useState } from 'react';
 import ProfileWithoutAssets from '../profileWithoutAssets';
 import { NftCollectionCard } from './NftCollectionCard';
@@ -15,6 +16,7 @@ export const NftCollections = ({
 }) => {
   const { assets } = useListAssets();
   const [currentPage, setCurrentPage] = useState(1);
+  const { wallet, isLoading: isLoadingWallet } = useWallet();
 
   const { collections, isLoading, totalPages, isPlaceholderData } =
     useCollections({
@@ -27,6 +29,11 @@ export const NftCollections = ({
       setCurrentPage(newPage);
     }
   };
+  const ownerDomain = wallet?.address.b256Address;
+  const isOwner = useMemo(
+    () => ownerDomain === resolver,
+    [ownerDomain, resolver]
+  );
 
   const emptyCollections = useMemo(
     () => collections.length === 0,
@@ -45,6 +52,7 @@ export const NftCollections = ({
       backdropFilter="blur(6px)"
       flexDirection="column"
       boxShadow="lg"
+      hidden={!isLoadingWallet && !isOwner && emptyCollections}
     >
       <Flex mb={6} alignItems="center" justify="space-between">
         <Heading fontSize="lg">NFT</Heading>
@@ -57,10 +65,10 @@ export const NftCollections = ({
           <Grid
             templateColumns={{
               base: 'repeat(1, 1fr)',
-              xs: 'repeat(2, 1fr)',
-              sm: 'repeat(3, 1fr)',
-              md: 'repeat(4, 1fr)',
-              lg: 'repeat(6, 1fr)',
+              sm: 'repeat(2, 1fr)',
+              md: 'repeat(3, 1fr)',
+              lg: 'repeat(4, 1fr)',
+              xl: 'repeat(6, 1fr)',
             }}
             gap={6}
           >
@@ -70,6 +78,7 @@ export const NftCollections = ({
                 asset={a}
                 assets={assets}
                 resolver={resolver}
+                isOwner={isOwner}
               />
             ))}
           </Grid>

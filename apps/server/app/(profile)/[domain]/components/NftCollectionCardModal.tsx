@@ -1,7 +1,8 @@
+import { LightIcon } from '@/components/icons';
 import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
 import { parseURI } from '@/utils';
-import { Box, Flex, Heading, Stack, Text } from '@chakra-ui/react';
+import { Box, Grid, GridItem, Heading, Stack, Text } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { NftListMetadata } from './NftListMetadata';
 import { NftMetadataBlock } from './NftMetadataBlock';
@@ -15,6 +16,7 @@ interface NftCardModalProps {
   image: string;
   isOpen: boolean;
   onClose: () => void;
+  collection?: string;
 }
 
 export const NftCollectionCardModal = ({
@@ -25,6 +27,7 @@ export const NftCollectionCardModal = ({
   image,
   isOpen,
   onClose,
+  collection,
 }: NftCardModalProps) => {
   const metadataArray = useMemo(() => {
     return Object.entries(metadata ?? {}).map(([key, value]) => ({
@@ -65,21 +68,35 @@ export const NftCollectionCardModal = ({
               </Text>
             </Box>
 
-            <Flex direction="row" wrap="wrap" gap={3}>
-              <NftMetadataBlock
-                icon={<BTCIcon />}
-                value={assetId}
-                title="Asset ID"
-                isCopy
-              />
+            <Grid templateColumns="repeat(2, 1fr)" gap={4}>
+              <GridItem>
+                <NftMetadataBlock
+                  icon={<BTCIcon />}
+                  value={assetId}
+                  title="Asset ID"
+                  isCopy
+                />
+              </GridItem>
 
-              <NftMetadataBlock
-                icon={<ContractIcon />}
-                value={contractId!}
-                title="Contract Address"
-                isCopy
-              />
-            </Flex>
+              {collection && (
+                <GridItem>
+                  <NftMetadataBlock
+                    title="Creator"
+                    value={collection}
+                    icon={<LightIcon />}
+                  />
+                </GridItem>
+              )}
+
+              <GridItem>
+                <NftMetadataBlock
+                  icon={<ContractIcon />}
+                  value={contractId!}
+                  title="Contract Address"
+                  isCopy
+                />
+              </GridItem>
+            </Grid>
 
             <NftListMetadata metadata={metadataArray} />
           </Stack>

@@ -34,7 +34,7 @@ export const Image = ({ src, alt, ...rest }: ImageProps) => {
       mx="auto"
       borderRadius="lg"
     >
-      <Skeleton isLoaded={!isLoading}>
+      <Skeleton isLoaded={!isLoading} rounded="lg">
         <ChakraImage
           alt={alt}
           onLoad={handleOnLoad}

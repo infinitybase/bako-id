@@ -201,6 +201,8 @@ export const ProfileCard = ({
     </>
   );
 
+  const name = domainName?.startsWith('@') ? domainName : `@${domainName}`;
+
   return (
     <Card
       w="full"
@@ -226,7 +228,8 @@ export const ProfileCard = ({
         >
           <Flex flex={2} gap={2.5} direction="column" alignItems="flex-start">
             <Text fontWeight="semibold" fontSize={['md', 'lg']} color="white">
-              {domainName?.startsWith('@') ? domainName : `@${domainName}`}
+              {nickname?.value && nickname.value}
+              {!nickname?.value && name}
             </Text>
 
             {nickname?.value && (
@@ -236,7 +239,7 @@ export const ProfileCard = ({
                 ml={0.5}
                 maxW={{ base: '80%', sm: 'full' }}
               >
-                {nickname.value}
+                {name}
               </Text>
             )}
 

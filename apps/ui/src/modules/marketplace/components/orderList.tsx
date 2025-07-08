@@ -3,6 +3,7 @@ import NftSaleCard from '@/modules/profile/components/nft/NftSaleCard';
 import type { Order } from '@/types/marketplace';
 import { GridItem, Heading, SimpleGrid, Skeleton } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
+import { Link } from '@tanstack/react-router';
 import { ZeroBytes32 } from 'fuels';
 import { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -47,14 +48,19 @@ export const OrderList = ({
       }}
     >
       {orders.map((order) => (
-        <NftSaleCard
-          key={order.id}
-          order={order}
-          showDelistButton={false}
-          isOwner={address === order.seller}
-          showBuyButton
-          withHandle={!!data}
-        />
+        <Link to={`/marketplace/order/${order.id}`} key={order.id}>
+          <NftSaleCard
+            order={order}
+            showDelistButton={false}
+            isOwner={address === order.seller}
+            showBuyButton
+            withHandle={!!data}
+            openModalOnClick={false}
+            imageSize={{
+              xl: '260px',
+            }}
+          />
+        </Link>
       ))}
 
       {(isLoadingOrders || isFetchingNextPage) &&

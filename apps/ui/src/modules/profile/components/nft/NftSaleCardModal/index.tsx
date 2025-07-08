@@ -15,6 +15,7 @@ interface NftSaleCardModalProps {
   usdValue: string;
   onCancelOrder: () => Promise<void>;
   isCanceling?: boolean;
+  isLoadingOrder?: boolean;
   isOwner: boolean;
   withHandle: boolean;
 }
@@ -28,6 +29,7 @@ export const NftSaleCardModal = ({
   imageUrl,
   isOwner,
   value,
+  isLoadingOrder = false,
   withHandle,
   order,
 }: NftSaleCardModalProps) => {
@@ -59,7 +61,10 @@ export const NftSaleCardModal = ({
           md: 'hidden',
         }}
       >
-        <NftModal.Image w="full" src={imageUrl} alt={nftName} />
+        {isLoadingOrder && <OrderSkeleton />}
+        {!isLoadingOrder && order && (
+          <>
+            <NftModal.Image w="full" src={imageUrl} alt={nftName} />
 
         {step === 0 && orderData && (
           <NftDetailsStep
