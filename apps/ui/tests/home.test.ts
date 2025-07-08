@@ -3,6 +3,7 @@ import { E2ETestUtils } from './ultils/setup';
 import { randomUUID, WalletUnlocked } from 'fuels';
 import {
   createNewHandle,
+  editProfile,
   returnFundsToGenesisWallet,
   transfer,
 } from './ultils/helpers';
@@ -57,43 +58,113 @@ test.describe('Home Page', () => {
     await secondTab.getByRole('heading', { name: 'Account' }).click();
   });
 
-  test('connect wallet and create a new handle', async ({ page }) => {
-    await expect(page.getByText('Search new Handle')).toBeVisible();
-
-    await page.getByRole('button', { name: 'Connect Wallet' }).click();
-    await page.getByLabel('Connect to Fuel Wallet').click();
-
-    await fuelWalletTestHelper.walletConnect();
-
-    await expect(
-      page.getByRole('button', { name: 'My Handles' }),
-    ).toBeVisible();
+  test.only('create new Bako user', async ({ page }) => {
+    await test.step('connect wallet', async () => {
+      await expect(page.getByText('Search new Handle')).toBeVisible();
+      await page.getByRole('button', { name: 'Connect Wallet' }).click();
+      await page.getByLabel('Connect to Fuel Wallet').click();
+      await fuelWalletTestHelper.walletConnect();
+      await expect(
+        page.getByRole('button', { name: 'My Handles' }),
+      ).toBeVisible();
+    });
 
     const newHandle = `automation${randomUUID().slice(0, 4)}`;
     console.log('new handle: ', newHandle);
-    await page
-      .getByRole('textbox', { name: 'Search for an available Handle' })
-      .fill(newHandle);
-    await page.getByRole('button', { name: 'Continue' }).click();
 
-    await expect(page.getByText(newHandle)).toBeVisible();
-    await expect(page.getByText('Handles0.001 ETH')).toBeVisible();
+    await test.step('create new handle', async () => {
+      await page
+        .getByRole('textbox', { name: 'Search for an available Handle' })
+        .fill(newHandle);
+      await page.getByRole('button', { name: 'Continue' }).click();
 
-    const { value, connectedAddress } = await createNewHandle(page);
-    await transfer(genesisWallet, value, connectedAddress);
+      await expect(page.getByText(newHandle)).toBeVisible();
+      await expect(page.getByText('Handles0.001 ETH')).toBeVisible();
 
-    await page.getByRole('button', { name: 'Confirm Transaction' }).click();
+      const { value, connectedAddress } = await createNewHandle(page);
+      await transfer(genesisWallet, value, connectedAddress);
 
-    await page
-      .getByLabel('Bako ID Terms Of Use Agreement')
-      .locator('div')
-      .filter({ hasText: '1. The Bako IDThe “Bako ID”' })
-      .nth(2)
-      .evaluate((el) => {
-        el.scrollTop = el.scrollHeight;
+      await page.getByRole('button', { name: 'Confirm Transaction' }).click();
+
+      await page
+        .getByLabel('Bako ID Terms Of Use Agreement')
+        .locator('div')
+        .filter({ hasText: '1. The Bako IDThe “Bako ID”' })
+        .nth(2)
+        .evaluate((el) => {
+          el.scrollTop = el.scrollHeight;
+        });
+      await page.getByRole('button', { name: 'Accept' }).click();
+
+      await E2ETestUtils.signMessageFuelWallet({ fuelWalletTestHelper, page });
+    });
+
+    await test.step('edit user', async () => {
+      await page.getByRole('img', { name: 'Bako logo' }).click();
+      await page.waitForTimeout(2500);
+      await page.reload();
+
+      await page.getByRole('button', { name: `${newHandle} avatar` }).click();
+      await page.getByRole('menuitem', { name: 'Profile' }).click();
+
+      await expect(
+        page.getByText(`@${newHandle}`, { exact: true }),
+      ).toBeVisible();
+
+      await page.getByRole('button', { name: 'Edit Profile' }).click();
+      await page
+        .locator('div')
+        .filter({ hasText: /^Nickname$/ })
+        .first()
+        .click();
+      await page
+        .getByRole('textbox', { name: 'Nickname' })
+        .fill(`${newHandle}`);
+      await page.getByRole('button', { name: 'Save' }).click();
+      await page
+        .locator('div')
+        .filter({ hasText: /^Short bio$/ })
+        .first()
+        .click();
+      await page.getByRole('textbox', { name: 'Bio' }).fill('Short bio test');
+      await page.getByRole('button', { name: 'Save' }).click();
+      await page
+        .locator('div')
+        .filter({ hasText: /^Website$/ })
+        .first()
+        .click();
+      await page
+        .getByRole('textbox', { name: 'Website' })
+        .fill('https://www.bako.global/');
+      await page.getByRole('button', { name: 'Save' }).click();
+      await page
+        .locator('div')
+        .filter({ hasText: /^Location$/ })
+        .first()
+        .click();
+      await page.getByRole('textbox', { name: 'Location' }).fill('Brazil');
+      await page.getByRole('button', { name: 'Save' }).click();
+      await page
+        .locator('div')
+        .filter({ hasText: /^Twitter$/ })
+        .first()
+        .click();
+      await page
+        .getByRole('textbox', { name: 'X' })
+        .fill('https://x.com/infinitybase_');
+      await page.getByRole('button', { name: 'Save' }).click();
+      await page.getByRole('button', { name: 'Save changes' }).click();
+      await page.getByRole('button', { name: 'Confirm' }).click();
+
+      const { value, connectedAddress } =
+        await editProfile(fuelWalletTestHelper);
+
+      await transfer(genesisWallet, value, connectedAddress);
+
+      await E2ETestUtils.signMessageFuelWallet({
+        fuelWalletTestHelper,
+        page,
       });
-    await page.getByRole('button', { name: 'Accept' }).click();
-
-    await E2ETestUtils.signMessageFuelWallet({ fuelWalletTestHelper, page });
+    });
   });
 });

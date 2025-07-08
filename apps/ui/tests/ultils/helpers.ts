@@ -1,3 +1,4 @@
+import { FuelWalletTestHelper } from '@fuels/playwright-utils';
 import { BrowserContext, expect, Page } from '@playwright/test';
 import { WalletUnlocked } from 'fuels';
 
@@ -18,6 +19,29 @@ export async function createNewHandle(page: Page) {
   const connectedAddress = await page
     .getByRole('textbox', { name: 'Address' })
     .inputValue();
+
+  return { value, connectedAddress };
+}
+
+export async function editProfile(fuelWalletTestHelper: FuelWalletTestHelper) {
+  const popupPage = await fuelWalletTestHelper.getWalletPopupPage();
+
+  const estimatedTotal = parseFloat(
+    (await popupPage.locator('p[aria-label="fee value:Regular"]').innerText())
+      .replace('ETH', '')
+      .trim(),
+  );
+
+  const value = estimatedTotal + 0.0000002;
+
+  await popupPage
+    .locator('.fuel_Button.fuel_Button__size-md__ukxmg')
+    .first()
+    .click();
+
+  const connectedAddress = await popupPage.evaluate(
+    async () => await navigator.clipboard.readText(),
+  );
 
   return { value, connectedAddress };
 }
