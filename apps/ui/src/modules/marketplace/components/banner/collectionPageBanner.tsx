@@ -17,8 +17,8 @@ export const CollectionPageBanner = ({
       <Box position="relative" height="250px" borderRadius="8px">
         <Box position="relative" w="full" h="full">
           <Image
-            src={parseURI(collection.config.background)}
-            alt={collection.name}
+            src={parseURI(collection?.config?.background ?? '')}
+            alt={collection?.name}
             objectFit="cover"
             objectPosition="center"
             w="full"
