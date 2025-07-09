@@ -26,6 +26,7 @@ import { NftMetadataBlock } from '../NftMetadataBlock';
 import type { Order } from '@/types/marketplace';
 import { useGetWalletBalance } from '@/modules/marketplace/hooks/useGetWalletBalance';
 import { bn } from 'fuels';
+import ShareOrder from '../ShareOrder';
 
 export default function NftDetailsStep({
   onClose,
@@ -70,7 +71,6 @@ export default function NftDetailsStep({
   const handleExecuteOrder = useCallback(async () => {
     if (!isConnected) {
       connect();
-      onClose();
       return;
     }
     try {
@@ -117,6 +117,64 @@ export default function NftDetailsStep({
         </Text>
       </Stack>
 
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Flex alignItems="center" gap={2}>
+          <Tooltip label={order.asset?.name}>
+            <Image src={assetSymbolUrl} alt="Asset icon" height={6} width={6} />
+          </Tooltip>
+          <Text fontSize="sm" color="grey.title" fontWeight="semibold">
+            {value}
+          </Text>
+          <Text fontSize="sm" color="grey.subtitle">
+            ~ {usdValue}
+          </Text>
+          {isOwner && (
+            <IconButton
+              variant="icon"
+              aria-label="Edit order"
+              icon={<EditIcon />}
+              onClick={() => onEdit()}
+            />
+          )}
+        </Flex>
+
+        <ShareOrder
+          orderId={order.id}
+          nftName={order.asset?.name ?? 'Unknown NFT'}
+        />
+      </Stack>
+
+      {isOwner && (
+        <Button
+          variant="tertiary"
+          color="input.600"
+          borderColor="error.600"
+          py={4}
+          onClick={onCancelOrder}
+          isLoading={isCanceling}
+        >
+          Delist NFT
+        </Button>
+      )}
+
+      {!isOwner && (
+        <Skeleton isLoaded={!isLoadingWalletBalance} borderRadius="md">
+          <Tooltip
+            label={notEnoughBalance && isConnected ? 'Not enough balance' : ''}
+          >
+            <Button
+              variant="primary"
+              py={4}
+              isLoading={isExecuting}
+              disabled={(notEnoughBalance && isConnected) || isExecuting}
+              onClick={handleExecuteOrder}
+            >
+              Buy
+            </Button>
+          </Tooltip>
+        </Skeleton>
+      )}
+
       <Grid templateColumns="repeat(2, 1fr)" gap={4}>
         {order.asset.id && (
           <GridItem>
@@ -160,56 +218,6 @@ export default function NftDetailsStep({
           </Skeleton>
         </GridItem>
       </Grid>
-
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <Flex alignItems="center" gap={2}>
-          <Image src={assetSymbolUrl} alt="Asset icon" height={6} width={6} />
-          <Text fontSize="sm" color="grey.title" fontWeight="semibold">
-            {value}
-          </Text>
-          <Text fontSize="sm" color="grey.subtitle">
-            ~ {usdValue}
-          </Text>
-        </Flex>
-
-        {isOwner && (
-          <IconButton
-            variant="icon"
-            aria-label="Edit order"
-            icon={<EditIcon />}
-            onClick={() => onEdit()}
-          />
-        )}
-      </Stack>
-
-      {isOwner && (
-        <Button
-          variant="tertiary"
-          color="input.600"
-          borderColor="error.600"
-          py={4}
-          onClick={onCancelOrder}
-          isLoading={isCanceling}
-        >
-          Delist NFT
-        </Button>
-      )}
-
-      {!isOwner && (
-        <Skeleton isLoaded={!isLoadingWalletBalance} borderRadius="md">
-          <Tooltip label={notEnoughBalance ? 'Not enough balance' : ''}>
-            <Button
-              variant="primary"
-              py={4}
-              isLoading={isExecuting}
-              disabled={notEnoughBalance || isExecuting}
-              onClick={handleExecuteOrder}
-            >
-              Buy
-            </Button>
-          </Tooltip>
-        </Skeleton>
-      )}
 
       <NftListMetadata metadata={order?.asset?.metadata.attributes} />
     </Stack>

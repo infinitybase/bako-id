@@ -2,8 +2,12 @@ import UnknownAsset from '@/assets/unknown-asset.png';
 import { Dialog } from '@/components';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
 import { useAssetsBalance } from '@/hooks/useAssetsBalance';
+import type { Asset } from '@/types/marketplace';
+import { FUEL_ASSET_ID } from '@/utils/constants';
+import { removeRightZeros } from '@/utils/removeRightZeros';
 import { CloseIcon } from '@chakra-ui/icons';
 import {
+  Badge,
   CircularProgress,
   Divider,
   Flex,
@@ -15,22 +19,26 @@ import {
   ListItem,
   Stack,
   Text,
+  useToken,
 } from '@chakra-ui/react';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 interface NftSearchAssetModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSelect: (asset: { id: string; name?: string; icon?: string }) => void;
+  userWithHandle: boolean;
 }
 
 export const NftSearchAssetModal = ({
   isOpen,
   onClose,
   onSelect,
+  userWithHandle,
 }: NftSearchAssetModalProps) => {
   const [search, setSearch] = useState('');
   const { assets, isLoading: isAssetsLoading } = useListAssets();
+  const [yellowLight] = useToken('colors', ['yellow-light']);
 
   const { data, isLoading: isBalancesLoading } = useAssetsBalance({ assets });
 
@@ -63,6 +71,15 @@ export const NftSearchAssetModal = ({
     onSelect(asset);
     onClose();
   };
+
+  const getFeePercentage = useCallback(
+    (asset: Asset) => {
+      const fee = userWithHandle ? asset.fees?.[1] : asset.fees?.[0];
+      if (!fee) return '0';
+      return removeRightZeros((Number(fee) / 100).toFixed(2));
+    },
+    [userWithHandle]
+  );
 
   return (
     <Dialog.Modal
@@ -123,15 +140,27 @@ export const NftSearchAssetModal = ({
                   })
                 }
               >
-                <Flex alignItems="center">
+                <Flex alignItems="center" gap={2}>
                   <Image
                     src={asset.metadata?.icon ?? UnknownAsset}
                     alt={asset.metadata?.name ?? 'Unknown Asset'}
                     boxSize="24px"
                     borderRadius="full"
-                    mr={2}
                   />
                   <Text>{asset.metadata?.name}</Text>
+                  {asset.id === FUEL_ASSET_ID && (
+                    <Badge
+                      variant="outline"
+                      shadow="none"
+                      borderColor={`${yellowLight}26`}
+                      py={1}
+                      px={2}
+                      color="yellow-light"
+                      title={`${userWithHandle ? asset.fees?.[1] : asset.fees?.[0]} Fee`}
+                    >
+                      {getFeePercentage(asset)}% Fee
+                    </Badge>
+                  )}
                 </Flex>
 
                 <Stack spacing={1} direction="row" alignItems="center">

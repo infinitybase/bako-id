@@ -1,3 +1,4 @@
+import OrderPage from '@/modules/marketplace/order/page.tsx';
 import { MarketplacePage } from '@/modules/marketplace/page.tsx';
 import { CollectionPage } from '@/modules/marketplace/components/collectionPage.tsx';
 import { createRoute } from '@tanstack/react-router';
@@ -67,4 +68,10 @@ export const marketplaceCollectionRoute = createRoute({
       collectionId: ctx.params.collectionId,
     };
   },
+});
+
+export const orderRoute = createRoute({
+  getParentRoute: () => marketplaceRoute,
+  component: OrderPage,
+  path: '/order/$orderId',
 });

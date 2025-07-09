@@ -16,26 +16,19 @@ export interface Order {
   itemPrice: string;
   itemAsset: string;
   status: string;
-  nft: {
-    id: string;
-    metadata: Record<string, string> & Metadata;
-    contractId?: string;
-    edition?: string;
-    name?: string | null;
-    image?: string;
-    description?: string;
-    ipfs: Record<string, string>;
-  };
+  nft: Nft;
 }
 
 export interface Nft {
-  metadata: Record<string, string>;
-  contractId?: string;
   id: string;
+  fuelMetadata: FuelAsset | null;
+  metadata: Record<string, string> & Metadata;
+  contractId?: string;
   edition?: string;
   name?: string | null;
   image?: string;
   description?: string;
+  ipfs: Record<string, string>;
 }
 
 export enum OrderStatus {

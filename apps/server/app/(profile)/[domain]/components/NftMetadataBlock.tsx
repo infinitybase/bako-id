@@ -1,6 +1,6 @@
 import { CopyText } from '@/components/copy';
 import { formatAddress } from '@/utils';
-import { Box, Flex, Icon, Text, type FlexProps } from '@chakra-ui/react';
+import { Box, Flex, type FlexProps, Icon, Text } from '@chakra-ui/react';
 import { isB256 } from 'fuels';
 import type { ReactNode } from 'react';
 
