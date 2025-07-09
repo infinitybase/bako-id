@@ -10,7 +10,7 @@ import {
   Icon,
   Image,
 } from '@chakra-ui/react';
-import type { Collection } from '@/services/new-marketplace';
+
 import { parseURI } from '@/utils/formatter';
 import { InfoCircleIcon } from '../icons';
 import { VerifiedBadgeIcon } from '../icons/verifiedBadgeIcon';
@@ -20,6 +20,7 @@ import { DiscordIcon as DiscordIconComponent } from '@/components/icons/discordI
 import { ShareMenu } from './shareMenu';
 import { useRef } from 'react';
 import { CloseIcon } from '@/components/icons/closeIcon';
+import type { Collection } from '@/types/marketplace';
 
 const DetailsMenu = ({ collection }: { collection: Collection }) => {
   const menuRef = useRef<HTMLButtonElement>(null);
