@@ -73,7 +73,7 @@ export const MarketplaceBanner = ({ collections }: MarketplaceBannerProps) => {
                 onClick={handleRedirect}
               >
                 <Image
-                  src={parseURI(collection.config.background)}
+                  src={parseURI(collection.config.banner)}
                   alt={collection.name}
                   objectFit="cover"
                   objectPosition="center"

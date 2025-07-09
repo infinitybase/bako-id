@@ -1,5 +1,13 @@
-import UnknownAsset from '@/assets/unknown-asset.png';
-import { Box, Flex, Heading, Image, Text, VStack } from '@chakra-ui/react';
+import nftEmpty from '@/assets/nft-empty.png';
+import {
+  Box,
+  Flex,
+  Heading,
+  Image,
+  Skeleton,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { ListHeader } from './listHeader';
 import type { Collection } from '@/types/marketplace';
 import { formatAddress, parseURI } from '@/utils/formatter';
@@ -18,7 +26,7 @@ type CollectionListProps = {
 };
 
 import { useInView } from 'react-intersection-observer';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { isB256 } from 'fuels';
 import { useRouter } from '@tanstack/react-router';
 
@@ -51,6 +59,8 @@ export const CollectionList = ({
   hasNextPage,
   isFetchingNextPage,
 }: CollectionListProps) => {
+  const [isImageLoading, setIsImageLoading] = useState(true);
+
   const isEmptyCollections = !collections?.length;
   const { ref, inView } = useInView();
 
@@ -113,13 +123,19 @@ export const CollectionList = ({
             });
           }}
         >
-          <Flex flex="2" align="center">
-            <Image
-              src={parseURI(col.config.avatar) ?? UnknownAsset}
-              boxSize="40px"
-              borderRadius="md"
-              mr={3}
-            />
+          <Flex flex="2" align="center" gap={3}>
+            <ImageSkeleton isImageLoading={isImageLoading}>
+              <Image
+                src={parseURI(col?.config?.avatar ?? '')}
+                boxSize="40px"
+                borderRadius="md"
+                onLoad={() => setIsImageLoading(false)}
+                onError={(e) => {
+                  e.currentTarget.src = nftEmpty;
+                  setIsImageLoading(false);
+                }}
+              />
+            </ImageSkeleton>
             <Text>{isB256(col.name) ? formatAddress(col.name) : col.name}</Text>
           </Flex>
           <Box flex="1">{col.metrics.volume.toFixed(4)} ETH</Box>
@@ -127,13 +143,19 @@ export const CollectionList = ({
           <Box flex="1">{col.metrics.sales}</Box>
           <Flex flex="1">
             {col.latestSalesNFTs.map((item) => (
-              <Image
-                key={item.id}
-                src={parseURI(item.image ?? '')}
-                boxSize="40px"
-                borderRadius="md"
-                mr={2}
-              />
+              <ImageSkeleton key={item.id} isImageLoading={isImageLoading}>
+                <Image
+                  src={parseURI(item.image ?? '')}
+                  boxSize="40px"
+                  borderRadius="md"
+                  mr={2}
+                  onLoad={() => setIsImageLoading(false)}
+                  onError={(e) => {
+                    e.currentTarget.src = nftEmpty;
+                    setIsImageLoading(false);
+                  }}
+                />
+              </ImageSkeleton>
             ))}
           </Flex>
         </Flex>
@@ -141,5 +163,23 @@ export const CollectionList = ({
 
       <Box ref={ref} h="10px" w="full" />
     </Box>
+  );
+};
+
+const ImageSkeleton = ({
+  children,
+  isImageLoading,
+}: { children: React.ReactNode; isImageLoading: boolean }) => {
+  return (
+    <Skeleton
+      isLoaded={!isImageLoading}
+      borderRadius="md"
+      boxSize="42px"
+      border="1px solid"
+      borderColor="grey.600"
+      backdropFilter={isImageLoading ? 'blur(24px)' : 'blur(0px)'}
+    >
+      {children}
+    </Skeleton>
   );
 };

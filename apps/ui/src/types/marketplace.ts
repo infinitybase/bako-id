@@ -110,7 +110,7 @@ export enum OrderStatus {
 export interface Collection {
   config: {
     avatar: string;
-    background: string;
+    banner: string;
   };
   createdAt: string;
   description: string | null;
