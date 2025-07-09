@@ -1,4 +1,5 @@
 import UnknownAsset from '@/assets/unknown-asset.png';
+import { useBalance } from '@fuels/react';
 import { EditIcon, LightIcon, UserIcon, useCustomToast } from '@/components';
 import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
@@ -24,7 +25,6 @@ import { useCallback, useMemo } from 'react';
 import { NftListMetadata } from '../NftListMetadata';
 import { NftMetadataBlock } from '../NftMetadataBlock';
 import type { Order } from '@/types/marketplace';
-import { useGetWalletBalance } from '@/modules/marketplace/hooks/useGetWalletBalance';
 import { bn } from 'fuels';
 import ShareOrder from '../ShareOrder';
 
@@ -49,8 +49,12 @@ export default function NftDetailsStep({
 }) {
   const { connect, isConnected } = useConnectUI();
   const { errorToast, successToast } = useCustomToast();
-  const { data: walletBalance, isLoading: isLoadingWalletBalance } =
-    useGetWalletBalance();
+
+  const { balance: walletAssetBalance, isLoading: isLoadingWalletBalance } =
+    useBalance({
+      address: order.seller,
+      assetId: order.price.assetId,
+    });
 
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
     order.seller
@@ -58,10 +62,6 @@ export default function NftDetailsStep({
   const { data: sellerDomain, isLoading: isLoadingDomain } = useResolverName(
     order.seller
   );
-
-  const walletAssetBalance = walletBalance?.balances
-    .find((balance) => balance.assetId === order.price.assetId)
-    ?.amount.toString();
 
   const notEnoughBalance = useMemo(() => {
     if (isLoadingWalletBalance) return false;

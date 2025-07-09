@@ -1,3 +1,4 @@
+import UnknownAsset from '@/assets/unknown-asset.png';
 import { Box, Flex, Heading, Image, Text, VStack } from '@chakra-ui/react';
 import { ListHeader } from './listHeader';
 import type { Collection } from '@/types/marketplace';
@@ -16,7 +17,6 @@ type CollectionListProps = {
   isFetchingNextPage: boolean;
 };
 
-import UnknownAsset from '@/assets/unknown-asset.png';
 import { useInView } from 'react-intersection-observer';
 import { useEffect } from 'react';
 import { isB256 } from 'fuels';

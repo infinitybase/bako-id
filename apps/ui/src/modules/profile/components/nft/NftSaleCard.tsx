@@ -4,6 +4,7 @@ import UnknownAsset from '@/assets/unknown-asset.png';
 import { ConfirmationDialog, useCustomToast } from '@/components';
 import { useCancelOrder } from '@/hooks/marketplace';
 import {
+  type BoxProps,
   Button,
   Heading,
   Image,
@@ -93,8 +94,7 @@ const NftSaleCard = ({
     <NftCard.Root onClick={handleCardClick} cursor="pointer" minH="240px">
       {/* {order.nft?.edition && (
         <NftCard.EditionBadge edition={order.nft?.edition} />
-      )} */}{' '}
-      */
+      )} */}
       {showDelistButton && <NftCard.DelistButton onDelist={handleDelist} />}
       <NftCard.Image boxSize={imageSize} src={imageUrl} />
       <NftCard.Content spacing={2}>
