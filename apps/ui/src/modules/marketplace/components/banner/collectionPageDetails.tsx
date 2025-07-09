@@ -10,7 +10,6 @@ import { DetailsMenu } from './detailsMenu';
 import { StatBox } from './statBox';
 
 const CollectionPageDetails = ({ collection }: { collection: Collection }) => {
-  console.log('collection', collection);
   return (
     <Flex
       position="relative"
