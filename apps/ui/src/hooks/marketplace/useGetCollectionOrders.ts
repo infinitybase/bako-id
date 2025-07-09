@@ -4,7 +4,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useChainId } from '../useChainId';
 import { newMarketplaceService } from '@/services/new-marketplace';
 import { Networks } from '@/utils/resolverNetwork';
-import type { OrdersList } from '@/types/marketplace';
+import type { Order } from '@/types/marketplace';
 
 type UseGetCollectionOrdersProps = {
   page?: number;
@@ -25,7 +25,7 @@ export const useGetCollectionOrders = ({
   const { chainId, isLoading } = useChainId();
 
   const { data: collectionOrders, ...rest } = useInfiniteQuery<
-    PaginationResult<OrdersList>
+    PaginationResult<Order>
   >({
     queryKey: [
       MarketplaceQueryKeys.COLLECTION_ORDERS,

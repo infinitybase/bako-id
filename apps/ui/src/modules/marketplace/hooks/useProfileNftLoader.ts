@@ -1,4 +1,4 @@
-import type { OrdersList } from '@/types/marketplace';
+import type { Order } from '@/types/marketplace';
 import type { NFTCollection } from '@/utils/collection';
 import { useLayoutEffect, useState } from 'react';
 
@@ -7,7 +7,7 @@ type UseProfileNftLoaderProps = {
   isPlaceholderData: boolean;
   notListedCollections: NFTCollection[];
   isLoadingOrders: boolean;
-  data: OrdersList[];
+  data: Order[];
 };
 
 export const useProfileNftLoader = ({

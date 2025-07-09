@@ -19,8 +19,13 @@ export const CollectionPage = () => {
   const { search } = useSearch({ strict: false });
   const debouncedSearch = useDebounce<string>(search ?? '', 700);
   const navigate = useNavigate();
-  const [sortValue, setSortValue] = useState('volumes');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<{
+    sortBy: string;
+    sortDirection: 'desc' | 'asc';
+  }>({
+    sortBy: 'volumes',
+    sortDirection: 'desc',
+  });
 
   const {
     collectionOrders,
@@ -30,8 +35,8 @@ export const CollectionPage = () => {
     isFetchingNextPage,
   } = useGetCollectionOrders({
     collectionId,
-    sortValue,
-    sortDirection,
+    sortValue: filters.sortBy,
+    sortDirection: filters.sortDirection,
     limit: 10,
     search: debouncedSearch,
   });
@@ -49,8 +54,11 @@ export const CollectionPage = () => {
   );
 
   const handleSortChange = (column: string) => {
-    setSortValue(column.replace('-asc', '').replace('-desc', ''));
-    setSortDirection(column.includes('asc') ? 'asc' : 'desc');
+    setFilters((prev) => ({
+      ...prev,
+      sortBy: column.replace('-asc', '').replace('-desc', ''),
+      sortDirection: column.includes('asc') ? 'asc' : 'desc',
+    }));
   };
 
   const { collection, isLoading: isLoadingCollection } = useGetCollection({
@@ -88,7 +96,7 @@ export const CollectionPage = () => {
         <MarketplaceFilter
           searchValue={search}
           onSearchChange={handleChangeSearch}
-          sortValue={sortValue}
+          sortValue={filters.sortBy}
           onSortChange={handleSortChange}
           isCollectionPage
         />

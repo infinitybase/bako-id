@@ -1,6 +1,6 @@
 import { ProfileDrawer } from '@/components';
 import { useScreenSize } from '@/hooks';
-import type { OrdersList } from '@/types/marketplace';
+import type { Order } from '@/types/marketplace';
 import { Box, Center, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { ProfileCards } from './profileCards';
@@ -16,7 +16,7 @@ export default function ProfileWithHandler({
   domain: string;
   domainParam: string;
   owner: string;
-  orders: OrdersList[] | undefined;
+  orders: Order[] | undefined;
   isFetchingOrders: boolean;
   paginationInfos: {
     totalPages: number;

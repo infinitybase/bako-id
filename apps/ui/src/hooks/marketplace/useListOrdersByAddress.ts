@@ -3,7 +3,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useChainId } from '../useChainId';
 import { newMarketplaceService } from '@/services/new-marketplace';
 import { Networks } from '@/utils/resolverNetwork';
-import type { OrdersList } from '@/types/marketplace';
+import type { Order } from '@/types/marketplace';
 import type { PaginationResult } from '@/utils/pagination';
 
 type useListOrdersByAddressProps = {
@@ -12,7 +12,7 @@ type useListOrdersByAddressProps = {
   sellerAddress: string;
 };
 
-type UserOrdersResponse = PaginationResult<OrdersList> & {
+type UserOrdersResponse = PaginationResult<Order> & {
   totalOrdersUsdPrice: number;
   notListedTotalUsdPrice: number;
 };

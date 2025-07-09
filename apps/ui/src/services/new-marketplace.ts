@@ -2,8 +2,8 @@ import type {
   Collection,
   MarketplacePaginatedResponse,
   MarketplacePaginatedResponseUserOrders,
+  OrderWithMedatada,
   Order,
-  OrdersList,
 } from '@/types/marketplace';
 import { constructUrl } from '@/utils/constructUrl';
 import { Networks, resolveNetwork } from '@/utils/resolverNetwork';
@@ -37,7 +37,7 @@ export class newMarketplaceService {
   }: {
     orderId: string;
     chainId?: number;
-  }): Promise<{ data: Order }> {
+  }): Promise<{ data: OrderWithMedatada }> {
     const network = resolveNetwork(chainId);
 
     const url = constructUrl(
@@ -68,7 +68,7 @@ export class newMarketplaceService {
     chainId?: number;
     sortValue: string;
     sortDirection: 'asc' | 'desc';
-  }): Promise<MarketplacePaginatedResponse<OrdersList>> {
+  }): Promise<MarketplacePaginatedResponse<Order>> {
     const network = resolveNetwork(chainId);
 
     const url = constructUrl(
@@ -131,7 +131,7 @@ export class newMarketplaceService {
     chainId: number;
     limit?: number;
     sellerAddress: string;
-  }): Promise<MarketplacePaginatedResponseUserOrders<OrdersList>> {
+  }): Promise<MarketplacePaginatedResponseUserOrders<Order>> {
     const network = resolveNetwork(chainId);
 
     const url = constructUrl(

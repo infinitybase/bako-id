@@ -24,7 +24,7 @@ import { Link } from '@tanstack/react-router';
 import { useCallback, useMemo } from 'react';
 import { NftListMetadata } from '../NftListMetadata';
 import { NftMetadataBlock } from '../NftMetadataBlock';
-import type { Order } from '@/types/marketplace';
+import type { OrderWithMedatada } from '@/types/marketplace';
 import { bn } from 'fuels';
 import ShareOrder from '../ShareOrder';
 
@@ -38,7 +38,7 @@ export default function NftDetailsStep({
   isCanceling = false,
   onEdit,
 }: {
-  order: Order;
+  order: OrderWithMedatada;
   onClose: () => void;
   value: number;
   isOwner: boolean;

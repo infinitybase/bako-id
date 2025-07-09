@@ -1,4 +1,4 @@
-import type { OrdersList } from '@/types/marketplace';
+import type { Order } from '@/types/marketplace';
 import { Container, Stack } from '@chakra-ui/react';
 import { useParams } from '@tanstack/react-router';
 import { NftCollections } from './nft/NftCollections';
@@ -10,7 +10,7 @@ export default function ProfileWithoutHandler({
   isLoadingOrders = false,
   paginationInfos,
 }: {
-  orders: OrdersList[] | undefined;
+  orders: Order[] | undefined;
   isLoadingOrders?: boolean;
   paginationInfos: {
     totalPages: number;

@@ -5,7 +5,7 @@ import { ProfileCard } from '@/components/card/profileCard.tsx';
 import { EditMetadataModal } from '@/components/modal/editProfileModal.tsx';
 import { useChainId } from '@/hooks/useChainId';
 import { useMetadata } from '@/hooks/useMetadata.ts';
-import type { OrdersList } from '@/types/marketplace';
+import type { Order } from '@/types/marketplace';
 import { getExplorer } from '@/utils/getExplorer.ts';
 import { Flex, Stack } from '@chakra-ui/react';
 import { Suspense, useMemo } from 'react';
@@ -18,7 +18,7 @@ type ProfileCardsProps = {
   domainParam: string;
   domain: string;
   owner: string;
-  orders: OrdersList[] | undefined;
+  orders: Order[] | undefined;
   withHandle: boolean;
   isFetchingOrders?: boolean;
   paginationInfos: {

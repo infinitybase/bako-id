@@ -2,7 +2,7 @@ import { Card } from '@/components';
 import { CloseIcon } from '@/components/icons/closeIcon';
 import { Pagination } from '@/components/pagination';
 import { useResolverName } from '@/hooks';
-import type { OrdersList } from '@/types/marketplace';
+import type { Order } from '@/types/marketplace';
 import { AddressUtils } from '@/utils/address';
 import {
   Button,
@@ -26,7 +26,7 @@ export const NftListForSale = ({
 }: {
   address: string;
   isLoadingOrders?: boolean;
-  orders: OrdersList[] | undefined;
+  orders: Order[] | undefined;
   paginationInfos: {
     totalPages: number;
     hasNextPage: boolean;

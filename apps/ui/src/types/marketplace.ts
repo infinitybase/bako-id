@@ -28,7 +28,7 @@ export interface OrderFromFuel {
   };
 }
 
-export interface OrdersList {
+export interface Order {
   asset: {
     id: string;
     image: string;
@@ -50,7 +50,7 @@ export interface OrdersList {
   updatedAt: string;
 }
 
-export interface Order {
+export interface OrderWithMedatada {
   id: string;
   status: number;
   collection: {
