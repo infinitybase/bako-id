@@ -12,10 +12,10 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useProfileNftLoader } from '../hooks/useProfileNftLoader';
+import { useProfileNftLoader } from '../../hooks/useProfileNftLoader';
 import NftSaleCard from '@/modules/profile/components/nft/NftSaleCard';
 import { NftCollectionCard } from '@/modules/profile/components/nft/NftCollectionCard';
-import { MartketplaceEmptyState } from './martketplaceEmptyState';
+import { MartketplaceEmptyState } from '../../components/martketplaceEmptyState';
 import type { AssetMetadata } from '@/utils/getOrderMetadata';
 import type { Order } from '@/types/marketplace';
 import type { NFTCollection } from '@/utils/collection';

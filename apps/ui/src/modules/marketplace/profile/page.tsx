@@ -1,7 +1,7 @@
 import { Container, Stack } from '@chakra-ui/react';
 import { useParams } from '@tanstack/react-router';
-import { ProfilePageBanner } from './banner/profilePageBanner';
-import { ProfileNfts } from './profileNfts';
+import { ProfilePageBanner } from '../components/banner/profilePageBanner';
+import { ProfileNfts } from './components/profileNfts';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
 import { useListOrdersByAddress } from '@/hooks/marketplace/useListOrdersByAddress';
 import { useMemo, useState } from 'react';
