@@ -5,6 +5,8 @@ import { NftModal } from '../modal';
 import NftDetailsStep from './NftDetailsStep';
 import NftFormStep from './NftFormStep';
 import { useGetOrder } from '@/hooks/marketplace';
+import { OrderSkeleton } from '@/modules/marketplace/order/components/orderSkeleton';
+import { useParams } from '@tanstack/react-router';
 
 interface NftSaleCardModalProps {
   order: OrdersList;
@@ -35,7 +37,11 @@ export const NftSaleCardModal = ({
 }: NftSaleCardModalProps) => {
   const [step, setStep] = useState(0);
 
-  const { order: orderData } = useGetOrder({ id: order.id });
+  const { orderId } = useParams({ strict: false });
+
+  const { order: orderData } = useGetOrder({
+    id: orderId ?? order.id,
+  });
 
   const handleChangeStepToSell = () => {
     setStep(1);
@@ -62,33 +68,36 @@ export const NftSaleCardModal = ({
         }}
       >
         {isLoadingOrder && <OrderSkeleton />}
-        {!isLoadingOrder && order && (
+
+        {!isLoadingOrder && orderData && (
           <>
             <NftModal.Image w="full" src={imageUrl} alt={nftName} />
 
-        {step === 0 && orderData && (
-          <NftDetailsStep
-            order={orderData}
-            isOwner={isOwner}
-            onCancelOrder={onCancelOrder}
-            isCanceling={isCanceling}
-            onClose={onClose}
-            usdValue={usdValue}
-            value={value}
-            onEdit={handleChangeStepToSell}
-          />
-        )}
+            {step === 0 && orderData && (
+              <NftDetailsStep
+                order={orderData}
+                isOwner={isOwner}
+                onCancelOrder={onCancelOrder}
+                isCanceling={isCanceling}
+                onClose={onClose}
+                usdValue={usdValue}
+                value={value}
+                onEdit={handleChangeStepToSell}
+              />
+            )}
 
-        {step === 1 && orderData && (
-          <NftFormStep
-            assetSymbolUrl={assetSymbolUrl}
-            order={orderData}
-            value={value}
-            onClose={onClose}
-            name={nftName}
-            onCancel={handleChangeStepToDetails}
-            userWithHandle={withHandle}
-          />
+            {step === 1 && orderData && (
+              <NftFormStep
+                assetSymbolUrl={assetSymbolUrl}
+                order={orderData}
+                value={value}
+                onClose={onClose}
+                name={nftName}
+                onCancel={handleChangeStepToDetails}
+                userWithHandle={withHandle}
+              />
+            )}
+          </>
         )}
 
         <NftModal.CloseIcon onClose={onClose} />

@@ -77,7 +77,7 @@ export const marketplaceProfileRoute = createRoute({
 });
 
 export const orderRoute = createRoute({
-  getParentRoute: () => marketplaceRoute,
+  getParentRoute: () => marketplaceCollectionRoute,
   component: OrderPage,
-  path: '/order/$orderId',
+  path: '/marketplace/collection/$collectionId/order/$orderId',
 });

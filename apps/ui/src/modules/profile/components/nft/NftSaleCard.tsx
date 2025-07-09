@@ -4,6 +4,7 @@ import UnknownAsset from '@/assets/unknown-asset.png';
 import { ConfirmationDialog, useCustomToast } from '@/components';
 import { useCancelOrder } from '@/hooks/marketplace';
 import {
+  type BoxProps,
   Button,
   Heading,
   Image,
