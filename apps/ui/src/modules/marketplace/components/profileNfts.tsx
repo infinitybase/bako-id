@@ -10,15 +10,16 @@ import {
   Grid,
   Skeleton,
 } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useProfileNftLoader } from '../hooks/useProfileNftLoader';
 import NftSaleCard from '@/modules/profile/components/nft/NftSaleCard';
 import { NftCollectionCard } from '@/modules/profile/components/nft/NftCollectionCard';
 import { MartketplaceEmptyState } from './martketplaceEmptyState';
 import type { AssetMetadata } from '@/utils/getOrderMetadata';
-import type { OrdersList } from '@/types/marketplace';
+import type { Order } from '@/types/marketplace';
 import type { NFTCollection } from '@/utils/collection';
+import { useWallet } from '@fuels/react';
 
 enum TabOptions {
   FOR_SALE = 'for_sale',
@@ -38,7 +39,7 @@ type ProfileNftProps = {
     fees: [string, string];
     __typename: 'Asset';
   }[];
-  orders: OrdersList[];
+  orders: Order[];
   notListedCollections: NFTCollection[];
   isLoadingCollections: boolean;
   isLoadingOrders: boolean;
@@ -68,8 +69,14 @@ export const ProfileNfts = ({
   resolver,
 }: ProfileNftProps) => {
   const [selectedTab, setSelectedTab] = useState(TabOptions.ALL);
-
   const { ref, inView } = useInView();
+  const { wallet } = useWallet();
+  const ownerDomain = wallet?.address.b256Address;
+
+  const isOwner = useMemo(
+    () => ownerDomain === resolver,
+    [ownerDomain, resolver]
+  );
 
   const {
     startCollectionsLoading,
@@ -214,6 +221,7 @@ export const ProfileNfts = ({
                   asset={a}
                   assets={assets}
                   resolver={resolver}
+                  isOwner={isOwner}
                 />
               ))}
             </Grid>
