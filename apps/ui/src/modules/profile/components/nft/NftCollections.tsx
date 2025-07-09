@@ -2,13 +2,12 @@ import { Card } from '@/components';
 import { Pagination } from '@/components/pagination';
 import { NFTCollectionSkeleton } from '@/components/skeletons/nftCollectionSkeleton';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
-import { REMOVED_OWNER_NFT, useCollections } from '@/hooks/useCollections';
+import { useCollections } from '@/hooks/useCollections';
 import { Box, Flex, Grid, Heading, Stack } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
 import { useMemo, useState } from 'react';
 import ProfileWithoutAssets from '../profileWithoutAssets';
 import { NftCollectionCard } from './NftCollectionCard';
-import { getLocalStorage } from '@/utils/localStorage';
 
 export const NftCollections = ({
   resolver,
@@ -36,16 +35,11 @@ export const NftCollections = ({
     [ownerDomain, resolver]
   );
 
-  const emptyCollections = useMemo(() => {
-  if (collections.length === 0) return true;
-
-  const removedName = getLocalStorage(REMOVED_OWNER_NFT);
-  return !collections.some((c) =>
-    c.assets.some((a) => a.name !== removedName)
+  const emptyCollections = useMemo(
+    () => collections.length === 0,
+    [collections]
   );
-}, [collections]);
 
-  
   if (isLoading) {
     return <NFTCollectionSkeleton />;
   }
@@ -58,9 +52,7 @@ export const NftCollections = ({
       backdropFilter="blur(6px)"
       flexDirection="column"
       boxShadow="lg"
-      hidden={
-        !isLoadingWallet && !isOwner && emptyCollections
-      }
+      hidden={!isLoadingWallet && !isOwner && emptyCollections}
     >
       <Flex mb={6} alignItems="center" justify="space-between">
         <Heading fontSize="lg">NFT</Heading>
@@ -81,10 +73,6 @@ export const NftCollections = ({
             gap={6}
           >
             {collection.assets.map((a) => {
-              if (getLocalStorage(REMOVED_OWNER_NFT) === a.name) {
-                return null;
-              }
-
               return (
                 <NftCollectionCard
                   key={a.assetId}

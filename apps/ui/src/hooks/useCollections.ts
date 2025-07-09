@@ -28,7 +28,6 @@ type NFTMetadata = Record<string, string>;
 type CachedMetadata = Record<string, NFTMetadata>;
 
 const PAGE_SIZE = 18;
-export const REMOVED_OWNER_NFT = 'removedOwnerNft';
 
 export const useCollections = ({
   address,
@@ -71,6 +70,10 @@ export const useCollections = ({
       currentPageNfts.map((nft) => nft.assetId),
     ],
     queryFn: async () => {
+      if (currentPageNfts.length === 0) {
+        return [];
+      }
+
       const localStorageCache =
         getLocalStorage<CachedMetadata>(
           COLLECTION_ASSETS_METADATA_STORAGE_KEY
@@ -144,7 +147,7 @@ export const useCollections = ({
       });
     },
     enabled: !isNil(chainId) && currentPageNfts.length > 0,
-    placeholderData: (prev) => prev,
+    placeholderData: currentPageNfts.length > 0 ? (prev) => prev : undefined,
   });
 
   const collections = nftsWithMetadata

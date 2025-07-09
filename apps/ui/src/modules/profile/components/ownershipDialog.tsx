@@ -12,15 +12,13 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { isB256 } from 'fuels';
 import { Controller, useForm } from 'react-hook-form';
 import { BlueWarningIcon, Dialog, useCustomToast } from '../../../components';
 import { ProgressButton } from '../../../components/buttons/progressButton.tsx';
 import { useRegistryContract } from '../../../hooks/sdk';
 import { useMutationProgress } from '../../../hooks/useMutationProgress.ts';
-import { REMOVED_OWNER_NFT } from '@/hooks/useCollections.ts';
-import { setLocalStorage } from '@/utils/localStorage.ts';
 
 export interface OwnershipDialogProps extends Omit<ModalProps, 'children'> {
   doamin: string;
@@ -28,6 +26,7 @@ export interface OwnershipDialogProps extends Omit<ModalProps, 'children'> {
 }
 
 export const OwnershipDialog = (props: OwnershipDialogProps) => {
+  const queryClient = useQueryClient();
   const form = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
@@ -47,18 +46,14 @@ export const OwnershipDialog = (props: OwnershipDialogProps) => {
         address,
       });
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       form.reset({ address: '' });
       successToast({
         title: 'Transaction success',
         description: 'The owner of the handle has been updated',
       });
 
-      const name = props.domainName?.startsWith('@')
-        ? props.domainName
-        : `@${props.domainName}`;
-
-      setLocalStorage(REMOVED_OWNER_NFT, name);
+      await queryClient.invalidateQueries({ queryKey: ['nfts'] });
 
       setTimeout(() => {
         props.onClose();

@@ -29,7 +29,6 @@ import { SmallCloseIcon } from '../icons/smallCloseIcon.tsx';
 import { UserIcon } from '../icons/userIcon.tsx';
 import { TermsOfUseDialog } from '../termsOfUseDialog/index.tsx';
 import { useCustomToast } from '../toast/index.tsx';
-import { REMOVED_OWNER_NFT } from '@/hooks/useCollections.ts';
 
 export const Info = ({
   name,
@@ -62,7 +61,6 @@ export const Info = ({
 
   const handleLogout = async () => {
     await disconnect();
-    localStorage.removeItem(REMOVED_OWNER_NFT);
     navigate({ to: '/' });
   };
 
