@@ -99,6 +99,7 @@ export const CollectionList = ({
           borderRadius="md"
           bg="transparent"
           mb={2}
+          h="56px"
           border="1px solid"
           borderColor="grey.600"
           justifyContent="space-between"
@@ -125,14 +126,13 @@ export const CollectionList = ({
           <Box flex="1">{col.metrics.floorPrice.toFixed(4)} ETH</Box>
           <Box flex="1">{col.metrics.sales}</Box>
           <Flex flex="1">
-            {col.latestSalesNFTs.map((img) => (
+            {col.latestSalesNFTs.map((item) => (
               <Image
-                key={img}
-                src={img}
-                boxSize="32px"
+                key={item.id}
+                src={parseURI(item.image ?? '')}
+                boxSize="40px"
                 borderRadius="md"
                 mr={2}
-                border="2px solid #222"
               />
             ))}
           </Flex>

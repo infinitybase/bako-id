@@ -115,7 +115,7 @@ export interface Collection {
   createdAt: string;
   description: string | null;
   id: string;
-  latestSalesNFTs: [];
+  latestSalesNFTs: [{ image: string; id: string }];
   name: string;
   network: number;
   updatedAt: string;
