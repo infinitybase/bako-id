@@ -8,8 +8,7 @@ import type {
 import { constructUrl } from '@/utils/constructUrl';
 import { Networks, resolveNetwork } from '@/utils/resolverNetwork';
 
-// This is temporary until we finish all marketplace adjustments
-const BASE_API_URL = import.meta.env.VITE_BASE_URL_2;
+const BASE_API_URL = import.meta.env.VITE_MARKETPLACE_URL;
 
 export class newMarketplaceService {
   static async getCollection({

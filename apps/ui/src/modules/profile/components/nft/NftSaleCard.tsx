@@ -131,7 +131,6 @@ const NftSaleCard = ({
           </Button>
         )}
       </NftCard.Content>
-
       {delistModal.isOpen && (
         <ConfirmationDialog
           title="Delist NFT"
@@ -147,7 +146,6 @@ const NftSaleCard = ({
           </Text>
         </ConfirmationDialog>
       )}
-
       {isOpen && (
         <NftSaleCardModal
           order={order}
