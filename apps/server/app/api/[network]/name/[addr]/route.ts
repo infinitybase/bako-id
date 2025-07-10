@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
       network: network.toUpperCase(),
     });
 
-    const record = data.Records.at(0);
+    const record = data.AddressResolver.at(0);
     return NextResponse.json({ name: record?.name ?? null });
   } catch (e) {
     return NextResponse.json(

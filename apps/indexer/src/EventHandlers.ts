@@ -95,9 +95,10 @@ Manager.ResolverChangedEvent.handler(async ({ event, context }) => {
       name: event.params.name,
       record_id: recordId,
     });
+  }
+
     context.Records.set({
       ...record,
       resolver: event.params.new_resolver.payload.bits,
     });
-  }
 });

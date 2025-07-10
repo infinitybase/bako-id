@@ -1,4 +1,10 @@
-import { type Account, TransactionStatus, bn, getRandomB256 } from 'fuels';
+import {
+  type Account,
+  TransactionStatus,
+  Wallet,
+  bn,
+  getRandomB256,
+} from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
 import {
   Manager,
@@ -37,7 +43,7 @@ describe('[METHODS] Resolver Contract', () => {
     const managerConstructor = await manager.functions
       .constructor(
         { Address: { bits: deployer.address.toB256() } },
-        { Address: { bits: admin.address.toB256() } },
+        { Address: { bits: admin.address.toB256() } }
       )
       .call();
     await managerConstructor.waitForResult();
@@ -120,7 +126,7 @@ describe('[METHODS] Resolver Contract', () => {
 
     expect(record?.owner.Address?.bits).toBe(recordInput.owner.Address.bits);
     expect(record?.resolver.Address?.bits).toBe(
-      recordInput.resolver.Address.bits,
+      recordInput.resolver.Address.bits
     );
     expect(record?.period.toString()).toBe(recordInput.period.toString());
     expect(record?.timestamp.toString()).toBe(recordInput.timestamp.toString());
@@ -151,14 +157,25 @@ describe('[METHODS] Resolver Contract', () => {
       .get();
     expect(resolverAddress?.Address?.bits).toBe(newResolver.address.toB256());
 
-    await expect(async () => {
-      const { waitForResult: waitForResult1 } = await manager.functions
-        .set_resolver(domain, {
-          Address: { bits: newResolver.address.toB256() },
-        })
-        .call();
-      await waitForResult1();
-    }).rejects.toThrow(/ResolverAlreadyInUse/);
+    const newResolver2 = Wallet.generate();
+    const { waitForResult: waitForChangeResolver } = await manager.functions
+      .set_resolver(domain, {
+        Address: { bits: newResolver2.address.toB256() },
+      })
+      .call();
+    await waitForChangeResolver();
+
+    const { value: oldDomainResolver } = await manager.functions
+      .get_name({ Address: { bits: newResolver.address.toB256() } })
+      .get();
+
+    expect(oldDomainResolver).toBeUndefined();
+
+    const { value: newDomainResolver } = await manager.functions
+      .get_name({ Address: { bits: newResolver2.address.toB256() } })
+      .get();
+
+    expect(newDomainResolver).toBe(domain);
   });
 
   it('should get a record infos correctly', async () => {
@@ -189,7 +206,7 @@ describe('[METHODS] Resolver Contract', () => {
     expect(name).toBe(domain);
     expect(ownerAddress?.Address?.bits).toBe(owner.address.toB256());
     expect(resolverAddress?.Address?.bits).toBe(
-      recordInput.resolver.Address.bits,
+      recordInput.resolver.Address.bits
     );
   });
 
@@ -234,43 +251,43 @@ describe('[METHODS] Resolver Contract', () => {
     // Execute correctly when admin and owner is connected in manager
     const ownerRegisterResult = await registerRecord(managerOwner);
     expect(ownerRegisterResult.transactionResult.status).toBe(
-      TransactionStatus.success,
+      TransactionStatus.success
     );
 
     const adminRegisterResult = await registerRecord(managerAdmin);
     expect(adminRegisterResult.transactionResult.status).toBe(
-      TransactionStatus.success,
+      TransactionStatus.success
     );
 
     // Only owner can add admin
     const ownerAddAdminResult = await addAdmin(managerOwner, newAdmin);
     expect(ownerAddAdminResult.transactionResult.status).toBe(
-      TransactionStatus.success,
+      TransactionStatus.success
     );
 
     await expect(() => addAdmin(managerAdmin, newAdmin)).rejects.toThrow(
-      /NotOwner/,
+      /NotOwner/
     );
 
     // Only owner can revoke admin
     const ownerRevokeCall = await revokeAdmin(managerOwner, admin);
     expect(ownerRevokeCall.transactionResult.status).toBe(
-      TransactionStatus.success,
+      TransactionStatus.success
     );
 
     await expect(() => revokeAdmin(managerAdmin, newAdmin)).rejects.toThrow(
-      /NotOwner/,
+      /NotOwner/
     );
 
     // When admin is revoked, it can't register a record
     await expect(() => registerRecord(managerAdmin)).rejects.toThrow(
-      /OnlyOwner/,
+      /OnlyOwner/
     );
 
     // Admin can register a record when added by owner
     const newAdminRegisterResult = await registerRecord(managerNewAdmin);
     expect(newAdminRegisterResult.transactionResult.status).toBe(
-      TransactionStatus.success,
+      TransactionStatus.success
     );
   });
 });
