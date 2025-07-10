@@ -1,5 +1,4 @@
 import { useSearch } from '@tanstack/react-router';
-import { useMemo } from 'react';
 import ProfileWithHandler from './components/profileWithHandler';
 import ProfileWithoutHandler from './components/profileWithoutHandler';
 import { useListOrdersByAddress } from '@/hooks/marketplace/useListOrdersByAddress';
@@ -19,17 +18,13 @@ const Profile = () => {
     orders,
     isLoading: isLoadingOrders,
     isPlaceholderData,
-    isFetchingNextPage,
   } = useListOrdersByAddress({
     sellerAddress: isHandle ? owner?.Address?.bits : domainParam.toLowerCase(),
-    limit: 10,
+    limit: 1,
     page: page ?? 0,
   });
 
-  const data = useMemo(
-    () => orders?.pages?.flatMap((page) => page.data) ?? [],
-    [orders]
-  );
+  const data = orders?.data ?? [];
 
   const SkeletonComponent = isHandle
     ? ProfileCardLoadingSkeleton
@@ -52,26 +47,22 @@ const Profile = () => {
           orders={data}
           domain={domain}
           domainParam={domainParam}
-          isFetchingOrders={
-            isLoadingOrders || isFetchingNextPage || isPlaceholderData
-          }
+          isFetchingOrders={isLoadingOrders || isPlaceholderData}
           owner={owner?.Address?.bits || owner?.ContractId?.bits || ''}
           paginationInfos={{
-            totalPages: orders?.pages[0]?.totalPages ?? 0,
-            hasNextPage: orders?.pages[0]?.hasNextPage ?? false,
-            hasPreviousPage: orders?.pages[0]?.hasPreviousPage ?? false,
+            totalPages: orders?.totalPages ?? 0,
+            hasNextPage: orders?.hasNextPage ?? false,
+            hasPreviousPage: orders?.hasPreviousPage ?? false,
           }}
         />
       ) : (
         <ProfileWithoutHandler
           orders={data}
-          isLoadingOrders={
-            isLoadingOrders || isFetchingNextPage || isPlaceholderData
-          }
+          isLoadingOrders={isLoadingOrders || isPlaceholderData}
           paginationInfos={{
-            totalPages: orders?.pages[0]?.totalPages ?? 0,
-            hasNextPage: orders?.pages[0]?.hasNextPage ?? false,
-            hasPreviousPage: orders?.pages[0]?.hasPreviousPage ?? false,
+            totalPages: orders?.totalPages ?? 0,
+            hasNextPage: orders?.hasNextPage ?? false,
+            hasPreviousPage: orders?.hasPreviousPage ?? false,
           }}
         />
       )}

@@ -3,15 +3,15 @@ import { useQuery } from '@tanstack/react-query';
 import { newMarketplaceService } from '@/services/new-marketplace';
 
 import type { Order } from '@/types/marketplace';
-import type { PaginationResult } from '@/utils/pagination';
-import { MarketplaceQueryKeys } from '@/utils/constants';
-import { Networks } from '@/utils/resolverNetwork';
-import { useChainId } from '../useChainId';
+import type { PaginationResult } from '@/helpers/pagination';
+import { MarketplaceQueryKeys } from '@/helpers/constant';
+import { NetworkId } from '@/utils';
 
 type useListOrdersByAddressProps = {
   page?: number;
   limit?: number;
   sellerAddress: string;
+  chainId: number;
 };
 
 type UserOrdersResponse = PaginationResult<Order> & {
@@ -23,8 +23,8 @@ export const useListOrdersByAddress = ({
   sellerAddress,
   page = 0,
   limit,
+  chainId,
 }: useListOrdersByAddressProps) => {
-  const { chainId } = useChainId();
   const {
     data: orders,
     isLoading: isLoadingOrders,
@@ -40,7 +40,7 @@ export const useListOrdersByAddress = ({
     queryFn: async () => {
       const { data } = await newMarketplaceService.listUserOrders({
         page: page,
-        chainId: chainId ?? Networks.MAINNET,
+        chainId: chainId ?? NetworkId.MAINNET,
         limit: limit ?? 10,
         sellerAddress,
       });

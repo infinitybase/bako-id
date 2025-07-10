@@ -4,6 +4,8 @@ export const blacklistMetadataKeys = ['name', 'image', 'description', 'uri'];
 
 export enum MarketplaceQueryKeys {
   ORDERS = 'orders',
+  USER_ORDERS = 'user-orders',
+  ORDER = 'order',
 }
 
 export const ORDERS_ASSETS_METADATA_STORAGE_KEY = '@bako-id/orders-assets';

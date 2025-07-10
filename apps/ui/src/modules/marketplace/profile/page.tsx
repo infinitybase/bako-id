@@ -3,7 +3,7 @@ import { useParams } from '@tanstack/react-router';
 import { ProfilePageBanner } from '../components/banner/profilePageBanner';
 import { ProfileNfts } from './components/profileNfts';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
-import { useListOrdersByAddress } from '@/hooks/marketplace/useListOrdersByAddress';
+import { useListInfiniteOrdersByAddress } from '@/hooks/marketplace/useListInfiniteOrdersByAddress';
 import { useMemo, useState } from 'react';
 import { useCollections } from '@/hooks/useCollections';
 import { useWallet } from '@fuels/react';
@@ -23,7 +23,7 @@ export const ProfilePage = () => {
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = useListOrdersByAddress({
+  } = useListInfiniteOrdersByAddress({
     page: 0,
     sellerAddress: owner.toLowerCase(),
   });

@@ -2,7 +2,7 @@ import { Flex, Stack, Text } from '@chakra-ui/react';
 import { NftMetadataBlock } from './NftMetadataBlock';
 
 type Metadata = {
-  label: string;
+  trait_type: string;
   value: string;
 };
 
@@ -25,7 +25,7 @@ export const NftListMetadata = ({ metadata }: NftListMetadataProps) => {
         {metadata.map((item) => (
           <NftMetadataBlock
             key={item.value}
-            title={item.label}
+            title={item.trait_type}
             value={item.value}
           />
         ))}

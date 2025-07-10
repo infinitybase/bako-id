@@ -2,26 +2,20 @@
 
 import nftEmpty from '@/assets/nft-empty.png';
 import UnknownAsset from '@/assets/unknown-asset.png';
-import type { FuelAsset } from '@/services/fuel-assets';
-import type { Nft } from '@/types/marketplace';
+import type { Order } from '@/types/marketplace';
 import { Button, Heading, Image, Text, useDisclosure } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { NftSaleCardModal } from './NftSaleCardModal';
 import { NftCard } from './card';
+import { parseURI } from '@/utils';
 
 interface NftSaleCardProps {
-  orderId: string;
-  asset: (FuelAsset & { id: string }) | null;
-  value: string;
-  nft: Nft;
+  order: Order;
+  chainId: number;
 }
 
-const NftSaleCard = ({ value, orderId, nft, asset }: NftSaleCardProps) => {
+const NftSaleCard = ({ order, chainId }: NftSaleCardProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const rate = asset?.rate ?? 0;
-
-  const usdValue = useMemo(() => Number(value) * rate, [value, rate]);
 
   const currency = useMemo(
     () =>
@@ -30,25 +24,18 @@ const NftSaleCard = ({ value, orderId, nft, asset }: NftSaleCardProps) => {
         maximumFractionDigits: 2,
         style: 'currency',
         currency: 'USD',
-      }).format(Number(usdValue)),
-    [usdValue]
+      }).format(Number(order.price.usd)),
+    [order.price.usd]
   );
 
-  const nftPrice = useMemo(() => Number(value), [value]);
+  const assetSymbolUrl = order.price.image ?? UnknownAsset.src;
 
-  const valueWithoutRigthZeros = useMemo(
-    () => Number(value).toString(),
-    [value]
-  );
-
-  const assetSymbolUrl = asset?.icon ?? UnknownAsset.src;
-
-  const imageUrl = nft.image ?? nftEmpty.src;
-  const name = nft.name ?? 'Unknown NFT';
+  const imageUrl = parseURI(order.asset.image) ?? nftEmpty.src;
+  const name = order.asset.name ?? 'Unknown NFT';
 
   return (
     <NftCard.Root onClick={onOpen} cursor="pointer" minH="240px">
-      {nft.edition && <NftCard.EditionBadge edition={nft.edition} />}
+      {/* {nft.edition && <NftCard.EditionBadge edition={nft.edition} />} */}
       <NftCard.Image src={imageUrl} alt={name} />
       <NftCard.Content spacing={2}>
         <Text fontSize="sm" color="text.700">
@@ -62,9 +49,9 @@ const NftSaleCard = ({ value, orderId, nft, asset }: NftSaleCardProps) => {
           color="text.700"
         >
           <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
-          {nftPrice}
+          {order.price.amount}
         </Heading>
-        {asset?.rate && (
+        {order.price.usd && (
           <Text color="grey.subtitle" fontSize="sm">
             {currency}
           </Text>
@@ -76,19 +63,13 @@ const NftSaleCard = ({ value, orderId, nft, asset }: NftSaleCardProps) => {
 
       {isOpen && (
         <NftSaleCardModal
-          orderId={orderId}
+          chainId={chainId}
+          order={order}
           imageUrl={imageUrl}
           isOpen={isOpen}
           onClose={onClose}
-          nft={nft}
           name={name}
-          value={valueWithoutRigthZeros}
-          asset={{
-            iconUrl: assetSymbolUrl,
-            decimals: asset?.decimals,
-            id: asset?.id!,
-            name: asset?.name ?? 'Unknown',
-          }}
+          value={order.price.amount}
           usdValue={currency}
         />
       )}

@@ -7,4 +7,4 @@ export * from './useListOrdersByAccount';
 export * from './useMarketplace';
 export * from './useUpdateOrder';
 export * from './useGetOrder';
-export * from './useListOrdersByAddress';
+export * from './useListInfiniteOrdersByAddress';
