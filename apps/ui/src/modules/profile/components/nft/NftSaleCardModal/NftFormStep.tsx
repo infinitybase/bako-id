@@ -32,10 +32,7 @@ export default function NftFormStep({
     async (data: NftSaleCardForm) => {
       try {
         await updateOrderAsync({
-          sellPrice: bn.parseUnits(
-            data.sellPrice.toString(),
-            data.sellAsset.decimals
-          ),
+          sellPrice: bn.parseUnits(data.sellPrice.toString()),
           sellAsset: data.sellAsset.id,
           orderId: order.id,
         });

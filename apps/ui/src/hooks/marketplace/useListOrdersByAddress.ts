@@ -29,7 +29,7 @@ export const useListOrdersByAddress = ({
     isLoading: isLoadingOrders,
     ...rest
   } = useInfiniteQuery<UserOrdersResponse>({
-    queryKey: [MarketplaceQueryKeys.USER_ORDERS, chainId, sellerAddress, page],
+    queryKey: [MarketplaceQueryKeys.USER_ORDERS, sellerAddress],
     initialPageParam: page,
     getNextPageParam: (lastPage) => {
       const { page, totalPages } = lastPage;
