@@ -72,15 +72,17 @@ export const NftCollections = ({
             }}
             gap={6}
           >
-            {collection.assets.map((a) => (
-              <NftCollectionCard
-                key={a.assetId}
-                asset={a}
-                assets={assets}
-                resolver={resolver}
-                isOwner={isOwner}
-              />
-            ))}
+            {collection.assets.map((a) => {
+              return (
+                <NftCollectionCard
+                  key={a.assetId}
+                  asset={a}
+                  assets={assets}
+                  resolver={resolver}
+                  isOwner={isOwner}
+                />
+              );
+            })}
           </Grid>
         </Box>
       ))}
