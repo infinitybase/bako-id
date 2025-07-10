@@ -8,7 +8,7 @@ interface PaginationProps {
   hasPreviousPage?: boolean;
   isLoading?: boolean;
   onPageChange: (page: number) => void;
-  accountOrders?: boolean;
+  isAccountOrders?: boolean;
 }
 
 export const Pagination = ({
@@ -18,9 +18,9 @@ export const Pagination = ({
   hasPreviousPage = false,
   isLoading = false,
   onPageChange,
-  accountOrders = false,
+  isAccountOrders = false,
 }: PaginationProps) => {
-  const newPage = accountOrders ? 0 : page;
+  const newPage = isAccountOrders ? 0 : page;
 
   return (
     <>

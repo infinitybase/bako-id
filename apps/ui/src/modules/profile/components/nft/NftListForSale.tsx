@@ -116,7 +116,7 @@ export const NftListForSale = ({
         alignItems="center"
       >
         <Pagination
-          accountOrders
+          isAccountOrders
           page={Number(page ?? 1)}
           totalPages={paginationInfos.totalPages}
           hasNextPage={paginationInfos.hasNextPage}
