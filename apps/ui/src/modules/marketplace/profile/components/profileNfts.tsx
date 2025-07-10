@@ -258,6 +258,7 @@ export const ProfileNfts = ({
                 isOwner={true}
                 showBuyButton={false}
                 withHandle={false}
+                imageSize="full"
               />
             </GridItem>
           ))}

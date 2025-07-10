@@ -56,9 +56,9 @@ export default function NftFormStep({
         userWithHandle={userWithHandle}
         initialValues={{
           sellAsset: {
-            id: order.asset.id,
+            id: order.price.assetId,
             icon: assetSymbolUrl,
-            name: order.asset.name ?? 'Unknown',
+            name: order.price.name ?? 'Unknown',
           },
           sellPrice: value,
         }}
