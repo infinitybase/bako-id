@@ -154,7 +154,8 @@ export const useCollections = ({
     nfts: nftsWithMetadata || [],
     collections,
     totalPages,
-    isLoading: !chainId ? true : isLoadingAllNfts || isLoadingMetadata,
+    isLoading:
+      chainId === undefined ? true : isLoadingAllNfts || isLoadingMetadata,
     currentPage: page,
     isPlaceholderData,
   };

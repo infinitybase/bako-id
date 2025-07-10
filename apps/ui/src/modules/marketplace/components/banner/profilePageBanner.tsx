@@ -20,19 +20,23 @@ import { PoweredByIcon } from '../icons/poweredByIcon';
 import profileBanner from '@/assets/marketplace/mktp-profile-banner.png';
 import { UnverifiedBadgeIcon } from '../icons/unverifiedBadgeIcon';
 import { Link, useNavigate } from '@tanstack/react-router';
+import { useResolverName } from '@/hooks/useResolverName';
 
 type ProfilePageBannerProps = {
   name: string;
   nftQuantity: number;
   usdValue: number;
+  resolver: string;
 };
 
 export const ProfilePageBanner = ({
   name,
   nftQuantity,
   usdValue,
+  resolver,
 }: ProfilePageBannerProps) => {
-  const isDomain = !name.includes('...');
+  const { data: hasDomain } = useResolverName(resolver);
+
   const navigate = useNavigate();
   return (
     <Stack
@@ -60,7 +64,7 @@ export const ProfilePageBanner = ({
       }}
     >
       <Flex align="center" gap={4} cursor="pointer">
-        {!isDomain && (
+        {!hasDomain && (
           <Button
             ml={4}
             as={Link}
@@ -92,7 +96,7 @@ export const ProfilePageBanner = ({
       >
         <ProfileSummary
           name={name}
-          isDomain={isDomain}
+          isDomain={!!hasDomain}
           nftQuantity={nftQuantity}
           usdValue={usdValue}
         />

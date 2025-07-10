@@ -1,16 +1,5 @@
-import nftEmpty from '@/assets/nft-empty.png';
 import type { Collection } from '@/types/marketplace';
-import { parseURI } from '@/utils/formatter';
-import {
-  Flex,
-  VStack,
-  Image,
-  Heading,
-  Text,
-  Icon,
-  Skeleton,
-} from '@chakra-ui/react';
-import { useState } from 'react';
+import { Flex, VStack, Heading, Text, Icon } from '@chakra-ui/react';
 import { VerifiedBadgeIcon } from '../icons/verifiedBadgeIcon';
 import { CopyText } from '@/components/helpers/copy';
 import { GlobalIcon, TwitterIcon } from '../icons';
@@ -18,10 +7,9 @@ import { DiscordIcon as DiscordIconComponent } from '@/components/icons/discordI
 import { ShareMenu } from './shareMenu';
 import { DetailsMenu } from './detailsMenu';
 import { StatBox } from './statBox';
+import { ImageLoader } from '@/components/imageLoader';
 
 const CollectionPageDetails = ({ collection }: { collection: Collection }) => {
-  const [isImageLoading, setIsImageLoading] = useState(true);
-
   if (!collection) return null;
 
   return (
@@ -36,26 +24,15 @@ const CollectionPageDetails = ({ collection }: { collection: Collection }) => {
       mb={2.5}
     >
       <Flex align="center" gap={2} minW="0">
-        <Skeleton
-          isLoaded={!isImageLoading}
-          borderRadius="8px"
-          boxSize="62px"
-          border="1px solid"
-          borderColor="grey.600"
-          backdropFilter={isImageLoading ? 'blur(24px)' : 'blur(0px)'}
-        >
-          <Image
-            src={parseURI(collection.config.avatar)}
-            alt={collection.name}
-            boxSize="60px"
-            borderRadius="8px"
-            onLoad={() => setIsImageLoading(false)}
-            onError={(e) => {
-              e.currentTarget.src = nftEmpty;
-              setIsImageLoading(false);
-            }}
-          />
-        </Skeleton>
+        <ImageLoader
+          src={collection.config.avatar}
+          alt={'Collection Image'}
+          imageProps={{
+            boxSize: '60px',
+            borderRadius: '8px',
+          }}
+        />
+
         <VStack align="flex-start" spacing={0} minW="0">
           <Flex
             align="center"

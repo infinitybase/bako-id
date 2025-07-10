@@ -65,6 +65,7 @@ export const ProfilePage = () => {
     >
       <Stack gap={8}>
         <ProfilePageBanner
+          resolver={owner}
           name={name}
           nftQuantity={data.length + notListedCollections.length}
           usdValue={totalUsdValue}

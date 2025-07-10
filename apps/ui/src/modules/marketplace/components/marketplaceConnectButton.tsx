@@ -1,7 +1,6 @@
 import { Box, Button, Icon, Text } from '@chakra-ui/react';
 import { useAccount, useConnectUI, useWallet } from '@fuels/react';
 import { WalletIcon2 } from '@/modules/marketplace/components/icons/wallet2';
-import { formatAddress } from '@/utils/formatter';
 import { ConnectButtonMenu } from './connectButtonMenu';
 
 export const MarketplaceConnect = ({
@@ -9,7 +8,7 @@ export const MarketplaceConnect = ({
   domain,
 }: {
   isLoading: boolean;
-  domain: string;
+  domain: string | null | undefined;
 }) => {
   const { connect, isConnecting, isConnected } = useConnectUI();
   const { account } = useAccount();
@@ -20,12 +19,6 @@ export const MarketplaceConnect = ({
   if (isLoading) {
     return null;
   }
-
-  const isDomain = !domain?.includes('...');
-
-  const name = isDomain
-    ? domain
-    : formatAddress(wallet?.address.toB256() ?? '');
 
   if (!isConnected && !wallet) {
     return (
@@ -69,6 +62,6 @@ export const MarketplaceConnect = ({
   }
 
   return (
-    <ConnectButtonMenu name={name ?? ''} account={wallet?.address ?? ''} />
+    <ConnectButtonMenu name={domain ?? ''} account={wallet?.address ?? ''} />
   );
 };
