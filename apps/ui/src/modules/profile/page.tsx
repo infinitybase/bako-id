@@ -1,8 +1,8 @@
 import { useSearch } from '@tanstack/react-router';
+import { useMemo } from 'react';
 import ProfileWithHandler from './components/profileWithHandler';
 import ProfileWithoutHandler from './components/profileWithoutHandler';
 import { useListOrdersByAddress } from '@/hooks/marketplace/useListOrdersByAddress';
-import { useMemo } from 'react';
 import { useProfile } from './hooks/useProfile';
 import { isB256 } from 'fuels';
 import { ProfileCardLoadingSkeleton } from './components/profileCardLoadingSkeleton';
@@ -26,22 +26,22 @@ const Profile = () => {
     page: page ?? 0,
   });
 
+  const data = useMemo(
+    () => orders?.pages?.flatMap((page) => page.data) ?? [],
+    [orders]
+  );
+
   const SkeletonComponent = isHandle
     ? ProfileCardLoadingSkeleton
     : ProfileWithoutHandlerSkeleton;
 
-  if (isLoadingDomain || !domainMethods.isFetched) {
+  if (isLoadingDomain || !domainMethods.isFetched || isLoadingOrders) {
     return (
       <ProfileContainer>
         <SkeletonComponent />
       </ProfileContainer>
     );
   }
-
-  const data = useMemo(
-    () => orders?.pages?.flatMap((page) => page.data) ?? [],
-    [orders]
-  );
 
   const userWithDomain = !!domain;
 
