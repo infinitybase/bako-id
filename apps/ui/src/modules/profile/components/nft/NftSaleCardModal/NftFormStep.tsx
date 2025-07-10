@@ -59,8 +59,6 @@ export default function NftFormStep({
             id: order.asset.id,
             icon: assetSymbolUrl,
             name: order.asset.name ?? 'Unknown',
-            // TODO: Remove this decimals in the marketplace profile page
-            decimals: 9,
           },
           sellPrice: value,
         }}
