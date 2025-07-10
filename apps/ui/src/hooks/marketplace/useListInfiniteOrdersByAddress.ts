@@ -1,10 +1,10 @@
 import { MarketplaceQueryKeys } from '@/utils/constants';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useChainId } from '../useChainId';
-import { newMarketplaceService } from '@/services/new-marketplace';
 import { Networks } from '@/utils/resolverNetwork';
 import type { Order } from '@/types/marketplace';
 import type { PaginationResult } from '@/utils/pagination';
+import { marketplaceService } from '@/services/marketplace';
 
 type useListInfiniteOrdersByAddressProps = {
   page?: number;
@@ -39,7 +39,7 @@ export const useListInfiniteOrdersByAddress = ({
       return undefined;
     },
     queryFn: async ({ pageParam }) => {
-      const { data } = await newMarketplaceService.listUserOrders({
+      const { data } = await marketplaceService.listUserOrders({
         page: pageParam as number,
         chainId: chainId ?? Networks.MAINNET,
         limit: limit ?? 10,

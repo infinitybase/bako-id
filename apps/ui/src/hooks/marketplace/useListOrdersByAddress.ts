@@ -1,7 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-
-import { newMarketplaceService } from '@/services/new-marketplace';
-
+import { marketplaceService } from '@/services/marketplace';
 import type { Order } from '@/types/marketplace';
 import type { PaginationResult } from '@/utils/pagination';
 import { MarketplaceQueryKeys } from '@/utils/constants';
@@ -38,7 +36,7 @@ export const useListOrdersByAddress = ({
       chainId,
     ],
     queryFn: async () => {
-      const { data } = await newMarketplaceService.listUserOrders({
+      const { data } = await marketplaceService.listUserOrders({
         page: page,
         chainId: chainId ?? Networks.MAINNET,
         limit: limit ?? 10,
