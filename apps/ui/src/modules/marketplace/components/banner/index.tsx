@@ -108,11 +108,11 @@ export const MarketplaceBanner = ({ collections }: MarketplaceBannerProps) => {
                       <StatBox label="Sales" value={collection.metrics.sales} />
                       <StatBox
                         label="Floor price"
-                        value={`${collection.metrics.floorPrice} ETH`}
+                        value={`${collection.metrics.floorPrice.toFixed(2)} ETH`}
                       />
                       <StatBox
                         label="Volume"
-                        value={`${collection.metrics.volume} ETH`}
+                        value={`${collection.metrics.volume.toFixed(2)} ETH`}
                       />
                     </Flex>
                   </Box>
