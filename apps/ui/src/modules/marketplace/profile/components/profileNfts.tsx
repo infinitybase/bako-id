@@ -20,6 +20,7 @@ import type { AssetMetadata } from '@/utils/getOrderMetadata';
 import type { Order } from '@/types/marketplace';
 import type { NFTCollection } from '@/utils/collection';
 import { useWallet } from '@fuels/react';
+import { useResolverName } from '@/hooks';
 
 enum TabOptions {
   FOR_SALE = 'for_sale',
@@ -72,6 +73,8 @@ export const ProfileNfts = ({
   const { ref, inView } = useInView();
   const { wallet } = useWallet();
   const ownerDomain = wallet?.address.b256Address;
+
+  const { data: hasDomain } = useResolverName(resolver);
 
   const isOwner = useMemo(
     () => ownerDomain === resolver,
@@ -255,9 +258,9 @@ export const ProfileNfts = ({
               <NftSaleCard
                 order={order}
                 showDelistButton={false}
-                isOwner={true}
+                isOwner={isOwner}
                 showBuyButton={false}
-                withHandle={false}
+                withHandle={!!hasDomain}
                 imageSize="full"
               />
             </GridItem>
