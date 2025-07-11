@@ -58,6 +58,36 @@ test.describe('Home Page', () => {
     await secondTab.getByRole('heading', { name: 'Account' }).click();
   });
 
+  test.only('search invalid handle', async ({ page }) => {
+    await expect(page.getByText('Search new Handle')).toBeVisible();
+
+    await test.step('shows error for short handle', async () => {
+      await page
+        .getByRole('textbox', { name: 'Search for an available Handle' })
+        .fill('@bk');
+
+      await expect(page.getByText('Not supported')).toBeVisible();
+      await expect(
+        page.getByText('Handle must be at least 3 characters long.'),
+      ).toBeVisible();
+    });
+
+    await test.step('filters unsupported characters from handle', async () => {
+      const invalidHandle = 'bako 123100 !! // --';
+      await page
+        .getByRole('textbox', { name: 'Search for an available Handle' })
+        .fill(invalidHandle);
+
+      await expect(
+        page.getByRole('textbox', { name: 'Search for an available Handle' }),
+      ).not.toHaveValue(invalidHandle);
+      await expect(
+        page.getByRole('textbox', { name: 'Search for an available Handle' }),
+      ).toHaveValue('@bako123100');
+      await expect(page.getByText('Available')).toBeVisible();
+    });
+  });
+
   test('create new Bako user', async ({ page }) => {
     await test.step('connect wallet', async () => {
       await expect(page.getByText('Search new Handle')).toBeVisible();
