@@ -6,7 +6,6 @@ import {
   Image,
   Skeleton,
   Stack,
-  Text,
   VStack,
 } from '@chakra-ui/react';
 import 'swiper/css';
@@ -152,24 +151,7 @@ const ProfileSummary = ({
 
         <VStack align="flex-start" spacing={0}>
           <Flex flexDir="column" justifyContent="space-between" h="61px">
-            <Text
-              color="text.700"
-              fontSize="10px"
-              fontWeight={400}
-              w="fit-content"
-              backdropFilter="blur(24px)"
-              bg="#F5F5F51A"
-              align="center"
-              border="1px solid #F5F5F540"
-              borderRadius="xl"
-              p="4px 6px"
-              letterSpacing="1px"
-              boxShadow="0px 6px 12px 0px rgba(0, 0, 0, 0.25)"
-              gap={1}
-            >
-              Joined may 2025
-            </Text>
-            <Flex gap={2} align="center">
+            <Flex gap={2} align="center" mt="auto">
               <Heading
                 fontSize="2xl"
                 fontWeight={600}
