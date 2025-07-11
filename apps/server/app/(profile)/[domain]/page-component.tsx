@@ -126,7 +126,7 @@ export function ProfilePage({
     chainId,
     sellerAddress: resolver ?? '',
     page: ordersPage < 0 ? 0 : ordersPage,
-    limit: 1,
+    limit: 10,
   });
 
   const data = orders?.data ?? [];

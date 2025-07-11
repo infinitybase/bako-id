@@ -20,7 +20,7 @@ const Profile = () => {
     isPlaceholderData,
   } = useListOrdersByAddress({
     sellerAddress: isHandle ? owner?.Address?.bits : domainParam.toLowerCase(),
-    limit: 1,
+    limit: 10,
     page: page ?? 0,
   });
 
