@@ -11,14 +11,14 @@ import { useState } from 'react';
 type ImageLoaderProps = {
   src: string;
   alt: string;
-  props?: SkeletonProps;
+  skeletonProps?: SkeletonProps;
   imageProps?: ImageProps;
 };
 
 export const ImageLoader = ({
   src,
   alt,
-  props,
+  skeletonProps,
   imageProps,
 }: ImageLoaderProps) => {
   const [isImageLoading, setIsImageLoading] = useState(true);
@@ -30,7 +30,7 @@ export const ImageLoader = ({
       border="1px solid"
       borderColor="grey.600"
       backdropFilter={isImageLoading ? 'blur(24px)' : 'blur(0px)'}
-      {...props}
+      {...skeletonProps}
     >
       <Image
         src={parseURI(src)}

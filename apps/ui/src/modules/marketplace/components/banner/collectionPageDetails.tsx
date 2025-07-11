@@ -1,6 +1,5 @@
 import type { Collection } from '@/types/marketplace';
-import { Flex, VStack, Heading, Text, Icon } from '@chakra-ui/react';
-import { VerifiedBadgeIcon } from '../icons/verifiedBadgeIcon';
+import { Flex, VStack, Heading, Icon } from '@chakra-ui/react';
 import { CopyText } from '@/components/helpers/copy';
 import { GlobalIcon, TwitterIcon } from '../icons';
 import { DiscordIcon as DiscordIconComponent } from '@/components/icons/discordIcon';
@@ -14,7 +13,6 @@ const CollectionPageDetails = ({ collection }: { collection: Collection }) => {
 
   return (
     <Flex
-      position="relative"
       zIndex={3}
       h="full"
       w="full"
@@ -25,6 +23,10 @@ const CollectionPageDetails = ({ collection }: { collection: Collection }) => {
     >
       <Flex align="center" gap={2} minW="0">
         <ImageLoader
+          skeletonProps={{
+            boxSize: '62px',
+            borderRadius: '8px',
+          }}
           src={collection.config.avatar}
           alt={'Collection Image'}
           imageProps={{
@@ -33,23 +35,7 @@ const CollectionPageDetails = ({ collection }: { collection: Collection }) => {
           }}
         />
 
-        <VStack align="flex-start" spacing={0} minW="0">
-          <Flex
-            align="center"
-            border="1px solid white"
-            borderRadius="lg"
-            pl={2}
-            pr={1}
-            gap={1}
-            bg="#F5F5F51A"
-            backdropFilter="blur(24px)"
-          >
-            <Text color="text.700" fontSize="xs" fontWeight={400}>
-              {/* TODO: Add author */}
-              By someone
-            </Text>
-            <Icon as={VerifiedBadgeIcon} w={4} h={4} />
-          </Flex>
+        <VStack align="flex-start" spacing={0} minW="0" mt="auto">
           <Flex gap={4} align="center">
             <Heading fontSize="2xl" fontWeight={700} color="#fff" noOfLines={1}>
               {collection.name}

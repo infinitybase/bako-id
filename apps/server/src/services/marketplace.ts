@@ -7,6 +7,10 @@ import { constructUrl, NetworkId, resolverNetworkByChainId } from '@/utils';
 
 const BASE_API_URL = process.env.NEXT_PUBLIC_MARKETPLACE_URL;
 
+if (!BASE_API_URL) {
+  throw new Error('MARKETPLACE_API_URL is not set');
+}
+
 export class marketplaceService {
   static async getOrder({
     orderId,

@@ -1,6 +1,6 @@
 import { MarketplaceQueryKeys } from '@/helpers/constant';
 import { marketplaceService } from '@/services/marketplace';
-import { Networks } from '@/utils';
+import { NetworkId } from '@/utils';
 import { useQuery } from '@tanstack/react-query';
 
 type useGetOrderProps = { id: string; chainId: number };
@@ -11,7 +11,7 @@ export const useGetOrder = ({ id, chainId }: useGetOrderProps) => {
     queryFn: async () => {
       const { data } = await marketplaceService.getOrder({
         orderId: id,
-        chainId: chainId ?? Networks.MAINNET,
+        chainId: chainId ?? NetworkId.MAINNET,
       });
 
       return data;

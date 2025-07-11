@@ -1,7 +1,5 @@
 import { contractsId } from '@bako-id/contracts';
 
-export const blacklistMetadataKeys = ['name', 'image', 'description', 'uri'];
-
 export enum MarketplaceQueryKeys {
   ORDERS = 'orders',
   USER_ORDERS = 'user-orders',
