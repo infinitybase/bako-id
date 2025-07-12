@@ -10,7 +10,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useGetPrimaryHandleName } from '../../../hooks';
 import { formatAddress } from '../../../utils/formatter';
-import { MarketplaceConnect } from './connectButton';
+import { MarketplaceConnect } from './marketplaceConnectButton';
 
 export const MarketplaceHeader = () => {
   const [initialLoadState, setInitialLoadState] = useState(true);

@@ -1,8 +1,12 @@
-import UnknownAsset from '@/assets/unknown-asset.png';
-import { Box, Flex, Heading, Image, Text, VStack } from '@chakra-ui/react';
+import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import { ListHeader } from './listHeader';
 import type { Collection } from '@/types/marketplace';
-import { formatAddress, parseURI } from '@/utils/formatter';
+import { formatAddress } from '@/utils/formatter';
+import { useInView } from 'react-intersection-observer';
+import { useEffect } from 'react';
+import { isB256 } from 'fuels';
+import { useRouter } from '@tanstack/react-router';
+import { ImageLoader } from '@/components/imageLoader';
 
 type SortDirection = 'asc' | 'desc';
 
@@ -16,11 +20,6 @@ type CollectionListProps = {
   hasNextPage: boolean;
   isFetchingNextPage: boolean;
 };
-
-import { useInView } from 'react-intersection-observer';
-import { useEffect } from 'react';
-import { isB256 } from 'fuels';
-import { useRouter } from '@tanstack/react-router';
 
 const listHeaderItems = [
   {
@@ -99,6 +98,7 @@ export const CollectionList = ({
           borderRadius="md"
           bg="transparent"
           mb={2}
+          h="56px"
           border="1px solid"
           borderColor="grey.600"
           justifyContent="space-between"
@@ -112,27 +112,30 @@ export const CollectionList = ({
             });
           }}
         >
-          <Flex flex="2" align="center">
-            <Image
-              src={parseURI(col.config.avatar) ?? UnknownAsset}
-              boxSize="40px"
-              borderRadius="md"
-              mr={3}
+          <Flex flex="2" align="center" gap={3}>
+            <ImageLoader
+              src={col?.config?.avatar}
+              alt={'NFT Image'}
+              imageProps={{
+                boxSize: '40px',
+                borderRadius: 'md',
+              }}
             />
             <Text>{isB256(col.name) ? formatAddress(col.name) : col.name}</Text>
           </Flex>
           <Box flex="1">{col.metrics.volume.toFixed(4)} ETH</Box>
           <Box flex="1">{col.metrics.floorPrice.toFixed(4)} ETH</Box>
           <Box flex="1">{col.metrics.sales}</Box>
-          <Flex flex="1">
-            {col.latestSalesNFTs.map((img) => (
-              <Image
-                key={img}
-                src={img}
-                boxSize="32px"
-                borderRadius="md"
-                mr={2}
-                border="2px solid #222"
+          <Flex flex="1" gap={2}>
+            {col.latestSalesNFTs.map((item) => (
+              <ImageLoader
+                key={item.id}
+                src={item.image}
+                alt={'NFT Image'}
+                imageProps={{
+                  boxSize: '40px',
+                  borderRadius: 'md',
+                }}
               />
             ))}
           </Flex>

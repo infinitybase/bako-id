@@ -8,6 +8,7 @@ interface PaginationProps {
   hasPreviousPage?: boolean;
   isLoading?: boolean;
   onPageChange: (page: number) => void;
+  isAccountOrders?: boolean;
 }
 
 export const Pagination = ({
@@ -17,11 +18,14 @@ export const Pagination = ({
   hasPreviousPage = false,
   isLoading = false,
   onPageChange,
+  isAccountOrders = false,
 }: PaginationProps) => {
+  const newPage = isAccountOrders ? 0 : page;
+
   return (
     <>
       <Text fontSize="sm" mr={2}>
-        {page} - {totalPages} of {totalPages}
+        {page === 0 ? 1 : page + 1} - {totalPages} of {totalPages}
       </Text>
       <IconButton
         aria-label="Previous Page"
@@ -37,7 +41,7 @@ export const Pagination = ({
         variant="unstyled"
         disabled={!hasNextPage || isLoading}
         size="sm"
-        onClick={() => onPageChange(page + 1)}
+        onClick={() => onPageChange(newPage + 1)}
       >
         <ChevronRightIcon fontSize="2xl" />
       </IconButton>

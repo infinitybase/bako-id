@@ -8,10 +8,7 @@ import {
   Heading,
   Text,
   Icon,
-  Image,
 } from '@chakra-ui/react';
-
-import { parseURI } from '@/utils/formatter';
 import { InfoCircleIcon } from '../icons';
 import { VerifiedBadgeIcon } from '../icons/verifiedBadgeIcon';
 import { CopyText } from '@/components/helpers/copy';
@@ -21,6 +18,7 @@ import { ShareMenu } from './shareMenu';
 import { useRef } from 'react';
 import { CloseIcon } from '@/components/icons/closeIcon';
 import type { Collection } from '@/types/marketplace';
+import { ImageLoader } from '@/components/imageLoader';
 
 const DetailsMenu = ({ collection }: { collection: Collection }) => {
   const menuRef = useRef<HTMLButtonElement>(null);
@@ -64,12 +62,18 @@ const DetailsMenu = ({ collection }: { collection: Collection }) => {
               onClick={(e) => e.stopPropagation()}
               w="full"
             >
-              <Image
-                src={parseURI(collection.config.avatar)}
+              <ImageLoader
+                skeletonProps={{
+                  w: '133px',
+                  h: '102px',
+                  borderRadius: '8px',
+                }}
+                src={collection.config.avatar}
                 alt={collection.name}
-                h="full"
-                w="100px"
-                borderRadius="8px"
+                imageProps={{
+                  boxSize: 'full',
+                  borderRadius: '8px',
+                }}
               />
               <VStack align="flex-start" spacing={4} w="full">
                 <Flex w="full" justify="space-between" align="center">
@@ -140,9 +144,7 @@ const DetailsMenu = ({ collection }: { collection: Collection }) => {
             </Flex>
 
             <Text color="section.500" fontSize="xs" fontWeight={400} mt={6}>
-              {/* TOOD: ADD the real description */}
-              Fuel Pengus is a NFT collection of 3333 Penguin PFPs, that aims to
-              build the biggest NFT community on Fuel 🐧 !
+              {collection.description}
             </Text>
           </Flex>
         </MenuItem>

@@ -2,9 +2,9 @@ import { MarketplaceQueryKeys } from '@/utils/constants';
 import type { PaginationResult } from '@/utils/pagination';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useChainId } from '../useChainId';
-import { newMarketplaceService } from '@/services/new-marketplace';
+import { marketplaceService } from '@/services/marketplace';
 import { Networks } from '@/utils/resolverNetwork';
-import type { Orders } from '@/types/marketplace';
+import type { Order } from '@/types/marketplace';
 
 type UseGetCollectionOrdersProps = {
   page?: number;
@@ -25,7 +25,7 @@ export const useGetCollectionOrders = ({
   const { chainId, isLoading } = useChainId();
 
   const { data: collectionOrders, ...rest } = useInfiniteQuery<
-    PaginationResult<Orders>
+    PaginationResult<Order>
   >({
     queryKey: [
       MarketplaceQueryKeys.COLLECTION_ORDERS,
@@ -43,7 +43,7 @@ export const useGetCollectionOrders = ({
       return undefined;
     },
     queryFn: async ({ pageParam = 0 }) => {
-      const { data } = await newMarketplaceService.getCollectionOrders({
+      const { data } = await marketplaceService.getCollectionOrders({
         page: pageParam as number,
         limit,
         search,

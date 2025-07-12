@@ -32,7 +32,7 @@ const menuItems = [
 ];
 
 export const ShareMenu = () => (
-  <Menu placement="bottom-end" strategy="fixed">
+  <Menu placement="bottom-end">
     <MenuButton
       as={IconButton}
       icon={<ShareIcon2 />}

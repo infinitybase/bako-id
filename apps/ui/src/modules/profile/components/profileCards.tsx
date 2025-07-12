@@ -7,7 +7,6 @@ import { useChainId } from '@/hooks/useChainId';
 import { useMetadata } from '@/hooks/useMetadata.ts';
 import type { Order } from '@/types/marketplace';
 import { getExplorer } from '@/utils/getExplorer.ts';
-import type { PaginationResult } from '@/utils/pagination';
 import { Flex, Stack } from '@chakra-ui/react';
 import { Suspense, useMemo } from 'react';
 import { ProfileMarketplaceBanner } from './ProfileMarketplaceBanner.tsx';
@@ -19,9 +18,14 @@ type ProfileCardsProps = {
   domainParam: string;
   domain: string;
   owner: string;
-  orders: PaginationResult<Order> | undefined;
+  orders: Order[] | undefined;
   withHandle: boolean;
   isFetchingOrders?: boolean;
+  paginationInfos: {
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
 };
 
 export const ProfileCards = ({
@@ -31,6 +35,7 @@ export const ProfileCards = ({
   orders,
   withHandle,
   isFetchingOrders,
+  paginationInfos,
 }: ProfileCardsProps) => {
   const { metadataModal, metadata, setUpdatedMetadata, loadingMetadata } =
     useMetadata();
@@ -44,7 +49,7 @@ export const ProfileCards = ({
   const { chainId } = useChainId();
   const explorerUrl = getExplorer(chainId);
 
-  const isEmptyOrders = useMemo(() => !orders?.data.length, [orders]);
+  const isEmptyOrders = useMemo(() => !orders?.length, [orders]);
   const showMarketplaceBanner = useMemo(
     () => isEmptyOrders && withHandle && !isFetchingOrders,
     [isEmptyOrders, withHandle, isFetchingOrders]
@@ -110,6 +115,7 @@ export const ProfileCards = ({
           address={domain}
           isLoadingOrders={isFetchingOrders}
           orders={orders}
+          paginationInfos={paginationInfos}
         />
       )}
 

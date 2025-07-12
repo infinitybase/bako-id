@@ -1,20 +1,24 @@
 import { Container, Skeleton, Stack } from '@chakra-ui/react';
-import { useNavigate, useParams, useSearch } from '@tanstack/react-router';
+import {
+  Outlet,
+  useNavigate,
+  useParams,
+  useSearch,
+} from '@tanstack/react-router';
 import { useCallback, useMemo, useState } from 'react';
-import { OrderList } from './orderList';
+import { OrderList } from '../components/orderList';
 
-import MarketplaceFilter from './marketplaceFilter';
+import MarketplaceFilter from '../components/marketplaceFilter';
 import { useGetCollection } from '@/hooks/marketplace/useGetCollection';
 import { useGetCollectionOrders } from '@/hooks/marketplace/useGetCollectionOrders';
 import { useDebounce } from '@/hooks/useDebounce';
-import { CollectionPageBanner } from './banner/collectionPageBanner';
+import { CollectionPageBanner } from '../components/banner/collectionPageBanner';
 
 export const CollectionPage = () => {
   const { collectionId } = useParams({ strict: false });
   const { search } = useSearch({ strict: false });
   const debouncedSearch = useDebounce<string>(search ?? '', 700);
   const navigate = useNavigate();
-
   const [filters, setFilters] = useState<{
     sortBy: string;
     sortDirection: 'desc' | 'asc';
@@ -105,6 +109,7 @@ export const CollectionPage = () => {
           isFetchingNextPage={isFetchingNextPage}
         />
       </Stack>
+      <Outlet />
     </Container>
   );
 };

@@ -11,6 +11,7 @@ export enum MarketplaceQueryKeys {
   ALL_COLLECTIONS = 'allCollections',
   COLLECTION = 'collection',
   COLLECTION_ORDERS = 'collectionOrders',
+  USER_ORDERS = 'userOrders',
 }
 
 export enum BakoIDQueryKeys {

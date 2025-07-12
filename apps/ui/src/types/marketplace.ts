@@ -1,4 +1,4 @@
-import type { FuelAsset } from '@/services/fuel-assets';
+import type { FuelAsset, Metadata } from '@/services/fuel-assets';
 
 export interface Asset {
   id: string;
@@ -7,7 +7,28 @@ export interface Asset {
   __typename: 'Asset';
 }
 
-export interface Orders {
+export interface OrderFromFuel {
+  __typename: 'Order';
+  id: string;
+  asset: (FuelAsset & { id: string }) | null;
+  amount: string;
+  seller: string;
+  itemPrice: string;
+  itemAsset: string;
+  status: string;
+  nft: {
+    id: string;
+    metadata: Record<string, string> & Metadata;
+    contractId?: string;
+    edition?: string;
+    name?: string | null;
+    image?: string;
+    description?: string;
+    fuelMetadata?: FuelAsset | null;
+  };
+}
+
+export interface Order {
   asset: {
     id: string;
     image: string;
@@ -29,7 +50,7 @@ export interface Orders {
   updatedAt: string;
 }
 
-export interface Order {
+export interface OrderWithMedatada {
   id: string;
   status: number;
   collection: {
@@ -37,6 +58,7 @@ export interface Order {
     name: string;
   };
   seller: string;
+  buyer: string;
   network: number;
   createdAt: string;
   updatedAt: string;
@@ -88,12 +110,12 @@ export enum OrderStatus {
 export interface Collection {
   config: {
     avatar: string;
-    background: string;
+    banner: string;
   };
   createdAt: string;
   description: string | null;
   id: string;
-  latestSalesNFTs: [];
+  latestSalesNFTs: [{ image: string; id: string }];
   name: string;
   network: number;
   updatedAt: string;
@@ -115,5 +137,21 @@ export type MarketplacePaginatedResponse<T> = {
       hasNext: boolean;
       hasPrev: boolean;
     };
+  };
+};
+
+export type MarketplacePaginatedResponseUserOrders<T> = {
+  data: {
+    items: T[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+      hasNext: boolean;
+      hasPrev: boolean;
+    };
+    totalOrdersUsdPrice: number;
+    notListedTotalUsdPrice: number;
   };
 };
