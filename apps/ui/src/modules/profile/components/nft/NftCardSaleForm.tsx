@@ -32,6 +32,7 @@ export type NftSaleCardForm = {
     name: string;
     id: string;
     icon?: string;
+    decimals?: number;
   };
   sellPrice: number;
 };
