@@ -32,10 +32,7 @@ export default function NftFormStep({
     async (data: NftSaleCardForm) => {
       try {
         await updateOrderAsync({
-          sellPrice: bn.parseUnits(
-            data.sellPrice.toString(),
-            data.sellAsset.decimals
-          ),
+          sellPrice: bn.parseUnits(data.sellPrice.toString()),
           sellAsset: data.sellAsset.id,
           orderId: order.id,
         });
@@ -59,11 +56,9 @@ export default function NftFormStep({
         userWithHandle={userWithHandle}
         initialValues={{
           sellAsset: {
-            id: order.asset.id,
+            id: order.price.assetId,
             icon: assetSymbolUrl,
-            name: order.asset.name ?? 'Unknown',
-            // TODO: Remove this decimals in the marketplace profile page
-            decimals: 9,
+            name: order.price.name ?? 'Unknown',
           },
           sellPrice: value,
         }}

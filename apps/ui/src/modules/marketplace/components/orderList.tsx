@@ -1,15 +1,15 @@
 import { useResolverName } from '@/hooks';
 import NftSaleCard from '@/modules/profile/components/nft/NftSaleCard';
-import type { Orders } from '@/types/marketplace';
+import type { Order } from '@/types/marketplace';
 import { GridItem, Heading, SimpleGrid, Skeleton } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
-import { Link } from '@tanstack/react-router';
+import { Link, useParams } from '@tanstack/react-router';
 import { ZeroBytes32 } from 'fuels';
 import { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 interface OrderListProps {
-  orders: Orders[];
+  orders: Order[];
   onFetchNextPage: () => void;
   hasNextPage: boolean;
   isLoadingOrders?: boolean;
@@ -27,6 +27,8 @@ export const OrderList = ({
   const { ref, inView } = useInView();
   const isEmptyOrders = !orders?.length;
   const { data } = useResolverName(wallet?.address.b256Address ?? ZeroBytes32);
+
+  const { collectionId } = useParams({ strict: false });
 
   const address = useMemo(() => wallet?.address.b256Address, [wallet]);
 
@@ -48,7 +50,10 @@ export const OrderList = ({
       }}
     >
       {orders.map((order) => (
-        <Link to={`/marketplace/order/${order.id}`} key={order.id}>
+        <Link
+          to={`/marketplace/collection/${collectionId}/order/${order.id}`}
+          key={order.id}
+        >
           <NftSaleCard
             order={order}
             showDelistButton={false}

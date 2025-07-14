@@ -7,7 +7,6 @@ import { Provider } from 'fuels';
 export const useToken = () => {
   const { domain } = useParams({ strict: false });
   const { provider } = useProvider();
-  console.log('use token call', domain, provider);
 
   const { data, ...rest } = useQuery({
     queryKey: ['token', domain],

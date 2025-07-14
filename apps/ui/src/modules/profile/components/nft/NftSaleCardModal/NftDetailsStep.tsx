@@ -1,10 +1,10 @@
 import UnknownAsset from '@/assets/unknown-asset.png';
-import { useBalance } from '@fuels/react';
 import { EditIcon, LightIcon, UserIcon, useCustomToast } from '@/components';
 import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
 import { useResolverName } from '@/hooks';
 import { useExecuteOrder } from '@/hooks/marketplace';
+import type { OrderWithMedatada } from '@/types/marketplace';
 import { formatAddress } from '@/utils/formatter';
 import {
   Button,
@@ -19,13 +19,13 @@ import {
   Text,
   Tooltip,
 } from '@chakra-ui/react';
+import { useBalance } from '@fuels/react';
 import { useConnectUI } from '@fuels/react';
 import { Link } from '@tanstack/react-router';
+import { bn } from 'fuels';
 import { useCallback, useMemo } from 'react';
 import { NftListMetadata } from '../NftListMetadata';
 import { NftMetadataBlock } from '../NftMetadataBlock';
-import type { Order } from '@/types/marketplace';
-import { bn } from 'fuels';
 import ShareOrder from '../ShareOrder';
 
 export default function NftDetailsStep({
@@ -38,7 +38,7 @@ export default function NftDetailsStep({
   isCanceling = false,
   onEdit,
 }: {
-  order: Order;
+  order: OrderWithMedatada;
   onClose: () => void;
   value: number;
   isOwner: boolean;
@@ -219,7 +219,12 @@ export default function NftDetailsStep({
         </GridItem>
       </Grid>
 
-      <NftListMetadata metadata={order?.asset?.metadata.attributes} />
+      <NftListMetadata
+        metadata={order?.asset?.metadata.attributes.map((a) => ({
+          label: a.trait_type,
+          value: a.value,
+        }))}
+      />
     </Stack>
   );
 }

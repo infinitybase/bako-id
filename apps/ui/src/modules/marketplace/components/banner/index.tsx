@@ -84,7 +84,7 @@ export const MarketplaceBanner = ({ collections }: MarketplaceBannerProps) => {
                 onClick={handleRedirect}
               >
                 <Image
-                  src={parseURI(collection.config.background)}
+                  src={parseURI(collection.config.banner)}
                   alt={collection.name}
                   objectFit="cover"
                   objectPosition="center"
@@ -120,7 +120,7 @@ export const MarketplaceBanner = ({ collections }: MarketplaceBannerProps) => {
                       <StatBox label="Floor price" value={usdFloorPrice} />
                       <StatBox
                         label="Volume"
-                        value={`${collection.metrics.volume} ETH`}
+                        value={`${collection.metrics.volume.toFixed(2)} ETH`}
                       />
                     </Flex>
                   </Box>

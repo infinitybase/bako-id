@@ -1,7 +1,7 @@
-import type { Order as OrderWithMetadata } from '@/types/marketplace';
+import type { Order } from '@/types/marketplace';
 import { MarketplaceQueryKeys } from '@/utils/constants';
 import type { PaginationResult } from '@/utils/pagination';
-import type { Order } from '@bako-id/marketplace';
+import type { Order as OrderFromFuel } from '@bako-id/marketplace';
 import { useAccount } from '@fuels/react';
 import { useQueryClient, type InfiniteData } from '@tanstack/react-query';
 import { useSearch } from '@tanstack/react-router';
@@ -14,17 +14,16 @@ export const useCreateOrder = () => {
   const queryClient = useQueryClient();
   const { chainId } = useChainId();
   const { account } = useAccount();
-  const { page: pageUrl, search } = useSearch({ strict: false });
+  const { search } = useSearch({ strict: false });
 
   const address = account?.toLowerCase();
-  const page = Number(pageUrl || 1);
 
   const {
     mutate: createOrder,
     mutateAsync: createOrderAsync,
     ...rest
   } = useMutationWithPolling({
-    mutationFn: async (order: Order) => {
+    mutationFn: async (order: OrderFromFuel) => {
       const marketplace = await marketplaceContract;
       return await marketplace.createOrder(order);
     },
@@ -35,19 +34,16 @@ export const useCreateOrder = () => {
     },
     pollConfigs: [
       {
-        getQueryKey: () => [
-          MarketplaceQueryKeys.ORDERS,
-          address,
-          page,
-          chainId,
-        ],
+        getQueryKey: () => [MarketplaceQueryKeys.USER_ORDERS, address],
         isDataReady: (
-          data: PaginationResult<OrderWithMetadata> | undefined,
+          data: InfiniteData<PaginationResult<Order>> | undefined,
           _,
           { orderId }
         ) => {
           if (!data) return true;
-          const order = data.data.find((order) => order.id === orderId);
+          const order = data.pages[0].data.find(
+            (order) => order.id === orderId
+          );
 
           return !!order;
         },
@@ -58,9 +54,9 @@ export const useCreateOrder = () => {
           chainId,
           search ?? '',
         ],
-        // @ts-expect-error - TODO: fix this type
+
         isDataReady: (
-          data: InfiniteData<PaginationResult<OrderWithMetadata>> | undefined,
+          data: InfiniteData<PaginationResult<Order>> | undefined,
           _,
           { orderId }
         ) => {

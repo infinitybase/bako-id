@@ -3,10 +3,11 @@ import { useCustomToast } from '@/components';
 import { useResolverName } from '@/hooks';
 import { useCancelOrder, useGetOrder } from '@/hooks/marketplace';
 import { NftSaleCardModal } from '@/modules/profile/components/nft/NftSaleCardModal';
+import { parseURI } from '@/utils/formatter';
 import { useDisclosure } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
 import { Navigate, useNavigate, useParams } from '@tanstack/react-router';
-import { ZeroBytes32, bn } from 'fuels';
+import { ZeroBytes32 } from 'fuels';
 import { useCallback, useMemo } from 'react';
 
 export default function OrderPage() {
@@ -20,13 +21,17 @@ export default function OrderPage() {
     wallet?.address.b256Address || ZeroBytes32
   );
 
+  const { collectionId } = useParams({ strict: false });
+
   const { order, isLoading, isFetched } = useGetOrder({ id: orderId });
+
+  const redirectUrl = `/marketplace/collection/${collectionId}`;
 
   const handleClose = useCallback(() => {
     navigate({
-      to: '/marketplace',
+      to: redirectUrl,
     });
-  }, [navigate]);
+  }, [navigate, redirectUrl]);
 
   const currentAddress = useMemo(
     () => wallet?.address.b256Address,
@@ -54,19 +59,6 @@ export default function OrderPage() {
     delistModal.onClose();
   };
 
-  const rate = useMemo(() => order?.asset?.rate ?? 0, [order?.asset?.rate]);
-
-  const value = useMemo(
-    () =>
-      bn(order?.itemPrice).format({
-        units: order?.asset?.decimals,
-        precision: 2,
-      }),
-    [order?.itemPrice, order?.asset?.decimals]
-  );
-
-  const usdValue = useMemo(() => Number(value.replace(/,/g, '')) * rate, [value, rate]);
-
   const currency = useMemo(
     () =>
       Intl.NumberFormat('en-US', {
@@ -74,16 +66,14 @@ export default function OrderPage() {
         maximumFractionDigits: 2,
         style: 'currency',
         currency: 'USD',
-      }).format(Number(usdValue)),
-    [usdValue]
+      }).format(Number(order?.price.usd ?? 0)),
+    [order?.price.usd]
   );
 
-  const nftPrice = value;
-
-  const imageUrl = order?.nft?.image || nftEmpty;
+  const imageUrl = parseURI(order?.asset?.image ?? '') || nftEmpty;
 
   if (!order && isFetched) {
-    return <Navigate to="/marketplace" replace />;
+    return <Navigate to={redirectUrl} replace />;
   }
 
   return (
@@ -94,7 +84,7 @@ export default function OrderPage() {
       imageUrl={imageUrl}
       usdValue={currency}
       onCancelOrder={handleConfirmDelist}
-      value={nftPrice}
+      value={order?.price.amount ?? 0}
       isOwner={order?.seller === currentAddress}
       withHandle={!!data}
       isCanceling={isCancelling}

@@ -82,7 +82,7 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
               label={isBakoIdNft ? 'This NFT is not allowed to be sold' : ''}
             >
               <Button mt={2} disabled={isBakoIdNft} variant="primary" size="sm">
-                Sell
+                List
               </Button>
             </Tooltip>
           )}
