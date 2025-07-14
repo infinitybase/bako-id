@@ -9,6 +9,7 @@ import {
   WalletUnlocked,
   getRandomB256,
   hashMessage,
+  Address,
 } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
 import { RegistryContract } from '../methods/registry';
@@ -54,7 +55,7 @@ describe('Test Registry', () => {
     const nftCall = await nft.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
       )
       .call();
     await nftCall.waitForResult();
@@ -62,7 +63,7 @@ describe('Test Registry', () => {
     const managerCall = await manager.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
       )
       .call();
     await managerCall.waitForResult();
@@ -71,7 +72,7 @@ describe('Test Registry', () => {
       .constructor(
         { bits: owner.address.toB256() },
         { bits: manager.id.toB256() },
-        { bits: nft.id.toB256() },
+        { bits: nft.id.toB256() }
       )
       .call();
     await registerCall.waitForResult();
@@ -95,7 +96,7 @@ describe('Test Registry', () => {
         resolver: wallet.address.toB256(),
       });
       await expect(invalidSuffix).rejects.toBeInstanceOf(InvalidDomainError);
-    },
+    }
   );
 
   it('should register domain', async () => {
@@ -238,7 +239,7 @@ describe('Test Registry', () => {
 
     const contractWithoutAccount = new RegistryContract(
       registry.id.toB256(),
-      provider,
+      provider
     );
 
     const { fee, price } = await contractWithoutAccount.simulate({
@@ -260,13 +261,13 @@ describe('Test Registry', () => {
         domain: randomName(),
         period: 1,
         resolver: baseAssetId,
-      }),
+      })
     ).rejects.toThrow('Account is required to register a domain');
 
     await expect(() =>
       contractWithoutAccount.setMetadata(randomName(), {
         [MetadataKeys.CONTACT_BIO]: 'bio',
-      }),
+      })
     ).rejects.toThrow('Account is required to setMetadata');
   });
 
@@ -292,7 +293,7 @@ describe('Test Registry', () => {
     const expectedTtl = new Date(
       date!.getFullYear() + period,
       date!.getMonth(),
-      date!.getDate(),
+      date!.getDate()
     );
     expectedTtl.setHours(0, 0, 0, 0);
     date!.setHours(0, 0, 0, 0);
@@ -301,11 +302,11 @@ describe('Test Registry', () => {
     expect(timestamp).toEqual(date);
 
     await expect(() => contract.getDates('not_found')).rejects.toThrow(
-      'Domain not found',
+      'Domain not found'
     );
   });
 
-  it('should change owner correctly', async () => {
+  it('should change owner and send nft correctly', async () => {
     const {
       contracts: [registry, manager],
       wallets: [owner, newOwner],
@@ -318,12 +319,19 @@ describe('Test Registry', () => {
       period: 1,
       resolver: owner.address.toB256(),
     });
+    const { assetId } = await contract.token(domain);
+
+    const oldNftBalance = await newOwner.getBalance(assetId);
+    expect(oldNftBalance.toString()).toBe('0');
 
     const newAddress = newOwner.address.toB256();
     const result = await contract.changeOwner({
       domain,
       address: newAddress,
     });
+
+    const newNftBalance = await newOwner.getBalance(assetId);
+    expect(newNftBalance.toString()).toBe('1');
 
     expect(result.status).toBe(TransactionStatus.success);
 
@@ -336,7 +344,72 @@ describe('Test Registry', () => {
       contract.changeOwner({
         domain,
         address: newAddress,
-      }),
+      })
+    ).rejects.toThrow(/NotOwner/);
+  });
+
+  it('should change owner whithout nft correctly', async () => {
+    const {
+      contracts: [registry, manager],
+      wallets: [owner, newOwner],
+    } = node;
+
+    const domain = randomName();
+    const contract = new RegistryContract(registry.id.toB256(), owner);
+
+    await contract.register({
+      domain,
+      period: 1,
+      resolver: owner.address.toB256(),
+    });
+
+    const {balanceNftHandle, assetId, transactionRequest} = await contract.simulateTxNftHndler({
+      domain,
+      ownerAddress: owner.address.toB256(),
+      newOwnerAddress: newOwner.address.toB256(),
+    });
+
+    expect(balanceNftHandle.gt(0)).toBe(true);
+
+    const resources = await owner.getResourcesToSpend([
+      {
+        amount: balanceNftHandle,
+        assetId,
+      },
+    ]);
+
+    transactionRequest.addResources(resources);
+    transactionRequest.addCoinOutputs(new Address(newOwner.address.toB256()), [
+      {
+        amount: balanceNftHandle,
+        assetId,
+      },
+    ]);
+    
+    const transactionResponse =
+    await owner.sendTransaction(transactionRequest);
+
+    const result = await transactionResponse.waitForResult();
+    expect(result.status).toBe(TransactionStatus.success);
+    
+    const newAddress = newOwner.address.toB256();
+    const resultChangeOwner = await contract.changeOwner({
+      domain,
+      address: newAddress,
+    });
+
+    expect(resultChangeOwner.status).toBe(TransactionStatus.success);
+
+    const { value: onChainRecord } = await manager.functions
+      .get_owner(domain)
+      .get();
+    expect(onChainRecord?.Address?.bits).toBe(newAddress);
+
+    await expect(() =>
+      contract.changeOwner({
+        domain,
+        address: newAddress,
+      })
     ).rejects.toThrow(/NotOwner/);
   });
 
@@ -371,7 +444,7 @@ describe('Test Registry', () => {
       contract.changeResolver({
         domain,
         address: newAddress,
-      }),
+      })
     ).rejects.toThrow(/ResolverAlreadyInUse/);
 
     contract = new RegistryContract(registry.id.toB256(), newResolver);
@@ -380,7 +453,7 @@ describe('Test Registry', () => {
       contract.changeResolver({
         domain,
         address: newAddress,
-      }),
+      })
     ).rejects.toThrow(/NotOwner/);
   });
 });
