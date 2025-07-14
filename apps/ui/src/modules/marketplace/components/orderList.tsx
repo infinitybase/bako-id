@@ -64,6 +64,7 @@ export const OrderList = ({
             imageSize={{
               xl: '260px',
             }}
+            ctaButtonVariant="mktPrimary"
           />
         </Link>
       ))}

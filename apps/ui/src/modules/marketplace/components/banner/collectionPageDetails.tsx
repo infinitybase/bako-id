@@ -7,6 +7,7 @@ import { ShareMenu } from './shareMenu';
 import { DetailsMenu } from './detailsMenu';
 import { StatBox } from './statBox';
 import { useMemo } from 'react';
+import { ImageLoader } from '@/components/imageLoader';
 
 const CollectionPageDetails = ({ collection }: { collection: Collection }) => {
   if (!collection) return null;

@@ -1,4 +1,4 @@
-import { Button, Center, Flex } from '@chakra-ui/react';
+import { Center, Flex, Image } from '@chakra-ui/react';
 import {
   useAccount,
   useConnectUI,
@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useGetPrimaryHandleName } from '../../../hooks';
 import { formatAddress } from '../../../utils/formatter';
 import { MarketplaceConnect } from './marketplaceConnectButton';
+import Logo from '@/assets/marketplace/logo-garage.svg';
 
 export const MarketplaceHeader = () => {
   const [initialLoadState, setInitialLoadState] = useState(true);
@@ -68,23 +69,8 @@ export const MarketplaceHeader = () => {
       alignItems="center"
       padding="16px 32px"
     >
-      <Flex align="center">
-        <Button
-          onClick={goHome}
-          background="transparent"
-          color="#fff"
-          padding="6px 14px"
-          borderRadius="3px"
-          fontSize="12px"
-          letterSpacing="1px"
-          fontWeight={400}
-          cursor="pointer"
-          border="1px solid #fff"
-          _hover={{ background: 'rgba(255,255,255,0.06)' }}
-          className="transition-all-05"
-        >
-          LOGOTYPE
-        </Button>
+      <Flex align="center" onClick={goHome} cursor="pointer">
+        <Image src={Logo} alt="Logo" />
       </Flex>
       <MarketplaceConnect isLoading={initialLoadState} domain={domain!} />
     </Center>

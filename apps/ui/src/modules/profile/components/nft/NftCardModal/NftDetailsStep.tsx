@@ -23,6 +23,7 @@ export default function NftDetailStep({
   collection,
   isOwner,
   onSellClick,
+  ctaButtonVariant = 'primary',
 }: {
   nftName: React.ReactNode;
   isOwner: boolean;
@@ -31,6 +32,7 @@ export default function NftDetailStep({
   metadata?: Record<string, string>;
   collection?: string;
   onSellClick: () => void;
+  ctaButtonVariant?: 'primary' | 'mktPrimary';
 }) {
   const metadataArray = useMemo(() => {
     return Object.entries(metadata ?? {}).map(([key, value]) => ({
@@ -96,7 +98,12 @@ export default function NftDetailStep({
         </Grid>
 
         {isOwner && !isBakoIdNft && (
-          <Button variant="primary" w="full" onClick={onSellClick} py={4}>
+          <Button
+            variant={ctaButtonVariant}
+            w="full"
+            onClick={onSellClick}
+            py={4}
+          >
             List
           </Button>
         )}

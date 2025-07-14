@@ -28,13 +28,9 @@ export const MartketplaceEmptyState = () => {
         </Text>
 
         <Button
-          bgColor="button.500"
-          color="background.500"
-          _hover={{ bgColor: 'button.600' }}
+          variant="mktPrimary"
           className="transition-all-05"
           w={{ base: 'fit-content', md: '200px' }}
-          borderRadius="4px"
-          fontSize="sm"
           letterSpacing="0.5px"
         >
           Explore collections

@@ -26,6 +26,7 @@ interface NftSaleCardProps {
   withHandle: boolean;
   openModalOnClick?: boolean;
   imageSize?: BoxProps['boxSize'];
+  ctaButtonVariant?: 'primary' | 'mktPrimary';
 }
 
 const NftSaleCard = ({
@@ -36,6 +37,7 @@ const NftSaleCard = ({
   openModalOnClick = true,
   withHandle,
   imageSize,
+  ctaButtonVariant = 'primary',
 }: NftSaleCardProps) => {
   const { successToast, errorToast } = useCustomToast();
   const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
@@ -126,7 +128,7 @@ const NftSaleCard = ({
         )}
 
         {showBuyButton && (
-          <Button height="auto" py={1.5} variant="primary">
+          <Button height="auto" py={1.5} variant={ctaButtonVariant}>
             Buy
           </Button>
         )}

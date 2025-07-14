@@ -37,6 +37,7 @@ export default function NftDetailsStep({
   onCancelOrder,
   isCanceling = false,
   onEdit,
+  ctaButtonVariant,
 }: {
   order: OrderWithMedatada;
   onClose: () => void;
@@ -46,6 +47,7 @@ export default function NftDetailsStep({
   onCancelOrder: () => Promise<void>;
   isCanceling?: boolean;
   onEdit: () => void;
+  ctaButtonVariant?: 'primary' | 'mktPrimary';
 }) {
   const { connect, isConnected } = useConnectUI();
   const { errorToast, successToast } = useCustomToast();
@@ -163,7 +165,7 @@ export default function NftDetailsStep({
             label={notEnoughBalance && isConnected ? 'Not enough balance' : ''}
           >
             <Button
-              variant="primary"
+              variant={ctaButtonVariant}
               py={4}
               isLoading={isExecuting}
               disabled={(notEnoughBalance && isConnected) || isExecuting}

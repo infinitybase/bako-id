@@ -89,6 +89,7 @@ export default function OrderPage() {
       withHandle={!!data}
       isCanceling={isCancelling}
       isLoadingOrder={isLoading || isResolvingName || !isFetched}
+      ctaButtonVariant="mktPrimary"
     />
   );
 }
