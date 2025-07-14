@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRouter } from '@tanstack/react-router';
 import {
   Box,
@@ -14,7 +14,7 @@ import { Pagination, Mousewheel, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import type { Swiper as SwiperType } from 'swiper';
-import { parseURI } from '@/utils/formatter';
+import { parseURI, usdValueFormatter } from '@/utils/formatter';
 
 import { HexagonFillIcon } from '@/components/icons/hexagonFill';
 import { HexagonEmptyIcon } from '@/components/icons/hexagonEmpty';
@@ -38,17 +38,6 @@ export const MarketplaceBanner = ({ collections }: MarketplaceBannerProps) => {
   };
 
   const router = useRouter();
-
-  const usdFloorPrice = useMemo(
-    () =>
-      Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-        style: 'currency',
-        currency: 'USD',
-      }).format(Number(collections[activeIndex]?.metrics?.floorPrice)),
-    [collections[activeIndex]?.metrics?.floorPrice, activeIndex]
-  );
 
   return (
     <Stack gap={4}>
@@ -112,10 +101,15 @@ export const MarketplaceBanner = ({ collections }: MarketplaceBannerProps) => {
                     </VStack>
                     <Flex gap={3}>
                       <StatBox label="Sales" value={collection.metrics.sales} />
-                      <StatBox label="Floor price" value={usdFloorPrice} />
+                      <StatBox
+                        label="Floor price"
+                        value={usdValueFormatter(
+                          Number(collection.metrics.floorPrice)
+                        )}
+                      />
                       <StatBox
                         label="Volume"
-                        value={`${collection.metrics.volume.toFixed(2)} ETH`}
+                        value={usdValueFormatter(collection.metrics.volume)}
                       />
                     </Flex>
                   </Box>
