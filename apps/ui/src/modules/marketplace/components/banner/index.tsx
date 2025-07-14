@@ -7,7 +7,6 @@ import {
   Heading,
   Image,
   Stack,
-  Text,
   VStack,
 } from '@chakra-ui/react';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -106,14 +105,10 @@ export const MarketplaceBanner = ({ collections }: MarketplaceBannerProps) => {
                   bgGradient="linear(0deg, rgba(21,20,19,0.85) 0%, rgba(21,20,19,0.00) 100%)"
                 >
                   <Box color="#fff" maxW="lg" mt="auto" mb={4}>
-                    <VStack align="flex-start" mb={2}>
+                    <VStack align="flex-start" mb={4}>
                       <Heading fontSize="md" fontWeight={600}>
                         {collection.name}
                       </Heading>
-                      <Text color="text.700" fontSize="xs" fontWeight={400}>
-                        {/* TODO: add author */}
-                        By someone
-                      </Text>
                     </VStack>
                     <Flex gap={3}>
                       <StatBox label="Sales" value={collection.metrics.sales} />

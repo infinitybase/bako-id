@@ -4,6 +4,7 @@ import 'swiper/css/pagination';
 import type { Collection } from '@/types/marketplace';
 import { CollectionPageDetails } from './collectionPageDetails';
 import { ImageLoader } from '@/components/imageLoader';
+import { useNavigate } from '@tanstack/react-router';
 
 type MarketplaceBannerProps = {
   collection: Collection;
@@ -13,10 +14,16 @@ export const CollectionPageBanner = ({
   collection,
 }: MarketplaceBannerProps) => {
   const hasBanner = !!collection?.config?.banner;
+  const navigate = useNavigate();
 
   return (
     <Stack gap={4}>
-      <Box height="250px" borderRadius="8px">
+      <Box
+        height="250px"
+        borderRadius="8px"
+        onClick={() => navigate({ to: '/marketplace' })}
+        cursor="pointer"
+      >
         <Box w="full" h="full" position="relative">
           <ImageLoader
             src={
