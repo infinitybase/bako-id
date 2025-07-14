@@ -122,7 +122,14 @@ export const CollectionList = ({
             <Text>{isB256(col.name) ? formatAddress(col.name) : col.name}</Text>
           </Flex>
           <Box flex="1">{col.metrics.volume.toFixed(4)} ETH</Box>
-          <Box flex="1">{col.metrics.floorPrice.toFixed(4)} ETH</Box>
+          <Box flex="1">
+            {Intl.NumberFormat('en-US', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+              style: 'currency',
+              currency: 'USD',
+            }).format(Number(col?.metrics?.floorPrice ?? 0))}
+          </Box>
           <Box flex="1">{col.metrics.sales}</Box>
           <Flex flex="1">
             {col.latestSalesNFTs.map((img) => (

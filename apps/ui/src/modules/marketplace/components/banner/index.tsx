@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useRouter } from '@tanstack/react-router';
 import {
   Box,
@@ -39,6 +39,17 @@ export const MarketplaceBanner = ({ collections }: MarketplaceBannerProps) => {
   };
 
   const router = useRouter();
+
+  const usdFloorPrice = useMemo(
+    () =>
+      Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+        style: 'currency',
+        currency: 'USD',
+      }).format(Number(collections[activeIndex]?.metrics?.floorPrice)),
+    [collections[activeIndex]?.metrics?.floorPrice, activeIndex]
+  );
 
   return (
     <Stack gap={4}>
@@ -106,10 +117,7 @@ export const MarketplaceBanner = ({ collections }: MarketplaceBannerProps) => {
                     </VStack>
                     <Flex gap={3}>
                       <StatBox label="Sales" value={collection.metrics.sales} />
-                      <StatBox
-                        label="Floor price"
-                        value={`${collection.metrics.floorPrice} ETH`}
-                      />
+                      <StatBox label="Floor price" value={usdFloorPrice} />
                       <StatBox
                         label="Volume"
                         value={`${collection.metrics.volume} ETH`}

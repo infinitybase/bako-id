@@ -8,8 +8,22 @@ import { DiscordIcon as DiscordIconComponent } from '@/components/icons/discordI
 import { ShareMenu } from './shareMenu';
 import { DetailsMenu } from './detailsMenu';
 import { StatBox } from './statBox';
+import { useMemo } from 'react';
 
 const CollectionPageDetails = ({ collection }: { collection: Collection }) => {
+  if (!collection) return null;
+
+  const usdFloorPrice = useMemo(
+    () =>
+      Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+        style: 'currency',
+        currency: 'USD',
+      }).format(Number(collection.metrics.floorPrice)),
+    [collection.metrics.floorPrice]
+  );
+
   return (
     <Flex
       position="relative"
@@ -63,10 +77,7 @@ const CollectionPageDetails = ({ collection }: { collection: Collection }) => {
 
       <Flex gap={4}>
         <StatBox label="Sales" value={collection.metrics.sales} />
-        <StatBox
-          label="Floor price"
-          value={`${collection.metrics.floorPrice} ETH`}
-        />
+        <StatBox label="Floor price" value={usdFloorPrice} />
         <StatBox label="Volume" value={`${collection.metrics.volume} ETH`} />
       </Flex>
     </Flex>
