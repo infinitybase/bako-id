@@ -141,6 +141,7 @@ export default function NftDetailsStep({
         <ShareOrder
           orderId={order.id}
           nftName={order.asset?.name ?? 'Unknown NFT'}
+          collectionId={order.collection?.address ?? ''}
         />
       </Stack>
 

@@ -1,35 +1,30 @@
-import { getOrderMetadata } from '@/helpers/getOrderMetadata';
 import { getOrder } from '@/helpers/queries';
-import { removeRightZeros } from '@/utils';
-import { Provider, bn } from 'fuels';
+import { Provider } from 'fuels';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Redirect from './Redirect';
 
 type Params = {
-  params: Promise<{ orderId: string; domain: string }>;
+  params: Promise<{ orderId: string }>;
+  searchParams: Promise<{ collectionId?: string }>;
 };
 
 export async function generateMetadata({ params }: Params) {
   const { orderId } = await params;
   const provider = new Provider(process.env.NEXT_PUBLIC_PROVIDER_URL!);
   const chainId = await provider.getChainId();
-  const order = await getOrder(orderId, chainId);
+
+  const order = await getOrder(chainId, orderId);
 
   if (!order) {
     return notFound();
   }
-  const orderWithMetadata = await getOrderMetadata(order, chainId);
 
-  const itemPrice = bn(orderWithMetadata.itemPrice).formatUnits(
-    orderWithMetadata.asset?.decimals
-  );
-  const value = removeRightZeros(itemPrice);
-  const assetSymbol = orderWithMetadata.asset?.symbol;
-  const title = `${orderWithMetadata.nft.metadata.name} | ${value} ${assetSymbol} | Bako Identity`;
+  const itemPrice = order.price.amount;
+  const assetSymbol = order.price.symbol;
+  const title = `${order.asset.name} | ${itemPrice} ${assetSymbol} | Bako Identity`;
   const description =
-    orderWithMetadata.nft.metadata.description ||
-    'Explore this NFT on Bako Identity';
+    order.asset.metadata.description || 'Explore this NFT on Bako Identity';
 
   const metadata: Metadata = {
     title,
@@ -37,19 +32,20 @@ export async function generateMetadata({ params }: Params) {
     openGraph: {
       title,
       description,
-      images: orderWithMetadata.nft.image,
+      images: order.asset.image,
     },
     twitter: {
       title,
       description,
-      images: orderWithMetadata.nft.image,
+      images: order.asset.image,
       card: 'summary_large_image',
     },
   };
   return metadata;
 }
 
-export default async function Page({ params }: Params) {
+export default async function Page({ params, searchParams }: Params) {
   const { orderId } = await params;
-  return <Redirect orderId={orderId} />;
+  const { collectionId } = await searchParams;
+  return <Redirect orderId={orderId} collectionId={collectionId ?? ''} />;
 }
