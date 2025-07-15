@@ -23,6 +23,7 @@ export const ProfilePage = () => {
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
+    isFetched: isOrdersFetched,
   } = useListInfiniteOrdersByAddress({
     page: 0,
     sellerAddress: owner.toLowerCase(),
@@ -42,6 +43,7 @@ export const ProfilePage = () => {
     totalPages,
     isPlaceholderData,
     currentPage,
+    isFetched: isCollectionsFetched,
   } = useCollections({
     address: owner,
     page: fuelCollectionsPage,
@@ -75,8 +77,8 @@ export const ProfilePage = () => {
           assets={assets}
           orders={data}
           notListedCollections={notListedCollections}
-          isLoadingCollections={isLoadingCollections}
-          isLoadingOrders={isLoadingOrders}
+          isLoadingCollections={!isCollectionsFetched || isLoadingCollections}
+          isLoadingOrders={!isOrdersFetched || isLoadingOrders}
           isPlaceholderData={isPlaceholderData}
           currentPage={currentPage}
           totalPages={totalPages}

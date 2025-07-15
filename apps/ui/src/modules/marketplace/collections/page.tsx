@@ -1,4 +1,4 @@
-import { Container, Skeleton, Stack } from '@chakra-ui/react';
+import { Container, Stack } from '@chakra-ui/react';
 import {
   Outlet,
   useNavigate,
@@ -15,6 +15,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { CollectionPageBanner } from '../components/banner/collectionPageBanner';
 
 export const CollectionPage = () => {
+  const collectionOrdersLimit = 10;
   const { collectionId } = useParams({ strict: false });
   const { search } = useSearch({ strict: false });
   const debouncedSearch = useDebounce<string>(search ?? '', 700);
@@ -33,11 +34,12 @@ export const CollectionPage = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isFetched,
   } = useGetCollectionOrders({
     collectionId,
     sortValue: filters.sortBy,
     sortDirection: filters.sortDirection,
-    limit: 10,
+    limit: collectionOrdersLimit,
     search: debouncedSearch,
   });
 
@@ -61,7 +63,7 @@ export const CollectionPage = () => {
     }));
   };
 
-  const { collection, isLoading: isLoadingCollection } = useGetCollection({
+  const { collection } = useGetCollection({
     collectionId,
   });
 
@@ -69,6 +71,8 @@ export const CollectionPage = () => {
     () => collectionOrders?.pages?.flatMap((page) => page.data) ?? [],
     [collectionOrders]
   );
+
+  console.log('isFetched', isFetched);
 
   return (
     <Container
@@ -87,11 +91,7 @@ export const CollectionPage = () => {
       }}
     >
       <Stack gap={8}>
-        {isLoadingCollection ? (
-          <Skeleton height="250px" borderRadius="8px" />
-        ) : (
-          <CollectionPageBanner collection={collection?.data!} />
-        )}
+        <CollectionPageBanner collection={collection?.data!} />
 
         <MarketplaceFilter
           searchValue={search}
@@ -105,8 +105,9 @@ export const CollectionPage = () => {
           orders={data}
           hasNextPage={hasNextPage}
           onFetchNextPage={fetchNextPage}
-          isLoadingOrders={isLoading}
+          isLoadingOrders={!isFetched || isLoading}
           isFetchingNextPage={isFetchingNextPage}
+          collectionOrdersLimit={collectionOrdersLimit}
         />
       </Stack>
       <Outlet />

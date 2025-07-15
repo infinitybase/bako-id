@@ -9,7 +9,7 @@ type useGetCollectionProps = {
 };
 
 export const useGetCollection = ({ collectionId }: useGetCollectionProps) => {
-  const { chainId, isLoading } = useChainId();
+  const { chainId } = useChainId();
 
   const { data: collection, ...rest } = useQuery({
     queryKey: [MarketplaceQueryKeys.COLLECTION, chainId, collectionId],
@@ -23,7 +23,7 @@ export const useGetCollection = ({ collectionId }: useGetCollectionProps) => {
         data,
       };
     },
-    enabled: !isLoading,
+    enabled: !!chainId && !!collectionId,
   });
 
   return { collection, ...rest };

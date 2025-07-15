@@ -22,7 +22,7 @@ export const useGetCollectionOrders = ({
   sortDirection,
   collectionId,
 }: UseGetCollectionOrdersProps) => {
-  const { chainId, isLoading } = useChainId();
+  const { chainId } = useChainId();
 
   const { data: collectionOrders, ...rest } = useInfiniteQuery<
     PaginationResult<Order>
@@ -64,7 +64,7 @@ export const useGetCollectionOrders = ({
       };
     },
     placeholderData: (data) => data,
-    enabled: !isLoading,
+    enabled: !!chainId && !!collectionId,
   });
 
   return { collectionOrders, ...rest };

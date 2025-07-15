@@ -39,7 +39,7 @@ export const ProfilePageBanner = ({
   const navigate = useNavigate();
   return (
     <Stack
-      onClick={() => navigate({ to: '/marketplace' })}
+      onClick={() => navigate({ to: '/' })}
       cursor="pointer"
       gap={4}
       minH="250px"

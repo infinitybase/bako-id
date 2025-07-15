@@ -23,7 +23,7 @@ export const MarketplacePage = () => {
     hasNextPage,
     isFetchingNextPage,
   } = useGetCollections({
-    limit: 20,
+    limit: 10,
     search: debouncedSearch,
     sortValue,
     sortDirection,

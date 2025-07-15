@@ -7,7 +7,7 @@ import { Networks } from '@/utils/resolverNetwork';
 type useGetOrderProps = { id: string };
 
 export const useGetOrder = ({ id }: useGetOrderProps) => {
-  const { chainId, isLoading } = useChainId();
+  const { chainId } = useChainId();
 
   const { data: order, ...rest } = useQuery({
     queryKey: [MarketplaceQueryKeys.ORDER, chainId, id],
@@ -19,7 +19,7 @@ export const useGetOrder = ({ id }: useGetOrderProps) => {
 
       return data;
     },
-    enabled: !isLoading,
+    enabled: !!chainId && !!id,
   });
 
   return { order, ...rest };

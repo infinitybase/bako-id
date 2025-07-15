@@ -14,6 +14,7 @@ interface OrderListProps {
   hasNextPage: boolean;
   isLoadingOrders?: boolean;
   isFetchingNextPage?: boolean;
+  collectionOrdersLimit?: number;
 }
 
 export const OrderList = ({
@@ -22,6 +23,7 @@ export const OrderList = ({
   onFetchNextPage,
   hasNextPage,
   isFetchingNextPage = false,
+  collectionOrdersLimit = 10,
 }: OrderListProps) => {
   const { wallet } = useWallet();
   const { ref, inView } = useInView();
@@ -33,10 +35,22 @@ export const OrderList = ({
   const address = useMemo(() => wallet?.address.b256Address, [wallet]);
 
   useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
+    if (
+      inView &&
+      hasNextPage &&
+      !isFetchingNextPage &&
+      orders.length >= collectionOrdersLimit - 1
+    ) {
       onFetchNextPage();
     }
-  }, [inView, hasNextPage, onFetchNextPage, isFetchingNextPage]);
+  }, [
+    inView,
+    hasNextPage,
+    onFetchNextPage,
+    isFetchingNextPage,
+    orders,
+    collectionOrdersLimit,
+  ]);
 
   return (
     <SimpleGrid

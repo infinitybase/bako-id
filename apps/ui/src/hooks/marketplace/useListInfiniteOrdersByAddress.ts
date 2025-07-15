@@ -22,7 +22,7 @@ export const useListInfiniteOrdersByAddress = ({
   page = 0,
   limit,
 }: useListInfiniteOrdersByAddressProps) => {
-  const { chainId, isLoading: isLoadingChainId } = useChainId();
+  const { chainId } = useChainId();
 
   const {
     data: orders,
@@ -59,7 +59,8 @@ export const useListInfiniteOrdersByAddress = ({
       };
     },
     placeholderData: (data) => data,
-    enabled: !isLoadingChainId && !!sellerAddress,
+    enabled: !!chainId && !!sellerAddress,
+
   });
 
   return {
