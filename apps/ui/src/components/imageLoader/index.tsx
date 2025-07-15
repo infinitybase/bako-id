@@ -1,7 +1,7 @@
 import nftEmpty from '@/assets/nft-empty.png';
 import { parseURI } from '@/utils/formatter';
 import {
-  Image,
+  Image as ChakraImage,
   Skeleton,
   type ImageProps,
   type SkeletonProps,
@@ -23,7 +23,12 @@ export const ImageLoader = ({
   imageProps,
   onClick,
 }: ImageLoaderProps) => {
-  const [isImageLoading, setIsImageLoading] = useState(true);
+  const [isImageLoading, setIsImageLoading] = useState(() => {
+    const img = new Image();
+    img.src = src;
+    return img.complete;
+  });
+
   return (
     <Skeleton
       isLoaded={!isImageLoading}
@@ -34,7 +39,7 @@ export const ImageLoader = ({
       backdropFilter={isImageLoading ? 'blur(24px)' : 'blur(0px)'}
       {...skeletonProps}
     >
-      <Image
+      <ChakraImage
         src={parseURI(src)}
         alt={alt}
         onLoad={() => setIsImageLoading(false)}
