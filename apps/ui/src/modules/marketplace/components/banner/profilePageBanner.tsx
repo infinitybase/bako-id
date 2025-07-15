@@ -44,7 +44,6 @@ export const ProfilePageBanner = ({
       gap={4}
       minH="250px"
       borderRadius="8px"
-      bgGradient="linear(20deg, rgba(20,20,20,0.95) 0%, rgba(105, 104, 104, 0.85) 120%)"
       position="relative"
       _before={{
         content: '""',
@@ -54,7 +53,6 @@ export const ProfilePageBanner = ({
         top: 0,
         width: '100%',
         height: '100%',
-        opacity: 0.2,
         backgroundImage: `url('${profileBanner}')`,
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
@@ -92,6 +90,7 @@ export const ProfilePageBanner = ({
         alignItems="flex-end"
         mt="auto"
         mb={2}
+        zIndex={10}
       >
         <ProfileSummary
           name={name}

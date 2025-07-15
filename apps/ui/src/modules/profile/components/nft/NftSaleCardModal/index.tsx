@@ -20,6 +20,7 @@ interface NftSaleCardModalProps {
   isLoadingOrder?: boolean;
   isOwner: boolean;
   withHandle: boolean;
+  ctaButtonVariant?: 'primary' | 'mktPrimary';
 }
 
 export const NftSaleCardModal = ({
@@ -34,6 +35,7 @@ export const NftSaleCardModal = ({
   isLoadingOrder = false,
   withHandle,
   order,
+  ctaButtonVariant = 'primary',
 }: NftSaleCardModalProps) => {
   const [step, setStep] = useState(0);
 
@@ -83,6 +85,7 @@ export const NftSaleCardModal = ({
                 usdValue={usdValue}
                 value={value}
                 onEdit={handleChangeStepToSell}
+                ctaButtonVariant={ctaButtonVariant}
               />
             )}
 

@@ -180,8 +180,8 @@ export const ProfileNfts = ({
                   fontSize: '12px',
                   fontWeight: '400',
                   _selected: {
-                    bg: '#FFC0101A',
-                    color: 'yellow-light',
+                    bg: '#00DB7D1A',
+                    color: 'button.800',
                   },
                 }}
               >
@@ -228,6 +228,7 @@ export const ProfileNfts = ({
                   assets={assets}
                   resolver={resolver}
                   isOwner={isOwner}
+                  ctaButtonVariant="mktPrimary"
                   nftCardMinSize="175px"
                 />
               ))}
