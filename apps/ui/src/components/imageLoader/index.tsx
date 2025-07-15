@@ -14,6 +14,7 @@ type ImageLoaderProps = {
   skeletonProps?: SkeletonProps;
   imageProps?: ImageProps;
   onClick?: () => void;
+  fallbackSrc?: string;
 };
 
 export const ImageLoader = ({
@@ -22,8 +23,9 @@ export const ImageLoader = ({
   skeletonProps,
   imageProps,
   onClick,
+  fallbackSrc = nftEmpty,
 }: ImageLoaderProps) => {
-  const [isImageLoading, setIsImageLoading] = useState(() => {
+  const [isLoading, setIsLoading] = useState(() => {
     const img = new Image();
     img.src = src;
     return img.complete;
@@ -31,22 +33,30 @@ export const ImageLoader = ({
 
   return (
     <Skeleton
-      isLoaded={!isImageLoading}
+      isLoaded={!isLoading}
       borderRadius="md"
       boxSize="42px"
       border="1px solid"
       borderColor="grey.600"
-      backdropFilter={isImageLoading ? 'blur(24px)' : 'blur(0px)'}
+      backdropFilter={isLoading ? 'blur(24px)' : 'blur(0px)'}
       {...skeletonProps}
     >
       <ChakraImage
         src={parseURI(src)}
         alt={alt}
-        onLoad={() => setIsImageLoading(false)}
-        onError={(e) => {
-          e.currentTarget.src = nftEmpty;
-          setIsImageLoading(false);
-        }}
+        objectFit="cover"
+        borderRadius="md"
+        fallback={
+          <ChakraImage
+            src={fallbackSrc}
+            alt={alt}
+            objectFit="cover"
+            borderRadius="md"
+            {...imageProps}
+          />
+        }
+        onLoad={() => setIsLoading(false)}
+        onError={() => setIsLoading(false)}
         {...imageProps}
         onClick={onClick}
       />

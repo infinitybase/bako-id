@@ -59,10 +59,23 @@ export const CollectionPageBanner = ({
           bottom={0}
           left={0}
           right={0}
-          height="120px"
+          height="80px"
           bgGradient="linear(0deg, rgba(21,20,19,0.85) 0%, rgba(21,20,19,0.00) 100%)"
-          backdropFilter={hasBanner ? 'blur(0px)' : 'blur(80px)'}
           zIndex={2}
+          _before={
+            !hasBanner
+              ? {
+                  content: '""',
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  height: '250px',
+                  backdropFilter: 'blur(80px)',
+                  pointerEvents: 'none',
+                }
+              : undefined
+          }
         />
 
         <Box
