@@ -53,7 +53,10 @@ export const resolveRouterTree = () => {
 
   // Development/Preview: Handle marketplace pathname
   if ((isDev || isPreview) && pathname.includes('marketplace')) {
-    const newPathname = pathname.replace('/marketplace', '/');
+    const newPathname = pathname.replace(
+      '/marketplace',
+      pathname === '/marketplace' ? '/' : ''
+    );
     window.history.replaceState(null, '', newPathname);
     return marketplaceRouterTree;
   }
