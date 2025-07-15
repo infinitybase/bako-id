@@ -72,8 +72,6 @@ export const CollectionPage = () => {
     [collectionOrders]
   );
 
-  console.log('isFetched', isFetched);
-
   return (
     <Container
       maxWidth="container.xl"
