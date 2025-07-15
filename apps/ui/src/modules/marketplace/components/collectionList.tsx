@@ -1,12 +1,12 @@
-import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react';
-import { ListHeader } from './listHeader';
+import { ImageLoader } from '@/components/imageLoader';
 import type { Collection } from '@/types/marketplace';
 import { formatAddress, usdValueFormatter } from '@/utils/formatter';
-import { useInView } from 'react-intersection-observer';
-import { useEffect } from 'react';
-import { isB256 } from 'fuels';
+import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import { useRouter } from '@tanstack/react-router';
-import { ImageLoader } from '@/components/imageLoader';
+import { isB256 } from 'fuels';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { ListHeader } from './listHeader';
 
 type SortDirection = 'asc' | 'desc';
 
@@ -105,7 +105,7 @@ export const CollectionList = ({
           cursor="pointer"
           onClick={() => {
             router.navigate({
-              to: '/marketplace/collection/$collectionId',
+              to: '/collection/$collectionId',
               params: {
                 collectionId: col.id,
               },

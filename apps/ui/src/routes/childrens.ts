@@ -1,5 +1,7 @@
+import { CollectionPage } from '@/modules/marketplace/collections/page.tsx';
 import OrderPage from '@/modules/marketplace/order/page.tsx';
 import { MarketplacePage } from '@/modules/marketplace/page.tsx';
+import { ProfilePage } from '@/modules/marketplace/profile/page.tsx';
 import { createRoute } from '@tanstack/react-router';
 import { NotConnected } from '../components';
 import { Buy } from '../modules/buy/page.tsx';
@@ -8,9 +10,7 @@ import { Home } from '../modules/home/page.tsx';
 import { MyHandles } from '../modules/myHandles/page.tsx';
 import { More } from '../modules/profile/components/more/page.tsx';
 import { Profile } from '../modules/profile/page.tsx';
-import { rootRoute } from './__root.ts';
-import { ProfilePage } from '@/modules/marketplace/profile/page.tsx';
-import { CollectionPage } from '@/modules/marketplace/collections/page.tsx';
+import { marketplaceRootRoute, rootRoute } from './__root.ts';
 
 export const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -55,15 +55,15 @@ export const myHandlesRoute = createRoute({
 });
 
 export const marketplaceRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => marketplaceRootRoute,
   component: MarketplacePage,
-  path: '/marketplace',
+  path: '/',
 });
 
 export const marketplaceCollectionRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => marketplaceRootRoute,
   component: CollectionPage,
-  path: '/marketplace/collection/$collectionId',
+  path: '/collection/$collectionId',
   context(ctx) {
     return {
       collectionId: ctx.params.collectionId,
@@ -71,13 +71,13 @@ export const marketplaceCollectionRoute = createRoute({
   },
 });
 export const marketplaceProfileRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => marketplaceRootRoute,
   component: ProfilePage,
-  path: '/marketplace/profile/$name',
+  path: '/profile/$name',
 });
 
 export const orderRoute = createRoute({
   getParentRoute: () => marketplaceCollectionRoute,
   component: OrderPage,
-  path: '/marketplace/collection/$collectionId/order/$orderId',
+  path: '/collection/$collectionId/order/$orderId',
 });
