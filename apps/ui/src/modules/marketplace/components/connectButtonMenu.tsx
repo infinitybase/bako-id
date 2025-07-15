@@ -1,3 +1,7 @@
+import accoutIcon from '@/assets/account-icon.svg';
+import { LogoutIcon, UserIcon, useCustomToast } from '@/components';
+import { SmallCloseIcon } from '@/components/icons/smallCloseIcon';
+import { TermsOfUseDialog } from '@/components/termsOfUseDialog';
 import { CopyIcon } from '@chakra-ui/icons';
 import {
   Avatar,
@@ -16,10 +20,6 @@ import { useFuel } from '@fuels/react';
 import { useNavigate } from '@tanstack/react-router';
 import type { Address } from 'fuels';
 import { useState } from 'react';
-import accoutIcon from '@/assets/account-icon.svg';
-import { SmallCloseIcon } from '@/components/icons/smallCloseIcon';
-import { LogoutIcon, useCustomToast, UserIcon } from '@/components';
-import { TermsOfUseDialog } from '@/components/termsOfUseDialog';
 
 export const ConnectButtonMenu = ({
   name,
@@ -56,7 +56,7 @@ export const ConnectButtonMenu = ({
 
   const handleRedirect = () => {
     navigate({
-      to: '/marketplace/profile/$name',
+      to: '/profile/$name',
       params: { name },
     });
   };

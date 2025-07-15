@@ -10,15 +10,11 @@ import {
   Icon,
 } from '@chakra-ui/react';
 import { InfoCircleIcon } from '../icons';
-import { VerifiedBadgeIcon } from '../icons/verifiedBadgeIcon';
-import { CopyText } from '@/components/helpers/copy';
-import { GlobalIcon, TwitterIcon } from '../icons';
-import { DiscordIcon as DiscordIconComponent } from '@/components/icons/discordIcon';
-import { ShareMenu } from './shareMenu';
 import { useRef } from 'react';
 import { CloseIcon } from '@/components/icons/closeIcon';
 import type { Collection } from '@/types/marketplace';
 import { ImageLoader } from '@/components/imageLoader';
+import { SocialActionsMenu } from '../socialActionsMenu';
 
 const DetailsMenu = ({ collection }: { collection: Collection }) => {
   const menuRef = useRef<HTMLButtonElement>(null);
@@ -38,7 +34,7 @@ const DetailsMenu = ({ collection }: { collection: Collection }) => {
         },
       }}
     >
-      <MenuButton ref={menuRef} h={4}>
+      <MenuButton ref={menuRef} h={4} mt={2}>
         <Icon as={InfoCircleIcon} color="grey.200" />
       </MenuButton>
       <MenuList p={0}>
@@ -54,6 +50,7 @@ const DetailsMenu = ({ collection }: { collection: Collection }) => {
             borderRadius="10px"
             onClick={(e) => e.stopPropagation()}
             position="relative"
+            cursor="default"
           >
             <Flex
               align="center"
@@ -94,57 +91,13 @@ const DetailsMenu = ({ collection }: { collection: Collection }) => {
                     _hover={{ color: 'white' }}
                   />
                 </Flex>
-                <Flex
-                  align="center"
-                  border="1px solid white"
-                  borderRadius="lg"
-                  pl={2}
-                  pr={1}
-                  gap={1}
-                  bg="#F5F5F51A"
-                  backdropFilter="blur(24px)"
-                >
-                  <Text color="text.700" fontSize="xs" fontWeight={400}>
-                    By someone
-                  </Text>
-                  <Icon as={VerifiedBadgeIcon} w={4} h={4} />
-                </Flex>
-                <Flex
-                  gap={4}
-                  align="center"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Flex gap={4} mt={1} onClick={(e) => e.stopPropagation()}>
-                    <CopyText
-                      useNewCopyIcon
-                      value={collection.id}
-                      color="grey.200"
-                    />
-                    <Icon
-                      as={GlobalIcon}
-                      color="grey.200"
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                    <Icon
-                      as={TwitterIcon}
-                      color="grey.200"
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                    <Icon
-                      as={DiscordIconComponent}
-                      w={5}
-                      h={5}
-                      color="grey.200"
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                    <ShareMenu />
-                  </Flex>
-                </Flex>
+
+                <SocialActionsMenu collection={collection} />
               </VStack>
             </Flex>
 
             <Text color="section.500" fontSize="xs" fontWeight={400} mt={6}>
-              {collection.description}
+              {collection.config.description}
             </Text>
           </Flex>
         </MenuItem>

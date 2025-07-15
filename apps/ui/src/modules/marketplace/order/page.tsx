@@ -25,7 +25,7 @@ export default function OrderPage() {
 
   const { order, isLoading, isFetched } = useGetOrder({ id: orderId });
 
-  const redirectUrl = `/marketplace/collection/${collectionId}`;
+  const redirectUrl = `/collection/${collectionId}`;
 
   const handleClose = useCallback(() => {
     navigate({

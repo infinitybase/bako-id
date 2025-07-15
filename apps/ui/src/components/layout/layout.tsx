@@ -5,8 +5,8 @@ import { useMemo } from 'react';
 import '../../theme/global.css';
 import { Header } from '../header';
 import { Container } from './container';
-import { ProfileLayout } from './profile';
 import { MarketplaceMainLayout } from './marketplace';
+import { ProfileLayout } from './profile';
 
 // import { useIsConnected } from '@fuels/react';
 
@@ -42,13 +42,6 @@ const MainLayout = () => {
   const params = location.pathname.split('/');
   const isHandle = useMemo(() => !isB256(params[2] ?? ''), [params]);
   const isProfileRoute = location.pathname.includes('/profile/') && isHandle;
-  const isMarketplaceRoute =
-    location.pathname === '/marketplace' ||
-    location.pathname.startsWith('/marketplace/');
-
-  if (isMarketplaceRoute) {
-    return <MarketplaceLayout />;
-  }
 
   if (isProfileRoute) {
     return <DashboardLayout />;

@@ -21,6 +21,7 @@ import type { Order } from '@/types/marketplace';
 import type { NFTCollection } from '@/utils/collection';
 import { useWallet } from '@fuels/react';
 import { useResolverName } from '@/hooks';
+import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
 
 enum TabOptions {
   FOR_SALE = 'for_sale',
@@ -145,6 +146,11 @@ export const ProfileNfts = ({
     );
   }
 
+  const notListedCollectionsWithoutHandles = notListedCollections.filter(
+    (collection) =>
+      !BAKO_CONTRACTS_IDS.includes(collection.assets[0]?.contractId ?? '')
+  );
+
   return (
     <Card
       w="full"
@@ -203,20 +209,17 @@ export const ProfileNfts = ({
           <MartketplaceEmptyState />
         )}
 
-        {notListedCollections?.map((collection) => (
-          <Box key={collection.name} mb={5}>
-            <Heading fontSize="md" mb={3}>
-              {collection.name}
-            </Heading>
+        {notListedCollectionsWithoutHandles?.map((collection) => (
+          <Box key={collection.name} mb={6}>
             <Grid
               templateColumns={{
                 base: 'repeat(1, 1fr)',
-                xs: 'repeat(2, 1fr)',
-                sm: 'repeat(3, 1fr)',
+                sm: 'repeat(2, 1fr)',
                 md: 'repeat(4, 1fr)',
                 lg: 'repeat(6, 1fr)',
               }}
               gap={6}
+              maxH="245px"
             >
               {collection.assets.map((a) => (
                 <NftCollectionCard
@@ -226,6 +229,7 @@ export const ProfileNfts = ({
                   resolver={resolver}
                   isOwner={isOwner}
                   ctaButtonVariant="mktPrimary"
+                  nftCardMinSize="175px"
                 />
               ))}
             </Grid>
@@ -253,6 +257,7 @@ export const ProfileNfts = ({
             lg: 'repeat(6, 1fr)',
           }}
           gap={6}
+          maxH="245px"
         >
           {orders?.map((order) => (
             <GridItem key={order.id}>

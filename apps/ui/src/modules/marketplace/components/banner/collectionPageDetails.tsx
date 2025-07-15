@@ -1,27 +1,13 @@
 import type { Collection } from '@/types/marketplace';
-import { Flex, VStack, Heading, Icon } from '@chakra-ui/react';
-import { CopyText } from '@/components/helpers/copy';
-import { GlobalIcon, TwitterIcon } from '../icons';
-import { DiscordIcon as DiscordIconComponent } from '@/components/icons/discordIcon';
-import { ShareMenu } from './shareMenu';
-import { DetailsMenu } from './detailsMenu';
+import { Flex, Heading } from '@chakra-ui/react';
 import { StatBox } from './statBox';
-import { useMemo } from 'react';
 import { ImageLoader } from '@/components/imageLoader';
+import { usdValueFormatter } from '@/utils/formatter';
+import { SocialActionsMenu } from '../socialActionsMenu';
+import { DetailsMenu } from './detailsMenu';
 
 const CollectionPageDetails = ({ collection }: { collection: Collection }) => {
   if (!collection) return null;
-
-  const usdFloorPrice = useMemo(
-    () =>
-      Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-        style: 'currency',
-        currency: 'USD',
-      }).format(Number(collection.metrics.floorPrice)),
-    [collection.metrics.floorPrice]
-  );
 
   return (
     <Flex
@@ -46,28 +32,26 @@ const CollectionPageDetails = ({ collection }: { collection: Collection }) => {
             borderRadius: '8px',
           }}
         />
+        <Flex gap={4} align="center" mt="auto">
+          <Heading fontSize="2xl" fontWeight={700} color="#fff" noOfLines={1}>
+            {collection.name}
+          </Heading>
 
-        <VStack align="flex-start" spacing={0} minW="0" mt="auto">
-          <Flex gap={4} align="center">
-            <Heading fontSize="2xl" fontWeight={700} color="#fff" noOfLines={1}>
-              {collection.name}
-            </Heading>
-            <Flex gap={4} mt={1}>
-              <DetailsMenu collection={collection} />
-              <CopyText useNewCopyIcon value={collection.id} color="grey.200" />
-              <Icon as={GlobalIcon} color="grey.200" />
-              <Icon as={TwitterIcon} color="grey.200" />
-              <Icon as={DiscordIconComponent} w={5} h={5} color="grey.200" />
-              <ShareMenu />
-            </Flex>
-          </Flex>
-        </VStack>
+          <DetailsMenu collection={collection} />
+          <SocialActionsMenu collection={collection} />
+        </Flex>
       </Flex>
 
       <Flex gap={4}>
         <StatBox label="Sales" value={collection.metrics.sales} />
-        <StatBox label="Floor price" value={usdFloorPrice} />
-        <StatBox label="Volume" value={`${collection.metrics.volume} ETH`} />
+        <StatBox
+          label="Floor price"
+          value={usdValueFormatter(collection.metrics.floorPrice ?? 0)}
+        />
+        <StatBox
+          label="Volume"
+          value={usdValueFormatter(collection.metrics.volume ?? 0)}
+        />
       </Flex>
     </Flex>
   );

@@ -14,12 +14,13 @@ import {
 
 export default function ShareOrder({
   orderId,
+  collectionId,
   nftName,
-}: { orderId: string; nftName: string }) {
+}: { orderId: string; collectionId: string; nftName: string }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { successToast } = useCustomToast();
 
-  const orderLink = `${import.meta.env.VITE_API_URL.replace('/api', '')}/m/${orderId}`;
+  const orderLink = `${import.meta.env.VITE_API_URL.replace('/api', '')}/m/${orderId}?collectionId=${collectionId}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(orderLink);

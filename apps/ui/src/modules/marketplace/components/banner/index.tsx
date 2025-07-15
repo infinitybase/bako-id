@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRouter } from '@tanstack/react-router';
 import {
   Box,
@@ -7,7 +7,6 @@ import {
   Heading,
   Image,
   Stack,
-  Text,
   VStack,
 } from '@chakra-ui/react';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -15,7 +14,7 @@ import { Pagination, Mousewheel, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import type { Swiper as SwiperType } from 'swiper';
-import { parseURI } from '@/utils/formatter';
+import { parseURI, usdValueFormatter } from '@/utils/formatter';
 
 import { HexagonFillIcon } from '@/components/icons/hexagonFill';
 import { HexagonEmptyIcon } from '@/components/icons/hexagonEmpty';
@@ -39,17 +38,6 @@ export const MarketplaceBanner = ({ collections }: MarketplaceBannerProps) => {
   };
 
   const router = useRouter();
-
-  const usdFloorPrice = useMemo(
-    () =>
-      Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-        style: 'currency',
-        currency: 'USD',
-      }).format(Number(collections[activeIndex]?.metrics?.floorPrice)),
-    [collections[activeIndex]?.metrics?.floorPrice, activeIndex]
-  );
 
   return (
     <Stack gap={4}>
@@ -106,21 +94,22 @@ export const MarketplaceBanner = ({ collections }: MarketplaceBannerProps) => {
                   bgGradient="linear(0deg, rgba(21,20,19,0.85) 0%, rgba(21,20,19,0.00) 100%)"
                 >
                   <Box color="#fff" maxW="lg" mt="auto" mb={4}>
-                    <VStack align="flex-start" mb={2}>
+                    <VStack align="flex-start" mb={4}>
                       <Heading fontSize="md" fontWeight={600}>
                         {collection.name}
                       </Heading>
-                      <Text color="text.700" fontSize="xs" fontWeight={400}>
-                        {/* TODO: add author */}
-                        By someone
-                      </Text>
                     </VStack>
                     <Flex gap={3}>
                       <StatBox label="Sales" value={collection.metrics.sales} />
-                      <StatBox label="Floor price" value={usdFloorPrice} />
+                      <StatBox
+                        label="Floor price"
+                        value={usdValueFormatter(
+                          Number(collection.metrics.floorPrice)
+                        )}
+                      />
                       <StatBox
                         label="Volume"
-                        value={`${collection.metrics.volume.toFixed(2)} ETH`}
+                        value={usdValueFormatter(collection.metrics.volume)}
                       />
                     </Flex>
                   </Box>

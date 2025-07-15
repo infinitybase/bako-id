@@ -1,12 +1,12 @@
-import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react';
-import { ListHeader } from './listHeader';
-import type { Collection } from '@/types/marketplace';
-import { formatAddress } from '@/utils/formatter';
-import { useInView } from 'react-intersection-observer';
-import { useEffect } from 'react';
-import { isB256 } from 'fuels';
-import { useRouter } from '@tanstack/react-router';
 import { ImageLoader } from '@/components/imageLoader';
+import type { Collection } from '@/types/marketplace';
+import { formatAddress, usdValueFormatter } from '@/utils/formatter';
+import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react';
+import { useRouter } from '@tanstack/react-router';
+import { isB256 } from 'fuels';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { ListHeader } from './listHeader';
 
 type SortDirection = 'asc' | 'desc';
 
@@ -105,7 +105,7 @@ export const CollectionList = ({
           cursor="pointer"
           onClick={() => {
             router.navigate({
-              to: '/marketplace/collection/$collectionId',
+              to: '/collection/$collectionId',
               params: {
                 collectionId: col.id,
               },
@@ -123,15 +123,8 @@ export const CollectionList = ({
             />
             <Text>{isB256(col.name) ? formatAddress(col.name) : col.name}</Text>
           </Flex>
-          <Box flex="1">{col.metrics.volume.toFixed(4)} ETH</Box>
-          <Box flex="1">
-            {Intl.NumberFormat('en-US', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-              style: 'currency',
-              currency: 'USD',
-            }).format(Number(col?.metrics?.floorPrice ?? 0))}
-          </Box>
+          <Box flex="1">{usdValueFormatter(col.metrics.volume ?? 0)}</Box>
+          <Box flex="1">{usdValueFormatter(col?.metrics?.floorPrice ?? 0)}</Box>
           <Box flex="1">{col.metrics.sales}</Box>
           <Flex flex="1" gap={2}>
             {col.latestSalesNFTs.map((item) => (

@@ -124,4 +124,13 @@ export const fetchMetadata = async (
   }
 };
 
+export const usdValueFormatter = (value: number) => {
+  return Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+    style: 'currency',
+    currency: 'USD',
+  }).format(value);
+};
+
 export { formatAddress, formatTimeWithTimeZone };
