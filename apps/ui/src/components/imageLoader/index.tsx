@@ -13,6 +13,7 @@ type ImageLoaderProps = {
   alt: string;
   skeletonProps?: SkeletonProps;
   imageProps?: ImageProps;
+  onClick?: () => void;
 };
 
 export const ImageLoader = ({
@@ -20,6 +21,7 @@ export const ImageLoader = ({
   alt,
   skeletonProps,
   imageProps,
+  onClick,
 }: ImageLoaderProps) => {
   const [isImageLoading, setIsImageLoading] = useState(true);
   return (
@@ -41,6 +43,7 @@ export const ImageLoader = ({
           setIsImageLoading(false);
         }}
         {...imageProps}
+        onClick={onClick}
       />
     </Skeleton>
   );

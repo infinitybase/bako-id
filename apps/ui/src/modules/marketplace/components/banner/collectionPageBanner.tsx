@@ -18,12 +18,7 @@ export const CollectionPageBanner = ({
 
   return (
     <Stack gap={4}>
-      <Box
-        height="250px"
-        borderRadius="8px"
-        onClick={() => navigate({ to: '/marketplace' })}
-        cursor="pointer"
-      >
+      <Box height="250px" borderRadius="8px">
         <Box w="full" h="full" position="relative">
           <ImageLoader
             src={
@@ -44,7 +39,9 @@ export const CollectionPageBanner = ({
               objectFit: 'cover',
               objectPosition: 'center',
               boxSize: 'full',
+              cursor: 'pointer',
             }}
+            onClick={() => navigate({ to: '/marketplace' })}
           />
           <Flex
             position="relative"
