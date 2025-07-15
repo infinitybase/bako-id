@@ -111,6 +111,12 @@ export interface Collection {
   config: {
     avatar: string;
     banner: string;
+    description: string;
+    social: {
+      x?: string;
+      site?: string;
+      discord?: string;
+    };
   };
   createdAt: string;
   description: string | null;
