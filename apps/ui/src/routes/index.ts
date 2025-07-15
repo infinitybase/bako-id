@@ -32,19 +32,33 @@ const marketplaceRouterTree = marketplaceRootRoute.addChildren([
 
 export const resolveRouterTree = () => {
   const { hostname, pathname } = new URL(window.location.href);
-  const [subdomain] = hostname.split('.');
+
+  const environment = import.meta.env.VITE_ENVIRONMENT;
   const isDev = import.meta.env.DEV;
+  const isProduction = environment === 'production';
+  const isPreview = environment === 'preview';
 
-  if (isDev && subdomain === 'marketplace') {
+  // Production: Use marketplace router for 'garage' domain
+  if (isProduction && hostname.includes('garage')) {
     return marketplaceRouterTree;
   }
 
-  if (!isDev && pathname.includes('marketplace')) {
+  // Development: Use marketplace router for 'marketplace' subdomain
+  if (isDev) {
+    const [subdomain] = hostname.split('.');
+    if (subdomain === 'marketplace') {
+      return marketplaceRouterTree;
+    }
+  }
+
+  // Development/Preview: Handle marketplace pathname
+  if ((isDev || isPreview) && pathname.includes('marketplace')) {
     const newPathname = pathname.replace('/marketplace', '/');
-    window.history.replaceState({}, '', newPathname);
+    window.history.replaceState(null, '', newPathname);
     return marketplaceRouterTree;
   }
 
+  // Default: Return bakoId router tree
   return bakoIdRouterTree;
 };
 
