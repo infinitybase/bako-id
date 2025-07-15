@@ -14,6 +14,7 @@ interface NftCollectionCardProps {
   assets: Asset[];
   resolver: string;
   isOwner: boolean;
+  nftCardMinSize?: string;
 }
 
 export const NftCollectionCard = (props: NftCollectionCardProps) => {
@@ -63,9 +64,13 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
         collection={collection}
       />
 
-      <NftCard.Root onClick={dialog.onOpen} cursor="pointer">
+      <NftCard.Root
+        onClick={dialog.onOpen}
+        cursor="pointer"
+        minW={props.nftCardMinSize}
+      >
         {edition && <NftCard.EditionBadge edition={`#${edition}`} />}
-        <NftCard.Image maxW="full" src={props.asset.image ?? image} />
+        <NftCard.Image minW="full" src={props.asset.image ?? image} />
         <NftCard.Content spacing={2}>
           <Text
             fontSize="sm"

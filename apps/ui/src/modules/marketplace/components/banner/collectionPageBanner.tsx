@@ -1,4 +1,4 @@
-import { Box, Flex, Stack } from '@chakra-ui/react';
+import { Box, Stack } from '@chakra-ui/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import type { Collection } from '@/types/marketplace';
@@ -18,8 +18,20 @@ export const CollectionPageBanner = ({
 
   return (
     <Stack gap={4}>
-      <Box height="250px" borderRadius="8px">
-        <Box w="full" h="full" position="relative">
+      <Box height="250px" borderRadius="8px" position="relative">
+        <Box
+          w="full"
+          h="full"
+          position="absolute"
+          top={0}
+          left={0}
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate({ to: '/marketplace' });
+          }}
+          cursor="pointer"
+          zIndex={1}
+        >
           <ImageLoader
             src={
               hasBanner
@@ -33,30 +45,38 @@ export const CollectionPageBanner = ({
               top: 0,
               left: 0,
               zIndex: 1,
-              cursor: 'pointer',
             }}
             imageProps={{
               objectFit: 'cover',
               objectPosition: 'center',
               boxSize: 'full',
-              cursor: 'pointer',
             }}
-            onClick={() => navigate({ to: '/marketplace' })}
           />
-          <Flex
-            position="relative"
-            h="full"
-            mt="auto"
-            zIndex={3}
-            align="center"
-            px={4}
-            justify="space-between"
-            alignItems="flex-end"
-            bgGradient="linear(0deg, rgba(21,20,19,0.85) 0%, rgba(21,20,19,0.00) 100%)"
-            backdropFilter={hasBanner ? 'blur(0px)' : 'blur(80px)'}
-          >
-            <CollectionPageDetails collection={collection} />
-          </Flex>
+        </Box>
+
+        <Box
+          position="absolute"
+          bottom={0}
+          left={0}
+          right={0}
+          height="120px"
+          bgGradient="linear(0deg, rgba(21,20,19,0.85) 0%, rgba(21,20,19,0.00) 100%)"
+          backdropFilter={hasBanner ? 'blur(0px)' : 'blur(80px)'}
+          zIndex={2}
+        />
+
+        <Box
+          position="absolute"
+          bottom={0}
+          left={0}
+          right={0}
+          zIndex={3}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          px={4}
+        >
+          <CollectionPageDetails collection={collection} />
         </Box>
       </Box>
     </Stack>
