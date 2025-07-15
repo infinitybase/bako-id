@@ -2,7 +2,11 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { Container, Stack } from '@chakra-ui/react';
 import { Outlet, useNavigate, useSearch } from '@tanstack/react-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { MarketplaceBanner, SearchBar } from './components';
+import {
+  MarketplaceBanner,
+  SearchBar,
+  MarketplacePageSkeleton,
+} from './components';
 import { CollectionList } from './components/collectionList';
 
 import { useGetCollections } from '@/hooks/marketplace/useListCollections';
@@ -22,6 +26,7 @@ export const MarketplacePage = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isFetched,
   } = useGetCollections({
     limit: 10,
     search: debouncedSearch,
@@ -60,6 +65,10 @@ export const MarketplacePage = () => {
       setSortDirection('asc');
     }
   };
+
+  if (!isFetched && isLoading && data.length === 0) {
+    return <MarketplacePageSkeleton />;
+  }
 
   return (
     <Container
