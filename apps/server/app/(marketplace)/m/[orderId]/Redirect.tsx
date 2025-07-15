@@ -9,7 +9,7 @@ export default function Redirect({
     throw new Error('NEXT_PUBLIC_APP_URL is not defined');
   }
   if (typeof window !== 'undefined') {
-    window.location.href = `${BAKO_MARKETPLACE_URL}/marketplace/collection/${collectionId}/order/${orderId}`;
+    window.location.href = `${BAKO_MARKETPLACE_URL}/collection/${collectionId}/order/${orderId}`;
   }
   return null;
 }

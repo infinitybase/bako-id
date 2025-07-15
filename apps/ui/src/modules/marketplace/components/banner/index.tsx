@@ -32,7 +32,7 @@ export const MarketplaceBanner = ({ collections }: MarketplaceBannerProps) => {
 
   const handleRedirect = () => {
     router.navigate({
-      to: '/marketplace/collection/$collectionId',
+      to: '/collection/$collectionId',
       params: { collectionId: collections[activeIndex].id },
     });
   };

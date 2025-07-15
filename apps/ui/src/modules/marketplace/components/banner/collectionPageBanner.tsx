@@ -27,7 +27,7 @@ export const CollectionPageBanner = ({
           left={0}
           onClick={(e) => {
             e.stopPropagation();
-            navigate({ to: '/marketplace' });
+            navigate({ to: '/' });
           }}
           cursor="pointer"
           zIndex={1}
