@@ -51,7 +51,7 @@ export const OrderList = ({
     >
       {orders.map((order) => (
         <Link
-          to={`/marketplace/collection/${collectionId}/order/${order.id}`}
+          to={`/collection/${collectionId}/order/${order.id}`}
           key={order.id}
         >
           <NftSaleCard
