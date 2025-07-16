@@ -17,8 +17,8 @@ export const CollectionPageBanner = ({
   const navigate = useNavigate();
 
   return (
-    <Stack gap={4}>
-      <Box height="250px" borderRadius="8px" position="relative">
+    <Stack gap={4} borderRadius="8px">
+      <Box height="250px" position="relative">
         <Box
           w="full"
           h="full"
@@ -42,6 +42,7 @@ export const CollectionPageBanner = ({
             skeletonProps={{
               boxSize: 'full',
               position: 'absolute',
+              borderRadius: '8px',
               top: 0,
               left: 0,
               zIndex: 1,
@@ -60,6 +61,7 @@ export const CollectionPageBanner = ({
           left={0}
           right={0}
           height="80px"
+          borderRadius="8px"
           bgGradient="linear(0deg, rgba(21,20,19,0.85) 0%, rgba(21,20,19,0.00) 100%)"
           zIndex={2}
           _before={
