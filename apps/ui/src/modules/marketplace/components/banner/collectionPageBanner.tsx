@@ -51,6 +51,7 @@ export const CollectionPageBanner = ({
               objectFit: 'cover',
               objectPosition: 'center',
               boxSize: 'full',
+              borderRadius: '8px',
             }}
           />
         </Box>
