@@ -43,6 +43,10 @@ export const NftSaleCardModal = ({
 }: NftSaleCardModalProps) => {
   const { order: orderData } = useGetOrder({ id: order.id, chainId });
 
+  const attributes = Array.isArray(orderData?.asset?.metadata.attributes)
+    ? orderData?.asset?.metadata.attributes
+    : [];
+
   return (
     <NftModal.Root isOpen={isOpen} onClose={onClose}>
       <NftModal.Content
@@ -136,9 +140,7 @@ export const NftSaleCardModal = ({
             Buy
           </Button>
 
-          <NftListMetadata
-            metadata={orderData?.asset.metadata?.attributes ?? []}
-          />
+          <NftListMetadata metadata={attributes} />
         </Stack>
 
         <NftModal.CloseIcon onClose={onClose} />

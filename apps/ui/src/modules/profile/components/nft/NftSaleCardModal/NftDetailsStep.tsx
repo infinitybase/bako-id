@@ -96,6 +96,10 @@ export default function NftDetailsStep({
 
   const assetSymbolUrl = order.price.image || UnknownAsset;
 
+  const attributes = Array.isArray(order.asset?.metadata.attributes)
+    ? order.asset?.metadata.attributes
+    : [];
+
   const handle = sellerDomain
     ? `@${sellerDomain}`
     : formatAddress(order.seller);
@@ -223,7 +227,7 @@ export default function NftDetailsStep({
       </Grid>
 
       <NftListMetadata
-        metadata={order?.asset?.metadata.attributes.map((a) => ({
+        metadata={attributes.map((a) => ({
           label: a.trait_type,
           value: a.value,
         }))}
