@@ -1,3 +1,4 @@
+import nftEmpty from '@/assets/nft-empty.png';
 import { useRef, useState } from 'react';
 import { useRouter } from '@tanstack/react-router';
 import {
@@ -82,6 +83,7 @@ export const MarketplaceBanner = ({ collections }: MarketplaceBannerProps) => {
                   top={0}
                   left={0}
                   zIndex={1}
+                  fallbackSrc={nftEmpty}
                 />
                 <Flex
                   position="relative"
