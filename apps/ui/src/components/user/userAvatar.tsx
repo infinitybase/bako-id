@@ -3,6 +3,7 @@ import {
   Flex,
   Icon,
   Image,
+  Skeleton,
   Spinner,
   type BoxProps,
   type FlexProps,
@@ -164,12 +165,16 @@ const ProfileAvatar = ({
   setNoAvatarFromUrl,
 }: EditProfilePicAvatarProps) => {
   const hasAvatar = avatar && !noAvatarFromUrl;
+  const [initialLoading, setInitialLoading] = useState(true);
   return (
     <AvatarContainer
       size="large"
       isLoading={isAvatarLoading}
       showBorder={hasAvatar ? true : isAvatarLoading}
     >
+      {(initialLoading || isAvatarLoading) && (
+        <Skeleton w="full" h="full" rounded="lg" />
+      )}
       {avatar && !noAvatarFromUrl ? (
         <Image
           src={avatar}
@@ -179,8 +184,14 @@ const ProfileAvatar = ({
           w="full"
           h="full"
           objectFit="cover"
-          onError={() => setNoAvatarFromUrl(true)}
-          onLoad={() => setNoAvatarFromUrl(false)}
+          onError={() => {
+            setNoAvatarFromUrl(true);
+            setInitialLoading(false);
+          }}
+          onLoad={() => {
+            setNoAvatarFromUrl(false);
+            setInitialLoading(false);
+          }}
           rounded="lg"
           key={avatar}
         />
