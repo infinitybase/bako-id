@@ -96,7 +96,8 @@ export const ProfileCards = ({
             />
 
             <AddressesCard
-              domain={domain ?? ''}
+              resolver={domain ?? ''}
+              domainParam={domainParam}
               explorerUrl={`${explorerUrl}/account/`}
             />
           </Stack>

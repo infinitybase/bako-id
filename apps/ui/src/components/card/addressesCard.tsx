@@ -1,17 +1,35 @@
-import { Flex, Heading, Icon } from '@chakra-ui/react';
+import { Button, Flex, Heading, Icon, useDisclosure } from '@chakra-ui/react';
 import { Address } from 'fuels';
-import { Card, TextValue } from '..';
+import { Card, EditIcon, TextValue } from '..';
 import { formatAddress } from '../../utils/formatter';
 import { CopyText } from '../helpers/copy';
 import { FuelIcon } from '../icons/fuelIcon';
+import { useSidebar } from '../sidebar/hooks/useSidebar';
+import { useWallet } from '@fuels/react';
+import { useEditResolver } from '@/hooks/useEditResolver';
+import { EditResolverModal } from '../modal/editResolver';
 
 interface IAddressesCard {
-  domain: string | null;
+  resolver: string | null;
   explorerUrl?: string;
+  domainParam: string;
 }
 
-export const AddressesCard = ({ domain }: IAddressesCard) => {
-  if (!domain) return null;
+export const AddressesCard = ({ resolver, domainParam }: IAddressesCard) => {
+  if (!resolver) return null;
+
+  const { isMyDomain } = useSidebar();
+  const { wallet } = useWallet();
+  const action = useDisclosure();
+
+  const {
+    handleChangeResolver,
+    mutationProgress,
+    editResolver: { isPending },
+  } = useEditResolver({
+    domain: domainParam,
+    account: wallet!,
+  });
 
   return (
     <Card
@@ -25,19 +43,31 @@ export const AddressesCard = ({ domain }: IAddressesCard) => {
     >
       <Flex alignItems="center" justify="space-between">
         <Heading fontSize="lg">Addresses</Heading>
-        {/* {isMyDomain && (
-          <Button variant="ghosted" rightIcon={<PlusSquareIcon />}>
-            Add
-          </Button>
-        )} */}
+        <Button
+          variant="ghosted"
+          onClick={action.onOpen}
+          isDisabled={!isMyDomain}
+          rightIcon={<EditIcon />}
+        >
+          Edit
+        </Button>
       </Flex>
       <Flex direction="column" alignItems="center" justifyContent="center">
         <TextValue
           leftAction={<Icon as={FuelIcon} />}
-          rightAction={<CopyText value={Address.fromB256(domain).toB256()} />}
-          content={formatAddress(Address.fromB256(domain).toB256())}
+          rightAction={<CopyText value={Address.fromB256(resolver).toB256()} />}
+          content={formatAddress(Address.fromB256(resolver).toB256())}
         />
       </Flex>
+      <EditResolverModal
+        progress={mutationProgress}
+        isOpen={action.isOpen}
+        onClose={() => action.onClose()}
+        domain={domainParam}
+        isLoading={isPending}
+        resolver={resolver ?? ''}
+        onConfirm={(resolver) => handleChangeResolver(resolver)}
+      />
     </Card>
   );
 };
