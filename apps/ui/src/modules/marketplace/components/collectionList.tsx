@@ -4,8 +4,6 @@ import { formatAddress, usdValueFormatter } from '@/utils/formatter';
 import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import { useRouter } from '@tanstack/react-router';
 import { isB256 } from 'fuels';
-import { useEffect } from 'react';
-import { useInView } from 'react-intersection-observer';
 import { ListHeader } from './listHeader';
 
 type SortDirection = 'asc' | 'desc';
@@ -16,9 +14,6 @@ type CollectionListProps = {
   sortDirection: SortDirection;
   onSortChange: (column: string) => void;
   isLoading: boolean;
-  fetchNextPage: () => void;
-  hasNextPage: boolean;
-  isFetchingNextPage: boolean;
 };
 
 const listHeaderItems = [
@@ -46,20 +41,10 @@ export const CollectionList = ({
   sortDirection,
   onSortChange,
   isLoading,
-  fetchNextPage,
-  hasNextPage,
-  isFetchingNextPage,
 }: CollectionListProps) => {
   const isEmptyCollections = !collections?.length;
-  const { ref, inView } = useInView();
 
   const router = useRouter();
-
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
 
   return (
     <Box>
@@ -141,8 +126,6 @@ export const CollectionList = ({
           </Flex>
         </Flex>
       ))}
-
-      <Box ref={ref} h="10px" w="full" />
     </Box>
   );
 };
