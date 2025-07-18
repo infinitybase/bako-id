@@ -47,6 +47,7 @@ export const MarketplaceBanner = ({ collections }: MarketplaceBannerProps) => {
         height="250px"
         borderRadius="8px"
         overflow="hidden"
+        className="banner-container"
       >
         <Swiper
           direction="vertical"
@@ -54,10 +55,12 @@ export const MarketplaceBanner = ({ collections }: MarketplaceBannerProps) => {
           mousewheel
           modules={[Pagination, Mousewheel, Autoplay]}
           autoplay={{ delay: 4000, disableOnInteraction: false }}
+          speed={800}
           style={{
             height: '100%',
             borderRadius: '8px',
           }}
+          className="banner-swiper"
           onSwiper={(swiper) => {
             swiperRef.current = swiper;
           }}

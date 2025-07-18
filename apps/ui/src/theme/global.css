@@ -1,12 +1,12 @@
 * {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
-  font-variation-settings: 'slnt' 0;
+  font-variation-settings: "slnt" 0;
 }
 
 .texture {
-  background-image: url('../assets/bg-texture.svg');
+  background-image: url("../assets/bg-texture.svg");
   background-position: bottom;
   background-size: contain;
   background-repeat: no-repeat;
@@ -112,4 +112,10 @@ Animations
   to {
     background-position: 0 0;
   }
+}
+
+/* Prevent Marketplace banner from layout shift or "flickering" */
+.banner-container .swiper-wrapper {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }

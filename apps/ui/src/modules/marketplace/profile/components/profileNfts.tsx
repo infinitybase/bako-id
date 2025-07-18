@@ -154,7 +154,6 @@ export const ProfileNfts = ({
   return (
     <Card
       w="full"
-      h={['fit-content', 'fit-content', 'fit-content', 'auto']}
       display="flex"
       backdropFilter="blur(6px)"
       flexDirection="column"
@@ -219,7 +218,7 @@ export const ProfileNfts = ({
                 lg: 'repeat(6, 1fr)',
               }}
               gap={6}
-              maxH="245px"
+              minH={{ base: 'full', md: '272px' }}
             >
               {collection.assets.map((a) => (
                 <NftCollectionCard
@@ -230,6 +229,9 @@ export const ProfileNfts = ({
                   isOwner={isOwner}
                   ctaButtonVariant="mktPrimary"
                   nftCardMinSize="175px"
+                  nftImageProps={{
+                    minH: { base: 'full', md: '177px' },
+                  }}
                 />
               ))}
             </Grid>
@@ -257,7 +259,7 @@ export const ProfileNfts = ({
             lg: 'repeat(6, 1fr)',
           }}
           gap={6}
-          maxH="245px"
+          minH={{ base: 'full', md: '272px' }}
         >
           {orders?.map((order) => (
             <GridItem key={order.id}>
