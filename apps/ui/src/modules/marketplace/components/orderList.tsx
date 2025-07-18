@@ -3,7 +3,7 @@ import NftSaleCard from '@/modules/profile/components/nft/NftSaleCard';
 import type { Order } from '@/types/marketplace';
 import { GridItem, Heading, SimpleGrid, Skeleton } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
-import { Link } from '@tanstack/react-router';
+import { Link, useParams } from '@tanstack/react-router';
 import { ZeroBytes32 } from 'fuels';
 import { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -14,6 +14,7 @@ interface OrderListProps {
   hasNextPage: boolean;
   isLoadingOrders?: boolean;
   isFetchingNextPage?: boolean;
+  collectionOrdersLimit?: number;
 }
 
 export const OrderList = ({
@@ -22,19 +23,34 @@ export const OrderList = ({
   onFetchNextPage,
   hasNextPage,
   isFetchingNextPage = false,
+  collectionOrdersLimit = 10,
 }: OrderListProps) => {
   const { wallet } = useWallet();
   const { ref, inView } = useInView();
   const isEmptyOrders = !orders?.length;
   const { data } = useResolverName(wallet?.address.b256Address ?? ZeroBytes32);
 
+  const { collectionId } = useParams({ strict: false });
+
   const address = useMemo(() => wallet?.address.b256Address, [wallet]);
 
   useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
+    if (
+      inView &&
+      hasNextPage &&
+      !isFetchingNextPage &&
+      orders.length >= collectionOrdersLimit - 1
+    ) {
       onFetchNextPage();
     }
-  }, [inView, hasNextPage, onFetchNextPage, isFetchingNextPage]);
+  }, [
+    inView,
+    hasNextPage,
+    onFetchNextPage,
+    isFetchingNextPage,
+    orders,
+    collectionOrdersLimit,
+  ]);
 
   return (
     <SimpleGrid
@@ -48,7 +64,10 @@ export const OrderList = ({
       }}
     >
       {orders.map((order) => (
-        <Link to={`/marketplace/order/${order.id}`} key={order.id}>
+        <Link
+          to={`/collection/${collectionId}/order/${order.id}`}
+          key={order.id}
+        >
           <NftSaleCard
             order={order}
             showDelistButton={false}
@@ -59,6 +78,7 @@ export const OrderList = ({
             imageSize={{
               xl: '260px',
             }}
+            ctaButtonVariant="mktPrimary"
           />
         </Link>
       ))}

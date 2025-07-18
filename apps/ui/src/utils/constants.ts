@@ -8,6 +8,10 @@ export enum MarketplaceQueryKeys {
   ORDERS = 'orders',
   ORDER = 'order',
   ALL_ORDERS = 'allOrders',
+  ALL_COLLECTIONS = 'allCollections',
+  COLLECTION = 'collection',
+  COLLECTION_ORDERS = 'collectionOrders',
+  USER_ORDERS = 'userOrders',
 }
 
 export enum BakoIDQueryKeys {

@@ -1,31 +1,25 @@
-import { marketplaceService } from '@/services/marketplace';
 import { MarketplaceQueryKeys } from '@/utils/constants';
-import { getOrderMetadata } from '@/utils/getOrderMetadata';
 import { useQuery } from '@tanstack/react-query';
 import { useChainId } from '../useChainId';
+import { marketplaceService } from '@/services/marketplace';
+import { Networks } from '@/utils/resolverNetwork';
 
 type useGetOrderProps = { id: string };
 
 export const useGetOrder = ({ id }: useGetOrderProps) => {
-  const { chainId, isLoading, isFetched } = useChainId();
+  const { chainId } = useChainId();
 
   const { data: order, ...rest } = useQuery({
     queryKey: [MarketplaceQueryKeys.ORDER, chainId, id],
     queryFn: async () => {
-      const order = await marketplaceService.getOrderById({
-        id,
-        chainId: chainId ?? undefined,
+      const { data } = await marketplaceService.getOrder({
+        orderId: id,
+        chainId: chainId ?? Networks.MAINNET,
       });
 
-      if (!order) {
-        return null;
-      }
-
-      const orderWithMetadata = await getOrderMetadata(order, chainId);
-
-      return orderWithMetadata;
+      return data;
     },
-    enabled: !isLoading && isFetched,
+    enabled: !!chainId && !!id,
   });
 
   return { order, ...rest };

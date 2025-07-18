@@ -14,6 +14,8 @@ interface NftCollectionCardProps {
   assets: Asset[];
   resolver: string;
   isOwner: boolean;
+  ctaButtonVariant?: 'primary' | 'mktPrimary';
+  nftCardMinSize?: string;
 }
 
 export const NftCollectionCard = (props: NftCollectionCardProps) => {
@@ -61,11 +63,16 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
         onClose={dialog.onClose}
         isOwner={props.isOwner}
         collection={collection}
+        ctaButtonVariant={props.ctaButtonVariant}
       />
 
-      <NftCard.Root onClick={dialog.onOpen} cursor="pointer">
+      <NftCard.Root
+        onClick={dialog.onOpen}
+        cursor="pointer"
+        minW={props.nftCardMinSize}
+      >
         {edition && <NftCard.EditionBadge edition={`#${edition}`} />}
-        <NftCard.Image maxW="full" src={props.asset.image ?? image} />
+        <NftCard.Image minW="full" src={props.asset.image ?? image} />
         <NftCard.Content spacing={2}>
           <Text
             fontSize="sm"
@@ -81,8 +88,13 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
             <Tooltip
               label={isBakoIdNft ? 'This NFT is not allowed to be sold' : ''}
             >
-              <Button mt={2} disabled={isBakoIdNft} variant="primary" size="sm">
-                Sell
+              <Button
+                mt={2}
+                disabled={isBakoIdNft}
+                variant={props.ctaButtonVariant ?? 'primary'}
+                size="sm"
+              >
+                List
               </Button>
             </Tooltip>
           )}

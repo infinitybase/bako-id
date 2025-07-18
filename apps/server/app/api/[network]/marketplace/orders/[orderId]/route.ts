@@ -1,4 +1,4 @@
-import { marketplaceClient } from '@/services/marketplace';
+import { marketplaceClient } from '@/services/marketplace-client';
 import { OrderStatus } from '@/types/marketplace';
 
 export async function GET(

@@ -7,7 +7,7 @@ export interface Asset {
   __typename: 'Asset';
 }
 
-export interface Order {
+export interface OrderFromFuel {
   __typename: 'Order';
   id: string;
   asset: (FuelAsset & { id: string }) | null;
@@ -28,6 +28,69 @@ export interface Order {
   };
 }
 
+export interface Order {
+  asset: {
+    id: string;
+    image: string;
+    name: string;
+  };
+  buyer: string | null;
+  createdAt: string;
+  id: string;
+  price: {
+    amount: number;
+    assetId: string;
+    image: string;
+    name: string;
+    symbol: string;
+    usd: number;
+  };
+  seller: string;
+  status: number;
+  updatedAt: string;
+}
+
+export interface OrderWithMedatada {
+  id: string;
+  status: number;
+  collection: {
+    address: string;
+    name: string;
+  };
+  seller: string;
+  buyer: string;
+  network: number;
+  createdAt: string;
+  updatedAt: string;
+  price: {
+    amount: number;
+    raw: string;
+    usd: number;
+    name: string;
+    symbol: string;
+    assetId: string;
+    image: string;
+  };
+  asset: {
+    id: string;
+    name: string;
+    image: string;
+    subId: string;
+    metadata: {
+      name: string;
+      image: string;
+      compiler: string;
+      metadata: string;
+      attributes: Array<{
+        value: string;
+        trait_type: string;
+      }>;
+      description: string;
+      external_url: string;
+    };
+  };
+}
+
 export interface Nft {
   metadata: Record<string, string>;
   contractId?: string;
@@ -43,3 +106,58 @@ export enum OrderStatus {
   COMPLETED = 'COMPLETED',
   CANCELLED = 'CANCELLED',
 }
+
+export interface Collection {
+  config: {
+    avatar: string;
+    banner: string;
+    description: string;
+    social: {
+      x?: string;
+      site?: string;
+      discord?: string;
+    };
+  };
+  createdAt: string;
+  description: string | null;
+  id: string;
+  latestSalesNFTs: [{ image: string; id: string }];
+  name: string;
+  network: number;
+  updatedAt: string;
+  metrics: {
+    sales: string;
+    floorPrice: number;
+    volume: number;
+  };
+}
+
+export type MarketplacePaginatedResponse<T> = {
+  data: {
+    items: T[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+      hasNext: boolean;
+      hasPrev: boolean;
+    };
+  };
+};
+
+export type MarketplacePaginatedResponseUserOrders<T> = {
+  data: {
+    items: T[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+      hasNext: boolean;
+      hasPrev: boolean;
+    };
+    totalOrdersUsdPrice: number;
+    notListedTotalUsdPrice: number;
+  };
+};

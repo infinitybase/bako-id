@@ -13,8 +13,6 @@ import { AddressCardSkeleton } from '@/components/skeletons/addressCardSkeleton'
 import { NFTCollectionSkeleton } from '@/components/skeletons/nftCollectionSkeleton';
 import { OwnershipCardSkeleton } from '@/components/skeletons/ownershipCardSkeleton';
 import { getExplorer } from '@/getExplorer';
-import type { PaginationResult } from '@/helpers/pagination';
-import type { Order } from '@/types/marketplace';
 import { formatAddress } from '@/utils';
 import { MetadataKeys } from '@bako-id/sdk';
 import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons';
@@ -38,6 +36,7 @@ import { Suspense, useState } from 'react';
 import { NftListCollections } from './components/NftListColletions';
 import { NftListForSale } from './components/NftListForSale';
 import { useProfile } from './hooks';
+import { useListOrdersByAddress } from '@/hooks/useListOrdersByAddress';
 
 const ProfileCardLoadingSkeleton = ({
   hiddenCollectionSkeleton = false,
@@ -93,8 +92,8 @@ const getMetadataRedirects = (
 
 export function ProfilePage({
   chainId,
-  initialOrders,
-}: { chainId: number; initialOrders: PaginationResult<Order> }) {
+  ordersPage,
+}: { chainId: number; ordersPage: number }) {
   const params = useParams();
   const domain = (params.domain as string).replace('@', '');
 
@@ -119,6 +118,19 @@ export function ProfilePage({
     metadata?.filter((data) => !avoidKeys.includes(data.key as MetadataKeys)) ??
     [];
 
+  const {
+    orders,
+    isLoading: isOrdersLoading,
+    isPlaceholderData,
+  } = useListOrdersByAddress({
+    chainId,
+    sellerAddress: resolver ?? '',
+    page: ordersPage < 0 ? 0 : ordersPage,
+    limit: 10,
+  });
+
+  const data = orders?.data ?? [];
+
   return (
     <Center
       py={{
@@ -139,7 +151,7 @@ export function ProfilePage({
       {isLoading && (
         <Box w="full" maxW={1019}>
           <ProfileCardLoadingSkeleton
-            hiddenCollectionSkeleton={!!initialOrders.total}
+            hiddenCollectionSkeleton={!!data.length}
           />
         </Box>
       )}
@@ -361,10 +373,16 @@ export function ProfilePage({
       </Stack>
       <Box maxW={1019} w="full">
         <NftListForSale
-          address={resolver!}
           chainId={chainId}
           domain={domain}
-          initialOrders={initialOrders}
+          orders={data}
+          isPlaceholderData={isPlaceholderData}
+          isOrdersLoading={isOrdersLoading}
+          paginationInfos={{
+            totalPages: orders?.totalPages ?? 0,
+            hasNextPage: orders?.hasNextPage ?? false,
+            hasPreviousPage: orders?.hasPreviousPage ?? false,
+          }}
         />
       </Box>
       <Box maxW={1019} w="full">

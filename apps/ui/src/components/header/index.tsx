@@ -19,7 +19,6 @@ import { useGetPrimaryHandleName } from '../../hooks';
 import { formatAddress } from '../../utils/formatter';
 import { Connect } from '../helpers';
 import { FileIcon } from '../icons';
-import { ExchangeBoxIcon } from '../icons/exchangeBoxIcon';
 import { QuestionIcon } from '../icons/question';
 import { NavLinkItem } from '../navLinkItem';
 
@@ -70,8 +69,6 @@ export const Header = () => {
     navigate({ to: '/' }).then();
   };
 
-  const showMarketplaceLink = isMobile ? !wallet : true;
-
   return (
     <Center
       as="header"
@@ -95,14 +92,6 @@ export const Header = () => {
 
       <Flex w="fit-content" align="center" justify="flex-end" gap={2}>
         <Flex w="full" alignItems="center" gap={2} flex={1}>
-          {showMarketplaceLink && (
-            <NavLinkItem
-              href="/marketplace"
-              label="Marketplace"
-              icon={<ExchangeBoxIcon w={4} h={4} />}
-              isBeta
-            />
-          )}
           {!isMobile && wallet !== null && !initialLoadState && (
             <NavLinkItem
               href="/my-handles"

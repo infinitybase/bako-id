@@ -3,21 +3,20 @@ import nftEmpty from '@/assets/nft-empty.png';
 import UnknownAsset from '@/assets/unknown-asset.png';
 import { ConfirmationDialog, useCustomToast } from '@/components';
 import { useCancelOrder } from '@/hooks/marketplace';
-import type { Order } from '@/types/marketplace';
-import { removeRightZeros } from '@/utils/removeRightZeros';
 import {
+  type BoxProps,
   Button,
   Heading,
   Image,
   Text,
   Tooltip,
   useDisclosure,
-  type BoxProps,
 } from '@chakra-ui/react';
-import { bn } from 'fuels';
 import { useCallback, useMemo, type MouseEvent } from 'react';
 import { NftSaleCardModal } from './NftSaleCardModal';
 import { NftCard } from './card';
+import { parseURI } from '@/utils/formatter';
+import type { Order } from '@/types/marketplace';
 
 interface NftSaleCardProps {
   order: Order;
@@ -27,6 +26,7 @@ interface NftSaleCardProps {
   withHandle: boolean;
   openModalOnClick?: boolean;
   imageSize?: BoxProps['boxSize'];
+  ctaButtonVariant?: 'primary' | 'mktPrimary';
 }
 
 const NftSaleCard = ({
@@ -37,6 +37,7 @@ const NftSaleCard = ({
   openModalOnClick = true,
   withHandle,
   imageSize,
+  ctaButtonVariant = 'primary',
 }: NftSaleCardProps) => {
   const { successToast, errorToast } = useCustomToast();
   const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
@@ -69,15 +70,6 @@ const NftSaleCard = ({
     delistModal.onClose();
   };
 
-  const rate = useMemo(() => order.asset?.rate ?? 0, [order.asset?.rate]);
-
-  const value = useMemo(
-    () => bn(order.itemPrice).formatUnits(order.asset?.decimals),
-    [order.itemPrice, order.asset?.decimals]
-  );
-
-  const usdValue = useMemo(() => Number(value) * rate, [value, rate]);
-
   const currency = useMemo(
     () =>
       Intl.NumberFormat('en-US', {
@@ -85,16 +77,14 @@ const NftSaleCard = ({
         maximumFractionDigits: 2,
         style: 'currency',
         currency: 'USD',
-      }).format(Number(usdValue)),
-    [usdValue]
+      }).format(Number(order.price.usd)),
+    [order.price.usd]
   );
 
-  const nftPrice = useMemo(() => removeRightZeros(value), [value]);
+  const assetSymbolUrl = order.price.image || UnknownAsset;
 
-  const assetSymbolUrl = order.asset?.icon || UnknownAsset;
-
-  const imageUrl = order.nft?.image || nftEmpty;
-  const name = order.nft?.name || 'Unknown NFT';
+  const imageUrl = parseURI(order.asset?.image) || nftEmpty;
+  const name = order.asset.name || 'Unknown NFT';
 
   const handleCardClick = () => {
     if (openModalOnClick) {
@@ -104,9 +94,9 @@ const NftSaleCard = ({
 
   return (
     <NftCard.Root onClick={handleCardClick} cursor="pointer" minH="240px">
-      {order.nft?.edition && (
+      {/* {order.nft?.edition && (
         <NftCard.EditionBadge edition={order.nft?.edition} />
-      )}
+      )} */}
       {showDelistButton && <NftCard.DelistButton onDelist={handleDelist} />}
       <NftCard.Image boxSize={imageSize} src={imageUrl} />
       <NftCard.Content spacing={2}>
@@ -129,21 +119,20 @@ const NftSaleCard = ({
           <Tooltip label={order.asset?.name}>
             <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
           </Tooltip>
-          {nftPrice}
+          {order.price.amount}
         </Heading>
-        {order.asset?.rate && (
+        {order.price.usd && (
           <Text color="grey.subtitle" fontSize="sm">
             {currency}
           </Text>
         )}
 
         {showBuyButton && (
-          <Button height="auto" py={1.5} variant="primary">
+          <Button height="auto" py={1.5} variant={ctaButtonVariant}>
             Buy
           </Button>
         )}
       </NftCard.Content>
-
       {delistModal.isOpen && (
         <ConfirmationDialog
           title="Delist NFT"
@@ -159,7 +148,6 @@ const NftSaleCard = ({
           </Text>
         </ConfirmationDialog>
       )}
-
       {isOpen && (
         <NftSaleCardModal
           order={order}
@@ -168,7 +156,7 @@ const NftSaleCard = ({
           onClose={onClose}
           onCancelOrder={handleCancelOrder}
           isCanceling={isCanceling}
-          value={nftPrice}
+          value={order.price.amount}
           usdValue={currency}
           isOwner={isOwner}
           withHandle={withHandle}

@@ -36,7 +36,7 @@ export const useCollections = ({
 }: UseCollectionsProps) => {
   const { chainId } = useChainId();
 
-  const { data: allNfts, isLoading: isLoadingAllNfts } = useQuery({
+  const { data: allNfts, isLoading: isLoadingAllNfts, isFetched } = useQuery({
     queryKey: [BakoIDQueryKeys.NFTS, chainId, address],
     queryFn: async () => {
       const { data } = await FuelAssetService.byAddress({
@@ -91,8 +91,8 @@ export const useCollections = ({
 
             const image = metadata
               ? Object.entries(metadata).find(([key]) =>
-                  key.includes('image')
-                )?.[1]
+                key.includes('image')
+              )?.[1]
               : undefined;
 
             return {
@@ -158,8 +158,10 @@ export const useCollections = ({
     nfts: nftsWithMetadata || [],
     collections,
     totalPages,
-    isLoading: isLoadingAllNfts || isLoadingMetadata,
+    isLoading:
+      chainId === undefined ? true : isLoadingAllNfts || isLoadingMetadata,
     currentPage: page,
     isPlaceholderData,
+    isFetched,
   };
 };

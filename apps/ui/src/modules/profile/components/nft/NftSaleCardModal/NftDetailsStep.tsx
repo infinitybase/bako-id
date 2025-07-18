@@ -4,10 +4,7 @@ import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
 import { useResolverName } from '@/hooks';
 import { useExecuteOrder } from '@/hooks/marketplace';
-import { useListAssets } from '@/hooks/marketplace/useListAssets';
-import { useAssetsBalance } from '@/hooks/useAssetsBalance';
-import type { Order } from '@/types/marketplace';
-import { blocklistMetadataKeys } from '@/utils/constants';
+import type { OrderWithMedatada } from '@/types/marketplace';
 import { formatAddress } from '@/utils/formatter';
 import {
   Button,
@@ -22,10 +19,10 @@ import {
   Text,
   Tooltip,
 } from '@chakra-ui/react';
+import { useBalance } from '@fuels/react';
 import { useConnectUI } from '@fuels/react';
 import { Link } from '@tanstack/react-router';
 import { bn } from 'fuels';
-import { entries } from 'lodash';
 import { useCallback, useMemo } from 'react';
 import { NftListMetadata } from '../NftListMetadata';
 import { NftMetadataBlock } from '../NftMetadataBlock';
@@ -40,22 +37,27 @@ export default function NftDetailsStep({
   onCancelOrder,
   isCanceling = false,
   onEdit,
+  ctaButtonVariant,
 }: {
-  order: Order;
+  order: OrderWithMedatada;
   onClose: () => void;
-  value: string;
+  value: number;
   isOwner: boolean;
   usdValue: string;
   onCancelOrder: () => Promise<void>;
   isCanceling?: boolean;
   onEdit: () => void;
+  ctaButtonVariant?: 'primary' | 'mktPrimary';
 }) {
   const { connect, isConnected } = useConnectUI();
   const { errorToast, successToast } = useCustomToast();
-  const { assets } = useListAssets();
-  const { data: assetsBalance, isLoading: isLoadingBalance } = useAssetsBalance(
-    { assets }
-  );
+
+  const { balance: walletAssetBalance, isLoading: isLoadingWalletBalance } =
+    useBalance({
+      address: order.seller,
+      assetId: order.price.assetId,
+    });
+
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
     order.seller
   );
@@ -63,16 +65,10 @@ export default function NftDetailsStep({
     order.seller
   );
 
-  const currentSellAssetBalance = useMemo(
-    () => assetsBalance?.find((item) => item.id === order.asset?.id)?.balance,
-    [assetsBalance, order.asset?.id]
-  );
-
   const notEnoughBalance = useMemo(() => {
-    if (!currentSellAssetBalance) return false;
-    const parsedValue = bn.parseUnits(value);
-    return parsedValue.gt(currentSellAssetBalance);
-  }, [currentSellAssetBalance, value]);
+    if (isLoadingWalletBalance) return false;
+    return !bn(walletAssetBalance).gte(order.price.raw.toString());
+  }, [walletAssetBalance, isLoadingWalletBalance, order.price.raw]);
 
   const handleExecuteOrder = useCallback(async () => {
     if (!isConnected) {
@@ -96,20 +92,13 @@ export default function NftDetailsStep({
     isConnected,
   ]);
 
-  const metadataArray = useMemo(
-    () =>
-      entries(order.nft.metadata ?? {})
-        .map(([key, value]) => ({
-          label: key,
-          value,
-        }))
-        .filter((item) => !blocklistMetadataKeys.includes(item.label)),
-    [order.nft.metadata]
-  );
+  const nftName = order.asset?.name ?? 'Unknown NFT';
 
-  const nftName = order.nft?.name ?? 'Unknown NFT';
+  const assetSymbolUrl = order.price.image || UnknownAsset;
 
-  const assetSymbolUrl = order.asset?.icon || UnknownAsset;
+  const attributes = Array.isArray(order.asset?.metadata.attributes)
+    ? order.asset?.metadata.attributes
+    : [];
 
   const handle = sellerDomain
     ? `@${sellerDomain}`
@@ -130,7 +119,7 @@ export default function NftDetailsStep({
       <Stack spacing={2}>
         <Text>Description</Text>
         <Text fontSize="sm" color="grey.subtitle" wordBreak="break-all">
-          {order.nft?.description ?? 'Description not provided.'}
+          {order.asset?.metadata?.description ?? 'Description not provided.'}
         </Text>
       </Stack>
 
@@ -157,7 +146,8 @@ export default function NftDetailsStep({
 
         <ShareOrder
           orderId={order.id}
-          nftName={order.nft.name ?? 'Unknown NFT'}
+          nftName={order.asset?.name ?? 'Unknown NFT'}
+          collectionId={order.collection?.address ?? ''}
         />
       </Stack>
 
@@ -175,12 +165,12 @@ export default function NftDetailsStep({
       )}
 
       {!isOwner && (
-        <Skeleton isLoaded={!isLoadingBalance} borderRadius="md">
+        <Skeleton isLoaded={!isLoadingWalletBalance} borderRadius="md">
           <Tooltip
             label={notEnoughBalance && isConnected ? 'Not enough balance' : ''}
           >
             <Button
-              variant="primary"
+              variant={ctaButtonVariant}
               py={4}
               isLoading={isExecuting}
               disabled={(notEnoughBalance && isConnected) || isExecuting}
@@ -193,22 +183,22 @@ export default function NftDetailsStep({
       )}
 
       <Grid templateColumns="repeat(2, 1fr)" gap={4}>
-        {order.nft.id && (
+        {order.asset.id && (
           <GridItem>
             <NftMetadataBlock
               title="Asset ID"
-              value={order.nft.id}
+              value={order.asset.id}
               icon={<BTCIcon />}
               isCopy
             />
           </GridItem>
         )}
 
-        {order.nft.fuelMetadata?.collection && (
+        {order.collection?.name && (
           <GridItem>
             <NftMetadataBlock
               title="Creator"
-              value={order.nft.fuelMetadata?.collection}
+              value={order.collection.name}
               icon={<LightIcon />}
             />
           </GridItem>
@@ -217,7 +207,7 @@ export default function NftDetailsStep({
         <GridItem>
           <NftMetadataBlock
             title="Contract address"
-            value={order.nft?.contractId ?? 'N/A'}
+            value={order.collection?.address ?? 'N/A'}
             icon={<ContractIcon />}
             isCopy
           />
@@ -236,7 +226,12 @@ export default function NftDetailsStep({
         </GridItem>
       </Grid>
 
-      <NftListMetadata metadata={metadataArray} />
+      <NftListMetadata
+        metadata={attributes.map((a) => ({
+          label: a.trait_type,
+          value: a.value,
+        }))}
+      />
     </Stack>
   );
 }
