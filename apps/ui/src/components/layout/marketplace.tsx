@@ -13,7 +13,7 @@ const MarketplaceMainLayout = (props: MarketplaceLayoutProps) => {
     <>
       <Container h="full" overflowY="auto" backgroundImage={MarketplaceBg}>
         <MarketplaceHeader />
-        <Content>{props.children}</Content>
+        <Content px={0}>{props.children}</Content>
         {import.meta.env.NODE_ENV === 'development' && (
           <TanStackRouterDevtools />
         )}

@@ -71,43 +71,44 @@ export const MarketplacePage = () => {
   }
 
   return (
-    <Container
-      maxWidth="container.xl"
-      py={8}
-      overflowY="scroll"
-      sx={{
-        '&::-webkit-scrollbar': {
-          width: '0px',
-        },
-      }}
-      maxH="100vh"
-      pb={{
-        base: 15,
-        sm: 8,
-      }}
-    >
-      <Stack gap={10}>
-        <MarketplaceBanner collections={initialBanners} />
+    <Stack w="full" p={0} m={0}>
+      <MarketplaceBanner collections={initialBanners} />
+      <Container
+        maxWidth="container.xl"
+        py={8}
+        overflowY="scroll"
+        sx={{
+          '&::-webkit-scrollbar': {
+            width: '0px',
+          },
+        }}
+        maxH="100vh"
+        pb={{
+          base: 15,
+          sm: 8,
+        }}
+      >
+        <Stack gap={10}>
+          <SearchBar
+            value={search}
+            onChange={handleChangeSearch}
+            placeholder="Search by collection name"
+          />
 
-        <SearchBar
-          value={search}
-          onChange={handleChangeSearch}
-          placeholder="Search by collection name"
-        />
-
-        <CollectionList
-          collections={data}
-          sortValue={sortValue}
-          sortDirection={sortDirection}
-          onSortChange={handleSortChange}
-          isLoading={isLoading}
-          fetchNextPage={fetchNextPage}
-          hasNextPage={hasNextPage}
-          isFetchingNextPage={isFetchingNextPage}
-        />
-      </Stack>
-      {/* Render the Outlet for nested routes */}
-      <Outlet />
-    </Container>
+          <CollectionList
+            collections={data}
+            sortValue={sortValue}
+            sortDirection={sortDirection}
+            onSortChange={handleSortChange}
+            isLoading={isLoading}
+            fetchNextPage={fetchNextPage}
+            hasNextPage={hasNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+          />
+        </Stack>
+        {/* Render the Outlet for nested routes */}
+        <Outlet />
+      </Container>
+    </Stack>
   );
 };
