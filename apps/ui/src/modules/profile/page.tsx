@@ -47,7 +47,8 @@ const Profile = () => {
           orders={data}
           domain={domain}
           domainParam={domainParam}
-          isFetchingOrders={isLoadingOrders || isPlaceholderData}
+          isFetchingOrders={isLoadingOrders}
+          isPlaceholderData={isPlaceholderData}
           owner={owner?.Address?.bits || owner?.ContractId?.bits || ''}
           paginationInfos={{
             totalPages: orders?.totalPages ?? 0,
@@ -58,7 +59,7 @@ const Profile = () => {
       ) : (
         <ProfileWithoutHandler
           orders={data}
-          isLoadingOrders={isLoadingOrders || isPlaceholderData}
+          isLoadingOrders={isLoadingOrders}
           paginationInfos={{
             totalPages: orders?.totalPages ?? 0,
             hasNextPage: orders?.hasNextPage ?? false,

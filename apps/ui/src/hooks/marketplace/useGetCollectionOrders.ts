@@ -33,6 +33,7 @@ export const useGetCollectionOrders = ({
       search,
       sortValue,
       sortDirection,
+      collectionId,
     ],
     initialPageParam: 0,
     getNextPageParam: (lastPage) => {

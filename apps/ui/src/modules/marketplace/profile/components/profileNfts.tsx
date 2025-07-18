@@ -158,6 +158,8 @@ export const ProfileNfts = ({
       backdropFilter="blur(6px)"
       flexDirection="column"
       boxShadow="lg"
+      p={6}
+      pb={3.5}
     >
       <Flex mb={6} alignItems="center" justify="space-between">
         <Heading fontSize="14px">NFT's</Heading>
@@ -228,7 +230,7 @@ export const ProfileNfts = ({
                   resolver={resolver}
                   isOwner={isOwner}
                   ctaButtonVariant="mktPrimary"
-                  nftCardMinSize="175px"
+                  nftCardMinSize="179px"
                   nftImageProps={{
                     minH: { base: 'full', md: '177px' },
                   }}
