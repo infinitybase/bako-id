@@ -159,7 +159,6 @@ export const ProfileNfts = ({
       flexDirection="column"
       boxShadow="lg"
       p={6}
-      pb={3.5}
     >
       <Flex mb={6} alignItems="center" justify="space-between">
         <Heading fontSize="14px">NFT's</Heading>
@@ -211,7 +210,7 @@ export const ProfileNfts = ({
         )}
 
         {notListedCollectionsWithoutHandles?.map((collection) => (
-          <Box key={collection.name} mb={6}>
+          <Box key={collection.name}>
             <Grid
               templateColumns={{
                 base: 'repeat(1, 1fr)',
@@ -243,6 +242,7 @@ export const ProfileNfts = ({
 
       {/* FOR SALE TAB */}
       <Box
+        mt={6}
         display={
           selectedTab === TabOptions.FOR_SALE || selectedTab === TabOptions.ALL
             ? 'block'
@@ -278,7 +278,7 @@ export const ProfileNfts = ({
         </Grid>
       </Box>
 
-      <Box ref={ref} h="10px" w="full" />
+      <Box ref={ref} h="2px" w="full" />
     </Card>
   );
 };
