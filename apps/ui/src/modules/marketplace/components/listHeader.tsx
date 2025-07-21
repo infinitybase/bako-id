@@ -1,5 +1,13 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
-import { Box, Icon, VStack } from '@chakra-ui/react';
+import { Box, type BoxProps, Icon, VStack } from '@chakra-ui/react';
+
+type ListHeaderProps = {
+  sortValue: string;
+  sortDirection: 'asc' | 'desc';
+  onSortChange: (column: string) => void;
+  label: string;
+  sortKey: string;
+} & BoxProps;
 
 export const ListHeader = ({
   sortValue,
@@ -7,13 +15,8 @@ export const ListHeader = ({
   onSortChange,
   label,
   sortKey,
-}: {
-  sortValue: string;
-  sortDirection: 'asc' | 'desc';
-  onSortChange: (column: string) => void;
-  label: string;
-  sortKey: string;
-}) => {
+  ...rest
+}: ListHeaderProps) => {
   return (
     <Box
       flex="1"
@@ -21,9 +24,11 @@ export const ListHeader = ({
       onClick={() => onSortChange(sortKey)}
       display="flex"
       alignItems="center"
+      justifyContent="flex-end"
       color="white"
       fontWeight={600}
-      fontSize="sm"
+      fontSize="xs"
+      {...rest}
     >
       {label}
 

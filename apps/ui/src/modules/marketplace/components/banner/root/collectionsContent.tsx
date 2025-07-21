@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, VStack } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import { parseURI, usdValueFormatter } from '@/utils/formatter';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
 import { StatBox } from './statBox';
@@ -32,7 +32,6 @@ const CollectionsContent = ({
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
         backgroundSize: 'cover',
-        borderRadius: 'md',
       }}
     >
       {/* Gradient */}
@@ -42,7 +41,6 @@ const CollectionsContent = ({
         bottom={0}
         width="100%"
         height="40%"
-        borderRadius="md"
         bgGradient="linear(0deg, rgba(21,20,19,0.85) 0%, rgba(21,20,19,0.00) 100%)"
         zIndex={2}
         pointerEvents="none"
@@ -60,6 +58,23 @@ const CollectionsContent = ({
       >
         <Box color="#fff" maxW="lg" mt="auto" mb={4}>
           <VStack align="flex-start" mb={4}>
+            <Text
+              bg="#B3FF2E1A"
+              borderRadius="100px"
+              py={1}
+              px={4}
+              backdropBlur="blur(24px)"
+              color="garage.100"
+              letterSpacing="0.05em"
+              fontSize="10px"
+              border="1px solid #B3FF2E40"
+              boxShadow="0px 6px 12px 0px #00000040"
+              bgGradient="linear(to-r, #00000040, #00000040)"
+              mb={1}
+            >
+              Now Minting
+            </Text>
+
             <Heading fontSize="md" fontWeight={600}>
               {collection.name}
             </Heading>

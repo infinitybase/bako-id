@@ -1,10 +1,7 @@
-import { ImageLoader } from '@/components/imageLoader';
 import type { Collection } from '@/types/marketplace';
-import { formatAddress, usdValueFormatter } from '@/utils/formatter';
-import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react';
-import { useRouter } from '@tanstack/react-router';
-import { isB256 } from 'fuels';
 import { ListHeader } from './listHeader';
+import { CollectionItem } from './collectionItem';
+import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 
 type SortDirection = 'asc' | 'desc';
 
@@ -44,8 +41,6 @@ export const CollectionList = ({
 }: CollectionListProps) => {
   const isEmptyCollections = !collections?.length;
 
-  const router = useRouter();
-
   return (
     <Box>
       {isEmptyCollections && !isLoading && (
@@ -69,62 +64,15 @@ export const CollectionList = ({
               onSortChange={onSortChange}
               label={item.label}
               sortKey={item.sortKey}
+              maxW="140px"
+              mr={2}
             />
           ))}
         </Flex>
       )}
 
       {collections.map((col) => (
-        <Flex
-          key={col.id}
-          align="center"
-          px={2}
-          py={3}
-          borderRadius="md"
-          bg="transparent"
-          mb={2}
-          h="56px"
-          border="1px solid"
-          borderColor="grey.600"
-          justifyContent="space-between"
-          cursor="pointer"
-          onClick={() => {
-            router.navigate({
-              to: '/collection/$collectionId',
-              params: {
-                collectionId: col.id,
-              },
-            });
-          }}
-        >
-          <Flex flex="2" align="center" gap={3}>
-            <ImageLoader
-              src={col?.config?.avatar}
-              alt={'NFT Image'}
-              imageProps={{
-                boxSize: '40px',
-                borderRadius: 'md',
-              }}
-            />
-            <Text>{isB256(col.name) ? formatAddress(col.name) : col.name}</Text>
-          </Flex>
-          <Box flex="1">{usdValueFormatter(col.metrics.volume ?? 0)}</Box>
-          <Box flex="1">{usdValueFormatter(col?.metrics?.floorPrice ?? 0)}</Box>
-          <Box flex="1">{col.metrics.sales}</Box>
-          <Flex flex="1" gap={2}>
-            {col.latestSalesNFTs.map((item) => (
-              <ImageLoader
-                key={item.id}
-                src={item.image}
-                alt={'NFT Image'}
-                imageProps={{
-                  boxSize: '40px',
-                  borderRadius: 'md',
-                }}
-              />
-            ))}
-          </Flex>
-        </Flex>
+        <CollectionItem key={col.id} col={col} />
       ))}
     </Box>
   );

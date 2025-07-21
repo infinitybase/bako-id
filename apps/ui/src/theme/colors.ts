@@ -88,6 +88,9 @@ const colors = {
     100: 'rgba(18, 18, 18, 0.95)',
     200: 'rgba(245, 245, 245, 0.02)',
   },
+  garage: {
+    100: '#B3FF2E'
+  }
 };
 
 export { colors };
