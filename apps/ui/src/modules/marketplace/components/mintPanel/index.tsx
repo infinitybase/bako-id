@@ -25,7 +25,7 @@ const MintPanel = () => {
         color="white"
         borderRadius="lg"
         gap={6}
-        mt={5}
+        mt={6}
         w="full"
       >
         <Flex direction="row" gap={4} align="flex-start">
