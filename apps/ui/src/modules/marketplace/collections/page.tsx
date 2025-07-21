@@ -1,4 +1,13 @@
-import { Container, Stack } from '@chakra-ui/react';
+import {
+  Container,
+  Stack,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Divider,
+} from '@chakra-ui/react';
 import {
   Outlet,
   useNavigate,
@@ -13,6 +22,7 @@ import { useGetCollection } from '@/hooks/marketplace/useGetCollection';
 import { useGetCollectionOrders } from '@/hooks/marketplace/useGetCollectionOrders';
 import { useDebounce } from '@/hooks/useDebounce';
 import { CollectionPageBanner } from '../components/banner/collectionBanner';
+import MintPanel from '../components/mintPanel';
 
 export const CollectionPage = () => {
   const collectionOrdersLimit = 10;
@@ -91,24 +101,58 @@ export const CollectionPage = () => {
           sm: 8,
         }}
       >
-        <Stack gap={8}>
-          <MarketplaceFilter
-            searchValue={search}
-            onSearchChange={handleChangeSearch}
-            sortValue={filters.sortBy}
-            onSortChange={handleSortChange}
-            isCollectionPage
-          />
-
-          <OrderList
-            orders={data}
-            hasNextPage={hasNextPage}
-            onFetchNextPage={fetchNextPage}
-            isLoadingOrders={!isFetched || isLoading}
-            isFetchingNextPage={isFetchingNextPage}
-            collectionOrdersLimit={collectionOrdersLimit}
-          />
-        </Stack>
+        <Tabs variant="soft-rounded">
+          <TabList>
+            <Tab
+              _selected={{
+                bg: 'grey.600',
+                color: 'white',
+              }}
+              color="disabled.500"
+              bg="input.600"
+              borderRadius="8px 8px 0 0"
+              fontSize="xs"
+              letterSpacing=".5px"
+            >
+              Items
+            </Tab>
+            <Tab
+              _selected={{ bg: 'grey.600', color: 'white' }}
+              color="disabled.500"
+              bg="input.600"
+              borderRadius="8px 8px 0 0"
+              fontSize="xs"
+              letterSpacing=".5px"
+            >
+              Mint
+            </Tab>
+          </TabList>
+          <Divider my={0} py={0} borderColor="grey.600" />
+          <TabPanels>
+            <TabPanel px={0}>
+              <Stack gap={8}>
+                <MarketplaceFilter
+                  searchValue={search}
+                  onSearchChange={handleChangeSearch}
+                  sortValue={filters.sortBy}
+                  onSortChange={handleSortChange}
+                  isCollectionPage
+                />
+                <OrderList
+                  orders={data}
+                  hasNextPage={hasNextPage}
+                  onFetchNextPage={fetchNextPage}
+                  isLoadingOrders={!isFetched || isLoading}
+                  isFetchingNextPage={isFetchingNextPage}
+                  collectionOrdersLimit={collectionOrdersLimit}
+                />
+              </Stack>
+            </TabPanel>
+            <TabPanel p={0}>
+              <MintPanel />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
         <Outlet />
       </Container>
     </Stack>
