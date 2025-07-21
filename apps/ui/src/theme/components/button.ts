@@ -53,13 +53,13 @@ const tertiary = defineStyle({
 
 const mktPrimary = defineStyle({
   w: 'full',
-  bgColor: 'button.800',
+  bgColor: 'garage.100',
   color: 'input.600',
   _hover: {
     opacity: 0.8,
     _disabled: {
       opacity: 0.8,
-      bgColor: 'button.800',
+      bgColor: 'garage.100',
     },
   },
 

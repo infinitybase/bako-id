@@ -68,6 +68,8 @@ export const MarketplaceHeader = () => {
       justifyContent="space-between"
       alignItems="center"
       padding="16px 32px"
+      maxW="1920px"
+      mx="auto"
     >
       <Flex align="center" onClick={goHome} cursor="pointer">
         <Image src={Logo} alt="Logo" />

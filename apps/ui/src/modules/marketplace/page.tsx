@@ -1,19 +1,19 @@
 import { useDebounce } from '@/hooks/useDebounce';
-import { Container, Stack } from '@chakra-ui/react';
+import { Box, Container, Stack } from '@chakra-ui/react';
 import { Outlet, useNavigate, useSearch } from '@tanstack/react-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  MarketplaceBanner,
-  SearchBar,
-  MarketplacePageSkeleton,
-} from './components';
+import { SearchBar, MarketplacePageSkeleton } from './components';
 import { CollectionList } from './components/collectionList';
 
 import { useGetCollections } from '@/hooks/marketplace/useListCollections';
 import type { Collection } from '@/types/marketplace';
+import { useInView } from 'react-intersection-observer';
+import { MarketplaceBanner } from './components/banner/collectionsBanner';
 
 export const MarketplacePage = () => {
   const navigate = useNavigate();
+  const { ref, inView } = useInView();
+
   const [initialBanners, setInitialBanners] = useState<Collection[]>([]);
   const [sortValue, setSortValue] = useState('volumes');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -45,6 +45,12 @@ export const MarketplacePage = () => {
     }
   }, [data, initialBanners]);
 
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
+
   const handleChangeSearch = useCallback(
     (search: string) => {
       navigate({
@@ -71,43 +77,41 @@ export const MarketplacePage = () => {
   }
 
   return (
-    <Container
-      maxWidth="container.xl"
-      py={8}
-      overflowY="scroll"
-      sx={{
-        '&::-webkit-scrollbar': {
-          width: '0px',
-        },
-      }}
-      maxH="100vh"
-      pb={{
-        base: 15,
-        sm: 8,
-      }}
-    >
-      <Stack gap={10}>
-        <MarketplaceBanner collections={initialBanners} />
+    <Stack w="full" p={0} m={0}>
+      <MarketplaceBanner collections={initialBanners} />
+      <Container
+        maxWidth="1920px"
+        py={8}
+        overflowY="hidden"
+        sx={{
+          '&::-webkit-scrollbar': {
+            width: '0px',
+          },
+        }}
+        pb={{
+          base: 15,
+          sm: 8,
+        }}
+      >
+        <Stack gap={10}>
+          <SearchBar
+            value={search}
+            onChange={handleChangeSearch}
+            placeholder="Search by collection name"
+          />
 
-        <SearchBar
-          value={search}
-          onChange={handleChangeSearch}
-          placeholder="Search by collection name"
-        />
-
-        <CollectionList
-          collections={data}
-          sortValue={sortValue}
-          sortDirection={sortDirection}
-          onSortChange={handleSortChange}
-          isLoading={isLoading}
-          fetchNextPage={fetchNextPage}
-          hasNextPage={hasNextPage}
-          isFetchingNextPage={isFetchingNextPage}
-        />
-      </Stack>
-      {/* Render the Outlet for nested routes */}
-      <Outlet />
-    </Container>
+          <CollectionList
+            collections={data}
+            sortValue={sortValue}
+            sortDirection={sortDirection}
+            onSortChange={handleSortChange}
+            isLoading={isLoading}
+          />
+        </Stack>
+        {/* Render the Outlet for nested routes */}
+        <Outlet />
+      </Container>
+      <Box ref={ref} h="10px" w="full" />
+    </Stack>
   );
 };

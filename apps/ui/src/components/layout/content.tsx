@@ -3,6 +3,7 @@ import { Flex, type FlexProps } from '@chakra-ui/react';
 export interface ContentProps extends FlexProps {}
 
 const Content = (props: ContentProps) => {
+  const { children, ...rest } = props;
   return (
     <Flex
       mt={0}
@@ -18,8 +19,9 @@ const Content = (props: ContentProps) => {
         base: 5,
         sm: 6,
       }}
+      {...rest}
     >
-      {props.children}
+      {children}
     </Flex>
   );
 };

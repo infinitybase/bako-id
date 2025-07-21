@@ -11,7 +11,7 @@ import {
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { VerifiedBadgeIcon } from '../icons/verifiedBadgeIcon';
-import { StatBox } from './statBox';
+import { StatBox } from './root/statBox';
 import { AvatarIcon } from '@/components';
 import { MetadataKeys } from '@/utils/metadataKeys';
 import { useMetadata } from '@/hooks/useMetadata';

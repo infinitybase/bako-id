@@ -1,12 +1,12 @@
 import { Container, Stack } from '@chakra-ui/react';
 import { useParams } from '@tanstack/react-router';
-import { ProfilePageBanner } from '../components/banner/profilePageBanner';
 import { ProfileNfts } from './components/profileNfts';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
 import { useListInfiniteOrdersByAddress } from '@/hooks/marketplace/useListInfiniteOrdersByAddress';
 import { useMemo, useState } from 'react';
 import { useCollections } from '@/hooks/useCollections';
 import { useWallet } from '@fuels/react';
+import { ProfilePageBanner } from '../components/banner/profileBanner';
 
 export const ProfilePage = () => {
   const { wallet } = useWallet();

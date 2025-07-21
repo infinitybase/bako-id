@@ -1,7 +1,6 @@
 import { CollectionPage } from '@/modules/marketplace/collections/page.tsx';
 import OrderPage from '@/modules/marketplace/order/page.tsx';
 import { MarketplacePage } from '@/modules/marketplace/page.tsx';
-import { ProfilePage } from '@/modules/marketplace/profile/page.tsx';
 import { createRoute } from '@tanstack/react-router';
 import { NotConnected } from '../components';
 import { Buy } from '../modules/buy/page.tsx';
@@ -11,6 +10,7 @@ import { MyHandles } from '../modules/myHandles/page.tsx';
 import { More } from '../modules/profile/components/more/page.tsx';
 import { Profile } from '../modules/profile/page.tsx';
 import { marketplaceRootRoute, rootRoute } from './__root.ts';
+import { ProfilePage } from '@/modules/marketplace/profile/page.tsx';
 
 export const homeRoute = createRoute({
   getParentRoute: () => rootRoute,

@@ -1,12 +1,10 @@
 import type { Collection } from '@/types/marketplace';
 import { Flex, Heading } from '@chakra-ui/react';
-import { StatBox } from './statBox';
 import { ImageLoader } from '@/components/imageLoader';
 import { usdValueFormatter } from '@/utils/formatter';
-import { SocialActionsMenu } from '../socialActionsMenu';
-import { DetailsMenu } from './detailsMenu';
+import { BannerRoot } from '.';
 
-const CollectionPageDetails = ({ collection }: { collection: Collection }) => {
+const CollectionContent = ({ collection }: { collection: Collection }) => {
   if (!collection) return null;
 
   return (
@@ -18,18 +16,18 @@ const CollectionPageDetails = ({ collection }: { collection: Collection }) => {
       justify="space-between"
       alignItems="flex-end"
       mb={2.5}
+      maxW="1920px"
+      mx="auto"
     >
       <Flex align="center" gap={2} minW="0">
         <ImageLoader
           skeletonProps={{
             boxSize: '62px',
-            borderRadius: '8px',
           }}
           src={collection.config.avatar}
           alt={'Collection Image'}
           imageProps={{
             boxSize: '60px',
-            borderRadius: '8px',
           }}
         />
         <Flex gap={4} align="center" mt="auto">
@@ -37,18 +35,18 @@ const CollectionPageDetails = ({ collection }: { collection: Collection }) => {
             {collection.name}
           </Heading>
 
-          <DetailsMenu collection={collection} />
-          <SocialActionsMenu collection={collection} />
+          <BannerRoot.DetailsMenu collection={collection} />
+          <BannerRoot.SocialActionsMenu collection={collection} />
         </Flex>
       </Flex>
 
       <Flex gap={4}>
-        <StatBox label="Sales" value={collection.metrics.sales} />
-        <StatBox
+        <BannerRoot.StatBox label="Sales" value={collection.metrics.sales} />
+        <BannerRoot.StatBox
           label="Floor price"
           value={usdValueFormatter(collection.metrics.floorPrice ?? 0)}
         />
-        <StatBox
+        <BannerRoot.StatBox
           label="Volume"
           value={usdValueFormatter(collection.metrics.volume ?? 0)}
         />
@@ -57,4 +55,4 @@ const CollectionPageDetails = ({ collection }: { collection: Collection }) => {
   );
 };
 
-export { CollectionPageDetails };
+export { CollectionContent };

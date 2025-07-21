@@ -9,12 +9,12 @@ import {
   Text,
   Icon,
 } from '@chakra-ui/react';
-import { InfoCircleIcon } from '../icons';
+import { InfoCircleIcon } from '../../icons';
 import { useRef } from 'react';
 import { CloseIcon } from '@/components/icons/closeIcon';
 import type { Collection } from '@/types/marketplace';
 import { ImageLoader } from '@/components/imageLoader';
-import { SocialActionsMenu } from '../socialActionsMenu';
+import { SocialActionsMenu } from './socialActionsMenu';
 
 const DetailsMenu = ({ collection }: { collection: Collection }) => {
   const menuRef = useRef<HTMLButtonElement>(null);

@@ -2,9 +2,9 @@ import { Box, Stack } from '@chakra-ui/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import type { Collection } from '@/types/marketplace';
-import { CollectionPageDetails } from './collectionPageDetails';
 import { ImageLoader } from '@/components/imageLoader';
 import { useNavigate } from '@tanstack/react-router';
+import { BannerRoot } from './root';
 
 type MarketplaceBannerProps = {
   collection: Collection;
@@ -17,7 +17,7 @@ export const CollectionPageBanner = ({
   const navigate = useNavigate();
 
   return (
-    <Stack gap={4} borderRadius="8px">
+    <Stack gap={4}>
       <Box height="250px" position="relative">
         <Box
           w="full"
@@ -42,16 +42,16 @@ export const CollectionPageBanner = ({
             skeletonProps={{
               boxSize: 'full',
               position: 'absolute',
-              borderRadius: '8px',
               top: 0,
               left: 0,
               zIndex: 1,
+              borderRadius: '0',
             }}
             imageProps={{
               objectFit: 'cover',
               objectPosition: 'center',
               boxSize: 'full',
-              borderRadius: '8px',
+              borderRadius: '0',
             }}
           />
         </Box>
@@ -62,7 +62,6 @@ export const CollectionPageBanner = ({
           left={0}
           right={0}
           height="80px"
-          borderRadius="8px"
           bgGradient="linear(0deg, rgba(21,20,19,0.85) 0%, rgba(21,20,19,0.00) 100%)"
           zIndex={2}
           _before={
@@ -92,7 +91,7 @@ export const CollectionPageBanner = ({
           }}
           px={4}
         >
-          <CollectionPageDetails collection={collection} />
+          <BannerRoot.CollectionContent collection={collection} />
         </Box>
       </Box>
     </Stack>
