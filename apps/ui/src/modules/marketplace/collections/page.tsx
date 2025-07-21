@@ -45,6 +45,7 @@ export const CollectionPage = () => {
     hasNextPage,
     isFetchingNextPage,
     isFetched,
+    isPlaceholderData,
   } = useGetCollectionOrders({
     collectionId,
     sortValue: filters.sortBy,

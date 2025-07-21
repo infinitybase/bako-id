@@ -63,7 +63,7 @@ export const NftListForSale = ({
         }}
         gap={6}
       >
-        {(isOrdersLoading || isPlaceholderData) && (
+        {isOrdersLoading && (
           <Fragment>
             {Array.from({ length: 6 }, () => (
               <GridItem key={crypto.randomUUID()}>

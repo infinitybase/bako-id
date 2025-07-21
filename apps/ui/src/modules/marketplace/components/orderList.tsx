@@ -15,6 +15,7 @@ interface OrderListProps {
   isLoadingOrders?: boolean;
   isFetchingNextPage?: boolean;
   collectionOrdersLimit?: number;
+  isPlaceholderData: boolean;
 }
 
 export const OrderList = ({
@@ -24,6 +25,7 @@ export const OrderList = ({
   hasNextPage,
   isFetchingNextPage = false,
   collectionOrdersLimit = 10,
+  isPlaceholderData,
 }: OrderListProps) => {
   const { wallet } = useWallet();
   const { ref, inView } = useInView();
@@ -83,7 +85,8 @@ export const OrderList = ({
         </Link>
       ))}
 
-      {(isLoadingOrders || isFetchingNextPage) &&
+      {isLoadingOrders &&
+        !isPlaceholderData &&
         Array.from({ length: 5 }, () => (
           <GridItem key={Math.random()}>
             <Skeleton height="250px" borderRadius="lg" />

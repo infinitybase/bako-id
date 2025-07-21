@@ -213,7 +213,10 @@ export default function NftDetailsStep({
           />
         </GridItem>
 
-        <GridItem>
+        <GridItem
+          pointerEvents={ctaButtonVariant === 'mktPrimary' ? 'none' : 'auto'}
+          opacity={ctaButtonVariant === 'mktPrimary' ? 0.5 : 1}
+        >
           <Skeleton isLoaded={!isLoadingDomain} borderRadius="md">
             <Link to={`/profile/${sellerDomain ? sellerDomain : order.seller}`}>
               <NftMetadataBlock
