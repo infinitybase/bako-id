@@ -1,4 +1,4 @@
-import { Center, Flex, Image } from '@chakra-ui/react';
+import { Box, Center, Flex, Image } from '@chakra-ui/react';
 import {
   useAccount,
   useConnectUI,
@@ -62,19 +62,36 @@ export const MarketplaceHeader = () => {
   return (
     <Center
       as="header"
-      w="100vw"
-      minH="48px"
+      w="full"
+      minH="72px"
       display="flex"
       justifyContent="space-between"
       alignItems="center"
-      padding="16px 32px"
-      maxW="1920px"
-      mx="auto"
+      position="fixed"
+      top={0}
+      left={0}
+      right={0}
+      zIndex={100}
+      bg="input.900"
     >
-      <Flex align="center" onClick={goHome} cursor="pointer">
-        <Image src={Logo} alt="Logo" />
+      <Flex
+        alignItems="center"
+        justifyContent="space-between"
+        w="full"
+        maxW="1920px"
+        mx="auto"
+        px="14px"
+      >
+        <Box
+          display="flex"
+          alignItems="center"
+          onClick={goHome}
+          cursor="pointer"
+        >
+          <Image src={Logo} alt="Logo" />
+        </Box>
+        <MarketplaceConnect isLoading={initialLoadState} domain={domain!} />
       </Flex>
-      <MarketplaceConnect isLoading={initialLoadState} domain={domain!} />
     </Center>
   );
 };
