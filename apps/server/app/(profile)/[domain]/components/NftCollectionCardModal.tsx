@@ -31,8 +31,8 @@ export const NftCollectionCardModal = ({
 }: NftCardModalProps) => {
   const metadataArray = useMemo(() => {
     return Object.entries(metadata ?? {}).map(([key, value]) => ({
-      trait_type: key,
       value,
+      label: key,
     }));
   }, [metadata]);
 

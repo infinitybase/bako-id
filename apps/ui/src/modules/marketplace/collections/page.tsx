@@ -146,6 +146,7 @@ export const CollectionPage = () => {
                   isLoadingOrders={!isFetched || isLoading}
                   isFetchingNextPage={isFetchingNextPage}
                   collectionOrdersLimit={collectionOrdersLimit}
+                  isPlaceholderData={isPlaceholderData}
                 />
               </Stack>
             </TabPanel>
