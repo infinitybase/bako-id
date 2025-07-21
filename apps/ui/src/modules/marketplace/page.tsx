@@ -75,6 +75,7 @@ export const MarketplacePage = () => {
   if (!isFetched && isLoading && data.length === 0) {
     return <MarketplacePageSkeleton />;
   }
+  // Trigger commit
 
   return (
     <Stack w="full" p={0} m={0}>
