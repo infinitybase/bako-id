@@ -89,7 +89,6 @@ export const MarketplacePage = () => {
             width: '0px',
           },
         }}
-        maxH="100vh"
         pb={{
           base: 15,
           sm: 8,
