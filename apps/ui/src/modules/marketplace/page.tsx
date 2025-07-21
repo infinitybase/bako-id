@@ -80,7 +80,7 @@ export const MarketplacePage = () => {
     <Stack w="full" p={0} m={0}>
       <MarketplaceBanner collections={initialBanners} />
       <Container
-        maxWidth="container.xl"
+        maxWidth="1920px"
         py={8}
         overflowY="hidden"
         sx={{
