@@ -1,12 +1,10 @@
 import type { Collection } from '@/types/marketplace';
 import { Flex, Heading } from '@chakra-ui/react';
-import { StatBox } from './statBox';
 import { ImageLoader } from '@/components/imageLoader';
 import { usdValueFormatter } from '@/utils/formatter';
-import { SocialActionsMenu } from '../socialActionsMenu';
-import { DetailsMenu } from './detailsMenu';
+import { BannerRoot } from '.';
 
-const CollectionPageDetails = ({ collection }: { collection: Collection }) => {
+const CollectionContent = ({ collection }: { collection: Collection }) => {
   if (!collection) return null;
 
   return (
@@ -37,18 +35,18 @@ const CollectionPageDetails = ({ collection }: { collection: Collection }) => {
             {collection.name}
           </Heading>
 
-          <DetailsMenu collection={collection} />
-          <SocialActionsMenu collection={collection} />
+          <BannerRoot.DetailsMenu collection={collection} />
+          <BannerRoot.SocialActionsMenu collection={collection} />
         </Flex>
       </Flex>
 
       <Flex gap={4}>
-        <StatBox label="Sales" value={collection.metrics.sales} />
-        <StatBox
+        <BannerRoot.StatBox label="Sales" value={collection.metrics.sales} />
+        <BannerRoot.StatBox
           label="Floor price"
           value={usdValueFormatter(collection.metrics.floorPrice ?? 0)}
         />
-        <StatBox
+        <BannerRoot.StatBox
           label="Volume"
           value={usdValueFormatter(collection.metrics.volume ?? 0)}
         />
@@ -57,4 +55,4 @@ const CollectionPageDetails = ({ collection }: { collection: Collection }) => {
   );
 };
 
-export { CollectionPageDetails };
+export { CollectionContent };

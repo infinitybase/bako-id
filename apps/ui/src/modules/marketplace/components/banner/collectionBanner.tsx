@@ -2,9 +2,9 @@ import { Box, Stack } from '@chakra-ui/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import type { Collection } from '@/types/marketplace';
-import { CollectionPageDetails } from './collectionPageDetails';
 import { ImageLoader } from '@/components/imageLoader';
 import { useNavigate } from '@tanstack/react-router';
+import { BannerRoot } from './root';
 
 type MarketplaceBannerProps = {
   collection: Collection;
@@ -92,7 +92,7 @@ export const CollectionPageBanner = ({
           }}
           px={4}
         >
-          <CollectionPageDetails collection={collection} />
+          <BannerRoot.CollectionContent collection={collection} />
         </Box>
       </Box>
     </Stack>

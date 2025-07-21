@@ -12,7 +12,7 @@ import MarketplaceFilter from '../components/marketplaceFilter';
 import { useGetCollection } from '@/hooks/marketplace/useGetCollection';
 import { useGetCollectionOrders } from '@/hooks/marketplace/useGetCollectionOrders';
 import { useDebounce } from '@/hooks/useDebounce';
-import { CollectionPageBanner } from '../components/banner/collectionPageBanner';
+import { CollectionPageBanner } from '../components/banner/collectionBanner';
 
 export const CollectionPage = () => {
   const collectionOrdersLimit = 10;

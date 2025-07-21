@@ -2,16 +2,13 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { Box, Container, Stack } from '@chakra-ui/react';
 import { Outlet, useNavigate, useSearch } from '@tanstack/react-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  MarketplaceBanner,
-  SearchBar,
-  MarketplacePageSkeleton,
-} from './components';
+import { SearchBar, MarketplacePageSkeleton } from './components';
 import { CollectionList } from './components/collectionList';
 
 import { useGetCollections } from '@/hooks/marketplace/useListCollections';
 import type { Collection } from '@/types/marketplace';
 import { useInView } from 'react-intersection-observer';
+import { MarketplaceBanner } from './components/banner/collectionsBanner';
 
 export const MarketplacePage = () => {
   const navigate = useNavigate();

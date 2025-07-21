@@ -2,11 +2,12 @@ import { Icon } from '@chakra-ui/react';
 
 import { Flex } from '@chakra-ui/react';
 import { CopyText } from '@/components/helpers/copy';
-import { GlobalIcon } from './icons';
-import { TwitterIcon } from './icons';
+
 import { DiscordIcon as DiscordIconComponent } from '@/components/icons/discordIcon';
-import { ShareMenu } from './banner/shareMenu';
+import { ShareMenu } from './shareMenu';
 import type { Collection } from '@/types/marketplace';
+import { TwitterIcon } from '@/components';
+import { GlobalIcon } from '../../icons';
 
 export const SocialActionsMenu = ({
   collection,
