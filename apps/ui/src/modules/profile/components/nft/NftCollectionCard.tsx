@@ -1,4 +1,10 @@
-import { Button, Text, Tooltip, useDisclosure } from '@chakra-ui/react';
+import {
+  Button,
+  type ImageProps,
+  Text,
+  Tooltip,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { useMemo } from 'react';
 
 import nftEmpty from '@/assets/nft-empty.png';
@@ -16,6 +22,7 @@ interface NftCollectionCardProps {
   isOwner: boolean;
   ctaButtonVariant?: 'primary' | 'mktPrimary';
   nftCardMinSize?: string;
+  nftImageProps?: ImageProps;
 }
 
 export const NftCollectionCard = (props: NftCollectionCardProps) => {
@@ -72,7 +79,11 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
         minW={props.nftCardMinSize}
       >
         {edition && <NftCard.EditionBadge edition={`#${edition}`} />}
-        <NftCard.Image minW="full" src={props.asset.image ?? image} />
+        <NftCard.Image
+          minW="full"
+          src={props.asset.image ?? image}
+          {...props.nftImageProps}
+        />
         <NftCard.Content spacing={2}>
           <Text
             fontSize="sm"
