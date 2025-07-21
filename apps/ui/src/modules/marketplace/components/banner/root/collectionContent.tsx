@@ -16,18 +16,18 @@ const CollectionContent = ({ collection }: { collection: Collection }) => {
       justify="space-between"
       alignItems="flex-end"
       mb={2.5}
+      maxW="1920px"
+      mx="auto"
     >
       <Flex align="center" gap={2} minW="0">
         <ImageLoader
           skeletonProps={{
             boxSize: '62px',
-            borderRadius: '8px',
           }}
           src={collection.config.avatar}
           alt={'Collection Image'}
           imageProps={{
             boxSize: '60px',
-            borderRadius: '8px',
           }}
         />
         <Flex gap={4} align="center" mt="auto">

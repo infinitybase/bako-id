@@ -73,42 +73,44 @@ export const CollectionPage = () => {
   );
 
   return (
-    <Container
-      maxWidth="container.xl"
-      py={8}
-      overflowY="scroll"
-      sx={{
-        '&::-webkit-scrollbar': {
-          width: '0px',
-        },
-      }}
-      maxH="100vh"
-      pb={{
-        base: 15,
-        sm: 8,
-      }}
-    >
-      <Stack gap={8}>
-        <CollectionPageBanner collection={collection?.data!} />
+    <Stack w="full" p={0} m={0}>
+      <CollectionPageBanner collection={collection?.data!} />
 
-        <MarketplaceFilter
-          searchValue={search}
-          onSearchChange={handleChangeSearch}
-          sortValue={filters.sortBy}
-          onSortChange={handleSortChange}
-          isCollectionPage
-        />
+      <Container
+        maxWidth="container.xl"
+        py={8}
+        overflowY="scroll"
+        sx={{
+          '&::-webkit-scrollbar': {
+            width: '0px',
+          },
+        }}
+        maxH="100vh"
+        pb={{
+          base: 15,
+          sm: 8,
+        }}
+      >
+        <Stack gap={8}>
+          <MarketplaceFilter
+            searchValue={search}
+            onSearchChange={handleChangeSearch}
+            sortValue={filters.sortBy}
+            onSortChange={handleSortChange}
+            isCollectionPage
+          />
 
-        <OrderList
-          orders={data}
-          hasNextPage={hasNextPage}
-          onFetchNextPage={fetchNextPage}
-          isLoadingOrders={!isFetched || isLoading}
-          isFetchingNextPage={isFetchingNextPage}
-          collectionOrdersLimit={collectionOrdersLimit}
-        />
-      </Stack>
-      <Outlet />
-    </Container>
+          <OrderList
+            orders={data}
+            hasNextPage={hasNextPage}
+            onFetchNextPage={fetchNextPage}
+            isLoadingOrders={!isFetched || isLoading}
+            isFetchingNextPage={isFetchingNextPage}
+            collectionOrdersLimit={collectionOrdersLimit}
+          />
+        </Stack>
+        <Outlet />
+      </Container>
+    </Stack>
   );
 };
