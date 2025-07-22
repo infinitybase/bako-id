@@ -1,8 +1,8 @@
-import { MarketplaceQueryKeys } from '@/utils/constants';
-import { useChainId } from '../useChainId';
-import { useQuery } from '@tanstack/react-query';
-import { Networks } from '@/utils/resolverNetwork';
 import { marketplaceService } from '@/services/marketplace';
+import { MarketplaceQueryKeys } from '@/utils/constants';
+import { Networks } from '@/utils/resolverNetwork';
+import { useQuery } from '@tanstack/react-query';
+import { useChainId } from '../useChainId';
 
 type useGetCollectionProps = {
   collectionId: string;
@@ -16,14 +16,14 @@ export const useGetCollection = ({ collectionId }: useGetCollectionProps) => {
     queryFn: async () => {
       const { data } = await marketplaceService.getCollection({
         collectionId,
-        chainId: chainId ?? Networks.MAINNET,
+        chainId: chainId === 0 ? Networks.TESTNET : Networks.MAINNET,
       });
 
       return {
         data,
       };
     },
-    enabled: !!chainId && !!collectionId,
+    enabled: typeof chainId === 'number' && !!collectionId,
   });
 
   return { collection, ...rest };
