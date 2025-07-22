@@ -60,11 +60,6 @@ export const ProfilePage = () => {
           width: '0px',
         },
       }}
-      maxH="100vh"
-      pb={{
-        base: 15,
-        sm: 8,
-      }}
     >
       <Stack gap={8}>
         <ProfilePageBanner

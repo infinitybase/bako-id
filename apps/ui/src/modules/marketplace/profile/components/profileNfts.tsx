@@ -154,11 +154,11 @@ export const ProfileNfts = ({
   return (
     <Card
       w="full"
-      h={['fit-content', 'fit-content', 'fit-content', 'auto']}
       display="flex"
       backdropFilter="blur(6px)"
       flexDirection="column"
       boxShadow="lg"
+      p={6}
     >
       <Flex mb={6} alignItems="center" justify="space-between">
         <Heading fontSize="14px">NFT's</Heading>
@@ -210,7 +210,7 @@ export const ProfileNfts = ({
         )}
 
         {notListedCollectionsWithoutHandles?.map((collection) => (
-          <Box key={collection.name} mb={6}>
+          <Box key={collection.name}>
             <Grid
               templateColumns={{
                 base: 'repeat(1, 1fr)',
@@ -219,10 +219,9 @@ export const ProfileNfts = ({
                 lg: 'repeat(6, 1fr)',
               }}
               gap={6}
-              maxH="245px"
             >
               {collection.assets.map((a) => (
-                <GridItem key={a.assetId} maxW="175px">
+                <GridItem key={a.assetId} maxW="175px" p={0} m={0}>
                   <NftCollectionCard
                     key={a.assetId}
                     asset={a}
@@ -230,6 +229,10 @@ export const ProfileNfts = ({
                     resolver={resolver}
                     isOwner={isOwner}
                     ctaButtonVariant="mktPrimary"
+                    nftCardMinSize="179px"
+                    nftImageProps={{
+                      minH: { base: 'full', md: '177px' },
+                    }}
                   />
                 </GridItem>
               ))}
@@ -240,6 +243,7 @@ export const ProfileNfts = ({
 
       {/* FOR SALE TAB */}
       <Box
+        mt={6}
         display={
           selectedTab === TabOptions.FOR_SALE || selectedTab === TabOptions.ALL
             ? 'block'
@@ -258,7 +262,7 @@ export const ProfileNfts = ({
             lg: 'repeat(6, 1fr)',
           }}
           gap={6}
-          maxH="245px"
+          minH={{ base: 'full', md: '272px' }}
         >
           {orders?.map((order) => (
             <GridItem key={order.id} maxW="175px">
@@ -275,7 +279,7 @@ export const ProfileNfts = ({
         </Grid>
       </Box>
 
-      <Box ref={ref} h="10px" w="full" />
+      <Box ref={ref} h="2px" w="full" />
     </Card>
   );
 };

@@ -12,6 +12,7 @@ export default function ProfileWithHandler({
   orders,
   isFetchingOrders,
   paginationInfos,
+  isPlaceholderData,
 }: {
   domain: string;
   domainParam: string;
@@ -23,6 +24,7 @@ export default function ProfileWithHandler({
     hasNextPage: boolean;
     hasPreviousPage: boolean;
   };
+  isPlaceholderData: boolean;
 }) {
   const { isMobile } = useScreenSize();
   const drawer = useDisclosure();
@@ -86,7 +88,7 @@ export default function ProfileWithHandler({
                 owner={owner}
                 orders={orders}
                 withHandle
-                isFetchingOrders={isFetchingOrders}
+                isFetchingOrders={isFetchingOrders || isPlaceholderData}
                 paginationInfos={paginationInfos}
               />
             </Box>

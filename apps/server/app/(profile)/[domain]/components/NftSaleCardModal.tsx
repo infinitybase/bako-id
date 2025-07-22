@@ -44,7 +44,10 @@ export const NftSaleCardModal = ({
   const { order: orderData } = useGetOrder({ id: order.id, chainId });
 
   const attributes = Array.isArray(orderData?.asset?.metadata.attributes)
-    ? orderData?.asset?.metadata.attributes
+    ? orderData?.asset?.metadata.attributes.map((attribute) => ({
+        value: attribute.value,
+        label: attribute.trait_type,
+      }))
     : [];
 
   return (

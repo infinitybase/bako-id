@@ -213,7 +213,7 @@ export const NftCardSaleForm = ({
         <Controller
           control={control}
           name="sellPrice"
-          defaultValue={0}
+          defaultValue={undefined}
           rules={{
             required: 'Amount is required',
             validate: {
