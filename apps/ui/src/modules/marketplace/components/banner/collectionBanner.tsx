@@ -18,7 +18,7 @@ export const CollectionPageBanner = ({
 
   return (
     <Stack gap={4}>
-      <Box height="250px" position="relative">
+      <Box height="350px" position="relative">
         <Box
           w="full"
           h="full"

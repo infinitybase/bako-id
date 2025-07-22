@@ -110,6 +110,12 @@ export const CurrencyInput = forwardRef<HTMLInputElement, InputProps>(
               }
               maskedRef(node!);
             }}
+            _focus={{ boxShadow: 'none', outline: 'none' }}
+            _focusVisible={{
+              boxShadow: 'none',
+              outline: 'none',
+            }}
+            outline="none"
           />
         )}
       />

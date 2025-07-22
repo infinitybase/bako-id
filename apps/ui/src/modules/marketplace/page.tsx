@@ -15,7 +15,7 @@ export const MarketplacePage = () => {
   const { ref, inView } = useInView();
 
   const [initialBanners, setInitialBanners] = useState<Collection[]>([]);
-  const [sortValue, setSortValue] = useState('volumes');
+  const [sortValue, setSortValue] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const { search } = useSearch({ strict: false });
   const debouncedSearch = useDebounce<string>(search ?? '', 700);
@@ -81,6 +81,7 @@ export const MarketplacePage = () => {
       <MarketplaceBanner collections={initialBanners} />
       <Container
         maxWidth="1920px"
+        w={{ base: 'full', lg: 'calc(100% - 280px)' }}
         py={8}
         overflowY="hidden"
         sx={{

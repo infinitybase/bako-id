@@ -88,15 +88,16 @@ export const CollectionPage = () => {
       <CollectionPageBanner collection={collection?.data!} />
 
       <Container
-        maxWidth="container.xl"
+        maxWidth="1920px"
+        w={{ base: 'full', lg: 'calc(100% - 280px)' }}
         py={8}
-        overflowY="scroll"
+        overflowY="hidden"
         sx={{
           '&::-webkit-scrollbar': {
             width: '0px',
           },
         }}
-        maxH="100vh"
+        minH="100vh"
         pb={{
           base: 15,
           sm: 8,

@@ -51,7 +51,8 @@ export const ProfilePage = () => {
 
   return (
     <Container
-      maxWidth="container.xl"
+      maxWidth="1920px"
+      w={{ base: 'full', lg: 'calc(100% - 280px)' }}
       py={8}
       overflowY="scroll"
       sx={{

@@ -64,7 +64,7 @@ export const CollectionList = ({
               onSortChange={onSortChange}
               label={item.label}
               sortKey={item.sortKey}
-              maxW="140px"
+              maxW={item.sortKey === 'lastSold' ? '200px' : '140px'}
               mr={2}
             />
           ))}

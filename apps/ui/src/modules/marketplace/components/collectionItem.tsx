@@ -7,9 +7,10 @@ import { isB256 } from 'fuels';
 
 const CollectionItem = ({ col }: { col: Collection }) => {
   const router = useRouter();
+  const defaultColumnWidth = '140px';
   return (
     <Grid
-      templateColumns="2fr 140px 140px 140px 140px"
+      templateColumns="2fr 140px 140px 140px 200px"
       gap={2}
       mr={3}
       alignItems="center"
@@ -47,7 +48,7 @@ const CollectionItem = ({ col }: { col: Collection }) => {
       </Flex>
       <Text
         textAlign="right"
-        maxW="140px"
+        maxW={defaultColumnWidth}
         justifyContent="flex-end"
         fontSize="xs"
       >
@@ -55,7 +56,7 @@ const CollectionItem = ({ col }: { col: Collection }) => {
       </Text>
       <Text
         textAlign="right"
-        maxW="140px"
+        maxW={defaultColumnWidth}
         justifyContent="flex-end"
         fontSize="xs"
       >
@@ -63,13 +64,13 @@ const CollectionItem = ({ col }: { col: Collection }) => {
       </Text>
       <Text
         textAlign="right"
-        maxW="140px"
+        maxW={defaultColumnWidth}
         justifyContent="flex-end"
         fontSize="xs"
       >
         {col.metrics.sales}
       </Text>
-      <Flex gap={2} justifyContent="flex-end" ml="auto" maxW="140px">
+      <Flex gap={1} justifyContent="flex-end" ml="auto" minW="200px">
         {col.latestSalesNFTs.map((item) => (
           <ImageLoader
             key={item.id}

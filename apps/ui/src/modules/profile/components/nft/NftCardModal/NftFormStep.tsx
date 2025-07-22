@@ -21,7 +21,7 @@ export default function NftFormStep({
   userWithHandle: boolean;
   onCancel: () => void;
   assets: Asset[];
-  ctaButtonVariant: 'primary' | 'mktPrimary';
+  ctaButtonVariant?: 'primary' | 'mktPrimary';
 }) {
   const { createOrderAsync, isPending } = useCreateOrder();
   const { errorToast, successToast } = useCustomToast();

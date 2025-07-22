@@ -180,8 +180,8 @@ export const ProfileNfts = ({
                   fontSize: '12px',
                   fontWeight: '400',
                   _selected: {
-                    bg: '#00DB7D1A',
-                    color: 'button.800',
+                    bg: '#B3FF2E1A',
+                    color: 'garage.100',
                   },
                 }}
               >
@@ -219,21 +219,22 @@ export const ProfileNfts = ({
                 lg: 'repeat(6, 1fr)',
               }}
               gap={6}
-              minH={{ base: 'full', md: '272px' }}
             >
               {collection.assets.map((a) => (
-                <NftCollectionCard
-                  key={a.assetId}
-                  asset={a}
-                  assets={assets}
-                  resolver={resolver}
-                  isOwner={isOwner}
-                  ctaButtonVariant="mktPrimary"
-                  nftCardMinSize="179px"
-                  nftImageProps={{
-                    minH: { base: 'full', md: '177px' },
-                  }}
-                />
+                <GridItem key={a.assetId} maxW="175px" p={0} m={0}>
+                  <NftCollectionCard
+                    key={a.assetId}
+                    asset={a}
+                    assets={assets}
+                    resolver={resolver}
+                    isOwner={isOwner}
+                    ctaButtonVariant="mktPrimary"
+                    nftCardMinSize="179px"
+                    nftImageProps={{
+                      minH: { base: 'full', md: '177px' },
+                    }}
+                  />
+                </GridItem>
               ))}
             </Grid>
           </Box>
@@ -264,7 +265,7 @@ export const ProfileNfts = ({
           minH={{ base: 'full', md: '272px' }}
         >
           {orders?.map((order) => (
-            <GridItem key={order.id}>
+            <GridItem key={order.id} maxW="175px">
               <NftSaleCard
                 order={order}
                 showDelistButton={false}

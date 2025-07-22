@@ -98,12 +98,13 @@ export const NftSaleCardModal = ({
                 name={nftName}
                 onCancel={handleChangeStepToDetails}
                 userWithHandle={withHandle}
+                ctaButtonVariant={ctaButtonVariant}
               />
             )}
           </>
         )}
 
-        <NftModal.CloseIcon onClose={onClose} />
+        {step !== 0 && <NftModal.CloseIcon onClose={onClose} />}
       </NftModal.Content>
     </NftModal.Root>
   );

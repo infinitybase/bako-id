@@ -18,7 +18,7 @@ import { useMetadata } from '@/hooks/useMetadata';
 import { PoweredByIcon } from '../icons/poweredByIcon';
 import profileBanner from '@/assets/marketplace/mktp-profile-banner.png';
 import { UnverifiedBadgeIcon } from '../icons/unverifiedBadgeIcon';
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link } from '@tanstack/react-router';
 import { useResolverName } from '@/hooks/useResolverName';
 
 type ProfilePageBannerProps = {
@@ -36,11 +36,8 @@ export const ProfilePageBanner = ({
 }: ProfilePageBannerProps) => {
   const { data: hasDomain } = useResolverName(resolver);
 
-  const navigate = useNavigate();
   return (
     <Stack
-      onClick={() => navigate({ to: '/' })}
-      cursor="pointer"
       gap={4}
       minH="250px"
       borderRadius="8px"

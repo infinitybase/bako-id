@@ -1,8 +1,10 @@
 import { Button, Flex, Heading, Image, Text } from '@chakra-ui/react';
 
 import EmptyBanner from '@/assets/marketplace/empty-state.png';
+import { useNavigate } from '@tanstack/react-router';
 
 export const MartketplaceEmptyState = () => {
+  const navigate = useNavigate();
   return (
     <Flex flexDirection="column" alignItems="center" justifyContent="center">
       <Image
@@ -32,6 +34,7 @@ export const MartketplaceEmptyState = () => {
           className="transition-all-05"
           w={{ base: 'fit-content', md: '200px' }}
           letterSpacing="0.5px"
+          onClick={() => navigate({ to: '/' })}
         >
           Explore collections
         </Button>

@@ -55,12 +55,13 @@ const Container = (props: ContainerProps) => {
       whiteSpace="nowrap"
       overflow="hidden"
       position="relative"
-      backdropFilter="blur(17px)"
+      backdropFilter="blur(24px)"
       maxW={350}
       onClick={() => setHide(!hide)}
       display="flex"
       alignItems="flex-start"
       justifyContent="flex-start"
+      bgGradient="linear(to-b, rgba(0,0,0,0.5), rgba(0,0,0,0.3))"
     >
       {props.leftIcon}
       <Box hidden={hide} overflow="hidden">
