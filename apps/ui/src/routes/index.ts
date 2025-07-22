@@ -35,11 +35,10 @@ export const resolveRouterTree = () => {
 
   const environment = import.meta.env.VITE_ENVIRONMENT;
   const isDev = import.meta.env.DEV;
-  const isProduction = environment === 'production';
   const isPreview = environment === 'preview';
 
   // Production: Use marketplace router for 'garage' domain
-  if (isProduction && hostname.includes('garage')) {
+  if (hostname.includes('garage')) {
     return marketplaceRouterTree;
   }
 
