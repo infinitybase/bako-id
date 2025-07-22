@@ -222,15 +222,16 @@ export const ProfileNfts = ({
               maxH="245px"
             >
               {collection.assets.map((a) => (
-                <NftCollectionCard
-                  key={a.assetId}
-                  asset={a}
-                  assets={assets}
-                  resolver={resolver}
-                  isOwner={isOwner}
-                  ctaButtonVariant="mktPrimary"
-                  nftCardMinSize="175px"
-                />
+                <GridItem key={a.assetId} maxW="175px">
+                  <NftCollectionCard
+                    key={a.assetId}
+                    asset={a}
+                    assets={assets}
+                    resolver={resolver}
+                    isOwner={isOwner}
+                    ctaButtonVariant="mktPrimary"
+                  />
+                </GridItem>
               ))}
             </Grid>
           </Box>
@@ -260,7 +261,7 @@ export const ProfileNfts = ({
           maxH="245px"
         >
           {orders?.map((order) => (
-            <GridItem key={order.id}>
+            <GridItem key={order.id} maxW="175px">
               <NftSaleCard
                 order={order}
                 showDelistButton={false}

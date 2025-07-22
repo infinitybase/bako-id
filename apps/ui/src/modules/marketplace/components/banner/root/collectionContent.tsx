@@ -11,12 +11,12 @@ const CollectionContent = ({ collection }: { collection: Collection }) => {
     <Flex
       zIndex={3}
       h="full"
-      w="full"
       align="center"
       justify="space-between"
       alignItems="flex-end"
       mb={2.5}
       maxW="1920px"
+      w={{ base: 'full', lg: 'calc(100% - 280px)' }}
       mx="auto"
     >
       <Flex align="center" gap={2} minW="0">

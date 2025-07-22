@@ -27,6 +27,7 @@ const MintPanel = () => {
         gap={6}
         mt={6}
         w="full"
+        maxW="container.xl"
       >
         <Flex direction="row" gap={4} align="flex-start">
           <Image

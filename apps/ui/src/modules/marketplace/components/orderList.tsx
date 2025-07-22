@@ -67,6 +67,9 @@ export const OrderList = ({
         <Link
           to={`/collection/${collectionId}/order/${order.id}`}
           key={order.id}
+          style={{
+            maxWidth: '260px',
+          }}
         >
           <NftSaleCard
             order={order}
