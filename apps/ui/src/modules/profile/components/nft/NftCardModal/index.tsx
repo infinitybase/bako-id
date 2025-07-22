@@ -82,6 +82,7 @@ export const NftCardModal = ({
             onClose={onClose}
             userWithHandle={!!data}
             assets={assets}
+            ctaButtonVariant={ctaButtonVariant}
           />
         )}
 

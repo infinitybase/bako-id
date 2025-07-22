@@ -45,6 +45,7 @@ export const CollectionPage = () => {
     hasNextPage,
     isFetchingNextPage,
     isFetched,
+    isPlaceholderData,
   } = useGetCollectionOrders({
     collectionId,
     sortValue: filters.sortBy,
@@ -145,6 +146,7 @@ export const CollectionPage = () => {
                   isLoadingOrders={!isFetched || isLoading}
                   isFetchingNextPage={isFetchingNextPage}
                   collectionOrdersLimit={collectionOrdersLimit}
+                  isPlaceholderData={isPlaceholderData}
                 />
               </Stack>
             </TabPanel>
