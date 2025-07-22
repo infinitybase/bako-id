@@ -1,5 +1,5 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
-import { Box, type BoxProps, Icon, VStack } from '@chakra-ui/react';
+import { Box, type BoxProps, Icon, Text, VStack } from '@chakra-ui/react';
 
 type ListHeaderProps = {
   sortValue: string;
@@ -32,7 +32,11 @@ export const ListHeader = ({
     >
       {label}
 
-      <VStack spacing={0} gap={0} ml={1}>
+      <Text fontSize="xs" color="section.500" mx={2} fontWeight={300}>
+        24h
+      </Text>
+
+      <VStack spacing={0} gap={0}>
         <Icon
           as={ChevronUpIcon}
           color={

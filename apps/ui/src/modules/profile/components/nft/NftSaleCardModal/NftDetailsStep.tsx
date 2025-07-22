@@ -12,6 +12,7 @@ import {
   Grid,
   GridItem,
   Heading,
+  Icon,
   IconButton,
   Image,
   Skeleton,
@@ -27,6 +28,7 @@ import { useCallback, useMemo } from 'react';
 import { NftListMetadata } from '../NftListMetadata';
 import { NftMetadataBlock } from '../NftMetadataBlock';
 import ShareOrder from '../ShareOrder';
+import { CloseIcon } from '@/components/icons/closeIcon';
 
 export default function NftDetailsStep({
   onClose,
@@ -114,8 +116,25 @@ export default function NftDetailsStep({
       }}
       style={{ scrollbarWidth: 'none' }}
       maxH={{ md: '480px' }}
+      position="relative"
     >
-      <Heading>{nftName}</Heading>
+      <Flex
+        alignItems="center"
+        justifyContent="space-between"
+        w="full"
+        position={{
+          base: 'relative',
+          sm: 'sticky',
+        }}
+        bg="background.900"
+        top={0}
+        right={0}
+        zIndex={1}
+      >
+        <Heading>{nftName}</Heading>
+        <Icon as={CloseIcon} cursor="pointer" onClick={onClose} />
+      </Flex>
+
       <Stack spacing={2}>
         <Text>Description</Text>
         <Text fontSize="sm" color="grey.subtitle" wordBreak="break-all">

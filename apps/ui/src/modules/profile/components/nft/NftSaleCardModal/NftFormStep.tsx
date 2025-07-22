@@ -15,6 +15,7 @@ export default function NftFormStep({
   name,
   onCancel,
   userWithHandle,
+  ctaButtonVariant = 'primary',
 }: {
   order: Order;
   value: number;
@@ -23,6 +24,7 @@ export default function NftFormStep({
   name: string;
   onCancel: () => void;
   userWithHandle: boolean;
+  ctaButtonVariant?: 'primary' | 'mktPrimary';
 }) {
   const { updateOrderAsync, isPending } = useUpdateOrder();
   const { errorToast, successToast } = useCustomToast();
@@ -70,7 +72,7 @@ export default function NftFormStep({
         </Button>
         <Button
           type="submit"
-          variant="primary"
+          variant={ctaButtonVariant}
           form="nft-sale-form"
           isLoading={isPending}
         >

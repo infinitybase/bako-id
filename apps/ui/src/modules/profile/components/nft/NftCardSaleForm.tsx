@@ -264,7 +264,7 @@ export const NftCardSaleForm = ({
               </InputGroup>
               <FormLabel fontSize="sm">Amount</FormLabel>
               {errors.sellPrice && (
-                <FormErrorMessage fontSize="sm">
+                <FormErrorMessage fontSize="xs" lineHeight=".1">
                   {errors.sellPrice.message}
                 </FormErrorMessage>
               )}

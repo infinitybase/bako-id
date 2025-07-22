@@ -180,8 +180,8 @@ export const ProfileNfts = ({
                   fontSize: '12px',
                   fontWeight: '400',
                   _selected: {
-                    bg: '#00DB7D1A',
-                    color: 'button.800',
+                    bg: '#B3FF2E1A',
+                    color: 'garage.100',
                   },
                 }}
               >
