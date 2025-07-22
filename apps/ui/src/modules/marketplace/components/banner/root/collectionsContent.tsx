@@ -55,6 +55,7 @@ const CollectionsContent = ({
         mx="auto"
         alignItems="flex-end"
         maxW="1920px"
+        w={{ base: 'full', lg: 'calc(100% - 280px)' }}
       >
         <Box color="#fff" maxW="lg" mt="auto" mb={4}>
           <VStack align="flex-start" mb={4}>
