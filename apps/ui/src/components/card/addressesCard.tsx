@@ -1,13 +1,13 @@
+import { useEditResolver } from '@/hooks/useEditResolver';
 import { Button, Flex, Heading, Icon, useDisclosure } from '@chakra-ui/react';
+import { useWallet } from '@fuels/react';
 import { Address } from 'fuels';
 import { Card, EditIcon, TextValue } from '..';
 import { formatAddress } from '../../utils/formatter';
 import { CopyText } from '../helpers/copy';
 import { FuelIcon } from '../icons/fuelIcon';
-import { useSidebar } from '../sidebar/hooks/useSidebar';
-import { useWallet } from '@fuels/react';
-import { useEditResolver } from '@/hooks/useEditResolver';
 import { EditResolverModal } from '../modal/editResolver';
+import { useSidebar } from '../sidebar/hooks/useSidebar';
 
 interface IAddressesCard {
   resolver: string | null;
@@ -16,8 +16,6 @@ interface IAddressesCard {
 }
 
 export const AddressesCard = ({ resolver, domainParam }: IAddressesCard) => {
-  if (!resolver) return null;
-
   const { isMyDomain } = useSidebar();
   const { wallet } = useWallet();
   const action = useDisclosure();
@@ -30,6 +28,8 @@ export const AddressesCard = ({ resolver, domainParam }: IAddressesCard) => {
     domain: domainParam,
     account: wallet!,
   });
+
+  if (!resolver) return null;
 
   return (
     <Card
@@ -55,8 +55,8 @@ export const AddressesCard = ({ resolver, domainParam }: IAddressesCard) => {
       <Flex direction="column" alignItems="center" justifyContent="center">
         <TextValue
           leftAction={<Icon as={FuelIcon} />}
-          rightAction={<CopyText value={Address.fromB256(resolver).toB256()} />}
-          content={formatAddress(Address.fromB256(resolver).toB256())}
+          rightAction={<CopyText value={new Address(resolver).toString()} />}
+          content={formatAddress(new Address(resolver).toString())}
         />
       </Flex>
       <EditResolverModal
