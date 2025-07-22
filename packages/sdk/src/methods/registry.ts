@@ -52,10 +52,10 @@ const formatTAI64toDate = (value: string) => {
     date.getFullYear(),
     date.getMonth(),
     date.getDate(),
-    0,
-    0,
-    0,
-    0
+    date.getHours(),
+    date.getMinutes(),
+    date.getSeconds(),
+    date.getMilliseconds()
   );
 };
 
@@ -190,7 +190,7 @@ export class RegistryContract {
         },
       ]);
     }
-    
+
     const transactionResponse =
       await this.account.sendTransaction(transactionRequest);
 
@@ -276,7 +276,7 @@ export class RegistryContract {
       .addContracts([this.managerContract])
       .fundWithRequiredCoins();
 
-    return {assetId, balanceNftHandle, transactionRequest};
+    return { assetId, balanceNftHandle, transactionRequest };
   }
 
   async token(domain: string) {

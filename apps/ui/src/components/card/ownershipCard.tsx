@@ -24,7 +24,11 @@ interface IOwnershipCard {
   explorerUrl: string;
   domainName: string;
 }
-export const OwnershipCard = ({ owner, explorerUrl, domainName }: IOwnershipCard) => {
+export const OwnershipCard = ({
+  owner,
+  explorerUrl,
+  domainName,
+}: IOwnershipCard) => {
   const { domain } = useParams({ strict: false });
   const { dates, isLoading } = useGetGracePeriod(domain.replace('@', ''));
   const { account } = useAccount();
@@ -40,10 +44,7 @@ export const OwnershipCard = ({ owner, explorerUrl, domainName }: IOwnershipCard
 
   const isMyDomain = useMemo(() => {
     if (!owner || !account) return false;
-    return (
-      Address.fromString(account).toString() ===
-      Address.fromString(owner).toString()
-    );
+    return new Address(account).equals(new Address(owner));
   }, [account, owner]);
 
   return (
@@ -99,7 +100,7 @@ export const OwnershipCard = ({ owner, explorerUrl, domainName }: IOwnershipCard
               explorerUrl={explorerUrl}
             />
           }
-          content={owner ? formatAddress(Address.fromB256(owner).toB256()) : ''}
+          content={owner ? formatAddress(new Address(owner).toString()) : ''}
         />
         {/* <TextValue
           leftAction={'manager'}

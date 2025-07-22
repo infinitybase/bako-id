@@ -59,8 +59,8 @@ const Container = (props: ContainerProps) => {
       maxW={350}
       onClick={() => setHide(!hide)}
       display="flex"
-      alignItems="flex-start"
-      justifyContent="flex-start"
+      alignItems="center"
+      justifyContent="center"
       bgGradient="linear(to-b, rgba(0,0,0,0.5), rgba(0,0,0,0.3))"
     >
       {props.leftIcon}
@@ -91,7 +91,7 @@ const Toast = (props: ToastProps) => {
         {props.title}
       </Text>
       <Text
-        mt={2}
+        textAlign="center"
         fontSize={14}
         noOfLines={2}
         whiteSpace="pre-wrap"
