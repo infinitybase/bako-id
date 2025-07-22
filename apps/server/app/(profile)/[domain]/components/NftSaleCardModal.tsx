@@ -3,8 +3,7 @@
 import { LightIcon } from '@/components/icons';
 import { BTCIcon } from '@/components/icons/btcicon';
 import { ContractIcon } from '@/components/icons/contracticon';
-import { blacklistMetadataKeys } from '@/helpers/constant';
-import type { Nft } from '@/types/marketplace';
+import type { Order } from '@/types/marketplace';
 import {
   Button,
   Flex,
@@ -16,49 +15,40 @@ import {
   Text,
 } from '@chakra-ui/react';
 import Link from 'next/link';
-import { useMemo } from 'react';
 import { NftListMetadata } from './NftListMetadata';
 import { NftMetadataBlock } from './NftMetadataBlock';
 import { NftModal } from './modal';
+import { useGetOrder } from '@/hooks/useGetOrder';
 
 interface NftSaleCardModalProps {
-  orderId: string;
+  order: Order;
   isOpen: boolean;
   onClose: () => void;
-  nft: Nft;
-  value: string;
+  value: number;
   usdValue: string;
-  asset: {
-    id: string;
-    iconUrl: string;
-    name: string;
-    decimals?: number;
-  };
   name: string;
   imageUrl: string;
+  chainId: number;
 }
 
 export const NftSaleCardModal = ({
   isOpen,
   onClose,
-  nft,
   name,
   imageUrl,
-  asset,
   value,
   usdValue,
-  orderId,
+  order,
+  chainId,
 }: NftSaleCardModalProps) => {
-  const metadataArray = useMemo(
-    () =>
-      Object.entries(nft.metadata ?? {})
-        .map(([key, value]) => ({
-          label: key,
-          value,
-        }))
-        .filter((item) => !blacklistMetadataKeys.includes(item.label)),
-    [nft]
-  );
+  const { order: orderData } = useGetOrder({ id: order.id, chainId });
+
+  const attributes = Array.isArray(orderData?.asset?.metadata.attributes)
+    ? orderData?.asset?.metadata.attributes.map((attribute) => ({
+        value: attribute.value,
+        label: attribute.trait_type,
+      }))
+    : [];
 
   return (
     <NftModal.Root isOpen={isOpen} onClose={onClose}>
@@ -88,7 +78,8 @@ export const NftSaleCardModal = ({
           <Stack spacing={2}>
             <Text>Description</Text>
             <Text fontSize="sm" color="grey.subtitle">
-              {nft.description ?? 'Description not provided.'}
+              {orderData?.asset.metadata?.description ??
+                'Description not provided.'}
             </Text>
           </Stack>
 
@@ -96,17 +87,17 @@ export const NftSaleCardModal = ({
             <GridItem>
               <NftMetadataBlock
                 title="Asset ID"
-                value={nft.id}
+                value={orderData?.asset.id ?? ''}
                 icon={<BTCIcon />}
                 isCopy
               />
             </GridItem>
 
-            {nft.fuelMetadata?.collection && (
+            {orderData?.collection.name && (
               <GridItem>
                 <NftMetadataBlock
                   title="Creator"
-                  value={nft.fuelMetadata?.collection}
+                  value={orderData?.collection.name}
                   icon={<LightIcon />}
                 />
               </GridItem>
@@ -115,7 +106,7 @@ export const NftSaleCardModal = ({
             <GridItem>
               <NftMetadataBlock
                 title="Contract ID"
-                value={nft.contractId ?? 'N/A'}
+                value={orderData?.collection.address ?? 'N/A'}
                 icon={<ContractIcon />}
                 isCopy
               />
@@ -129,7 +120,7 @@ export const NftSaleCardModal = ({
           >
             <Flex alignItems="center" gap={2}>
               <Image
-                src={asset.iconUrl}
+                src={orderData?.price.image}
                 alt="Asset icon"
                 height={6}
                 width={6}
@@ -146,13 +137,13 @@ export const NftSaleCardModal = ({
           <Button
             variant="primary"
             as={Link}
-            href={`${process.env.NEXT_PUBLIC_APP_URL}/marketplace/order/${orderId}`}
+            href={`${process.env.NEXT_PUBLIC_APP_URL}/marketplace/order/${order.id}`}
             py={2}
           >
             Buy
           </Button>
 
-          <NftListMetadata metadata={metadataArray} />
+          <NftListMetadata metadata={attributes} />
         </Stack>
 
         <NftModal.CloseIcon onClose={onClose} />

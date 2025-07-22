@@ -2,48 +2,47 @@
 
 import { Card } from '@/components/card';
 import { Pagination } from '@/components/pagination';
-import type { PaginationResult } from '@/helpers/pagination';
-import { useListOrders } from '@/hooks/useListOrders';
 import { useQueryParams } from '@/hooks/useQueryParams';
 import type { Order } from '@/types/marketplace';
 import { Grid, GridItem, Heading, Skeleton, Stack } from '@chakra-ui/react';
-import { bn } from 'fuels';
 import { Fragment } from 'react';
 import NftSaleCard from './NftSaleCard';
 
 interface NftListForSaleProps {
   domain: string;
-  address: string;
   chainId: number;
-  initialOrders?: PaginationResult<Order>;
+  orders?: Order[];
+  isOrdersLoading: boolean;
+  isPlaceholderData: boolean;
+  paginationInfos: {
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
 }
 
 export const NftListForSale = ({
   domain,
-  address,
   chainId,
-  initialOrders,
+  orders,
+  isOrdersLoading,
+  isPlaceholderData,
+  paginationInfos,
 }: NftListForSaleProps) => {
   const { query, handleChangeQuery } = useQueryParams<{ page?: string }>({
-    page: '1',
+    page: '0',
   });
-
-  const { orders, isLoading, isPlaceholderData } = useListOrders({
-    account: address,
-    page: Number(query.page ?? '1'),
-    chainId,
-    initialOrders,
-  });
+  const { totalPages, hasNextPage, hasPreviousPage } = paginationInfos;
 
   const handlePageChange = (page: number) => {
     handleChangeQuery('page', page.toString());
   };
 
-  const isEmptyOrders = !orders?.data?.length;
+  const isEmptyOrders = !orders?.length;
 
   return (
     <Card
-      hidden={isEmptyOrders && !isLoading && !orders?.hasPreviousPage}
+      hidden={isEmptyOrders && !isOrdersLoading && !hasPreviousPage}
       gap={6}
     >
       <Stack justifyContent="space-between" direction="row" alignItems="center">
@@ -64,7 +63,7 @@ export const NftListForSale = ({
         }}
         gap={6}
       >
-        {(isLoading || isPlaceholderData) && (
+        {isOrdersLoading && (
           <Fragment>
             {Array.from({ length: 6 }, () => (
               <GridItem key={crypto.randomUUID()}>
@@ -75,18 +74,13 @@ export const NftListForSale = ({
         )}
 
         {!isPlaceholderData &&
-          orders?.data?.map((order) => (
+          orders?.map((order) => (
             <GridItem key={order.id}>
-              <NftSaleCard
-                orderId={order.id}
-                asset={order.asset}
-                value={bn(order.itemPrice).formatUnits(order.asset?.decimals)}
-                nft={order.nft}
-              />
+              <NftSaleCard order={order} chainId={chainId} />
             </GridItem>
           ))}
 
-        {isEmptyOrders && !isLoading && (
+        {isEmptyOrders && !isOrdersLoading && (
           <GridItem colSpan={6} textAlign="center">
             <Heading fontSize="lg">No NFTs for sale</Heading>
           </GridItem>
@@ -99,12 +93,13 @@ export const NftListForSale = ({
         alignItems="center"
       >
         <Pagination
-          onPageChange={handlePageChange}
+          isAccountOrders
           page={Number(query.page ?? 1)}
-          totalPages={orders?.totalPages}
-          hasNextPage={orders?.hasNextPage}
-          hasPreviousPage={orders?.hasPreviousPage}
-          isFetching={isLoading || isPlaceholderData}
+          totalPages={totalPages}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          isLoading={isOrdersLoading || isPlaceholderData}
+          onPageChange={handlePageChange}
         />
       </GridItem>
     </Card>

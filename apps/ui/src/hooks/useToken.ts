@@ -8,7 +8,6 @@ export const useToken = () => {
   const { domain } = useParams({ strict: false });
   const { provider } = useProvider();
 
-
   const { data, ...rest } = useQuery({
     queryKey: ['token', domain],
     queryFn: async () => {

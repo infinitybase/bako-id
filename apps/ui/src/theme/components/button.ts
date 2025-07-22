@@ -51,6 +51,25 @@ const tertiary = defineStyle({
   },
 });
 
+const mktPrimary = defineStyle({
+  w: 'full',
+  bgColor: 'garage.100',
+  color: 'input.600',
+  _hover: {
+    opacity: 0.8,
+    _disabled: {
+      opacity: 0.8,
+      bgColor: 'garage.100',
+    },
+  },
+
+  _disabled: {
+    opacity: 0.5,
+  },
+
+  fontSize: 'sm',
+});
+
 const ghosted = defineStyle({
   bgColor: 'semi-transparent',
   fontWeight: 'normal',
@@ -100,6 +119,7 @@ const Button = defineStyleConfig({
     tertiary,
     ghosted,
     customLink,
+    mktPrimary,
   },
 });
 

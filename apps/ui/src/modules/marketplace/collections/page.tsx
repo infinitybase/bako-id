@@ -1,0 +1,163 @@
+import {
+  Container,
+  Stack,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Divider,
+} from '@chakra-ui/react';
+import {
+  Outlet,
+  useNavigate,
+  useParams,
+  useSearch,
+} from '@tanstack/react-router';
+import { useCallback, useMemo, useState } from 'react';
+import { OrderList } from '../components/orderList';
+
+import MarketplaceFilter from '../components/marketplaceFilter';
+import { useGetCollection } from '@/hooks/marketplace/useGetCollection';
+import { useGetCollectionOrders } from '@/hooks/marketplace/useGetCollectionOrders';
+import { useDebounce } from '@/hooks/useDebounce';
+import { CollectionPageBanner } from '../components/banner/collectionBanner';
+import MintPanel from '../components/mintPanel';
+
+export const CollectionPage = () => {
+  const collectionOrdersLimit = 10;
+  const { collectionId } = useParams({ strict: false });
+  const { search } = useSearch({ strict: false });
+  const debouncedSearch = useDebounce<string>(search ?? '', 700);
+  const navigate = useNavigate();
+  const [filters, setFilters] = useState<{
+    sortBy: string;
+    sortDirection: 'desc' | 'asc';
+  }>({
+    sortBy: 'volumes',
+    sortDirection: 'desc',
+  });
+
+  const {
+    collectionOrders,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isFetched,
+    isPlaceholderData,
+  } = useGetCollectionOrders({
+    collectionId,
+    sortValue: filters.sortBy,
+    sortDirection: filters.sortDirection,
+    limit: collectionOrdersLimit,
+    search: debouncedSearch,
+  });
+
+  const handleChangeSearch = useCallback(
+    (search: string) => {
+      navigate({
+        search: {
+          // @ts-expect-error - TODO: add type for search in router schema
+          search,
+        },
+      });
+    },
+    [navigate]
+  );
+
+  const handleSortChange = (column: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      sortBy: column.replace('-asc', '').replace('-desc', ''),
+      sortDirection: column.includes('asc') ? 'asc' : 'desc',
+    }));
+  };
+
+  const { collection } = useGetCollection({
+    collectionId,
+  });
+
+  const data = useMemo(
+    () => collectionOrders?.pages?.flatMap((page) => page.data) ?? [],
+    [collectionOrders]
+  );
+
+  return (
+    <Stack w="full" p={0} m={0}>
+      <CollectionPageBanner collection={collection?.data!} />
+
+      <Container
+        maxWidth="1920px"
+        w={{ base: 'full', lg: 'calc(100% - 280px)' }}
+        py={8}
+        overflowY="hidden"
+        sx={{
+          '&::-webkit-scrollbar': {
+            width: '0px',
+          },
+        }}
+        minH="100vh"
+        pb={{
+          base: 15,
+          sm: 8,
+        }}
+      >
+        <Tabs variant="soft-rounded">
+          <TabList>
+            <Tab
+              _selected={{
+                bg: 'grey.600',
+                color: 'white',
+              }}
+              color="disabled.500"
+              bg="input.600"
+              borderRadius="8px 8px 0 0"
+              fontSize="xs"
+              letterSpacing=".5px"
+            >
+              Items
+            </Tab>
+            <Tab
+              _selected={{ bg: 'grey.600', color: 'white' }}
+              color="disabled.500"
+              bg="input.600"
+              borderRadius="8px 8px 0 0"
+              fontSize="xs"
+              letterSpacing=".5px"
+            >
+              Mint
+            </Tab>
+          </TabList>
+          <Divider my={0} py={0} borderColor="grey.600" />
+          <TabPanels>
+            <TabPanel px={0}>
+              <Stack gap={8}>
+                <MarketplaceFilter
+                  searchValue={search}
+                  onSearchChange={handleChangeSearch}
+                  sortValue={filters.sortBy}
+                  onSortChange={handleSortChange}
+                  isCollectionPage
+                />
+                <OrderList
+                  orders={data}
+                  hasNextPage={hasNextPage}
+                  onFetchNextPage={fetchNextPage}
+                  isLoadingOrders={!isFetched || isLoading}
+                  isFetchingNextPage={isFetchingNextPage}
+                  collectionOrdersLimit={collectionOrdersLimit}
+                  isPlaceholderData={isPlaceholderData}
+                />
+              </Stack>
+            </TabPanel>
+            <TabPanel p={0}>
+              <MintPanel />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+        <Outlet />
+      </Container>
+    </Stack>
+  );
+};

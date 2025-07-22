@@ -38,6 +38,7 @@
     "react-intersection-observer": "^9.16.0",
     "react-share": "^5.1.0",
     "react-text-mask": "^5.5.0",
+    "swiper": "^11.2.9",
     "tai64": "^1.0.0",
     "text-mask-addons": "^3.8.0",
     "validator": "^13.12.0",

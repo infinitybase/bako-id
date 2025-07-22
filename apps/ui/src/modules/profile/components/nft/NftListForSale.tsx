@@ -4,7 +4,6 @@ import { Pagination } from '@/components/pagination';
 import { useResolverName } from '@/hooks';
 import type { Order } from '@/types/marketplace';
 import { AddressUtils } from '@/utils/address';
-import type { PaginationResult } from '@/utils/pagination';
 import {
   Button,
   Grid,
@@ -23,10 +22,16 @@ export const NftListForSale = ({
   address,
   isLoadingOrders,
   orders,
+  paginationInfos,
 }: {
   address: string;
   isLoadingOrders?: boolean;
-  orders: PaginationResult<Order> | undefined;
+  orders: Order[] | undefined;
+  paginationInfos: {
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
 }) => {
   const [isDelistOrder, setIsDelistOrder] = useState(false);
   const { page } = useSearch({ strict: false });
@@ -43,7 +48,7 @@ export const NftListForSale = ({
     navigate({ search: { page } });
   };
 
-  const isEmptyOrders = useMemo(() => !orders?.data?.length, [orders]);
+  const isEmptyOrders = useMemo(() => !orders?.length, [orders]);
 
   const isOwner = useMemo(
     () => AddressUtils.isEqual(wallet?.address.b256Address, address),
@@ -84,7 +89,7 @@ export const NftListForSale = ({
         gap={6}
       >
         {!isLoadingOrders &&
-          orders?.data?.map((order) => (
+          orders?.map((order) => (
             <GridItem key={order.id}>
               <NftSaleCard
                 order={order}
@@ -111,10 +116,11 @@ export const NftListForSale = ({
         alignItems="center"
       >
         <Pagination
+          isAccountOrders
           page={Number(page ?? 1)}
-          totalPages={orders?.totalPages}
-          hasNextPage={orders?.hasNextPage}
-          hasPreviousPage={orders?.hasPreviousPage}
+          totalPages={paginationInfos.totalPages}
+          hasNextPage={paginationInfos.hasNextPage}
+          hasPreviousPage={paginationInfos.hasPreviousPage}
           isLoading={isLoadingOrders}
           onPageChange={handlePageChange}
         />

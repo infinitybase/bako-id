@@ -19,6 +19,7 @@ interface NftCardModalProps {
   assets: Asset[];
   isOwner: boolean;
   collection?: string;
+  ctaButtonVariant?: 'primary' | 'mktPrimary';
 }
 
 export const NftCardModal = ({
@@ -32,6 +33,7 @@ export const NftCardModal = ({
   assets,
   isOwner,
   collection,
+  ctaButtonVariant = 'primary',
 }: NftCardModalProps) => {
   const [step, setStep] = useState(0);
   const { wallet } = useWallet();
@@ -68,6 +70,7 @@ export const NftCardModal = ({
             metadata={metadata}
             collection={collection}
             onSellClick={handleChangeStepToSell}
+            ctaButtonVariant={ctaButtonVariant}
           />
         )}
 
@@ -79,6 +82,7 @@ export const NftCardModal = ({
             onClose={onClose}
             userWithHandle={!!data}
             assets={assets}
+            ctaButtonVariant={ctaButtonVariant}
           />
         )}
 
