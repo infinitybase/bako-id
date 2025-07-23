@@ -9,9 +9,11 @@ export enum MarketplaceQueryKeys {
   ORDER = 'order',
   ALL_ORDERS = 'allOrders',
   ALL_COLLECTIONS = 'allCollections',
+  ALL_MINTABLE_COLLECTIONS = 'allMintableCollections',
   COLLECTION = 'collection',
   COLLECTION_ORDERS = 'collectionOrders',
   USER_ORDERS = 'userOrders',
+  MINT_TOKEN = 'mintToken',
 }
 
 export enum BakoIDQueryKeys {

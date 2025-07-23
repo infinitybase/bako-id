@@ -11,19 +11,47 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
-import BlueEthIcon from '@/assets/marketplace/blue-eth.svg';
+import type { AssetInfo, BN } from 'fuels';
+import UnknownAsset from '@/assets/unknown-asset.png';
+import { convertToUsd } from '@/utils/convertToUsd';
 
-const MintContent = (props: {
+type MintContentProps = {
   title: string;
   description: string;
   progress: number;
   maxSupply: number;
-  maxPerWallet: number;
-  priceEth: number;
-  priceUsd: number;
-}) => {
+  // maxPerWallet: number;
+  tokenPrice: BN;
+  isMinting: boolean;
+  asset: AssetInfo | null | undefined;
+  onMint: (quantity: number) => void;
+};
+
+const MintContent = ({
+  title,
+  description,
+  progress,
+  maxSupply,
+  // maxPerWallet,
+  tokenPrice,
+  isMinting,
+  asset,
+  onMint,
+}: MintContentProps) => {
   const [quantity, setQuantity] = useState(1);
-  const progress = (props.progress / props.maxSupply) * 100;
+  const progressPercentage = (progress / maxSupply) * 100;
+
+  const mintPrice = tokenPrice.mul(quantity).formatUnits(asset?.decimals ?? 0);
+  const usdPrice = convertToUsd(
+    tokenPrice.mul(quantity),
+    asset?.decimals ?? 0,
+    asset?.rate ?? 0
+  ).formatted;
+
+  const handleMint = () => {
+    onMint(quantity);
+  };
+
   return (
     <Flex
       flex="1"
@@ -33,26 +61,26 @@ const MintContent = (props: {
     >
       <Flex direction="column" gap={4}>
         <Heading fontSize="18px" mt={6} mb={2}>
-          {props.title}
+          {title}
         </Heading>
         <Text color="white" fontWeight={700} fontSize="sm">
           Description
         </Text>
         <Text fontSize="xs" color="section.500" mb={4}>
-          {props.description}
+          {description}
         </Text>
       </Flex>
 
       <Stack bg="input.600" borderRadius="8px" p={4} gap={4}>
         <Box>
           <Flex align="center" justify="space-between" mb={1}>
-            <Text fontSize="sm">{Math.round(progress)}% minted</Text>
+            <Text fontSize="sm">{progressPercentage}% minted</Text>
             <Text fontSize="xs" color="grey.400">
-              {props.progress}/{props.maxSupply}
+              {progress}/{maxSupply}
             </Text>
           </Flex>
           <Progress
-            value={progress}
+            value={progressPercentage}
             size="sm"
             sx={{
               '& > div[role="progressbar"]': {
@@ -62,21 +90,18 @@ const MintContent = (props: {
             borderRadius="md"
           />
         </Box>
-        <Text fontSize="xs" color="grey.400" ml="auto">
-          Limit {props.maxPerWallet} per wallet
-        </Text>
-        <Stack direction="row" justify="space-between" align="center">
+        {/* <Text fontSize="xs" color="grey.400" ml="auto">
+          Limit {maxPerWallet} per wallet
+        </Text> */}
+        <Stack direction="row" justify="space-between" align="center" mt={4}>
           <Flex align="center" gap={1}>
-            <Image src={BlueEthIcon} alt="ETH" rounded="full" />
+            <Image src={asset?.icon ?? UnknownAsset} alt="ETH" rounded="full" />
             <Flex align="center" gap={2} w="full">
               <Text fontWeight="bold" fontSize="sm">
-                0{props.priceEth} ETH
+                {mintPrice} {asset?.symbol}
               </Text>
               <Text fontSize="xs" color="grey.400">
-                $
-                {props.priceUsd.toLocaleString(undefined, {
-                  maximumFractionDigits: 2,
-                })}
+                {usdPrice}
               </Text>
             </Flex>
           </Flex>
@@ -113,10 +138,8 @@ const MintContent = (props: {
               bg="transparent"
               _hover={{ bg: 'grey.600' }}
               border="none"
-              onClick={() =>
-                setQuantity((q) => Math.min(props.maxPerWallet, q + 1))
-              }
-              isDisabled={quantity >= props.maxPerWallet}
+              onClick={() => setQuantity((q) => q + 1)}
+              // isDisabled={quantity >= maxPerWallet}
             />
           </Flex>
         </Stack>
@@ -127,6 +150,9 @@ const MintContent = (props: {
           fontWeight="bold"
           borderRadius="md"
           letterSpacing=".5px"
+          onClick={handleMint}
+          isLoading={isMinting}
+          isDisabled={isMinting}
         >
           Mint {quantity} NFT{quantity > 1 ? 's' : ''}
         </Button>

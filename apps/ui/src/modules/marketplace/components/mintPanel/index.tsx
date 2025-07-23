@@ -1,23 +1,20 @@
-import { Flex, Image, Stack } from '@chakra-ui/react';
+import { Box, Flex, Heading, Image, Stack, Text } from '@chakra-ui/react';
 import MintContent from './mintContent';
-import MoreInfo from './moreInfo';
+import { parseURI } from '@/utils/formatter';
+import { ImageLoader } from '@/components/imageLoader';
+import { useMintToken } from '@/hooks/marketplace/useMintToken';
+import MintPanelSkeleton from '../skeletons/mintPanelSkeleton';
 
-const NFT_IMAGES = [
-  'https://i.imgur.com/1Q9Z1Zm.png',
-  'https://i.imgur.com/2Q9Z1Zm.png',
-  'https://i.imgur.com/3Q9Z1Zm.png',
-  'https://i.imgur.com/4Q9Z1Zm.png',
-];
+const MintPanel = ({ collectionId }: { collectionId?: string }) => {
+  if (!collectionId) return null;
 
-const MAX_SUPPLY = 200;
-const MINTED = 50;
-const PRICE_ETH = 0.01875;
-const PRICE_USD = 520.89;
-const MAX_PER_WALLET = 5;
-const description =
-  'Unlock the future of secure digital assets with the Bako Safe NFT. This exclusive, limited-edition token represents a unique piece of the Bako Safe ecosystem, where cutting-edge security meets innovative technology. Owning this NFT grants you a rare digital collectible that symbolizes the ultimate in safety and privacy for your virtual world. With its sleek design and powerful encryption roots, the Bako Safe NFT is not just a collectible, but a key to a secure future.';
+  const {
+    query: { supplies, totalMinted, mintPrice, config, asset, isLoading },
+    mutation: { mintToken, isPending },
+  } = useMintToken(collectionId);
 
-const MintPanel = () => {
+  if (isLoading || !config) return <MintPanelSkeleton />;
+
   return (
     <>
       <Flex
@@ -30,16 +27,23 @@ const MintPanel = () => {
         maxW="container.xl"
       >
         <Flex direction="row" gap={4} align="flex-start">
-          <Image
-            src={NFT_IMAGES[0]}
+          <ImageLoader
+            src={parseURI(config?.avatar ?? '')}
+            skeletonProps={{
+              boxSize: '500px',
+              borderRadius: 'lg',
+              bg: 'grey.900',
+              objectFit: 'cover',
+            }}
+            imageProps={{
+              boxSize: '500px',
+              borderRadius: 'lg',
+              objectFit: 'cover',
+            }}
             alt="NFT preview"
-            boxSize="500px"
-            borderRadius="lg"
-            objectFit="cover"
-            bg="gray.900"
           />
           <Stack direction="column" spacing={4} ml={2}>
-            {NFT_IMAGES.map((img, idx) => (
+            {config?.previews?.map((img, idx) => (
               <Image
                 key={img}
                 src={img}
@@ -53,35 +57,66 @@ const MintPanel = () => {
           </Stack>
         </Flex>
         <MintContent
-          title="Minting Fuel Pengus"
-          description={description}
-          progress={MINTED}
-          maxSupply={MAX_SUPPLY}
-          maxPerWallet={MAX_PER_WALLET}
-          priceEth={PRICE_ETH}
-          priceUsd={PRICE_USD}
+          title={`Minting ${config?.name}`}
+          description={config?.description ?? ''}
+          progress={Number(totalMinted)}
+          maxSupply={Number(supplies)}
+          // maxPerWallet={MAX_PER_WALLET}
+          tokenPrice={mintPrice}
+          isMinting={isPending}
+          onMint={mintToken}
+          asset={asset}
         />
       </Flex>
 
-      <MoreInfo
-        borderTop="1px solid"
-        borderColor="grey.600"
-        pt={6}
-        mt={6}
-        title="Another information about this collection"
-        description={description}
-        h={{ base: 'full', md: '414px' }}
-      />
-      <MoreInfo
-        borderTop="1px solid"
-        borderColor="grey.600"
-        pt={6}
-        mt={6}
-        title="Another information about this collection"
-        description={description}
-        h={{ base: 'full', md: '414px' }}
-        reverse
-      />
+      {config?.about?.map((about) => (
+        <Flex
+          key={`about-${Math.random()}`}
+          gap="173px"
+          my={6}
+          py="72px"
+          borderTop="1px solid"
+          borderColor="grey.600"
+        >
+          {about.map((item) => {
+            if (item.type === 'image') {
+              return (
+                <Box maxW="480px" h="270px" flex={1}>
+                  <ImageLoader
+                    key={item.value}
+                    src={item.value}
+                    alt="NFT Section Image"
+                    skeletonProps={{
+                      boxSize: 'full',
+                    }}
+                    imageProps={{
+                      boxSize: 'full',
+                    }}
+                  />
+                </Box>
+              );
+            }
+
+            return (
+              <Flex
+                key={item.title}
+                gap={4}
+                align={item.align}
+                justify="center"
+                flexDir="column"
+                flex={1}
+              >
+                <Heading color="white" fontSize="sm">
+                  {item.title}
+                </Heading>
+                <Text fontSize="xs" color="section.500">
+                  {item.text}
+                </Text>
+              </Flex>
+            );
+          })}
+        </Flex>
+      ))}
     </>
   );
 };

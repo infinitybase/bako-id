@@ -25,11 +25,10 @@ import { CollectionPageBanner } from '../components/banner/collectionBanner';
 import MintPanel from '../components/mintPanel';
 
 export const CollectionPage = () => {
-  const collectionOrdersLimit = 10;
+  const navigate = useNavigate();
   const { collectionId } = useParams({ strict: false });
   const { search } = useSearch({ strict: false });
   const debouncedSearch = useDebounce<string>(search ?? '', 700);
-  const navigate = useNavigate();
   const [filters, setFilters] = useState<{
     sortBy: string;
     sortDirection: 'desc' | 'asc';
@@ -37,6 +36,8 @@ export const CollectionPage = () => {
     sortBy: 'volumes',
     sortDirection: 'desc',
   });
+
+  const collectionOrdersLimit = 10;
 
   const {
     collectionOrders,
@@ -52,6 +53,10 @@ export const CollectionPage = () => {
     sortDirection: filters.sortDirection,
     limit: collectionOrdersLimit,
     search: debouncedSearch,
+  });
+
+  const { collection } = useGetCollection({
+    collectionId,
   });
 
   const handleChangeSearch = useCallback(
@@ -73,10 +78,6 @@ export const CollectionPage = () => {
       sortDirection: column.includes('asc') ? 'asc' : 'desc',
     }));
   };
-
-  const { collection } = useGetCollection({
-    collectionId,
-  });
 
   const data = useMemo(
     () => collectionOrders?.pages?.flatMap((page) => page.data) ?? [],
@@ -105,19 +106,21 @@ export const CollectionPage = () => {
       >
         <Tabs variant="soft-rounded">
           <TabList>
-            <Tab
-              _selected={{
-                bg: 'grey.600',
-                color: 'white',
-              }}
-              color="disabled.500"
-              bg="input.600"
-              borderRadius="8px 8px 0 0"
-              fontSize="xs"
-              letterSpacing=".5px"
-            >
-              Items
-            </Tab>
+            {data.length > 0 && (
+              <Tab
+                _selected={{
+                  bg: 'grey.600',
+                  color: 'white',
+                }}
+                color="disabled.500"
+                bg="input.600"
+                borderRadius="8px 8px 0 0"
+                fontSize="xs"
+                letterSpacing=".5px"
+              >
+                Items
+              </Tab>
+            )}
             <Tab
               _selected={{ bg: 'grey.600', color: 'white' }}
               color="disabled.500"
@@ -131,28 +134,31 @@ export const CollectionPage = () => {
           </TabList>
           <Divider my={0} py={0} borderColor="grey.600" />
           <TabPanels>
-            <TabPanel px={0}>
-              <Stack gap={8}>
-                <MarketplaceFilter
-                  searchValue={search}
-                  onSearchChange={handleChangeSearch}
-                  sortValue={filters.sortBy}
-                  onSortChange={handleSortChange}
-                  isCollectionPage
-                />
-                <OrderList
-                  orders={data}
-                  hasNextPage={hasNextPage}
-                  onFetchNextPage={fetchNextPage}
-                  isLoadingOrders={!isFetched || isLoading}
-                  isFetchingNextPage={isFetchingNextPage}
-                  collectionOrdersLimit={collectionOrdersLimit}
-                  isPlaceholderData={isPlaceholderData}
-                />
-              </Stack>
-            </TabPanel>
+            {data.length > 0 && (
+              <TabPanel px={0}>
+                <Stack gap={8}>
+                  <MarketplaceFilter
+                    searchValue={search}
+                    onSearchChange={handleChangeSearch}
+                    sortValue={filters.sortBy}
+                    onSortChange={handleSortChange}
+                    isCollectionPage
+                  />
+                  <OrderList
+                    orders={data}
+                    hasNextPage={hasNextPage}
+                    onFetchNextPage={fetchNextPage}
+                    isLoadingOrders={!isFetched || isLoading}
+                    isFetchingNextPage={isFetchingNextPage}
+                    collectionOrdersLimit={collectionOrdersLimit}
+                    isPlaceholderData={isPlaceholderData}
+                  />
+                </Stack>
+              </TabPanel>
+            )}
+
             <TabPanel p={0}>
-              <MintPanel />
+              <MintPanel collectionId={collectionId ?? ''} />
             </TabPanel>
           </TabPanels>
         </Tabs>
