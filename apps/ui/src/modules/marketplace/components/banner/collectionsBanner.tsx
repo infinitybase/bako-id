@@ -32,7 +32,7 @@ export const MarketplaceBanner = () => {
 
   const router = useRouter();
 
-  if (!banners || isLoading) {
+  if (isLoading) {
     return <Skeleton height="350px" />;
   }
 

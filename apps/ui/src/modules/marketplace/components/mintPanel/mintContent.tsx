@@ -9,7 +9,7 @@ import {
   Button,
   IconButton,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import type { AssetInfo, BN } from 'fuels';
 import UnknownAsset from '@/assets/unknown-asset.png';
@@ -39,14 +39,23 @@ const MintContent = ({
   onMint,
 }: MintContentProps) => {
   const [quantity, setQuantity] = useState(1);
-  const progressPercentage = (progress / maxSupply) * 100;
-
-  const mintPrice = tokenPrice.mul(quantity).formatUnits(asset?.decimals ?? 0);
-  const usdPrice = convertToUsd(
-    tokenPrice.mul(quantity),
-    asset?.decimals ?? 0,
-    asset?.rate ?? 0
-  ).formatted;
+  const progressPercentage = useMemo(
+    () => (progress / maxSupply) * 100,
+    [progress, maxSupply]
+  );
+  const mintPrice = useMemo(
+    () => tokenPrice?.mul(quantity).formatUnits(asset?.decimals ?? 0),
+    [tokenPrice, quantity, asset?.decimals]
+  );
+  const usdPrice = useMemo(
+    () =>
+      convertToUsd(
+        tokenPrice?.mul(quantity),
+        asset?.decimals ?? 0,
+        asset?.rate ?? 0
+      ).formatted,
+    [tokenPrice, quantity, asset?.decimals, asset?.rate]
+  );
 
   const handleMint = () => {
     onMint(quantity);

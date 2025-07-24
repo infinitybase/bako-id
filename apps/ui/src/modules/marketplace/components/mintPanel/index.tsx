@@ -13,7 +13,7 @@ const MintPanel = ({ collectionId }: { collectionId?: string }) => {
     useGetMintData(collectionId);
   const { mintToken, isPending } = useMintToken(collectionId);
 
-  if (isLoading || !config) return <MintPanelSkeleton />;
+  if (isLoading) return <MintPanelSkeleton />;
 
   return (
     <>
