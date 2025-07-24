@@ -3,16 +3,19 @@ import { MarketplaceQueryKeys } from '@/utils/constants';
 import { Networks, resolveNetwork } from '@/utils/resolverNetwork';
 import { useWallet } from '@fuels/react';
 import { useQuery } from '@tanstack/react-query';
-import { bn, getAssetById } from 'fuels';
+import { bn, getAssetById, Provider } from 'fuels';
+
+const { VITE_PROVIDER_URL } = import.meta.env;
 
 export const useGetMintData = (collectionId: string) => {
     const { wallet } = useWallet();
-    const mintContract = new NFTCollection(collectionId, wallet!);
 
     const { data, ...rest } = useQuery({
-        queryKey: [MarketplaceQueryKeys.MINT_TOKEN, collectionId],
+        queryKey: [MarketplaceQueryKeys.MINT_TOKEN, collectionId, wallet?.provider],
         queryFn: async () => {
-            const chainId = await wallet?.provider.getChainId();
+            const provider = wallet?.provider ?? new Provider(VITE_PROVIDER_URL)
+            const mintContract = new NFTCollection(collectionId, provider!);
+            const chainId = await provider.getChainId();
 
             const network = resolveNetwork(chainId ?? Networks.MAINNET);
 
@@ -32,7 +35,7 @@ export const useGetMintData = (collectionId: string) => {
                 asset,
             };
         },
-        enabled: !!wallet,
+        enabled: !!collectionId,
     });
 
     return {

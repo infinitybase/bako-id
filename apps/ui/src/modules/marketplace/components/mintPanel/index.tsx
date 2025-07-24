@@ -7,12 +7,11 @@ import MintPanelSkeleton from '../skeletons/mintPanelSkeleton';
 import { useMintToken } from '@/hooks/marketplace/useMintToken';
 
 const MintPanel = ({ collectionId }: { collectionId?: string }) => {
-  if (!collectionId) return null;
-
   const { supplies, totalMinted, mintPrice, config, asset, isLoading } =
-    useGetMintData(collectionId);
-  const { mintToken, isPending } = useMintToken(collectionId);
+    useGetMintData(collectionId!);
+  const { mintToken, isPending } = useMintToken(collectionId!);
 
+  if (!collectionId) return null;
   if (isLoading) return <MintPanelSkeleton />;
 
   return (
