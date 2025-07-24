@@ -74,7 +74,7 @@ const MintContent = ({
       <Stack bg="input.600" borderRadius="8px" p={4} gap={4}>
         <Box>
           <Flex align="center" justify="space-between" mb={1}>
-            <Text fontSize="sm">{progressPercentage}% minted</Text>
+            <Text fontSize="sm">{progressPercentage.toFixed(2)}% minted</Text>
             <Text fontSize="xs" color="grey.400">
               {progress}/{maxSupply}
             </Text>

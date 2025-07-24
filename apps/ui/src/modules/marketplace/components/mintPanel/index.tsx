@@ -2,16 +2,16 @@ import { Box, Flex, Heading, Image, Stack, Text } from '@chakra-ui/react';
 import MintContent from './mintContent';
 import { parseURI } from '@/utils/formatter';
 import { ImageLoader } from '@/components/imageLoader';
-import { useMintToken } from '@/hooks/marketplace/useMintToken';
+import { useGetMintData } from '@/hooks/marketplace/useGetMintData';
 import MintPanelSkeleton from '../skeletons/mintPanelSkeleton';
+import { useMintToken } from '@/hooks/marketplace/useMintToken';
 
 const MintPanel = ({ collectionId }: { collectionId?: string }) => {
   if (!collectionId) return null;
 
-  const {
-    query: { supplies, totalMinted, mintPrice, config, asset, isLoading },
-    mutation: { mintToken, isPending },
-  } = useMintToken(collectionId);
+  const { supplies, totalMinted, mintPrice, config, asset, isLoading } =
+    useGetMintData(collectionId);
+  const { mintToken, isPending } = useMintToken(collectionId);
 
   if (isLoading || !config) return <MintPanelSkeleton />;
 
