@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
 import { WalletIcon2 } from '@/modules/marketplace/components/icons/wallet2';
-import { UserIcon } from '@/components';
+import { useCustomToast, UserIcon } from '@/components';
 import { useNavigate } from '@tanstack/react-router';
 import { isB256, type Account } from 'fuels';
 import { formatAddress } from '@/utils/formatter';
@@ -33,8 +33,16 @@ export const MarketplaceConnect = ({
   wallet: Account | null;
 }) => {
   const navigate = useNavigate();
+  const { successToast } = useCustomToast();
 
   const isWalletAddress = isB256(domain ?? '');
+
+  const copy = () => {
+    navigator.clipboard.writeText(wallet?.address.toB256() ?? '');
+    successToast({
+      title: 'Address copied to clipboard',
+    });
+  };
 
   const parsedDomain = isWalletAddress
     ? formatAddress(domain, 5)
@@ -146,11 +154,7 @@ export const MarketplaceConnect = ({
             px={2}
             borderBottom="1px solid"
             borderColor="grey.400"
-            onClick={() =>
-              navigator.clipboard.writeText(
-                domain ?? wallet?.address.toB256() ?? ''
-              )
-            }
+            onClick={copy}
             _hover={{ bg: 'input.500' }}
           >
             <Text fontSize="12px" letterSpacing="0.5px" lineHeight="1.2">
