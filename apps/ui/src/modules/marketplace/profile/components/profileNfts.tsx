@@ -210,7 +210,7 @@ export const ProfileNfts = ({
         )}
 
         {notListedCollectionsWithoutHandles?.map((collection) => (
-          <Box key={collection.name}>
+          <Box key={collection.name} mt={6}>
             <Grid
               templateColumns={{
                 base: 'repeat(1, 1fr)',

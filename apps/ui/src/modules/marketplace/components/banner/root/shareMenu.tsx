@@ -8,7 +8,6 @@ import {
   Icon,
   Text,
 } from '@chakra-ui/react';
-import { DiscordIcon } from '@/components/icons/discordIcon';
 import { CopyIcon2 } from '../../icons';
 import { ShareIcon2 } from '../../icons/shareIcon2';
 import { TwitterIcon } from '../../icons/twitterIcon';
@@ -23,11 +22,6 @@ const menuItems = [
     icon: TwitterIcon,
     label: 'Share on X',
     key: 'x',
-  },
-  {
-    icon: DiscordIcon,
-    label: 'Share on Discord',
-    key: 'discord',
   },
 ];
 

@@ -40,7 +40,7 @@ const CollectionContent = ({ collection }: { collection: Collection }) => {
       </Flex>
 
       <Flex gap={4}>
-        <BannerRoot.StatBox label="Sales" value={collection.metrics.sales} />
+        <BannerRoot.StatBox label="Items" value={collection.metrics.sales} />
         <BannerRoot.StatBox
           label="Floor price"
           value={usdValueFormatter(collection.metrics.floorPrice ?? 0)}

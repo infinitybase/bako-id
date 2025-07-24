@@ -17,52 +17,54 @@ export const ListHeader = ({
   sortKey,
   ...rest
 }: ListHeaderProps) => {
-  const displayTimeStamps =
-    label !== 'Floor price' && label !== 'Last sold' && label !== '24h';
+  const displayTimeStamps = label === 'Sales' || label === 'Volume';
 
   return (
     <Box
-      flex="1"
       cursor="pointer"
       onClick={() => onSortChange(sortKey)}
       display="flex"
       alignItems="center"
       justifyContent="flex-end"
+      w="full"
       {...rest}
+      position="relative"
     >
       <Text color="white" fontWeight={600} fontSize="xs">
         {label}
       </Text>
 
       {displayTimeStamps && (
-        <Text fontSize="xs" color="section.500" mx={2} fontWeight={300}>
+        <Text fontSize="xs" color="section.500" ml={2} fontWeight={300}>
           30d
         </Text>
       )}
 
-      <VStack spacing={0} gap={0} ml={displayTimeStamps ? 0 : 2}>
-        <Icon
-          as={ChevronUpIcon}
-          color={
-            sortValue === sortKey && sortDirection === 'asc'
-              ? 'section.500'
-              : 'white'
-          }
-          w={4}
-          h={4}
-        />
+      {label !== 'Last sold' && (
+        <VStack spacing={0} gap={0} position="absolute" right={-6}>
+          <Icon
+            as={ChevronUpIcon}
+            color={
+              sortValue === sortKey && sortDirection === 'asc'
+                ? 'section.500'
+                : 'white'
+            }
+            w={4}
+            h={4}
+          />
 
-        <Icon
-          as={ChevronDownIcon}
-          color={
-            sortValue === sortKey && sortDirection === 'desc'
-              ? 'section.500'
-              : 'white'
-          }
-          w={4}
-          h={4}
-        />
-      </VStack>
+          <Icon
+            as={ChevronDownIcon}
+            color={
+              sortValue === sortKey && sortDirection === 'desc'
+                ? 'section.500'
+                : 'white'
+            }
+            w={4}
+            h={4}
+          />
+        </VStack>
+      )}
     </Box>
   );
 };

@@ -1,7 +1,7 @@
 import type { Collection } from '@/types/marketplace';
 import { ListHeader } from './listHeader';
 import { CollectionItem } from './collectionItem';
-import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react';
+import { Box, Grid, GridItem, Heading, Text, VStack } from '@chakra-ui/react';
 
 type SortDirection = 'asc' | 'desc';
 
@@ -52,23 +52,38 @@ export const CollectionList = ({
       )}
 
       {!isEmptyCollections && (
-        <Flex py={2} fontWeight="bold" color="gray.400" mb={6}>
-          <Text color="white" flex="2" fontWeight={600} fontSize="sm">
-            Collection name
-          </Text>
+        <Grid
+          templateColumns={{
+            base: '1fr',
+            sm: '1fr 80px 120px 120px 1fr',
+            md: '1fr 100px 150px 150px 1fr',
+            lg: '492px 100px 200px 200px 1fr',
+          }}
+          gap={0}
+          alignItems="center"
+          px={2}
+          py={2}
+          fontWeight="bold"
+          color="gray.400"
+          mb={6}
+        >
+          <GridItem>
+            <Text color="white" fontWeight={600} fontSize="sm">
+              Collection name
+            </Text>
+          </GridItem>
           {listHeaderItems.map((item) => (
-            <ListHeader
-              key={item.sortKey}
-              sortValue={sortValue}
-              sortDirection={sortDirection}
-              onSortChange={onSortChange}
-              label={item.label}
-              sortKey={item.sortKey}
-              maxW={item.sortKey === 'lastSold' ? '200px' : '140px'}
-              mr={2}
-            />
+            <GridItem key={item.sortKey}>
+              <ListHeader
+                sortValue={sortValue}
+                sortDirection={sortDirection}
+                onSortChange={onSortChange}
+                label={item.label}
+                sortKey={item.sortKey}
+              />
+            </GridItem>
           ))}
-        </Flex>
+        </Grid>
       )}
 
       {collections.map((col) => (
