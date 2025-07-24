@@ -15,16 +15,16 @@ type CollectionListProps = {
 
 const listHeaderItems = [
   {
+    label: 'Sales',
+    sortKey: 'metrics.sales',
+  },
+  {
     label: 'Volume',
     sortKey: 'metrics.volume',
   },
   {
     label: 'Floor price',
     sortKey: 'metrics.floorPrice',
-  },
-  {
-    label: 'Sales',
-    sortKey: 'metrics.sales',
   },
   {
     label: 'Last sold',
@@ -52,7 +52,7 @@ export const CollectionList = ({
       )}
 
       {!isEmptyCollections && (
-        <Flex px={2} py={2} fontWeight="bold" color="gray.400" mb={6}>
+        <Flex py={2} fontWeight="bold" color="gray.400" mb={6}>
           <Text color="white" flex="2" fontWeight={600} fontSize="sm">
             Collection name
           </Text>

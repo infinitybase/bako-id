@@ -77,10 +77,9 @@ export const MarketplaceHeader = () => {
       <Flex
         alignItems="center"
         justifyContent="space-between"
-        maxW="1920px"
+        maxW="1280px"
         mx="auto"
-        px="14px"
-        w={{ base: 'full', lg: 'calc(100% - 280px)' }}
+        w="full"
       >
         <Box
           display="flex"

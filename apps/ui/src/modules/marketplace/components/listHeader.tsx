@@ -17,6 +17,9 @@ export const ListHeader = ({
   sortKey,
   ...rest
 }: ListHeaderProps) => {
+  const displayTimeStamps =
+    label !== 'Floor price' && label !== 'Last sold' && label !== '24h';
+
   return (
     <Box
       flex="1"
@@ -25,18 +28,19 @@ export const ListHeader = ({
       display="flex"
       alignItems="center"
       justifyContent="flex-end"
-      color="white"
-      fontWeight={600}
-      fontSize="xs"
       {...rest}
     >
-      {label}
-
-      <Text fontSize="xs" color="section.500" mx={2} fontWeight={300}>
-        24h
+      <Text color="white" fontWeight={600} fontSize="xs">
+        {label}
       </Text>
 
-      <VStack spacing={0} gap={0}>
+      {displayTimeStamps && (
+        <Text fontSize="xs" color="section.500" mx={2} fontWeight={300}>
+          30d
+        </Text>
+      )}
+
+      <VStack spacing={0} gap={0} ml={displayTimeStamps ? 0 : 2}>
         <Icon
           as={ChevronUpIcon}
           color={

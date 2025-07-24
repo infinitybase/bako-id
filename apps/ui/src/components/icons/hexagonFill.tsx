@@ -5,15 +5,15 @@ export const HexagonFillIcon = createIcon({
   viewBox: '0 0 9 10',
   path: (
     <svg
-      width="9"
+      width="10"
       height="10"
-      viewBox="0 0 9 10"
+      viewBox="0 0 10 10"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M4.33013 0L8.66025 2.5V7.5L4.33013 10L0 7.5V2.5L4.33013 0Z"
-        fill="#CFCCC9"
+        d="M10 5.23735L7.5 9.56748L2.5 9.56748L-1.89276e-07 5.23735L2.5 0.907226L7.5 0.907226L10 5.23735Z"
+        fill="#F6F5F5"
       />
     </svg>
   ),

@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useRouter } from '@tanstack/react-router';
-import { Box, Flex, useMediaQuery } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Mousewheel, Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -18,9 +18,6 @@ type MarketplaceBannerProps = {
 export const MarketplaceBanner = ({ collections }: MarketplaceBannerProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const swiperRef = useRef<SwiperType | null>(null);
-  const [isLargerThan1920] = useMediaQuery('(min-width: 1920px)');
-  const [isLargerThan2090] = useMediaQuery('(min-width: 2090px)');
-  const [isLargerThan2225] = useMediaQuery('(min-width: 2225px)');
 
   const handleRedirect = () => {
     router.navigate({
@@ -60,15 +57,7 @@ export const MarketplaceBanner = ({ collections }: MarketplaceBannerProps) => {
         direction="column"
         gap={2}
         position="absolute"
-        right={
-          isLargerThan2225
-            ? '14%'
-            : isLargerThan2090
-              ? '8%'
-              : isLargerThan1920
-                ? '4%'
-                : '0'
-        }
+        right={0}
         top="50%"
         transform="translateY(-50%)"
         zIndex={5}
