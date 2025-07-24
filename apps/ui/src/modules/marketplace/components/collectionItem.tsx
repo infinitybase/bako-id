@@ -90,26 +90,37 @@ const CollectionItem = ({ col }: { col: Collection }) => {
         ml="30px"
         minW={{ base: '100%', sm: '120px', md: '150px', lg: '240px' }}
       >
-        {col.latestSalesNFTs.map((item, index) => (
-          <Box
-            key={item.id}
-            display={{
-              base: index === 0 ? 'block' : 'none',
-              sm: index < 2 ? 'block' : 'none',
-              md: index < 3 ? 'block' : 'none',
-              lg: 'block',
+        {!col.latestSalesNFTs.length ? (
+          <ImageLoader
+            src={col.config.avatar}
+            alt={'NFT Image'}
+            imageProps={{
+              boxSize: '40px',
+              borderRadius: 'md',
             }}
-          >
-            <ImageLoader
-              src={item.image}
-              alt={'NFT Image'}
-              imageProps={{
-                boxSize: '40px',
-                borderRadius: 'md',
+          />
+        ) : (
+          col.latestSalesNFTs.map((item, index) => (
+            <Box
+              key={item.id}
+              display={{
+                base: index === 0 ? 'block' : 'none',
+                sm: index < 2 ? 'block' : 'none',
+                md: index < 3 ? 'block' : 'none',
+                lg: 'block',
               }}
-            />
-          </Box>
-        ))}
+            >
+              <ImageLoader
+                src={item.image}
+                alt={'NFT Image'}
+                imageProps={{
+                  boxSize: '40px',
+                  borderRadius: 'md',
+                }}
+              />
+            </Box>
+          ))
+        )}
       </GridItem>
     </Grid>
   );
