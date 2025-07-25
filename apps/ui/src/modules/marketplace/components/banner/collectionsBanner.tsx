@@ -1,15 +1,15 @@
-import { useRef, useState } from 'react';
+import { Box, Flex, Skeleton } from '@chakra-ui/react';
 import { useRouter } from '@tanstack/react-router';
-import { Box, Flex } from '@chakra-ui/react';
+import { useRef, useState } from 'react';
+import { Autoplay, Mousewheel, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Mousewheel, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import { HexagonEmptyIcon } from '@/components/icons/hexagonEmpty';
+import { HexagonFillIcon } from '@/components/icons/hexagonFill';
+import { useListMintableCollections } from '@/hooks/marketplace/useListMintableCollections';
 import type { Swiper as SwiperType } from 'swiper';
 import { BannerRoot } from './root';
-import { HexagonFillIcon } from '@/components/icons/hexagonFill';
-import { HexagonEmptyIcon } from '@/components/icons/hexagonEmpty';
-import { useListMintableCollections } from '@/hooks/marketplace/useListMintableCollections';
 
 export const MarketplaceBanner = () => {
   const [activeIndex, setActiveIndex] = useState(0);
