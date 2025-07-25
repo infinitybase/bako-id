@@ -23,7 +23,7 @@ export const useMintToken = (collectionId: string) => {
                     'You can now view your tokens in your wallet',
             });
             queryClient.invalidateQueries({
-                queryKey: [MarketplaceQueryKeys.MINT_TOKEN, collectionId, wallet?.provider],
+                queryKey: [MarketplaceQueryKeys.MINT_TOKEN, collectionId],
             });
         },
         onError: () => {
