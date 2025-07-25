@@ -2,15 +2,34 @@ import { Box, Flex, Heading, Image, Stack, Text } from '@chakra-ui/react';
 import MintContent from './mintContent';
 import { parseURI } from '@/utils/formatter';
 import { ImageLoader } from '@/components/imageLoader';
-import { useGetMintData } from '@/hooks/marketplace/useGetMintData';
 import MintPanelSkeleton from '../skeletons/mintPanelSkeleton';
 import { useMintToken } from '@/hooks/marketplace/useMintToken';
+import type { AssetInfo, BN } from 'fuels';
+import type { CollectionConfig } from '../../utils/mint';
 
-const MintPanel = ({ collectionId }: { collectionId?: string }) => {
+type MintPanelProps = {
+  collectionId?: string;
+  maxSupply: string;
+  totalMinted: string;
+  mintPrice: BN;
+  config: CollectionConfig | undefined;
+  asset: AssetInfo | null | undefined;
+  isLoading: boolean;
+  wasAllSupplyMinted: boolean;
+};
+
+const MintPanel = ({
+  collectionId,
+  maxSupply,
+  totalMinted,
+  mintPrice,
+  config,
+  asset,
+  isLoading,
+  wasAllSupplyMinted,
+}: MintPanelProps) => {
   if (!collectionId) return null;
 
-  const { supplies, totalMinted, mintPrice, config, asset, isLoading } =
-    useGetMintData(collectionId);
   const { mintToken, isPending } = useMintToken(collectionId);
 
   if (isLoading) return <MintPanelSkeleton />;
@@ -60,12 +79,13 @@ const MintPanel = ({ collectionId }: { collectionId?: string }) => {
           title={`Minting ${config?.name}`}
           description={config?.description ?? ''}
           progress={Number(totalMinted)}
-          maxSupply={Number(supplies)}
+          maxSupply={Number(maxSupply)}
           // maxPerWallet={MAX_PER_WALLET}
           tokenPrice={mintPrice}
           isMinting={isPending}
           onMint={mintToken}
           asset={asset}
+          wasAllSupplyMinted={wasAllSupplyMinted}
         />
       </Flex>
 

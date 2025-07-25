@@ -25,7 +25,7 @@ export const useGetMintData = (collectionId: string) => {
             });
 
             return {
-                supplies: maxSupply,
+                maxSupply,
                 minted: totalAssets,
                 config,
                 amount: mintPrice.amount,
@@ -36,7 +36,7 @@ export const useGetMintData = (collectionId: string) => {
     });
 
     return {
-        supplies: bn(data?.supplies).toString(),
+        maxSupply: bn(data?.maxSupply).toString(),
         totalMinted: bn(data?.minted).toString(),
         config: data?.config,
         mintPrice: data?.amount,

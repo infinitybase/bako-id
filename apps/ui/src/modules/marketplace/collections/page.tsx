@@ -23,6 +23,7 @@ import { useGetCollectionOrders } from '@/hooks/marketplace/useGetCollectionOrde
 import { useDebounce } from '@/hooks/useDebounce';
 import { CollectionPageBanner } from '../components/banner/collectionBanner';
 import MintPanel from '../components/mintPanel';
+import { useGetMintData } from '@/hooks/marketplace/useGetMintData';
 
 export const CollectionPage = () => {
   const navigate = useNavigate();
@@ -58,6 +59,21 @@ export const CollectionPage = () => {
   const { collection } = useGetCollection({
     collectionId,
   });
+
+  const {
+    maxSupply,
+    totalMinted,
+    mintPrice,
+    config,
+    asset,
+    isLoading: isLoadingMintData,
+    isFetched: isFetchedMintData,
+  } = useGetMintData(collectionId);
+
+  const isMintable =
+    Number(maxSupply) > 0 && Number(totalMinted) < Number(maxSupply);
+
+  const wasAllSupplyMinted = Number(maxSupply) === Number(totalMinted);
 
   const handleChangeSearch = useCallback(
     (search: string) => {
@@ -121,16 +137,18 @@ export const CollectionPage = () => {
                 Items
               </Tab>
             )}
-            <Tab
-              _selected={{ bg: 'grey.600', color: 'white' }}
-              color="disabled.500"
-              bg="input.600"
-              borderRadius="8px 8px 0 0"
-              fontSize="xs"
-              letterSpacing=".5px"
-            >
-              Mint
-            </Tab>
+            {!isLoadingMintData && isMintable && (
+              <Tab
+                _selected={{ bg: 'grey.600', color: 'white' }}
+                color="disabled.500"
+                bg="input.600"
+                borderRadius="8px 8px 0 0"
+                fontSize="xs"
+                letterSpacing=".5px"
+              >
+                {wasAllSupplyMinted ? 'About' : 'Mint'}
+              </Tab>
+            )}
           </TabList>
           <Divider my={0} py={0} borderColor="grey.600" />
           <TabPanels>
@@ -158,7 +176,16 @@ export const CollectionPage = () => {
             )}
 
             <TabPanel p={0}>
-              <MintPanel collectionId={collectionId ?? ''} />
+              <MintPanel
+                collectionId={collectionId ?? ''}
+                maxSupply={maxSupply}
+                totalMinted={totalMinted}
+                mintPrice={mintPrice}
+                config={config}
+                asset={asset}
+                isLoading={isLoadingMintData || !isFetchedMintData}
+                wasAllSupplyMinted={wasAllSupplyMinted}
+              />
             </TabPanel>
           </TabPanels>
         </Tabs>

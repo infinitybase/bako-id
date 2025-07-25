@@ -25,6 +25,7 @@ type MintContentProps = {
   isMinting: boolean;
   asset: AssetInfo | null | undefined;
   onMint: (quantity: number) => void;
+  wasAllSupplyMinted: boolean;
 };
 
 const MintContent = ({
@@ -37,6 +38,7 @@ const MintContent = ({
   isMinting,
   asset,
   onMint,
+  wasAllSupplyMinted,
 }: MintContentProps) => {
   const [quantity, setQuantity] = useState(1);
   const progressPercentage = useMemo(
@@ -114,45 +116,48 @@ const MintContent = ({
               </Text>
             </Flex>
           </Flex>
-          <Flex
-            align="center"
-            gap={2}
-            bg="background.900"
-            borderRadius="8px"
-            border="1px solid"
-            borderColor="grey.500"
-          >
-            <IconButton
-              aria-label="Decrease quantity"
-              bg="transparent"
-              _hover={{ bg: 'grey.600' }}
-              border="none"
-              icon={<MinusIcon />}
-              color="white"
-              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-              isDisabled={quantity <= 1}
-            />
-            <Text
-              fontWeight="bold"
-              fontSize="lg"
-              minW="32px"
-              textAlign="center"
+          {!wasAllSupplyMinted && (
+            <Flex
+              align="center"
+              gap={2}
+              bg="background.900"
+              borderRadius="8px"
+              border="1px solid"
+              borderColor="grey.500"
             >
-              {quantity}
-            </Text>
-            <IconButton
-              aria-label="Increase quantity"
-              icon={<AddIcon />}
-              color="white"
-              bg="transparent"
-              _hover={{ bg: 'grey.600' }}
-              border="none"
-              onClick={() => setQuantity((q) => q + 1)}
-              // isDisabled={quantity >= maxPerWallet}
-            />
-          </Flex>
+              <IconButton
+                aria-label="Decrease quantity"
+                bg="transparent"
+                _hover={{ bg: 'grey.600' }}
+                border="none"
+                icon={<MinusIcon />}
+                color="white"
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                isDisabled={quantity <= 1}
+              />
+              <Text
+                fontWeight="bold"
+                fontSize="lg"
+                minW="32px"
+                textAlign="center"
+              >
+                {quantity}
+              </Text>
+              <IconButton
+                aria-label="Increase quantity"
+                icon={<AddIcon />}
+                color="white"
+                bg="transparent"
+                _hover={{ bg: 'grey.600' }}
+                border="none"
+                onClick={() => setQuantity((q) => q + 1)}
+                // isDisabled={quantity >= maxPerWallet}
+              />
+            </Flex>
+          )}
         </Stack>
         <Button
+          mt={wasAllSupplyMinted ? 4 : 0}
           variant="mktPrimary"
           size="lg"
           w="full"
@@ -161,9 +166,11 @@ const MintContent = ({
           letterSpacing=".5px"
           onClick={handleMint}
           isLoading={isMinting}
-          isDisabled={isMinting}
+          isDisabled={isMinting || wasAllSupplyMinted}
         >
-          Mint {quantity} NFT{quantity > 1 ? 's' : ''}
+          {wasAllSupplyMinted
+            ? 'Minted'
+            : `Mint ${quantity} NFT${quantity > 1 ? 's' : ''}`}
         </Button>
       </Stack>
     </Flex>

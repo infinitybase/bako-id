@@ -33,7 +33,7 @@ type ContentItem =
 
 type AboutSection = ContentItem[];
 
-type CollectionConfig = {
+export type CollectionConfig = {
     name: string;
     description: string;
     banner: string;
