@@ -9,7 +9,6 @@ import {
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useGetPrimaryHandleName } from '../../../hooks';
-import { formatAddress } from '../../../utils/formatter';
 import { MarketplaceConnect } from './marketplaceConnectButton';
 import Logo from '@/assets/marketplace/logo-garage.svg';
 
@@ -18,7 +17,7 @@ export const MarketplaceHeader = () => {
 
   const navigate = useNavigate();
 
-  const { isConnecting, connectors, isConnected } = useConnectUI();
+  const { isConnecting, connectors, isConnected, connect } = useConnectUI();
   const { account } = useAccount();
 
   const { isPending: disconnectLoading } = useDisconnect();
@@ -53,7 +52,7 @@ export const MarketplaceHeader = () => {
     }
   }, [isWalletLoading, wallet, isPrimaryHandleLoading, isConnected]);
 
-  const domain = primaryHandle ?? formatAddress(wallet?.address.toB256() ?? '');
+  const domain = primaryHandle ?? wallet?.address.toB256();
 
   const goHome = () => {
     navigate({ to: '/' }).then();
@@ -77,10 +76,9 @@ export const MarketplaceHeader = () => {
       <Flex
         alignItems="center"
         justifyContent="space-between"
-        maxW="1920px"
+        maxW="1280px"
         mx="auto"
-        px="14px"
-        w={{ base: 'full', lg: 'calc(100% - 280px)' }}
+        w="full"
       >
         <Box
           display="flex"
@@ -90,7 +88,14 @@ export const MarketplaceHeader = () => {
         >
           <Image src={Logo} alt="Logo" />
         </Box>
-        <MarketplaceConnect isLoading={initialLoadState} domain={domain!} />
+        <MarketplaceConnect
+          isLoading={initialLoadState}
+          domain={domain!}
+          isConnecting={isConnecting}
+          isConnected={isConnected}
+          connect={connect}
+          wallet={wallet}
+        />
       </Flex>
     </Center>
   );

@@ -1,18 +1,22 @@
 import { ImageLoader } from '@/components/imageLoader';
 import type { Collection } from '@/types/marketplace';
 import { formatAddress, usdValueFormatter } from '@/utils/formatter';
-import { Flex, Text, Grid } from '@chakra-ui/react';
+import { Flex, Text, Grid, GridItem, Box } from '@chakra-ui/react';
 import { useRouter } from '@tanstack/react-router';
 import { isB256 } from 'fuels';
 
 const CollectionItem = ({ col }: { col: Collection }) => {
   const router = useRouter();
-  const defaultColumnWidth = '140px';
+
   return (
     <Grid
-      templateColumns="2fr 140px 140px 140px 200px"
-      gap={2}
-      mr={3}
+      templateColumns={{
+        base: '1fr',
+        sm: '1fr 80px 120px 120px 120px',
+        md: '1fr 100px 150px 150px 150px',
+        lg: '492px 100px 200px 200px 200px',
+      }}
+      gap={0}
       alignItems="center"
       px={2}
       borderRadius="md"
@@ -35,54 +39,89 @@ const CollectionItem = ({ col }: { col: Collection }) => {
         });
       }}
     >
-      <Flex align="center" gap={3}>
-        <ImageLoader
-          src={col?.config?.avatar}
-          alt={'NFT Image'}
-          imageProps={{
-            boxSize: '40px',
-            borderRadius: 'md',
-          }}
-        />
-        <Text>{isB256(col.name) ? formatAddress(col.name) : col.name}</Text>
-      </Flex>
-      <Text
-        textAlign="right"
-        maxW={defaultColumnWidth}
-        justifyContent="flex-end"
-        fontSize="xs"
-      >
-        {usdValueFormatter(col.metrics.volume ?? 0)}
-      </Text>
-      <Text
-        textAlign="right"
-        maxW={defaultColumnWidth}
-        justifyContent="flex-end"
-        fontSize="xs"
-      >
-        {usdValueFormatter(col?.metrics?.floorPrice ?? 0)}
-      </Text>
-      <Text
-        textAlign="right"
-        maxW={defaultColumnWidth}
-        justifyContent="flex-end"
-        fontSize="xs"
-      >
-        {col.metrics.sales}
-      </Text>
-      <Flex gap={1} justifyContent="flex-end" ml="auto" minW="200px">
-        {col.latestSalesNFTs.map((item) => (
+      <GridItem display="flex" gap={2} maxW={{ base: '100%', lg: '492px' }}>
+        <Box minW="40px">
           <ImageLoader
-            key={item.id}
-            src={item.image}
+            src={col?.config?.avatar}
             alt={'NFT Image'}
             imageProps={{
               boxSize: '40px',
               borderRadius: 'md',
             }}
           />
-        ))}
-      </Flex>
+        </Box>
+        <Flex align="center">
+          <Text color="white" fontSize="xs" minW="120px">
+            {isB256(col.name) ? formatAddress(col.name) : col.name}
+          </Text>
+          <Text
+            fontSize="xs"
+            color="section.500"
+            fontWeight={300}
+            textOverflow="ellipsis"
+            noOfLines={2}
+            maxW="320px"
+          >
+            {col.config.description}
+          </Text>
+        </Flex>
+      </GridItem>
+
+      <GridItem maxW={{ base: '100%', sm: '80px', md: '100px', lg: '100px' }}>
+        <Text textAlign="right" justifyContent="flex-end" fontSize="xs">
+          {col.metrics.sales}
+        </Text>
+      </GridItem>
+      <GridItem maxW={{ base: '100%', sm: '120px', md: '150px', lg: '200px' }}>
+        <Text textAlign="right" justifyContent="flex-end" fontSize="xs">
+          {usdValueFormatter(col.metrics.volume ?? 0)}
+        </Text>
+      </GridItem>
+      <GridItem maxW={{ base: '100%', sm: '120px', md: '150px', lg: '200px' }}>
+        <Text textAlign="right" justifyContent="flex-end" fontSize="xs">
+          {usdValueFormatter(col?.metrics?.floorPrice ?? 0)}
+        </Text>
+      </GridItem>
+      <GridItem
+        gap="6px"
+        display="flex"
+        justifyContent="flex-end"
+        alignItems="flex-end"
+        ml="30px"
+        minW={{ base: '100%', sm: '120px', md: '150px', lg: '240px' }}
+      >
+        {!col.latestSalesNFTs.length ? (
+          <ImageLoader
+            src={col.config.avatar}
+            alt={'NFT Image'}
+            imageProps={{
+              boxSize: '40px',
+              borderRadius: 'md',
+            }}
+          />
+        ) : (
+          col.latestSalesNFTs.map((item, index) => (
+            <Box
+              key={item.id}
+              display={{
+                base: index === 0 ? 'block' : 'none',
+                sm: index < 2 ? 'block' : 'none',
+                md: index < 3 ? 'block' : 'none',
+                lg: 'block',
+              }}
+            >
+              <ImageLoader
+                src={item.image}
+                alt={'NFT Image'}
+                imageProps={{
+                  boxSize: '40px',
+                  borderRadius: 'md',
+                }}
+              />
+            </Box>
+          ))
+        )}
+      </GridItem>
     </Grid>
   );
 };

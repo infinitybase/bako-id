@@ -17,48 +17,54 @@ export const ListHeader = ({
   sortKey,
   ...rest
 }: ListHeaderProps) => {
+  const displayTimeStamps = label === 'Sales' || label === 'Volume';
+
   return (
     <Box
-      flex="1"
       cursor="pointer"
       onClick={() => onSortChange(sortKey)}
       display="flex"
       alignItems="center"
       justifyContent="flex-end"
-      color="white"
-      fontWeight={600}
-      fontSize="xs"
+      w="full"
       {...rest}
+      position="relative"
     >
-      {label}
-
-      <Text fontSize="xs" color="section.500" mx={2} fontWeight={300}>
-        24h
+      <Text color="white" fontWeight={600} fontSize="xs">
+        {label}
       </Text>
 
-      <VStack spacing={0} gap={0}>
-        <Icon
-          as={ChevronUpIcon}
-          color={
-            sortValue === sortKey && sortDirection === 'asc'
-              ? 'section.500'
-              : 'white'
-          }
-          w={4}
-          h={4}
-        />
+      {displayTimeStamps && (
+        <Text fontSize="xs" color="section.500" ml={2} fontWeight={300}>
+          30d
+        </Text>
+      )}
 
-        <Icon
-          as={ChevronDownIcon}
-          color={
-            sortValue === sortKey && sortDirection === 'desc'
-              ? 'section.500'
-              : 'white'
-          }
-          w={4}
-          h={4}
-        />
-      </VStack>
+      {label !== 'Last sold' && (
+        <VStack spacing={0} gap={0} position="absolute" right={-6}>
+          <Icon
+            as={ChevronUpIcon}
+            color={
+              sortValue === sortKey && sortDirection === 'asc'
+                ? 'section.500'
+                : 'white'
+            }
+            w={4}
+            h={4}
+          />
+
+          <Icon
+            as={ChevronDownIcon}
+            color={
+              sortValue === sortKey && sortDirection === 'desc'
+                ? 'section.500'
+                : 'white'
+            }
+            w={4}
+            h={4}
+          />
+        </VStack>
+      )}
     </Box>
   );
 };

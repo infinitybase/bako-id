@@ -5,15 +5,15 @@ export const HexagonEmptyIcon = createIcon({
   viewBox: '0 0 7 6',
   path: (
     <svg
-      width="7"
+      width="6"
       height="6"
-      viewBox="0 0 7 6"
+      viewBox="0 0 6 6"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M5.55273 1.78809V4.21094L3.4541 5.42285L1.35645 4.21094V1.78809L3.4541 0.576172L5.55273 1.78809Z"
-        stroke="#868079"
+        d="M4.21191 5.26367L1.78906 5.26367L0.577148 3.16504L1.78906 1.06738L4.21191 1.06738L5.42383 3.16504L4.21191 5.26367Z"
+        stroke="#CFCCC9"
       />
     </svg>
   ),
