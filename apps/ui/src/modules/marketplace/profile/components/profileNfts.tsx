@@ -158,7 +158,7 @@ export const ProfileNfts = ({
       backdropFilter="blur(6px)"
       flexDirection="column"
       boxShadow="lg"
-      p={6}
+      p="23px"
     >
       <Flex mb={6} alignItems="center" justify="space-between">
         <Heading fontSize="14px">NFT's</Heading>

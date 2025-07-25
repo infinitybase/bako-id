@@ -50,7 +50,6 @@ const CollectionsContent = ({
         zIndex={3}
         h="full"
         align="center"
-        px="32px"
         justify="space-between"
         mx="auto"
         alignItems="flex-end"

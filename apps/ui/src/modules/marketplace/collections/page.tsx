@@ -14,7 +14,7 @@ import {
   useParams,
   useSearch,
 } from '@tanstack/react-router';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, useEffect } from 'react';
 import { OrderList } from '../components/orderList';
 
 import MarketplaceFilter from '../components/marketplaceFilter';
@@ -83,12 +83,18 @@ export const CollectionPage = () => {
     [collectionOrders]
   );
 
+  // Reset scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
   return (
     <Stack w="full" p={0} m={0}>
       <CollectionPageBanner collection={collection?.data!} />
 
       <Container
         maxW="1280px"
+        px={0}
         py={8}
         overflowY="hidden"
         sx={{

@@ -4,9 +4,11 @@ import { formatAddress, usdValueFormatter } from '@/utils/formatter';
 import { Flex, Text, Grid, GridItem, Box } from '@chakra-ui/react';
 import { useRouter } from '@tanstack/react-router';
 import { isB256 } from 'fuels';
+import { useScrollReset } from '@/hooks/useScrollReset';
 
 const CollectionItem = ({ col }: { col: Collection }) => {
   const router = useRouter();
+  const resetScroll = useScrollReset();
 
   return (
     <Grid
@@ -30,13 +32,14 @@ const CollectionItem = ({ col }: { col: Collection }) => {
         bg: 'grey.500',
       }}
       cursor="pointer"
-      onClick={() => {
-        router.navigate({
+      onClick={async () => {
+        await router.navigate({
           to: '/collection/$collectionId',
           params: {
             collectionId: col.id,
           },
         });
+        resetScroll();
       }}
     >
       <GridItem display="flex" gap={2} maxW="492px">

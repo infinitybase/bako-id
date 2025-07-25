@@ -89,7 +89,6 @@ export const CollectionPageBanner = ({
           onClick={(e) => {
             e.stopPropagation();
           }}
-          px={4}
         >
           <BannerRoot.CollectionContent collection={collection} />
         </Box>

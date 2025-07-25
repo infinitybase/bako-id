@@ -16,7 +16,7 @@ const MarketplaceFilter = ({
   onSortChange,
   isCollectionPage,
 }: MarketplaceFilterProps) => (
-  <Box p={2} borderRadius="md" w="100%" maxW="100vw" mx="auto" mt={2}>
+  <Box p={2} px={0} borderRadius="md" w="100%" maxW="100vw" mx="auto" mt={2}>
     <Flex align="center" gap={4}>
       <Box flex="1">
         <SearchBar
