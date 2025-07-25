@@ -44,7 +44,6 @@ export const CollectionPageBanner = ({
               position: 'absolute',
               top: 0,
               left: 0,
-              zIndex: 1,
               borderRadius: '0',
             }}
             imageProps={{
@@ -61,9 +60,14 @@ export const CollectionPageBanner = ({
           bottom={0}
           left={0}
           right={0}
-          height="80px"
+          height={!hasBanner ? 'full' : '80px'}
           bgGradient="linear(0deg, rgba(21,20,19,0.85) 0%, rgba(21,20,19,0.00) 100%)"
           zIndex={2}
+          cursor="pointer"
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate({ to: '/' });
+          }}
           _before={
             !hasBanner
               ? {
@@ -72,7 +76,7 @@ export const CollectionPageBanner = ({
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  height: '250px',
+                  height: 'full',
                   backdropFilter: 'blur(80px)',
                   pointerEvents: 'none',
                 }
