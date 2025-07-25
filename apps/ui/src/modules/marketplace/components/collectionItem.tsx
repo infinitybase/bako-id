@@ -4,17 +4,19 @@ import { formatAddress, usdValueFormatter } from '@/utils/formatter';
 import { Flex, Text, Grid, GridItem, Box } from '@chakra-ui/react';
 import { useRouter } from '@tanstack/react-router';
 import { isB256 } from 'fuels';
+import { useScrollReset } from '@/hooks/useScrollReset';
 
 const CollectionItem = ({ col }: { col: Collection }) => {
   const router = useRouter();
+  const resetScroll = useScrollReset();
 
   return (
     <Grid
       templateColumns={{
         base: '1fr',
-        sm: '1fr 80px 120px 120px 120px',
-        md: '1fr 100px 150px 150px 150px',
-        lg: '492px 100px 200px 200px 200px',
+        sm: '1fr 80px 120px 120px .5fr',
+        md: '1fr 100px 150px 150px .5fr',
+        lg: '492px 100px 200px 200px 1fr',
       }}
       gap={0}
       alignItems="center"
@@ -30,16 +32,17 @@ const CollectionItem = ({ col }: { col: Collection }) => {
         bg: 'grey.500',
       }}
       cursor="pointer"
-      onClick={() => {
-        router.navigate({
+      onClick={async () => {
+        await router.navigate({
           to: '/collection/$collectionId',
           params: {
             collectionId: col.id,
           },
         });
+        resetScroll();
       }}
     >
-      <GridItem display="flex" gap={2} maxW={{ base: '100%', lg: '492px' }}>
+      <GridItem display="flex" gap={2} maxW="492px">
         <Box minW="40px">
           <ImageLoader
             src={col?.config?.avatar}
@@ -67,17 +70,17 @@ const CollectionItem = ({ col }: { col: Collection }) => {
         </Flex>
       </GridItem>
 
-      <GridItem maxW={{ base: '100%', sm: '80px', md: '100px', lg: '100px' }}>
+      <GridItem>
         <Text textAlign="right" justifyContent="flex-end" fontSize="xs">
           {col.metrics.sales}
         </Text>
       </GridItem>
-      <GridItem maxW={{ base: '100%', sm: '120px', md: '150px', lg: '200px' }}>
+      <GridItem>
         <Text textAlign="right" justifyContent="flex-end" fontSize="xs">
           {usdValueFormatter(col.metrics.volume ?? 0)}
         </Text>
       </GridItem>
-      <GridItem maxW={{ base: '100%', sm: '120px', md: '150px', lg: '200px' }}>
+      <GridItem>
         <Text textAlign="right" justifyContent="flex-end" fontSize="xs">
           {usdValueFormatter(col?.metrics?.floorPrice ?? 0)}
         </Text>
@@ -88,7 +91,6 @@ const CollectionItem = ({ col }: { col: Collection }) => {
         justifyContent="flex-end"
         alignItems="flex-end"
         ml="30px"
-        minW={{ base: '100%', sm: '120px', md: '150px', lg: '240px' }}
       >
         {!col.latestSalesNFTs.length ? (
           <ImageLoader

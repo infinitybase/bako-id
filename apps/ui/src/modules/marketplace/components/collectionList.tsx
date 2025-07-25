@@ -55,8 +55,8 @@ export const CollectionList = ({
         <Grid
           templateColumns={{
             base: '1fr',
-            sm: '1fr 80px 120px 120px 1fr',
-            md: '1fr 100px 150px 150px 1fr',
+            sm: '1fr 80px 120px 120px .5fr',
+            md: '1fr 100px 150px 150px .5fr',
             lg: '492px 100px 200px 200px 1fr',
           }}
           gap={0}
@@ -73,13 +73,15 @@ export const CollectionList = ({
             </Text>
           </GridItem>
           {listHeaderItems.map((item) => (
-            <GridItem key={item.sortKey}>
+            <GridItem key={item.sortKey} w="full">
               <ListHeader
                 sortValue={sortValue}
                 sortDirection={sortDirection}
                 onSortChange={onSortChange}
                 label={item.label}
                 sortKey={item.sortKey}
+                w="fit-content"
+                ml="auto"
               />
             </GridItem>
           ))}

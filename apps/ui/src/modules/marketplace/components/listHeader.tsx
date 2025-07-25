@@ -26,7 +26,6 @@ export const ListHeader = ({
       display="flex"
       alignItems="center"
       justifyContent="flex-end"
-      w="full"
       {...rest}
       position="relative"
     >

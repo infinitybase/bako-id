@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Flex,
   Heading,
@@ -57,45 +58,69 @@ export const ProfilePageBanner = ({
         borderRadius: 'md',
       }}
     >
-      <Flex align="center" gap={4} cursor="pointer">
-        {!hasDomain && (
-          <Button
-            ml={4}
-            as={Link}
-            to="/"
-            borderColor="grey.100"
-            color="grey.100"
-            variant="outline"
-            width="fit-content"
-            fontSize="xs"
-            _hover={{
-              opacity: 0.7,
-            }}
-            _focus={{
-              bg: 'none',
-            }}
-          >
-            Get your Handle
-          </Button>
-        )}
-        <Icon as={PoweredByIcon} w="118px" h="65px" ml="auto" />
-      </Flex>
-      <Flex
-        align="center"
-        px={4}
-        justify="space-between"
-        alignItems="flex-end"
-        mt="auto"
-        mb={2}
-        zIndex={10}
+      <VStack
+        maxW="1280px"
+        mx="auto"
+        w="full"
+        zIndex={80}
+        justifyContent="space-between"
+        h="full"
       >
-        <ProfileSummary
-          name={name}
-          isDomain={!!hasDomain}
-          nftQuantity={nftQuantity}
-          usdValue={usdValue}
-        />
-      </Flex>
+        <Flex
+          pt={4}
+          align="center"
+          gap={4}
+          cursor="pointer"
+          w="full"
+          justifyContent="space-between"
+        >
+          {!hasDomain && (
+            <Button
+              as={Link}
+              to="/"
+              borderColor="grey.100"
+              color="grey.100"
+              variant="outline"
+              width="fit-content"
+              fontSize="xs"
+              _hover={{
+                opacity: 0.7,
+              }}
+              _focus={{
+                bg: 'none',
+              }}
+            >
+              Get your Handle
+            </Button>
+          )}
+          <Box position="relative" w="full" h="full">
+            <Icon
+              as={PoweredByIcon}
+              w="118px"
+              h="65px"
+              position="absolute"
+              top={0}
+              right={-4}
+            />
+          </Box>
+        </Flex>
+        <Flex
+          align="center"
+          justify="space-between"
+          alignItems="flex-end"
+          mt="auto"
+          mb={1.5}
+          zIndex={10}
+          w="full"
+        >
+          <ProfileSummary
+            name={name}
+            isDomain={!!hasDomain}
+            nftQuantity={nftQuantity}
+            usdValue={usdValue}
+          />
+        </Flex>
+      </VStack>
     </Stack>
   );
 };
