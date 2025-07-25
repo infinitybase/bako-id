@@ -1,26 +1,26 @@
-import { NFTCollection } from '@/modules/marketplace/utils/mint';
 import { MarketplaceQueryKeys } from '@/utils/constants';
 import { Networks, resolveNetwork } from '@/utils/resolverNetwork';
 import { useWallet } from '@fuels/react';
 import { useQuery } from '@tanstack/react-query';
 import { bn, getAssetById, Provider } from 'fuels';
+import { useMintContract } from '../sdk/mint';
 
 const { VITE_PROVIDER_URL } = import.meta.env;
 
-export const useGetMintData = (collectionId: string) => {
+export const useGetMintData = (collectionId: string, isMintable: boolean) => {
     const { wallet } = useWallet();
 
-    const { data, ...rest } = useQuery({
-        queryKey: [MarketplaceQueryKeys.MINT_TOKEN, collectionId, wallet?.provider],
-        queryFn: async () => {
-            const provider = wallet?.provider ?? new Provider(VITE_PROVIDER_URL)
-            const mintContract = new NFTCollection(collectionId, provider!);
-            const chainId = await provider.getChainId();
+    const provider = wallet?.provider ?? new Provider(VITE_PROVIDER_URL);
+    const mintContract = useMintContract(collectionId, provider, isMintable);
 
+    const { data, ...rest } = useQuery({
+        queryKey: [MarketplaceQueryKeys.MINT_TOKEN, collectionId],
+        queryFn: async () => {
+            const chainId = await provider.getChainId();
             const network = resolveNetwork(chainId ?? Networks.MAINNET);
 
-            const { maxSupply, totalAssets, mintPrice, config } =
-                await mintContract.getResumeMint();
+            const { maxSupply, totalAssets, mintPrice } =
+                await mintContract!.getResumeMint();
 
             const asset = await getAssetById({
                 network: network?.toLowerCase() as 'mainnet' | 'testnet',
@@ -30,18 +30,17 @@ export const useGetMintData = (collectionId: string) => {
             return {
                 maxSupply,
                 minted: totalAssets,
-                config,
                 amount: mintPrice.amount,
                 asset,
             };
         },
-        enabled: !!collectionId,
+        enabled: !!collectionId && isMintable && !!mintContract,
+        staleTime: 1000 * 60 * 5, // 5 minutes
     });
 
     return {
         maxSupply: bn(data?.maxSupply).toString(),
         totalMinted: bn(data?.minted).toString(),
-        config: data?.config,
         mintPrice: data?.amount,
         asset: data?.asset,
         ...rest,

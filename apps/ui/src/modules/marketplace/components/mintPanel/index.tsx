@@ -16,6 +16,7 @@ type MintPanelProps = {
   asset: AssetInfo | null | undefined;
   isLoading: boolean;
   wasAllSupplyMinted: boolean;
+  collectionName: string;
 };
 
 const MintPanel = ({
@@ -27,6 +28,7 @@ const MintPanel = ({
   asset,
   isLoading,
   wasAllSupplyMinted,
+  collectionName,
 }: MintPanelProps) => {
   if (!collectionId) return null;
 
@@ -77,7 +79,7 @@ const MintPanel = ({
           </Stack>
         </Flex>
         <MintContent
-          title={`Minting ${config?.name}`}
+          title={`Minting ${collectionName}`}
           description={config?.description ?? ''}
           progress={Number(totalMinted)}
           maxSupply={Number(maxSupply)}

@@ -5,13 +5,21 @@ import { StatBox } from './statBox';
 import type { Collection } from '@/types/marketplace';
 import { useGetMintData } from '@/hooks/marketplace/useGetMintData';
 
+type CollectionsContentProps = {
+  collection: Collection;
+  handleRedirect: () => void;
+};
+
 const CollectionsContent = ({
   collection,
   handleRedirect,
-}: { collection: Collection; handleRedirect: () => void }) => {
-  const { totalMinted, maxSupply } = useGetMintData(collection.id);
+}: CollectionsContentProps) => {
+  const { maxSupply, totalMinted } = useGetMintData(
+    collection.id,
+    collection.isMintable ?? false
+  );
 
-  const isMintable = totalMinted < maxSupply;
+  const isMintable = Number(totalMinted) < Number(maxSupply);
 
   return (
     <Box
