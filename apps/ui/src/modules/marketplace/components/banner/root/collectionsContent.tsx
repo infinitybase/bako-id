@@ -9,7 +9,10 @@ const CollectionsContent = ({
   collection,
   handleRedirect,
 }: { collection: Collection; handleRedirect: () => void }) => {
-  const { totalMinted, maxSupply } = useGetMintData(collection.id);
+  const { totalMinted, maxSupply } = useGetMintData(
+    collection.id,
+    collection.isMintable
+  );
 
   const isMintable = totalMinted < maxSupply;
 

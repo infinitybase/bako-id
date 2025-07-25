@@ -133,14 +133,13 @@ export class NFTCollection {
      * @return {Promise<{maxSupply: number, totalAssets: number, mintPrice: {asset: string, amount: number}, config: CollectionConfig}>} A promise that resolves to the resume mint data.
      */
     async getResumeMint() {
-        const [config, maxSupply, totalAssets, mintPrice,] = await Promise.all([
-            this.collectionConfig(),
+        const [maxSupply, totalAssets, mintPrice,] = await Promise.all([
             this.getMaxSupply(),
             this.getTotalAssets(),
             this.mintPrice(),
         ]);
 
-        return { maxSupply, totalAssets, mintPrice, config };
+        return { maxSupply, totalAssets, mintPrice };
     }
 
     /**

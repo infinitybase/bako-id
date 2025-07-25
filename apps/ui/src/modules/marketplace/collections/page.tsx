@@ -64,11 +64,10 @@ export const CollectionPage = () => {
     maxSupply,
     totalMinted,
     mintPrice,
-    config,
     asset,
     isLoading: isLoadingMintData,
     isFetched: isFetchedMintData,
-  } = useGetMintData(collectionId);
+  } = useGetMintData(collectionId, collection?.data?.isMintable ?? false);
 
   const isMintable =
     Number(maxSupply) > 0 && Number(totalMinted) < Number(maxSupply);
@@ -182,11 +181,12 @@ export const CollectionPage = () => {
 
             <TabPanel p={0}>
               <MintPanel
+                collectionName={collection?.data?.name ?? ''}
                 collectionId={collectionId ?? ''}
                 maxSupply={maxSupply}
                 totalMinted={totalMinted}
                 mintPrice={mintPrice}
-                config={config}
+                config={collection?.data?.config}
                 asset={asset}
                 isLoading={isLoadingMintData || !isFetchedMintData}
                 wasAllSupplyMinted={wasAllSupplyMinted}

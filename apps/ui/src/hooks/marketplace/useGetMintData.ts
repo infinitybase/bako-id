@@ -7,7 +7,7 @@ import { bn, getAssetById, Provider } from 'fuels';
 
 const { VITE_PROVIDER_URL } = import.meta.env;
 
-export const useGetMintData = (collectionId: string) => {
+export const useGetMintData = (collectionId: string, isMintable: boolean) => {
     const { wallet } = useWallet();
 
     const { data, ...rest } = useQuery({
@@ -19,7 +19,7 @@ export const useGetMintData = (collectionId: string) => {
 
             const network = resolveNetwork(chainId ?? Networks.MAINNET);
 
-            const { maxSupply, totalAssets, mintPrice, config } =
+            const { maxSupply, totalAssets, mintPrice } =
                 await mintContract.getResumeMint();
 
             const asset = await getAssetById({
@@ -30,18 +30,16 @@ export const useGetMintData = (collectionId: string) => {
             return {
                 maxSupply,
                 minted: totalAssets,
-                config,
                 amount: mintPrice.amount,
                 asset,
             };
         },
-        enabled: !!collectionId,
+        enabled: !!collectionId && isMintable,
     });
 
     return {
         maxSupply: bn(data?.maxSupply).toString(),
         totalMinted: bn(data?.minted).toString(),
-        config: data?.config,
         mintPrice: data?.amount,
         asset: data?.asset,
         ...rest,

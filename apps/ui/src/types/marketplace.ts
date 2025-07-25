@@ -1,3 +1,4 @@
+import type { CollectionConfig } from '@/modules/marketplace/utils/mint';
 import type { FuelAsset, Metadata } from '@/services/fuel-assets';
 
 export interface Asset {
@@ -107,18 +108,20 @@ export enum OrderStatus {
   CANCELLED = 'CANCELLED',
 }
 
-export interface Collection {
-  config: {
-    avatar: string;
-    banner: string;
-    description: string;
-    social: {
-      x?: string;
-      site?: string;
-      discord?: string;
-    };
+type Config = CollectionConfig & {
+  avatar: string;
+  banner: string;
+  description: string;
+  social: {
+    x?: string;
+    site?: string;
+    discord?: string;
   };
-  isMintable: boolean
+};
+
+export interface Collection {
+  config: Config;
+  isMintable: boolean;
   createdAt: string;
   description: string | null;
   id: string;
