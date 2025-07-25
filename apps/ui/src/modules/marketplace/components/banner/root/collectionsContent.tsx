@@ -3,11 +3,16 @@ import { parseURI, usdValueFormatter } from '@/utils/formatter';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
 import { StatBox } from './statBox';
 import type { Collection } from '@/types/marketplace';
+import { useGetMintData } from '@/hooks/marketplace/useGetMintData';
 
 const CollectionsContent = ({
   collection,
   handleRedirect,
 }: { collection: Collection; handleRedirect: () => void }) => {
+  const { totalMinted, maxSupply } = useGetMintData(collection.id);
+
+  const isMintable = totalMinted < maxSupply;
+
   return (
     <Box
       position="relative"
@@ -59,22 +64,24 @@ const CollectionsContent = ({
       >
         <Box color="#fff" maxW="lg" mt="auto" mb={4}>
           <VStack align="flex-start" mb={4}>
-            <Text
-              bg="#B3FF2E1A"
-              borderRadius="100px"
-              py={1}
-              px={4}
-              backdropBlur="blur(24px)"
-              color="garage.100"
-              letterSpacing="0.05em"
-              fontSize="10px"
-              border="1px solid #B3FF2E40"
-              boxShadow="0px 6px 12px 0px #00000040"
-              bgGradient="linear(to-r, #00000040, #00000040)"
-              mb={1}
-            >
-              Now Minting
-            </Text>
+            {isMintable && (
+              <Text
+                bg="#B3FF2E1A"
+                borderRadius="100px"
+                py={1}
+                px={4}
+                backdropBlur="blur(24px)"
+                color="garage.100"
+                letterSpacing="0.05em"
+                fontSize="10px"
+                border="1px solid #B3FF2E40"
+                boxShadow="0px 6px 12px 0px #00000040"
+                bgGradient="linear(to-r, #00000040, #00000040)"
+                mb={1}
+              >
+                Now Minting
+              </Text>
+            )}
 
             <Heading fontSize="md" fontWeight={600}>
               {collection.name}

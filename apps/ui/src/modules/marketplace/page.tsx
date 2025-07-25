@@ -6,15 +6,12 @@ import { SearchBar, MarketplacePageSkeleton } from './components';
 import { CollectionList } from './components/collectionList';
 
 import { useGetCollections } from '@/hooks/marketplace/useListCollections';
-import type { Collection } from '@/types/marketplace';
 import { useInView } from 'react-intersection-observer';
 import { MarketplaceBanner } from './components/banner/collectionsBanner';
 
 export const MarketplacePage = () => {
   const navigate = useNavigate();
   const { ref, inView } = useInView();
-
-  const [initialBanners, setInitialBanners] = useState<Collection[]>([]);
   const [sortValue, setSortValue] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const { search } = useSearch({ strict: false });
@@ -38,12 +35,6 @@ export const MarketplacePage = () => {
     () => collections?.pages?.flatMap((page) => page.data) ?? [],
     [collections]
   );
-
-  useEffect(() => {
-    if (data.length > 0 && !initialBanners.length) {
-      setInitialBanners(data.slice(0, 3));
-    }
-  }, [data, initialBanners]);
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
@@ -78,7 +69,7 @@ export const MarketplacePage = () => {
 
   return (
     <Stack w="full" p={0} m={0}>
-      <MarketplaceBanner collections={initialBanners} />
+      <MarketplaceBanner />
       <Container
         maxWidth="1920px"
         w={{ base: 'full', lg: 'calc(100% - 280px)' }}

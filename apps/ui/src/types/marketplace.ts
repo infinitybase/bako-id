@@ -118,6 +118,7 @@ export interface Collection {
       discord?: string;
     };
   };
+  isMintable: boolean
   createdAt: string;
   description: string | null;
   id: string;
