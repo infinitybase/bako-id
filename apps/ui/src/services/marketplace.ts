@@ -137,6 +137,28 @@ export class marketplaceService {
     return data;
   }
 
+  static async listMintableCollections({
+
+    chainId = Networks.MAINNET,
+    limit,
+  }: {
+
+    chainId: number;
+    limit?: number;
+  }): Promise<{ data: Collection[] }> {
+    const network = resolveNetwork(chainId);
+
+    const url = constructUrl(`${BASE_MARKETPLACE_URL}/${network}/collections/featured`, {
+      limit,
+    });
+
+    const response = await fetch(url);
+
+    const data = await response.json();
+
+    return data;
+  }
+
   static async listUserOrders({
     page,
     chainId = Networks.MAINNET,

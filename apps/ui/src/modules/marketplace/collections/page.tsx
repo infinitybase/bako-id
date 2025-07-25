@@ -23,13 +23,13 @@ import { useGetCollectionOrders } from '@/hooks/marketplace/useGetCollectionOrde
 import { useDebounce } from '@/hooks/useDebounce';
 import { CollectionPageBanner } from '../components/banner/collectionBanner';
 import MintPanel from '../components/mintPanel';
+import { useGetMintData } from '@/hooks/marketplace/useGetMintData';
 
 export const CollectionPage = () => {
-  const collectionOrdersLimit = 10;
+  const navigate = useNavigate();
   const { collectionId } = useParams({ strict: false });
   const { search } = useSearch({ strict: false });
   const debouncedSearch = useDebounce<string>(search ?? '', 700);
-  const navigate = useNavigate();
   const [filters, setFilters] = useState<{
     sortBy: string;
     sortDirection: 'desc' | 'asc';
@@ -37,6 +37,8 @@ export const CollectionPage = () => {
     sortBy: 'volumes',
     sortDirection: 'desc',
   });
+
+  const collectionOrdersLimit = 10;
 
   const {
     collectionOrders,
@@ -53,6 +55,25 @@ export const CollectionPage = () => {
     limit: collectionOrdersLimit,
     search: debouncedSearch,
   });
+
+  const { collection } = useGetCollection({
+    collectionId,
+  });
+
+  const {
+    maxSupply,
+    totalMinted,
+    mintPrice,
+    config,
+    asset,
+    isLoading: isLoadingMintData,
+    isFetched: isFetchedMintData,
+  } = useGetMintData(collectionId);
+
+  const isMintable =
+    Number(maxSupply) > 0 && Number(totalMinted) < Number(maxSupply);
+
+  const wasAllSupplyMinted = Number(maxSupply) === Number(totalMinted);
 
   const handleChangeSearch = useCallback(
     (search: string) => {
@@ -73,10 +94,6 @@ export const CollectionPage = () => {
       sortDirection: column.includes('asc') ? 'asc' : 'desc',
     }));
   };
-
-  const { collection } = useGetCollection({
-    collectionId,
-  });
 
   const data = useMemo(
     () => collectionOrders?.pages?.flatMap((page) => page.data) ?? [],
@@ -104,54 +121,70 @@ export const CollectionPage = () => {
       >
         <Tabs variant="soft-rounded">
           <TabList>
-            <Tab
-              _selected={{
-                bg: 'grey.600',
-                color: 'white',
-              }}
-              color="disabled.500"
-              bg="input.600"
-              borderRadius="8px 8px 0 0"
-              fontSize="xs"
-              letterSpacing=".5px"
-            >
-              Items
-            </Tab>
-            <Tab
-              _selected={{ bg: 'grey.600', color: 'white' }}
-              color="disabled.500"
-              bg="input.600"
-              borderRadius="8px 8px 0 0"
-              fontSize="xs"
-              letterSpacing=".5px"
-            >
-              Mint
-            </Tab>
+            {data.length > 0 && (
+              <Tab
+                _selected={{
+                  bg: 'grey.600',
+                  color: 'white',
+                }}
+                color="disabled.500"
+                bg="input.600"
+                borderRadius="8px 8px 0 0"
+                fontSize="xs"
+                letterSpacing=".5px"
+              >
+                Items
+              </Tab>
+            )}
+            {!isLoadingMintData && isMintable && (
+              <Tab
+                _selected={{ bg: 'grey.600', color: 'white' }}
+                color="disabled.500"
+                bg="input.600"
+                borderRadius="8px 8px 0 0"
+                fontSize="xs"
+                letterSpacing=".5px"
+              >
+                {wasAllSupplyMinted ? 'About' : 'Mint'}
+              </Tab>
+            )}
           </TabList>
           <Divider my={0} py={0} borderColor="grey.600" />
           <TabPanels>
-            <TabPanel px={0}>
-              <Stack gap={8}>
-                <MarketplaceFilter
-                  searchValue={search}
-                  onSearchChange={handleChangeSearch}
-                  sortValue={filters.sortBy}
-                  onSortChange={handleSortChange}
-                  isCollectionPage
-                />
-                <OrderList
-                  orders={data}
-                  hasNextPage={hasNextPage}
-                  onFetchNextPage={fetchNextPage}
-                  isLoadingOrders={!isFetched || isLoading}
-                  isFetchingNextPage={isFetchingNextPage}
-                  collectionOrdersLimit={collectionOrdersLimit}
-                  isPlaceholderData={isPlaceholderData}
-                />
-              </Stack>
-            </TabPanel>
+            {data.length > 0 && (
+              <TabPanel px={0}>
+                <Stack gap={8}>
+                  <MarketplaceFilter
+                    searchValue={search}
+                    onSearchChange={handleChangeSearch}
+                    sortValue={filters.sortBy}
+                    onSortChange={handleSortChange}
+                    isCollectionPage
+                  />
+                  <OrderList
+                    orders={data}
+                    hasNextPage={hasNextPage}
+                    onFetchNextPage={fetchNextPage}
+                    isLoadingOrders={!isFetched || isLoading}
+                    isFetchingNextPage={isFetchingNextPage}
+                    collectionOrdersLimit={collectionOrdersLimit}
+                    isPlaceholderData={isPlaceholderData}
+                  />
+                </Stack>
+              </TabPanel>
+            )}
+
             <TabPanel p={0}>
-              <MintPanel />
+              <MintPanel
+                collectionId={collectionId ?? ''}
+                maxSupply={maxSupply}
+                totalMinted={totalMinted}
+                mintPrice={mintPrice}
+                config={config}
+                asset={asset}
+                isLoading={isLoadingMintData || !isFetchedMintData}
+                wasAllSupplyMinted={wasAllSupplyMinted}
+              />
             </TabPanel>
           </TabPanels>
         </Tabs>
