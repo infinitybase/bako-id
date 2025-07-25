@@ -9,9 +9,9 @@ export const useMintToken = (collectionId: string) => {
 
     const queryClient = useQueryClient();
     const { wallet } = useWallet();
-    const mintContract = new NFTCollection(collectionId, wallet!);
     const { mutateAsync: mintToken, isPending } = useMutation({
         mutationFn: async (quantity: number) => {
+            const mintContract = new NFTCollection(collectionId, wallet!);
             await mintContract.mint(quantity);
 
             return quantity

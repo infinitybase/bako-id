@@ -32,6 +32,7 @@ const MintPanel = ({
 
   const { mintToken, isPending } = useMintToken(collectionId);
 
+  if (!collectionId) return null;
   if (isLoading) return <MintPanelSkeleton />;
 
   return (
