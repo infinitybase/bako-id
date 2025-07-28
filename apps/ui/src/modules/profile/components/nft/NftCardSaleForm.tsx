@@ -65,12 +65,12 @@ export const NftCardSaleForm = ({
 
   const currentSellAsset = useMemo(
     () => assets.find((asset) => asset.id === sellAssetId),
-    [assets, sellAssetId]
+    [assets, sellAssetId],
   );
 
   const findDefaultAsset = useMemo(
     () => assets.find((asset) => asset.id === FUEL_ASSET_ID),
-    [assets]
+    [assets],
   );
   const defaultAsset = {
     id: findDefaultAsset?.id,
@@ -112,7 +112,7 @@ export const NftCardSaleForm = ({
 
     const valueInBaseUnits = bn.parseUnits(
       currentValue.toString(),
-      currentSellAsset.metadata?.decimals || 9
+      currentSellAsset.metadata?.decimals || 9,
     );
     const feeAmount = valueInBaseUnits.mul(currentFee).div(10000);
     const valueAfterFee = valueInBaseUnits.sub(feeAmount);
