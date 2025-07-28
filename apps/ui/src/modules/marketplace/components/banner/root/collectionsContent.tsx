@@ -28,11 +28,6 @@ const CollectionsContent = ({
       h="full"
       cursor="pointer"
       onClick={handleRedirect}
-      aspectRatio={{
-        base: '16/9',
-        md: '16/9',
-        lg: '8/3',
-      }}
       _before={{
         content: '""',
         display: 'block',
@@ -67,6 +62,7 @@ const CollectionsContent = ({
         mx="auto"
         alignItems="flex-end"
         maxW="1280px"
+        px="23px"
       >
         <Box color="#fff" maxW="lg" mt="auto" mb={4}>
           <VStack align="flex-start" mb={4}>

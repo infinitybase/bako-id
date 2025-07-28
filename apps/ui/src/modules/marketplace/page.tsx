@@ -72,7 +72,7 @@ export const MarketplacePage = () => {
       <MarketplaceBanner />
       <Container
         maxW="1280px"
-        px={0}
+        px="23px"
         py={8}
         overflowY="hidden"
         sx={{
