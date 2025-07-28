@@ -54,11 +54,14 @@ export default function NftDetailsStep({
   const { errorToast, successToast } = useCustomToast();
 
   const { account } = useAccount();
-  const { balance: walletAssetBalance, isLoading: isLoadingWalletBalance } =
-    useBalance({
-      address: account,
-      assetId: order.price.assetId,
-    });
+  const {
+    balance: walletAssetBalance,
+    isLoading: isLoadingWalletBalance,
+    isFetching: isFetchingBalance,
+  } = useBalance({
+    address: account,
+    assetId: order.price.assetId,
+  });
 
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
     order.seller,
@@ -184,7 +187,10 @@ export default function NftDetailsStep({
       )}
 
       {!isOwner && (
-        <Skeleton isLoaded={!isLoadingWalletBalance} borderRadius="md">
+        <Skeleton
+          isLoaded={!isLoadingWalletBalance || !isFetchingBalance}
+          borderRadius="md"
+        >
           <Tooltip
             label={notEnoughBalance && isConnected ? 'Not enough balance' : ''}
           >
