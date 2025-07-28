@@ -129,7 +129,7 @@ const ProfileSummary = ({
   name,
   isDomain,
   nftQuantity,
-  usdValue,
+  // usdValue,
 }: {
   name: string;
   isDomain: boolean;
@@ -139,10 +139,10 @@ const ProfileSummary = ({
   const { metadata, loadingMetadata } = useMetadata();
   const avatar = metadata?.find((m) => m.key === MetadataKeys.AVATAR);
 
-  const formattedUsdValue = usdValue.toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  });
+  // const formattedUsdValue = usdValue.toLocaleString('en-US', {
+  //   style: 'currency',
+  //   currency: 'USD',
+  // });
 
   return (
     <Flex
@@ -194,7 +194,7 @@ const ProfileSummary = ({
 
       <Flex gap={4}>
         <StatBox label="NFT's" value={nftQuantity} />
-        <StatBox label="USD value" value={formattedUsdValue} />
+        {/* <StatBox label="USD value" value={formattedUsdValue} /> */}
       </Flex>
     </Flex>
   );

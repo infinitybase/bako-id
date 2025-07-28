@@ -91,7 +91,6 @@ const Toast = (props: ToastProps) => {
         {props.title}
       </Text>
       <Text
-        textAlign="center"
         fontSize={14}
         noOfLines={2}
         whiteSpace="pre-wrap"

@@ -17,17 +17,19 @@ export const ListHeader = ({
   sortKey,
   ...rest
 }: ListHeaderProps) => {
+  const isLastSold = label === 'Last sold';
   const displayTimeStamps = label === 'Sales' || label === 'Volume';
 
   return (
     <Box
-      cursor="pointer"
+      cursor={isLastSold ? 'auto' : 'pointer'}
       onClick={() => onSortChange(sortKey)}
       display="flex"
       alignItems="center"
       justifyContent="flex-end"
       {...rest}
       position="relative"
+      pointerEvents={isLastSold ? 'none' : 'auto'}
     >
       <Text color="white" fontWeight={600} fontSize="xs">
         {label}
@@ -39,7 +41,7 @@ export const ListHeader = ({
         </Text>
       )}
 
-      {label !== 'Last sold' && (
+      {!isLastSold && (
         <VStack spacing={0} gap={0} position="absolute" right={-6}>
           <Icon
             as={ChevronUpIcon}
