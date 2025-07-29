@@ -20,15 +20,37 @@ const configs = {
 function multiDomainPlugin() {
   return {
     name: 'multi-domain',
-    generateBundle() {
-      const templatePath = path.resolve('index-prod.html');
+    generateBundle(_, bundle) {
+      // Encontra os arquivos JS e CSS gerados
+      const jsFiles = Object.keys(bundle).filter((name) =>
+        name.endsWith('.js')
+      );
+      const cssFiles = Object.keys(bundle).filter((name) =>
+        name.endsWith('.css')
+      );
 
+      const mainJs =
+        jsFiles.find((name) => name.includes('index')) || jsFiles[0];
+      const mainCss = cssFiles[0];
+
+      const templatePath = path.resolve('index-prod.html');
       if (!fs.existsSync(templatePath)) {
-        console.error('index-prod.html not found');
+        console.error('index-prod. not found!');
         return;
       }
 
-      const template = fs.readFileSync(templatePath, 'utf-8');
+      let template = fs.readFileSync(templatePath, 'utf-8');
+
+      template = template.replace('/src/main.tsx', `/${mainJs}`);
+
+      if (mainCss) {
+        if (!template.includes('.css')) {
+          template = template.replace(
+            '</head>',
+            `  <link rel="stylesheet" href="/${mainCss}">\n</head>`
+          );
+        }
+      }
 
       // biome-ignore lint/complexity/noForEach: <explanation>
       Object.entries(configs).forEach(([key, config]) => {
