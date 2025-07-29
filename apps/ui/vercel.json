@@ -6,7 +6,7 @@
       "has": [
         {
           "type": "host",
-          "value": "garage.zoone"
+          "value": "garage.zone"
         }
       ]
     },
@@ -16,7 +16,7 @@
       "has": [
         {
           "type": "host",
-          "value": "(.+\\.)?garage\\.zoone"
+          "value": "(.+\\.)?garage\\.zone"
         }
       ]
     },
