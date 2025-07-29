@@ -1,6 +1,7 @@
 import UnknownAsset from '@/assets/unknown-asset.png';
 import { EditIcon, LightIcon, UserIcon, useCustomToast } from '@/components';
 import { BTCIcon } from '@/components/icons/btcicon';
+import { CloseIcon } from '@/components/icons/closeIcon';
 import { ContractIcon } from '@/components/icons/contracticon';
 import { useResolverName } from '@/hooks';
 import { useExecuteOrder } from '@/hooks/marketplace';
@@ -20,15 +21,13 @@ import {
   Text,
   Tooltip,
 } from '@chakra-ui/react';
-import { useBalance } from '@fuels/react';
-import { useConnectUI } from '@fuels/react';
+import { useAccount, useBalance, useConnectUI } from '@fuels/react';
 import { Link } from '@tanstack/react-router';
 import { bn } from 'fuels';
 import { useCallback, useMemo } from 'react';
 import { NftListMetadata } from '../NftListMetadata';
 import { NftMetadataBlock } from '../NftMetadataBlock';
 import ShareOrder from '../ShareOrder';
-import { CloseIcon } from '@/components/icons/closeIcon';
 
 export default function NftDetailsStep({
   onClose,
@@ -54,22 +53,26 @@ export default function NftDetailsStep({
   const { connect, isConnected } = useConnectUI();
   const { errorToast, successToast } = useCustomToast();
 
-  const { balance: walletAssetBalance, isLoading: isLoadingWalletBalance } =
-    useBalance({
-      address: order.seller,
-      assetId: order.price.assetId,
-    });
+  const { account } = useAccount();
+  const {
+    balance: walletAssetBalance,
+    isLoading: isLoadingWalletBalance,
+    isFetching: isFetchingBalance,
+  } = useBalance({
+    address: account,
+    assetId: order.price.assetId,
+  });
 
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
-    order.seller
+    order.seller,
   );
   const { data: sellerDomain, isLoading: isLoadingDomain } = useResolverName(
-    order.seller
+    order.seller,
   );
 
   const notEnoughBalance = useMemo(() => {
-    if (isLoadingWalletBalance) return false;
-    return !bn(walletAssetBalance).gte(order.price.raw.toString());
+    if (isLoadingWalletBalance || !walletAssetBalance) return true;
+    return walletAssetBalance.lt(bn(order.price.raw));
   }, [walletAssetBalance, isLoadingWalletBalance, order.price.raw]);
 
   const handleExecuteOrder = useCallback(async () => {
@@ -184,7 +187,10 @@ export default function NftDetailsStep({
       )}
 
       {!isOwner && (
-        <Skeleton isLoaded={!isLoadingWalletBalance} borderRadius="md">
+        <Skeleton
+          isLoaded={!isLoadingWalletBalance && !isFetchingBalance}
+          borderRadius="md"
+        >
           <Tooltip
             label={notEnoughBalance && isConnected ? 'Not enough balance' : ''}
           >
