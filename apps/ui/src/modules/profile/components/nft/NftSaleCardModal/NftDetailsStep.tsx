@@ -188,7 +188,7 @@ export default function NftDetailsStep({
 
       {!isOwner && (
         <Skeleton
-          isLoaded={!isLoadingWalletBalance || !isFetchingBalance}
+          isLoaded={!isLoadingWalletBalance && !isFetchingBalance}
           borderRadius="md"
         >
           <Tooltip
