@@ -2,7 +2,7 @@ import { FuelWalletTestHelper } from '@fuels/playwright-utils';
 import { BrowserContext, expect, Page } from '@playwright/test';
 import { WalletUnlocked } from 'fuels';
 
-export async function createNewHandle(page: Page) {
+export async function getValueNewHandle(page: Page) {
   await page.locator('text=Estimated total').waitFor({ state: 'visible' });
   const estimatedTotal = await page.evaluate(() => {
     return (
@@ -96,4 +96,13 @@ export async function returnFundsToGenesisWallet(config: {
   await extensionPage.getByRole('button', { name: 'Submit' }).click();
 
   await expect(extensionPage.getByText('Transaction sent')).toBeVisible();
+}
+
+export async function getVaultAddress(page: Page) {
+  await page.getByLabel('Select networks').click();
+  await page.getByText('Fuel Sepolia Testnet').click();
+  await page.getByRole('heading', { name: 'Personal Vault' }).click();
+  await page.getByRole('img', { name: 'Close window' }).locator('path').click();
+  await page.getByRole('button', { name: 'Sidebar Vault Address' }).click();
+  return await page.evaluate(() => navigator.clipboard.readText());
 }

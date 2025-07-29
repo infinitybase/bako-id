@@ -1,8 +1,8 @@
 import { expect, FuelWalletTestHelper, test } from '@fuels/playwright-utils';
 import { E2ETestUtils } from './ultils/setup';
-import { randomUUID, WalletUnlocked } from 'fuels';
+import { WalletUnlocked } from 'fuels';
 import {
-  createNewHandle,
+  getValueNewHandle,
   editProfile,
   returnFundsToGenesisWallet,
   transfer,
@@ -10,7 +10,7 @@ import {
 
 await E2ETestUtils.downloadFuelExtension({ test });
 
-test.describe('Home Page', () => {
+test.describe('Connect with Fuel Wallet', () => {
   let fuelWalletTestHelper: FuelWalletTestHelper;
   let genesisWallet: WalletUnlocked;
 
@@ -99,7 +99,7 @@ test.describe('Home Page', () => {
       ).toBeVisible();
     });
 
-    const newHandle = `automation${randomUUID().slice(0, 4)}`;
+    const newHandle = `automation${Date.now()}`;
     console.log('new handle: ', newHandle);
 
     await test.step('create new handle', async () => {
@@ -111,7 +111,7 @@ test.describe('Home Page', () => {
       await expect(page.getByText(newHandle)).toBeVisible();
       await expect(page.getByText('Handles0.001 ETH')).toBeVisible();
 
-      const { value, connectedAddress } = await createNewHandle(page);
+      const { value, connectedAddress } = await getValueNewHandle(page);
       await transfer(genesisWallet, value, connectedAddress);
 
       await page.getByRole('button', { name: 'Confirm Transaction' }).click();
@@ -198,10 +198,10 @@ test.describe('Home Page', () => {
     });
   });
 
-  test.only('create new Bako to other resolver', async ({ page, context }) => {
+  test('create new Bako to other resolver', async ({ page, context }) => {
     const [address0, address1] = await E2ETestUtils.getTwoAddresses(context);
 
-    const newHandle = `automation${randomUUID().slice(0, 4)}`;
+    const newHandle = `automation${Date.now()}`;
     console.log('new handle: ', newHandle);
 
     await test.step('create new handle', async () => {
@@ -226,7 +226,7 @@ test.describe('Home Page', () => {
         await fuelWalletTestHelper.walletConnect(['Account 1']);
       });
 
-      const { value } = await createNewHandle(page);
+      const { value } = await getValueNewHandle(page);
 
       await transfer(genesisWallet, value, address0);
 

@@ -67,6 +67,29 @@ export class E2ETestUtils {
     return [address0, address1];
   }
 
+  static async setupPasskey(config: { page: Page }) {
+    const provider = new Provider('http://testnet.fuel.network/v1/graphql');
+    const genesisWallet = Wallet.fromPrivateKey(
+      '0x5ac4a3075cfeb0a1238efc082978aa6a7a2efe11e6f2ce2b564d708807fab6ad',
+      provider,
+    );
+
+    const client = await config.page.context().newCDPSession(config.page);
+    await client.send('WebAuthn.enable');
+    await client.send('WebAuthn.addVirtualAuthenticator', {
+      options: {
+        protocol: 'ctap2',
+        transport: 'internal',
+        hasResidentKey: true,
+        hasUserVerification: true,
+        isUserVerified: true,
+        automaticPresenceSimulation: true,
+      },
+    });
+
+    return { genesisWallet };
+  }
+
   static async signMessageFuelWallet(config: {
     fuelWalletTestHelper: FuelWalletTestHelper;
     page: Page;
