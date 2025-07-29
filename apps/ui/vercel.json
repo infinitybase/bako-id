@@ -1,3 +1,36 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/garage.html",
+      "has": [
+        {
+          "type": "host",
+          "value": "garage.zoone"
+        }
+      ]
+    },
+    {
+      "source": "/",
+      "destination": "/garage.html",
+      "has": [
+        {
+          "type": "host",
+          "value": "(.+\\.)?garage\\.zoone"
+        }
+      ]
+    },
+    {
+      "source": "/marketplace",
+      "destination": "/garage.html"
+    },
+    {
+      "source": "/marketplace/(.*)",
+      "destination": "/garage.html"
+    },
+    {
+      "source": "/",
+      "destination": "/bako.html"
+    }
+  ]
 }
