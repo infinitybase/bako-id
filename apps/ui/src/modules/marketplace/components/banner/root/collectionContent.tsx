@@ -16,6 +16,7 @@ const CollectionContent = ({ collection }: { collection: Collection }) => {
       alignItems="flex-end"
       mb={2.5}
       maxW="1280px"
+      px="23px"
       mx="auto"
     >
       <Flex align="center" gap={2} minW="0">
