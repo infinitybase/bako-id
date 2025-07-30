@@ -5,6 +5,7 @@ import { Networks } from '@/utils/resolverNetwork';
 import type { Order } from '@/types/marketplace';
 import type { PaginationResult } from '@/utils/pagination';
 import { marketplaceService } from '@/services/marketplace';
+import { useProcessingOrders } from '@/contexts/ProcessingOrdersContext';
 
 type useListInfiniteOrdersByAddressProps = {
   page?: number;
@@ -23,6 +24,8 @@ export const useListInfiniteOrdersByAddress = ({
   limit,
 }: useListInfiniteOrdersByAddressProps) => {
   const { chainId } = useChainId();
+  const { cancelledOrdersId } =
+    useProcessingOrders();
 
   const {
     data: orders,
@@ -46,8 +49,12 @@ export const useListInfiniteOrdersByAddress = ({
         sellerAddress,
       });
 
+      const filteredData = data.items.filter(
+        (order) => !cancelledOrdersId.includes(order.id)
+      );
+
       return {
-        data: data.items,
+        data: filteredData,
         page: data.pagination.page,
         limit: data.pagination.limit,
         total: data.pagination.total,

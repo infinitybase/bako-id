@@ -49,6 +49,7 @@ export interface Order {
   seller: string;
   status: number;
   updatedAt: string;
+  processing?: boolean;
 }
 
 export interface OrderWithMedatada {

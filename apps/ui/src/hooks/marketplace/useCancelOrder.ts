@@ -1,5 +1,5 @@
 import type { Order as ListOrder, Order } from '@/types/marketplace';
-import { MarketplaceQueryKeys } from '@/utils/constants';
+import { BakoIDQueryKeys, MarketplaceQueryKeys } from '@/utils/constants';
 import type { PaginationResult } from '@/utils/pagination';
 import { useAccount } from '@fuels/react';
 import { useQueryClient, type InfiniteData } from '@tanstack/react-query';
@@ -7,6 +7,7 @@ import { useSearch } from '@tanstack/react-router';
 import { useChainId } from '../useChainId';
 import { useMutationWithPolling } from '../useMutationWithPolling';
 import { useMarketplace } from './useMarketplace';
+import { useProcessingOrders } from '@/contexts/ProcessingOrdersContext';
 
 export const useCancelOrder = () => {
   const marketplaceContract = useMarketplace();
@@ -14,7 +15,8 @@ export const useCancelOrder = () => {
   const { account } = useAccount();
   const { chainId } = useChainId();
   const { search } = useSearch({ strict: false });
-
+  const { addCancelledOrdersId, removeCancelledOrdersId } =
+    useProcessingOrders();
   const address = account?.toLowerCase();
 
   const {
@@ -24,11 +26,15 @@ export const useCancelOrder = () => {
   } = useMutationWithPolling({
     mutationFn: async (orderId: string) => {
       const marketplace = await marketplaceContract;
-      return await marketplace.cancelOrder(orderId);
+      await marketplace.cancelOrder(orderId);
+      return orderId;
     },
     mutationOpts: {
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: ['nfts'] });
+      onSuccess: async (cancelledOrderid) => {
+        addCancelledOrdersId(cancelledOrderid);
+        await queryClient.invalidateQueries({
+          queryKey: [BakoIDQueryKeys.NFTS, chainId, address],
+        });
       },
     },
     pollConfigs: [
@@ -56,8 +62,13 @@ export const useCancelOrder = () => {
           if (!data) return true;
 
           const orders = data.pages.flatMap((page) => page.data);
+          const isReady = !orders.find((order) => order.id === payload);
 
-          return !orders.find((order) => order.id === payload);
+          if (isReady) {
+            removeCancelledOrdersId(payload);
+          }
+
+          return isReady;
         },
       },
     ],

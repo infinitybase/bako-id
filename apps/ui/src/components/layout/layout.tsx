@@ -7,8 +7,7 @@ import { Header } from '../header';
 import { Container } from './container';
 import { MarketplaceMainLayout } from './marketplace';
 import { ProfileLayout } from './profile';
-
-// import { useIsConnected } from '@fuels/react';
+import { ProcessingOrdersProvider } from '@/contexts/ProcessingOrdersContext';
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;
@@ -31,9 +30,11 @@ const DashboardLayout = (props: DashboardLayoutProps) => (
 
 export const MarketplaceLayout = () => {
   return (
-    <MarketplaceMainLayout>
-      <Outlet />
-    </MarketplaceMainLayout>
+    <ProcessingOrdersProvider>
+      <MarketplaceMainLayout>
+        <Outlet />
+      </MarketplaceMainLayout>
+    </ProcessingOrdersProvider>
   );
 };
 
