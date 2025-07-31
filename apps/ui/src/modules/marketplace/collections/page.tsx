@@ -74,6 +74,8 @@ export const CollectionPage = () => {
 
   const wasAllSupplyMinted = Number(maxSupply) === Number(totalMinted);
 
+  const showMintTab = !isLoadingMintData && isMintable;
+
   const handleChangeSearch = useCallback(
     (search: string) => {
       navigate({
@@ -110,7 +112,7 @@ export const CollectionPage = () => {
 
       <Container
         maxW="1280px"
-        px={0}
+        px="22px"
         py={8}
         overflowY="hidden"
         sx={{
@@ -141,7 +143,7 @@ export const CollectionPage = () => {
                 Items
               </Tab>
             )}
-            {!isLoadingMintData && isMintable && (
+            {showMintTab && (
               <Tab
                 _selected={{ bg: 'grey.600', color: 'white' }}
                 color="disabled.500"
@@ -179,19 +181,21 @@ export const CollectionPage = () => {
               </TabPanel>
             )}
 
-            <TabPanel p={0}>
-              <MintPanel
-                collectionName={collection?.data?.name ?? ''}
-                collectionId={collectionId ?? ''}
-                maxSupply={maxSupply}
-                totalMinted={totalMinted}
-                mintPrice={mintPrice}
-                config={collection?.data?.config}
-                asset={asset}
-                isLoading={isLoadingMintData || !isFetchedMintData}
-                wasAllSupplyMinted={wasAllSupplyMinted}
-              />
-            </TabPanel>
+            {showMintTab && (
+              <TabPanel p={0}>
+                <MintPanel
+                  collectionName={collection?.data?.name ?? ''}
+                  collectionId={collectionId ?? ''}
+                  maxSupply={maxSupply}
+                  totalMinted={totalMinted}
+                  mintPrice={mintPrice}
+                  config={collection?.data?.config}
+                  asset={asset}
+                  isLoading={isLoadingMintData || !isFetchedMintData}
+                  wasAllSupplyMinted={wasAllSupplyMinted}
+                />
+              </TabPanel>
+            )}
           </TabPanels>
         </Tabs>
         <Outlet />

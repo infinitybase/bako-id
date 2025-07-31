@@ -20,7 +20,7 @@ const CollectionItem = ({ col }: { col: Collection }) => {
       }}
       gap={0}
       alignItems="center"
-      px={2}
+      px="6px"
       borderRadius="md"
       bg="grey.600"
       mb={2}

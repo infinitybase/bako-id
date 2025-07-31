@@ -96,7 +96,13 @@ export const MarketplaceConnect = ({
       >
         {isConnected && wallet ? (
           <Flex alignItems="center" justifyContent="space-between" gap={2}>
-            <Text textAlign="center" w="fit-content">
+            <Text
+              textAlign="center"
+              w="fit-content"
+              overflow="hidden"
+              textOverflow="ellipsis"
+              whiteSpace="nowrap"
+            >
               {parsedDomain}
             </Text>
             <Icon as={WalletIcon2} h={5} w={4} pb={1} />

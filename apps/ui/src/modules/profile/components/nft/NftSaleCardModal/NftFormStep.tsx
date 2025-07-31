@@ -1,11 +1,11 @@
 import { useCustomToast } from '@/components';
 import { useUpdateOrder } from '@/hooks/marketplace';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
+import type { Order } from '@/types/marketplace';
 import { Button, Heading, Stack, Text } from '@chakra-ui/react';
 import { bn } from 'fuels';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { NftCardSaleForm, type NftSaleCardForm } from '../NftCardSaleForm';
-import type { Order } from '@/types/marketplace';
 
 export default function NftFormStep({
   assetSymbolUrl,
@@ -33,8 +33,12 @@ export default function NftFormStep({
   const handleUpdateOrder = useCallback(
     async (data: NftSaleCardForm) => {
       try {
+        const sellPrice = bn.parseUnits(
+          data.sellPrice.toString(),
+          data.sellAsset.decimals,
+        );
         await updateOrderAsync({
-          sellPrice: bn.parseUnits(data.sellPrice.toString()),
+          sellPrice,
           sellAsset: data.sellAsset.id,
           orderId: order.id,
         });
@@ -44,8 +48,14 @@ export default function NftFormStep({
         errorToast({ title: 'Failed to update order' });
       }
     },
-    [updateOrderAsync, order.id, successToast, errorToast, onClose]
+    [updateOrderAsync, order.id, successToast, errorToast, onClose],
   );
+
+  const decimals = useMemo(
+    () => assets.find((a) => a.id === order.price.assetId)?.metadata?.decimals,
+    [assets, order.price.assetId],
+  );
+
   return (
     <Stack w="full" spacing={4}>
       <Heading>{name}</Heading>
@@ -61,6 +71,7 @@ export default function NftFormStep({
             id: order.price.assetId,
             icon: assetSymbolUrl,
             name: order.price.name ?? 'Unknown',
+            decimals,
           },
           sellPrice: value,
         }}

@@ -3,6 +3,8 @@ import nftEmpty from '@/assets/nft-empty.png';
 import UnknownAsset from '@/assets/unknown-asset.png';
 import { ConfirmationDialog, useCustomToast } from '@/components';
 import { useCancelOrder } from '@/hooks/marketplace';
+import type { Order } from '@/types/marketplace';
+import { parseURI } from '@/utils/formatter';
 import {
   type BoxProps,
   Button,
@@ -12,11 +14,9 @@ import {
   Tooltip,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useCallback, useMemo, type MouseEvent } from 'react';
+import { type MouseEvent, useCallback, useMemo } from 'react';
 import { NftSaleCardModal } from './NftSaleCardModal';
 import { NftCard } from './card';
-import { parseURI } from '@/utils/formatter';
-import type { Order } from '@/types/marketplace';
 
 interface NftSaleCardProps {
   order: Order;
@@ -78,7 +78,7 @@ const NftSaleCard = ({
         style: 'currency',
         currency: 'USD',
       }).format(Number(order.price.usd)),
-    [order.price.usd]
+    [order.price.usd],
   );
 
   const assetSymbolUrl = order.price.image || UnknownAsset;
