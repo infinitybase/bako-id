@@ -2,12 +2,33 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <title>Bako Identity</title>
+    <script>
+      (function() {
+        const hostname = window.location.hostname;
+        const pathname = window.location.pathname;
+        const isDev = window.location.hostname.includes('localhost')
+        
+        
+        const isMarketplaceRoute = 
+          hostname.includes('garage') ||
+          (isDev && hostname.split('.')[0] === 'marketplace') ||
+          (isDev && pathname.includes('marketplace'));
+        
+        if (isMarketplaceRoute) {
+          document.title = 'Garage';
+          let link = document.querySelector('link[rel="icon"]');
+          if (link) {
+            link.href = '/garage-favicon.svg';
+          }
+        }
+      })();
+    </script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-21RDZZWWHB"></script>
     <script>
       window.dataLayer = window.dataLayer || [];

@@ -4,7 +4,7 @@ import { useListAssets } from '@/hooks/marketplace/useListAssets';
 import type { Order } from '@/types/marketplace';
 import { Button, Heading, Stack, Text } from '@chakra-ui/react';
 import { bn } from 'fuels';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { NftCardSaleForm, type NftSaleCardForm } from '../NftCardSaleForm';
 
 export default function NftFormStep({
@@ -15,14 +15,16 @@ export default function NftFormStep({
   name,
   onCancel,
   userWithHandle,
+  ctaButtonVariant = 'primary',
 }: {
   order: Order;
-  value: string;
+  value: number;
   assetSymbolUrl: string;
   onClose: () => void;
   name: string;
   onCancel: () => void;
   userWithHandle: boolean;
+  ctaButtonVariant?: 'primary' | 'mktPrimary';
 }) {
   const { updateOrderAsync, isPending } = useUpdateOrder();
   const { errorToast, successToast } = useCustomToast();
@@ -31,11 +33,12 @@ export default function NftFormStep({
   const handleUpdateOrder = useCallback(
     async (data: NftSaleCardForm) => {
       try {
+        const sellPrice = bn.parseUnits(
+          data.sellPrice.toString(),
+          data.sellAsset.decimals,
+        );
         await updateOrderAsync({
-          sellPrice: bn.parseUnits(
-            data.sellPrice.toString(),
-            data.sellAsset.decimals
-          ),
+          sellPrice,
           sellAsset: data.sellAsset.id,
           orderId: order.id,
         });
@@ -45,8 +48,14 @@ export default function NftFormStep({
         errorToast({ title: 'Failed to update order' });
       }
     },
-    [updateOrderAsync, order.id, successToast, errorToast, onClose]
+    [updateOrderAsync, order.id, successToast, errorToast, onClose],
   );
+
+  const decimals = useMemo(
+    () => assets.find((a) => a.id === order.price.assetId)?.metadata?.decimals,
+    [assets, order.price.assetId],
+  );
+
   return (
     <Stack w="full" spacing={4}>
       <Heading>{name}</Heading>
@@ -59,14 +68,12 @@ export default function NftFormStep({
         userWithHandle={userWithHandle}
         initialValues={{
           sellAsset: {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-            id: order.asset?.id!,
+            id: order.price.assetId,
             icon: assetSymbolUrl,
-            name: order.asset?.name ?? 'Unknown',
-            decimals: order.asset?.decimals,
+            name: order.price.name ?? 'Unknown',
+            decimals,
           },
-          // TODO: fix this value type
-          sellPrice: value as unknown as number, // prevent broken js bilion number
+          sellPrice: value,
         }}
       />
 
@@ -76,7 +83,7 @@ export default function NftFormStep({
         </Button>
         <Button
           type="submit"
-          variant="primary"
+          variant={ctaButtonVariant}
           form="nft-sale-form"
           isLoading={isPending}
         >

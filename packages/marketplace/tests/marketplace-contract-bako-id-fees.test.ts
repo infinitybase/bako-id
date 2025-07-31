@@ -78,13 +78,13 @@ describe('Marketplace (Bako ID Fees)', () => {
     expect(orderExecutedEvent.fee.toString()).toEqual(expectedFee.toString());
   });
 
-  it('should apply discounted fee when buyer has Bako ID handle', async () => {
+  it('should apply discounted fee when seller has Bako ID handle', async () => {
     const [seller, buyer] = node.wallets;
 
     // Register the buyer with Bako ID in our mock resolver
     await callAndWait(
-      resolver.functions.register('buyer-handle', {
-        Address: { bits: buyer.address.toB256() },
+      resolver.functions.register('buyerhandle', {
+        Address: { bits: seller.address.toB256() },
       })
     );
 
@@ -117,15 +117,15 @@ describe('Marketplace (Bako ID Fees)', () => {
   });
 
   it('should verify that the resolver actually works', async () => {
-    const [_, buyer] = node.wallets;
+    const [sellet] = node.wallets;
 
     // Check that our mock resolver correctly reports the buyer having a Bako ID
     const { value: name } = await resolver.functions
       .name({
-        Address: { bits: buyer.address.toB256() },
+        Address: { bits: sellet.address.toB256() },
       })
       .get();
 
-    expect(name).toBe('buyer-handle');
+    expect(name).toBe('buyerhandle');
   });
 });

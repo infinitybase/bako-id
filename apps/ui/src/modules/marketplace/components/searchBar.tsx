@@ -28,10 +28,24 @@ const SearchBar = ({
           type="text"
           size="lg"
           variant="outlined"
+          bg="input.600"
           value={value}
+          border="grey.600"
         />
 
-        <FormLabel>{placeholder}</FormLabel>
+        <FormLabel
+          textOverflow="ellipsis"
+          overflow="hidden"
+          whiteSpace="nowrap"
+          style={{ textWrap: 'nowrap' }}
+          fontSize={{
+            base: 'xs',
+            sm: 'sm',
+            md: 'md',
+          }}
+        >
+          {placeholder}
+        </FormLabel>
 
         <InputRightElement
           position="absolute"

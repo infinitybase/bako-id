@@ -1,3 +1,5 @@
+import { CollectionPage } from '@/modules/marketplace/collections/page.tsx';
+import OrderPage from '@/modules/marketplace/order/page.tsx';
 import { MarketplacePage } from '@/modules/marketplace/page.tsx';
 import { createRoute } from '@tanstack/react-router';
 import { NotConnected } from '../components';
@@ -7,7 +9,8 @@ import { Home } from '../modules/home/page.tsx';
 import { MyHandles } from '../modules/myHandles/page.tsx';
 import { More } from '../modules/profile/components/more/page.tsx';
 import { Profile } from '../modules/profile/page.tsx';
-import { rootRoute } from './__root.ts';
+import { marketplaceRootRoute, rootRoute } from './__root.ts';
+import { ProfilePage } from '@/modules/marketplace/profile/page.tsx';
 
 export const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -52,7 +55,29 @@ export const myHandlesRoute = createRoute({
 });
 
 export const marketplaceRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => marketplaceRootRoute,
   component: MarketplacePage,
-  path: '/marketplace',
+  path: '/',
+});
+
+export const marketplaceCollectionRoute = createRoute({
+  getParentRoute: () => marketplaceRootRoute,
+  component: CollectionPage,
+  path: '/collection/$collectionId',
+  context(ctx) {
+    return {
+      collectionId: ctx.params.collectionId,
+    };
+  },
+});
+export const marketplaceProfileRoute = createRoute({
+  getParentRoute: () => marketplaceRootRoute,
+  component: ProfilePage,
+  path: '/profile/$name',
+});
+
+export const orderRoute = createRoute({
+  getParentRoute: () => marketplaceCollectionRoute,
+  component: OrderPage,
+  path: '/collection/$collectionId/order/$orderId',
 });

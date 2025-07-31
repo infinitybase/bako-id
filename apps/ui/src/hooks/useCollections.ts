@@ -36,7 +36,7 @@ export const useCollections = ({
 }: UseCollectionsProps) => {
   const { chainId } = useChainId();
 
-  const { data: allNfts, isLoading: isLoadingAllNfts } = useQuery({
+  const { data: allNfts, isLoading: isLoadingAllNfts, isFetched } = useQuery({
     queryKey: [BakoIDQueryKeys.NFTS, chainId, address],
     queryFn: async () => {
       const { data } = await FuelAssetService.byAddress({
@@ -48,7 +48,7 @@ export const useCollections = ({
         (a) => !!a.isNFT && Number(a.amount) > 0
       ) as NFTWithImage[];
     },
-    enabled: !isNil(chainId),
+    enabled: !isNil(chainId) && !!address,
   });
 
   const totalPages = allNfts ? Math.ceil(allNfts.length / pageSize) : 0;
@@ -70,6 +70,10 @@ export const useCollections = ({
       currentPageNfts.map((nft) => nft.assetId),
     ],
     queryFn: async () => {
+      if (currentPageNfts.length === 0) {
+        return [];
+      }
+
       const localStorageCache =
         getLocalStorage<CachedMetadata>(
           COLLECTION_ASSETS_METADATA_STORAGE_KEY
@@ -87,8 +91,8 @@ export const useCollections = ({
 
             const image = metadata
               ? Object.entries(metadata).find(([key]) =>
-                  key.includes('image')
-                )?.[1]
+                key.includes('image')
+              )?.[1]
               : undefined;
 
             return {
@@ -143,7 +147,7 @@ export const useCollections = ({
       });
     },
     enabled: !isNil(chainId) && currentPageNfts.length > 0,
-    placeholderData: (prev) => prev,
+    placeholderData: currentPageNfts.length > 0 ? (prev) => prev : undefined,
   });
 
   const collections = nftsWithMetadata
@@ -154,8 +158,10 @@ export const useCollections = ({
     nfts: nftsWithMetadata || [],
     collections,
     totalPages,
-    isLoading: isLoadingAllNfts || isLoadingMetadata,
+    isLoading:
+      chainId === undefined ? true : isLoadingAllNfts || isLoadingMetadata,
     currentPage: page,
     isPlaceholderData,
+    isFetched,
   };
 };

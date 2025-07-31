@@ -1,12 +1,13 @@
 import { Manager, Nft, Registry, getContractId } from '@bako-id/contracts';
 import {
-  Account,
+  type Account,
   DateTime,
   type Provider,
   getMintedAssetId,
   getRandomB256,
   sha256,
   toUtf8Bytes,
+  Address,
   type BN,
   type ScriptTransactionRequest,
   type TransactionResult,
@@ -34,6 +35,12 @@ export type ChangeAddressPayload = {
   address: string;
 };
 
+export type SendNftHandlePayload = {
+  domain: string;
+  ownerAddress: string;
+  newOwnerAddress: string;
+};
+
 export type SimulatePayload = {
   domain: string;
   period: number;
@@ -45,10 +52,10 @@ const formatTAI64toDate = (value: string) => {
     date.getFullYear(),
     date.getMonth(),
     date.getDate(),
-    0,
-    0,
-    0,
-    0
+    date.getHours(),
+    date.getMinutes(),
+    date.getSeconds(),
+    date.getMilliseconds()
   );
 };
 
@@ -156,13 +163,38 @@ export class RegistryContract {
     const domainName = assertValidDomain(domain);
     const newOwner = await this.getIdentity(address);
 
-    const changeOwnerCall = await this.contract.functions
+    const subId = sha256(toUtf8Bytes(domainName));
+    const assetId = getMintedAssetId(this.nftContract.id.toB256(), subId);
+    const balanceNftHandle = await this.account.getBalance(assetId);
+
+    const transactionRequest = await this.contract.functions
       .set_owner(domainName, newOwner)
       .addContracts([this.managerContract])
-      .call();
-    const { transactionResult } = await changeOwnerCall.waitForResult();
+      .fundWithRequiredCoins();
 
-    return transactionResult;
+    const hasNftHandle = balanceNftHandle.gt(0);
+
+    if (hasNftHandle) {
+      const resources = await this.account.getResourcesToSpend([
+        {
+          amount: balanceNftHandle,
+          assetId,
+        },
+      ]);
+
+      transactionRequest.addResources(resources);
+      transactionRequest.addCoinOutputs(new Address(address), [
+        {
+          amount: balanceNftHandle,
+          assetId,
+        },
+      ]);
+    }
+
+    const transactionResponse =
+      await this.account.sendTransaction(transactionRequest);
+
+    return transactionResponse.waitForResult();
   }
 
   async changeResolver(
@@ -219,6 +251,32 @@ export class RegistryContract {
       price: amount,
       transactionRequest,
     };
+  }
+
+  async simulateTxNftHndler(payload: SendNftHandlePayload): Promise<{
+    assetId: string;
+    balanceNftHandle: BN;
+    transactionRequest: ScriptTransactionRequest;
+  }> {
+    const { domain, ownerAddress } = payload;
+
+    if (!this.account) {
+      throw new Error('Account is required to change the owner');
+    }
+
+    const domainName = assertValidDomain(domain);
+    const owner = await this.getIdentity(ownerAddress);
+
+    const subId = sha256(toUtf8Bytes(domainName));
+    const assetId = getMintedAssetId(this.nftContract.id.toB256(), subId);
+    const balanceNftHandle = await this.account.getBalance(assetId);
+
+    const transactionRequest = await this.contract.functions
+      .set_owner(domainName, owner)
+      .addContracts([this.managerContract])
+      .fundWithRequiredCoins();
+
+    return { assetId, balanceNftHandle, transactionRequest };
   }
 
   async token(domain: string) {

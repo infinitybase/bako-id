@@ -1,13 +1,11 @@
 import UnknownAsset from '@/assets/unknown-asset.png';
 import { EditIcon, LightIcon, UserIcon, useCustomToast } from '@/components';
 import { BTCIcon } from '@/components/icons/btcicon';
+import { CloseIcon } from '@/components/icons/closeIcon';
 import { ContractIcon } from '@/components/icons/contracticon';
 import { useResolverName } from '@/hooks';
 import { useExecuteOrder } from '@/hooks/marketplace';
-import { useListAssets } from '@/hooks/marketplace/useListAssets';
-import { useAssetsBalance } from '@/hooks/useAssetsBalance';
-import type { Order } from '@/types/marketplace';
-import { blocklistMetadataKeys } from '@/utils/constants';
+import type { OrderWithMedatada } from '@/types/marketplace';
 import { formatAddress } from '@/utils/formatter';
 import {
   Button,
@@ -15,6 +13,7 @@ import {
   Grid,
   GridItem,
   Heading,
+  Icon,
   IconButton,
   Image,
   Skeleton,
@@ -22,12 +21,13 @@ import {
   Text,
   Tooltip,
 } from '@chakra-ui/react';
-import { useConnectUI } from '@fuels/react';
+import { useAccount, useBalance, useConnectUI } from '@fuels/react';
 import { Link } from '@tanstack/react-router';
-import { entries } from 'lodash';
+import { bn } from 'fuels';
 import { useCallback, useMemo } from 'react';
 import { NftListMetadata } from '../NftListMetadata';
 import { NftMetadataBlock } from '../NftMetadataBlock';
+import ShareOrder from '../ShareOrder';
 
 export default function NftDetailsStep({
   onClose,
@@ -38,48 +38,46 @@ export default function NftDetailsStep({
   onCancelOrder,
   isCanceling = false,
   onEdit,
+  ctaButtonVariant,
 }: {
-  order: Order;
+  order: OrderWithMedatada;
   onClose: () => void;
-  value: string;
+  value: number;
   isOwner: boolean;
   usdValue: string;
   onCancelOrder: () => Promise<void>;
   isCanceling?: boolean;
   onEdit: () => void;
+  ctaButtonVariant?: 'primary' | 'mktPrimary';
 }) {
   const { connect, isConnected } = useConnectUI();
   const { errorToast, successToast } = useCustomToast();
-  const { assets } = useListAssets();
-  const { data: assetsBalance, isLoading: isLoadingBalance } = useAssetsBalance(
-    { assets }
-  );
+
+  const { account } = useAccount();
+  const {
+    balance: walletAssetBalance,
+    isLoading: isLoadingWalletBalance,
+    isFetching: isFetchingBalance,
+  } = useBalance({
+    address: account,
+    assetId: order.price.assetId,
+  });
+
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
-    order.seller
+    order.seller,
   );
   const { data: sellerDomain, isLoading: isLoadingDomain } = useResolverName(
-    order.seller
-  );
-
-  const currentSellAssetBalance = useMemo(
-    () =>
-      assetsBalance
-        ?.find((item) => item.id === order.asset?.id)
-        ?.balance.formatUnits(order.asset?.decimals) || '0',
-    [assetsBalance, order.asset?.id, order.asset?.decimals]
+    order.seller,
   );
 
   const notEnoughBalance = useMemo(() => {
-    if (!currentSellAssetBalance) return false;
-    const parsedValue = Number.parseFloat(value);
-    const parsedBalance = Number.parseFloat(currentSellAssetBalance);
-    return parsedValue > parsedBalance;
-  }, [currentSellAssetBalance, value]);
+    if (isLoadingWalletBalance || !walletAssetBalance) return true;
+    return walletAssetBalance.lt(bn(order.price.raw));
+  }, [walletAssetBalance, isLoadingWalletBalance, order.price.raw]);
 
   const handleExecuteOrder = useCallback(async () => {
     if (!isConnected) {
       connect();
-      onClose();
       return;
     }
     try {
@@ -99,20 +97,13 @@ export default function NftDetailsStep({
     isConnected,
   ]);
 
-  const metadataArray = useMemo(
-    () =>
-      entries(order.nft.metadata ?? {})
-        .map(([key, value]) => ({
-          label: key,
-          value,
-        }))
-        .filter((item) => !blocklistMetadataKeys.includes(item.label)),
-    [order.nft.metadata]
-  );
+  const nftName = order.asset?.name ?? 'Unknown NFT';
 
-  const nftName = order.nft?.name ?? 'Unknown NFT';
+  const assetSymbolUrl = order.price.image || UnknownAsset;
 
-  const assetSymbolUrl = order.asset?.icon || UnknownAsset;
+  const attributes = Array.isArray(order.asset?.metadata.attributes)
+    ? order.asset?.metadata.attributes
+    : [];
 
   const handle = sellerDomain
     ? `@${sellerDomain}`
@@ -128,78 +119,58 @@ export default function NftDetailsStep({
       }}
       style={{ scrollbarWidth: 'none' }}
       maxH={{ md: '480px' }}
+      position="relative"
     >
-      <Heading>{nftName}</Heading>
+      <Flex
+        alignItems="center"
+        justifyContent="space-between"
+        w="full"
+        position={{
+          base: 'relative',
+          sm: 'sticky',
+        }}
+        bg="background.900"
+        top={0}
+        right={0}
+        zIndex={1}
+      >
+        <Heading>{nftName}</Heading>
+        <Icon as={CloseIcon} cursor="pointer" onClick={onClose} />
+      </Flex>
+
       <Stack spacing={2}>
         <Text>Description</Text>
         <Text fontSize="sm" color="grey.subtitle" wordBreak="break-all">
-          {order.nft?.description ?? 'Description not provided.'}
+          {order.asset?.metadata?.description ?? 'Description not provided.'}
         </Text>
       </Stack>
 
-      <Grid templateColumns="repeat(2, 1fr)" gap={4}>
-        {order.nft.id && (
-          <GridItem>
-            <NftMetadataBlock
-              title="Asset ID"
-              value={order.nft.id}
-              icon={<BTCIcon />}
-              isCopy
-            />
-          </GridItem>
-        )}
-
-        {order.nft.fuelMetadata?.collection && (
-          <GridItem>
-            <NftMetadataBlock
-              title="Creator"
-              value={order.nft.fuelMetadata?.collection}
-              icon={<LightIcon />}
-            />
-          </GridItem>
-        )}
-
-        <GridItem>
-          <NftMetadataBlock
-            title="Contract address"
-            value={order.nft?.contractId ?? 'N/A'}
-            icon={<ContractIcon />}
-            isCopy
-          />
-        </GridItem>
-
-        <GridItem>
-          <Skeleton isLoaded={!isLoadingDomain} borderRadius="md">
-            <Link to={`/profile/${sellerDomain ? sellerDomain : order.seller}`}>
-              <NftMetadataBlock
-                title="Seller"
-                value={handle as string}
-                icon={<UserIcon />}
-              />
-            </Link>
-          </Skeleton>
-        </GridItem>
-      </Grid>
-
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Flex alignItems="center" gap={2}>
-          <Image src={assetSymbolUrl} alt="Asset icon" height={6} width={6} />
+          <Tooltip label={order.asset?.name}>
+            <Image src={assetSymbolUrl} alt="Asset icon" height={6} width={6} />
+          </Tooltip>
           <Text fontSize="sm" color="grey.title" fontWeight="semibold">
             {value}
           </Text>
           <Text fontSize="sm" color="grey.subtitle">
             ~ {usdValue}
           </Text>
+          {isOwner && (
+            <IconButton
+              variant="icon"
+              aria-label="Edit order"
+              icon={<EditIcon />}
+              onClick={() => onEdit()}
+            />
+          )}
         </Flex>
 
-        {isOwner && (
-          <IconButton
-            variant="icon"
-            aria-label="Edit order"
-            icon={<EditIcon />}
-            onClick={() => onEdit()}
-          />
-        )}
+        <ShareOrder
+          orderId={order.id}
+          nftName={order.asset?.name ?? 'Unknown NFT'}
+          collectionId={order.collection?.address ?? ''}
+        />
       </Stack>
 
       {isOwner && (
@@ -216,13 +187,18 @@ export default function NftDetailsStep({
       )}
 
       {!isOwner && (
-        <Skeleton isLoaded={!isLoadingBalance} borderRadius="md">
-          <Tooltip label={notEnoughBalance ? 'Not enough balance' : ''}>
+        <Skeleton
+          isLoaded={!isLoadingWalletBalance && !isFetchingBalance}
+          borderRadius="md"
+        >
+          <Tooltip
+            label={notEnoughBalance && isConnected ? 'Not enough balance' : ''}
+          >
             <Button
-              variant="primary"
+              variant={ctaButtonVariant}
               py={4}
               isLoading={isExecuting}
-              disabled={notEnoughBalance || isExecuting}
+              disabled={(notEnoughBalance && isConnected) || isExecuting}
               onClick={handleExecuteOrder}
             >
               Buy
@@ -231,7 +207,59 @@ export default function NftDetailsStep({
         </Skeleton>
       )}
 
-      <NftListMetadata metadata={metadataArray} />
+      <Grid templateColumns="repeat(2, 1fr)" gap={4}>
+        {order.asset.id && (
+          <GridItem>
+            <NftMetadataBlock
+              title="Asset ID"
+              value={order.asset.id}
+              icon={<BTCIcon />}
+              isCopy
+            />
+          </GridItem>
+        )}
+
+        {order.collection?.name && (
+          <GridItem>
+            <NftMetadataBlock
+              title="Creator"
+              value={order.collection.name}
+              icon={<LightIcon />}
+            />
+          </GridItem>
+        )}
+
+        <GridItem>
+          <NftMetadataBlock
+            title="Contract address"
+            value={order.collection?.address ?? 'N/A'}
+            icon={<ContractIcon />}
+            isCopy
+          />
+        </GridItem>
+
+        <GridItem
+          pointerEvents={ctaButtonVariant === 'mktPrimary' ? 'none' : 'auto'}
+          opacity={ctaButtonVariant === 'mktPrimary' ? 0.5 : 1}
+        >
+          <Skeleton isLoaded={!isLoadingDomain} borderRadius="md">
+            <Link to={`/profile/${sellerDomain ? sellerDomain : order.seller}`}>
+              <NftMetadataBlock
+                title="Seller"
+                value={handle as string}
+                icon={<UserIcon />}
+              />
+            </Link>
+          </Skeleton>
+        </GridItem>
+      </Grid>
+
+      <NftListMetadata
+        metadata={attributes.map((a) => ({
+          label: a.trait_type,
+          value: a.value,
+        }))}
+      />
     </Stack>
   );
 }

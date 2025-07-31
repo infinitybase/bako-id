@@ -1,14 +1,14 @@
 import crypto from 'node:crypto';
 import { Manager } from 'generated';
 
-const parseNetworkName = (chainId: number): 'MAINNET' | 'TESTNET' => {
+const parseNetworkName = (chainId: number): 'MAINNET' | 'TESTNET' | 'DEFAULT' => {
   switch (chainId) {
     case 0:
       return 'TESTNET';
     case 9889:
       return 'MAINNET';
     default:
-      throw new Error(`Unknown chainId: ${chainId}`);
+      return 'DEFAULT';
   }
 };
 
@@ -95,9 +95,10 @@ Manager.ResolverChangedEvent.handler(async ({ event, context }) => {
       name: event.params.name,
       record_id: recordId,
     });
+  }
+
     context.Records.set({
       ...record,
       resolver: event.params.new_resolver.payload.bits,
     });
-  }
 });
