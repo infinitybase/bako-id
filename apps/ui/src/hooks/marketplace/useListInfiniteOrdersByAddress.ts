@@ -6,6 +6,7 @@ import type { Order } from '@/types/marketplace';
 import type { PaginationResult } from '@/utils/pagination';
 import { marketplaceService } from '@/services/marketplace';
 import { useProcessingOrders } from '@/contexts/ProcessingOrdersContext';
+import { useMemo } from 'react';
 
 type useListInfiniteOrdersByAddressProps = {
   page?: number;
@@ -24,8 +25,12 @@ export const useListInfiniteOrdersByAddress = ({
   limit,
 }: useListInfiniteOrdersByAddressProps) => {
   const { chainId } = useChainId();
-  const { cancelledOrdersId } =
+  const { cancelledOrdersId, removeCancelledOrdersId, processingOrders, removeProcessingOrder, isPolling } =
     useProcessingOrders();
+
+  const activatePolling = useMemo(() => {
+    return processingOrders.length > 0 && !isPolling;
+  }, [processingOrders, isPolling]);
 
   const {
     data: orders,
@@ -49,9 +54,30 @@ export const useListInfiniteOrdersByAddress = ({
         sellerAddress,
       });
 
+      const currentOrderIds = data.items.map((order) => order.id);
+      const cancelledOrdersToRemove = cancelledOrdersId.filter((cancelledId) =>
+        !currentOrderIds.includes(cancelledId)
+      );
+
+      if (data.items.length >= 1 && cancelledOrdersId.length > 0) {
+        for (const orderId of cancelledOrdersToRemove) {
+          removeCancelledOrdersId(orderId);
+        }
+      }
+
       const filteredData = data.items.filter(
         (order) => !cancelledOrdersId.includes(order.id)
       );
+
+      if (filteredData.length > 0 && processingOrders.length > 0) {
+        for (const processingOrder of processingOrders) {
+          const isOrderInFilteredData = filteredData.some((item) => item.id === processingOrder.orderId);
+          if (isOrderInFilteredData) {
+            removeProcessingOrder(processingOrder.orderId);
+          }
+        }
+      }
+
 
       return {
         data: filteredData,
@@ -67,7 +93,10 @@ export const useListInfiniteOrdersByAddress = ({
     },
     placeholderData: (data) => data,
     enabled: !!chainId && !!sellerAddress,
-
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    refetchInterval: activatePolling ? 5000 : false,
+    refetchIntervalInBackground: true,
   });
 
   return {

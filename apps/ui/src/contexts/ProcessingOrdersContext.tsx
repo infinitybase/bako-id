@@ -11,24 +11,51 @@ interface ProcessingOrdersContextType {
   processingOrders: ProcessingOrder[];
   addProcessingOrders: (order: ProcessingOrder) => void;
   removeProcessingOrder: (orderId: string) => void;
-  clearProcessingOrders: () => void;
   addCancelledOrdersId: (orderId: string) => void;
   removeCancelledOrdersId: (orderId: string) => void;
   cancelledOrdersId: string[];
+  isPolling: boolean;
+  setIsPolling: (isPolling: boolean) => void;
 }
 
 const ProcessingOrdersContext = createContext<
   ProcessingOrdersContextType | undefined
 >(undefined);
 
+const useLocalStorage = <T,>(key: string, initialValue: T) => {
+  const [state, setState] = useState<T>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem(key);
+      return stored ? JSON.parse(stored) : initialValue;
+    }
+    return initialValue;
+  });
+
+  const setValue = (value: T | ((prev: T) => T)) => {
+    setState((prev) => {
+      const newValue =
+        typeof value === 'function' ? (value as (prev: T) => T)(prev) : value;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(key, JSON.stringify(newValue));
+      }
+      return newValue;
+    });
+  };
+
+  return [state, setValue] as const;
+};
+
 export const ProcessingOrdersProvider = ({
   children,
 }: { children: ReactNode }) => {
-  const [processingOrders, setProcessingOrders] = useState<ProcessingOrder[]>(
+  const [processingOrders, setProcessingOrders] = useLocalStorage<
+    ProcessingOrder[]
+  >('processingOrders', []);
+  const [cancelledOrdersId, setCancelledOrdersId] = useLocalStorage<string[]>(
+    'cancelledOrdersId',
     []
   );
-
-  const [cancelledOrdersId, setCancelledOrdersId] = useState<string[]>([]);
+  const [isPolling, setIsPolling] = useState(false);
 
   const addProcessingOrders = (order: ProcessingOrder) => {
     setProcessingOrders((prev) => [...prev, order]);
@@ -43,23 +70,20 @@ export const ProcessingOrdersProvider = ({
   };
 
   const removeProcessingOrder = (orderId: string) => {
-    setProcessingOrders((prev) => {
-      return prev.filter((order) => order.orderId !== orderId);
-    });
-  };
-
-  const clearProcessingOrders = () => {
-    setProcessingOrders([]);
+    setProcessingOrders((prev) =>
+      prev.filter((order) => order.orderId !== orderId)
+    );
   };
 
   const value: ProcessingOrdersContextType = {
     processingOrders,
     addProcessingOrders,
     removeProcessingOrder,
-    clearProcessingOrders,
     addCancelledOrdersId,
     removeCancelledOrdersId,
     cancelledOrdersId,
+    isPolling,
+    setIsPolling,
   };
 
   return (

@@ -16,7 +16,7 @@ export const useCreateOrder = () => {
   const { account } = useAccount();
 
   const address = account?.toLowerCase();
-  const { addProcessingOrders, removeProcessingOrder } = useProcessingOrders();
+  const { addProcessingOrders, removeProcessingOrder, setIsPolling } = useProcessingOrders();
 
   const {
     mutate: createOrder,
@@ -52,6 +52,7 @@ export const useCreateOrder = () => {
           _,
           { orderId }
         ) => {
+          setIsPolling(true);
           if (!data) return true;
 
           const order = data.pages[0].data.find(
