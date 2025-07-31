@@ -288,43 +288,43 @@ export const ProfileNfts = ({
       >
         {selectedTab === TabOptions.FOR_SALE && isEmptyOrders ? (
           <MartketplaceEmptyState />
-        )}
-
-        <Grid
-          templateColumns={{
-            base: 'repeat(1, 1fr)',
-            sm: 'repeat(2, 1fr)',
-            md: 'repeat(4, 1fr)',
-            lg: 'repeat(6, 1fr)',
-          }}
-          gap={6}
-          minH={{ base: 'full', md: '272px' }}
-        >
-          {allOrdersWithProcessing?.map((item) => {
-            if (item.type === 'order') {
+        ) : (
+          <Grid
+            templateColumns={{
+              base: 'repeat(1, 1fr)',
+              sm: 'repeat(2, 1fr)',
+              md: 'repeat(4, 1fr)',
+              lg: 'repeat(6, 1fr)',
+            }}
+            gap={6}
+            minH={{ base: 'full', md: '272px' }}
+          >
+            {allOrdersWithProcessing?.map((item) => {
+              if (item.type === 'order') {
+                return (
+                  <GridItem key={item.key} maxW="175px">
+                    <NftSaleCard
+                      order={item.data}
+                      showDelistButton={false}
+                      isOwner={isOwner}
+                      showBuyButton={false}
+                      withHandle={!!hasDomain}
+                      imageSize="full"
+                    />
+                  </GridItem>
+                );
+              }
               return (
                 <GridItem key={item.key} maxW="175px">
-                  <NftSaleCard
-                    order={item.data}
-                    showDelistButton={false}
-                    isOwner={isOwner}
-                    showBuyButton={false}
-                    withHandle={!!hasDomain}
-                    imageSize="full"
+                  <ProcessingOrderCard
+                    image={item.data.image}
+                    assetId={item.data.assetId}
                   />
                 </GridItem>
               );
-            }
-            return (
-              <GridItem key={item.key} maxW="175px">
-                <ProcessingOrderCard
-                  image={item.data.image}
-                  assetId={item.data.assetId}
-                />
-              </GridItem>
-            );
-          })}
-        </Grid>
+            })}
+          </Grid>
+        )}
       </Box>
 
       <Box ref={ref} h="2px" w="full" />
