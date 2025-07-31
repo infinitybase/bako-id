@@ -4,10 +4,7 @@ import { useAccount } from '@fuels/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useChainId } from '../useChainId';
 import { useMarketplace } from './useMarketplace';
-import {
-  useProcessingOrders,
-  type ProcessingOrder,
-} from '@/contexts/ProcessingOrdersContext';
+import { useProcessingOrdersStore, type ProcessingOrder } from '@/modules/marketplace/stores/processingOrdersStore';
 
 export const useCreateOrder = () => {
   const marketplaceContract = useMarketplace();
@@ -16,8 +13,7 @@ export const useCreateOrder = () => {
   const { account } = useAccount();
 
   const address = account?.toLowerCase();
-  const { addProcessingOrders } =
-    useProcessingOrders();
+  const addProcessingOrders = useProcessingOrdersStore((state) => state.addProcessingOrders);
 
   const {
     mutate: createOrder,

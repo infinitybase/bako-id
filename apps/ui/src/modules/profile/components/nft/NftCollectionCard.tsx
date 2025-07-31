@@ -14,7 +14,7 @@ import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
 import { formatAddress } from '@/utils/formatter';
 import { NftCardModal } from './NftCardModal';
 import { NftCard } from './card';
-import { useProcessingOrders } from '@/contexts/ProcessingOrdersContext';
+import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
 
 interface NftCollectionCardProps {
   asset: NFTWithImage;
@@ -37,7 +37,7 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
   } = props.asset;
   const dialog = useDisclosure();
 
-  const { setIsPollingEnabled } = useProcessingOrders();
+  const { setIsPollingEnabled } = useProcessingOrdersStore();
 
   const handleOpenDialog = () => {
     setIsPollingEnabled(true);

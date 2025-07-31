@@ -5,8 +5,8 @@ import { Networks } from '@/utils/resolverNetwork';
 import type { Order } from '@/types/marketplace';
 import type { PaginationResult } from '@/utils/pagination';
 import { marketplaceService } from '@/services/marketplace';
-import { useProcessingOrders } from '@/contexts/ProcessingOrdersContext';
 import { useMemo } from 'react';
+import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
 
 type useListInfiniteOrdersByAddressProps = {
   page?: number;
@@ -31,7 +31,7 @@ export const useListInfiniteOrdersByAddress = ({
     processingOrders,
     removeProcessingOrder,
     isPollingEnabled,
-  } = useProcessingOrders();
+  } = useProcessingOrdersStore();
 
   const activatePolling = useMemo(() => {
     return processingOrders.length > 0 && !isPollingEnabled;

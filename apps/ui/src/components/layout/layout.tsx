@@ -7,7 +7,6 @@ import { Header } from '../header';
 import { Container } from './container';
 import { MarketplaceMainLayout } from './marketplace';
 import { ProfileLayout } from './profile';
-import { ProcessingOrdersProvider } from '@/contexts/ProcessingOrdersContext';
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;
@@ -30,11 +29,9 @@ const DashboardLayout = (props: DashboardLayoutProps) => (
 
 export const MarketplaceLayout = () => {
   return (
-    <ProcessingOrdersProvider>
-      <MarketplaceMainLayout>
-        <Outlet />
-      </MarketplaceMainLayout>
-    </ProcessingOrdersProvider>
+    <MarketplaceMainLayout>
+      <Outlet />
+    </MarketplaceMainLayout>
   );
 };
 

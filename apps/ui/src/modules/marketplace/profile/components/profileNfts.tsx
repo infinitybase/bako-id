@@ -22,8 +22,8 @@ import type { NFTCollection } from '@/utils/collection';
 import { useWallet } from '@fuels/react';
 import { useResolverName } from '@/hooks';
 import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
-import { useProcessingOrders } from '@/contexts/ProcessingOrdersContext';
 import { ProcessingOrderCard } from '@/components/cards/ProcessingOrderCard';
+import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
 
 enum TabOptions {
   FOR_SALE = 'for_sale',
@@ -76,7 +76,7 @@ export const ProfileNfts = ({
   const { ref, inView } = useInView();
   const { wallet } = useWallet();
   const ownerDomain = wallet?.address.b256Address;
-  const { processingOrders } = useProcessingOrders();
+  const { processingOrders } = useProcessingOrdersStore();
 
   // Using useMemo on both arrays to prevent re-rendering or any side effects because of the polling
   const processedOrders = useMemo(() => {
