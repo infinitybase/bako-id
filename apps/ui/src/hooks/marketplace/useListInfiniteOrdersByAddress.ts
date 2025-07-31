@@ -25,12 +25,17 @@ export const useListInfiniteOrdersByAddress = ({
   limit,
 }: useListInfiniteOrdersByAddressProps) => {
   const { chainId } = useChainId();
-  const { cancelledOrdersId, removeCancelledOrdersId, processingOrders, removeProcessingOrder, isPolling } =
-    useProcessingOrders();
+  const {
+    cancelledOrdersId,
+    removeCancelledOrdersId,
+    processingOrders,
+    removeProcessingOrder,
+    isPollingEnabled,
+  } = useProcessingOrders();
 
   const activatePolling = useMemo(() => {
-    return processingOrders.length > 0 && !isPolling;
-  }, [processingOrders, isPolling]);
+    return processingOrders.length > 0 && !isPollingEnabled;
+  }, [processingOrders, isPollingEnabled]);
 
   const {
     data: orders,
@@ -55,8 +60,8 @@ export const useListInfiniteOrdersByAddress = ({
       });
 
       const currentOrderIds = data.items.map((order) => order.id);
-      const cancelledOrdersToRemove = cancelledOrdersId.filter((cancelledId) =>
-        !currentOrderIds.includes(cancelledId)
+      const cancelledOrdersToRemove = cancelledOrdersId.filter(
+        (cancelledId) => !currentOrderIds.includes(cancelledId)
       );
 
       if (data.items.length >= 1 && cancelledOrdersId.length > 0) {
@@ -71,13 +76,14 @@ export const useListInfiniteOrdersByAddress = ({
 
       if (filteredData.length > 0 && processingOrders.length > 0) {
         for (const processingOrder of processingOrders) {
-          const isOrderInFilteredData = filteredData.some((item) => item.id === processingOrder.orderId);
+          const isOrderInFilteredData = filteredData.some(
+            (item) => item.id === processingOrder.orderId
+          );
           if (isOrderInFilteredData) {
             removeProcessingOrder(processingOrder.orderId);
           }
         }
       }
-
 
       return {
         data: filteredData,
@@ -93,10 +99,10 @@ export const useListInfiniteOrdersByAddress = ({
     },
     placeholderData: (data) => data,
     enabled: !!chainId && !!sellerAddress,
-    refetchOnMount: true,
+    refetchOnMount: activatePolling,
     refetchOnWindowFocus: false,
     refetchInterval: activatePolling ? 5000 : false,
-    refetchIntervalInBackground: true,
+    refetchIntervalInBackground: activatePolling,
   });
 
   return {

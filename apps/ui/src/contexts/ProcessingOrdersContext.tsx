@@ -14,8 +14,9 @@ interface ProcessingOrdersContextType {
   addCancelledOrdersId: (orderId: string) => void;
   removeCancelledOrdersId: (orderId: string) => void;
   cancelledOrdersId: string[];
-  isPolling: boolean;
-  setIsPolling: (isPolling: boolean) => void;
+  isPollingEnabled: boolean;
+  setIsPollingEnabled: (isPolling: boolean) => void;
+  clearCancelledOrdersId: () => void;
 }
 
 const ProcessingOrdersContext = createContext<
@@ -55,7 +56,7 @@ export const ProcessingOrdersProvider = ({
     'cancelledOrdersId',
     []
   );
-  const [isPolling, setIsPolling] = useState(false);
+  const [isPollingEnabled, setIsPollingEnabled] = useState(false);
 
   const addProcessingOrders = (order: ProcessingOrder) => {
     setProcessingOrders((prev) => [...prev, order]);
@@ -75,6 +76,10 @@ export const ProcessingOrdersProvider = ({
     );
   };
 
+  const clearCancelledOrdersId = () => {
+    setCancelledOrdersId([]);
+  };
+
   const value: ProcessingOrdersContextType = {
     processingOrders,
     addProcessingOrders,
@@ -82,8 +87,9 @@ export const ProcessingOrdersProvider = ({
     addCancelledOrdersId,
     removeCancelledOrdersId,
     cancelledOrdersId,
-    isPolling,
-    setIsPolling,
+    isPollingEnabled,
+    setIsPollingEnabled,
+    clearCancelledOrdersId,
   };
 
   return (
