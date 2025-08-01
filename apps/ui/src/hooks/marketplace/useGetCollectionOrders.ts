@@ -35,9 +35,6 @@ export const useGetCollectionOrders = ({
     queryKey: [
       MarketplaceQueryKeys.COLLECTION_ORDERS,
       chainId,
-      search,
-      sortValue,
-      sortDirection,
       collectionId,
     ],
     initialPageParam: 0,
