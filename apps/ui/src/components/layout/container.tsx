@@ -23,7 +23,13 @@ const Container = ({ children, ...props }: ContainerProps) => {
       {...props}
     >
       <Box
-        backgroundImage={isMobile ? MobileBackgroundTexture : BackgroundTexture}
+        backgroundImage={
+          props.backgroundImage
+            ? props.backgroundImage
+            : isMobile
+              ? MobileBackgroundTexture
+              : BackgroundTexture
+        }
         backgroundSize={'cover'}
         backgroundRepeat={'no-repeat'}
         backgroundPosition="center"

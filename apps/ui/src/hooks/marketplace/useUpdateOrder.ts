@@ -12,40 +12,41 @@ import { useMarketplace } from './useMarketplace';
 
 type TUpdateOrder = UpdateOrder & { orderId: string };
 
+const removeRightZeros = (str: string) => {
+  return str.replace(/0+$/, '');
+};
+
 export const useUpdateOrder = () => {
   const marketplaceContract = useMarketplace();
   const { chainId } = useChainId();
   const { account } = useAccount();
-  const { page: urlPage, search } = useSearch({ strict: false });
+  const { search } = useSearch({ strict: false });
 
   const address = account?.toLowerCase();
-  const page = Number(urlPage || 1);
 
   const {
     mutate: updateOrder,
     mutateAsync: updateOrderAsync,
     ...rest
-  } = useMutationWithPolling<TUpdateOrder, unknown, PaginationResult<Order>>({
+  } = useMutationWithPolling<
+    TUpdateOrder,
+    unknown,
+    InfiniteData<PaginationResult<Order>, unknown>
+  >({
     mutationFn: async ({ orderId, ...data }: TUpdateOrder) => {
       const marketplace = await marketplaceContract;
+
       return await marketplace.updateOrder(orderId, data);
     },
+
     pollConfigs: [
       {
-        getQueryKey: () => [
-          MarketplaceQueryKeys.ORDERS,
-          address,
-          page,
-          chainId,
-        ],
+        getQueryKey: () => [MarketplaceQueryKeys.USER_ORDERS, address],
         isDataReady: (data, payload) => {
-          if (!data) {
-            console.log('no data');
-            return true;
-          }
+          if (!data) return true;
 
           const { orderId } = payload;
-          const refreshedOrder = data.data.find(
+          const refreshedOrder = data.pages[0].data.find(
             (order) => order.id === orderId
           );
 
@@ -80,9 +81,10 @@ export const useUpdateOrder = () => {
 
 const isEqual = (order: Order, payload: TUpdateOrder) => {
   const { orderId, sellAsset, sellPrice } = payload;
+
   return (
     order.id === orderId &&
-    order.asset?.id === sellAsset &&
-    order.itemPrice === sellPrice.toString()
+    order.price.assetId === sellAsset &&
+    order.price.amount.toString() === removeRightZeros(sellPrice.toString())
   );
 };

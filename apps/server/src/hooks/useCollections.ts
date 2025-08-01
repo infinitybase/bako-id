@@ -42,7 +42,7 @@ export const useCollections = ({
 
       return data.filter((a) => !!a.isNFT) as NFTWithImage[];
     },
-    enabled: !isNil(chainId),
+    enabled: !isNil(chainId) && !!address,
   });
 
   const totalPages = allNfts ? Math.ceil(allNfts.length / pageSize) : 0;

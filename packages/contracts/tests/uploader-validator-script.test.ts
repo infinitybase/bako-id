@@ -1,17 +1,27 @@
-import {
-  type Provider,
-  type Account,
-  sha256,
-  getTransactionSummary,
-  getDecodedLogs,
-  bn,
-  type JsonAbi,
-  toUtf8Bytes,
-  getMintedAssetId,
-} from 'fuels';
 import fs from 'node:fs';
-
 import path from 'node:path';
+import {
+  type Account,
+  type JsonAbi,
+  type Provider,
+  bn,
+  getDecodedLogs,
+  getMintedAssetId,
+  getTransactionSummary,
+  sha256,
+  toUtf8Bytes,
+} from 'fuels';
+import { launchTestNode } from 'fuels/test-utils';
+import {
+  Manager,
+  ManagerFactory,
+  Nft,
+  NftFactory,
+  Registry,
+  RegistryFactory,
+  UploaderValidatorScript,
+} from '../src';
+import { domainPrices, randomName } from './utils';
 
 interface UploaderEventLog {
   file_hash: string;
@@ -25,18 +35,6 @@ interface UploaderEventLog {
     };
   };
 }
-
-import {
-  UploaderValidatorScript,
-  Manager,
-  ManagerFactory,
-  Nft,
-  NftFactory,
-  Registry,
-  RegistryFactory,
-} from '../src';
-import { launchTestNode } from 'fuels/test-utils';
-import { domainPrices, randomName } from './utils';
 
 const createSetup = (
   wallet: Account,
@@ -151,7 +149,7 @@ describe('Uploader script', () => {
         bn(1)
       )
       .callParams({
-        forward: { assetId: provider.getBaseAssetId(), amount: price },
+        forward: { assetId: await provider.getBaseAssetId(), amount: price },
       })
       .addContracts([manager, nft])
       .call();

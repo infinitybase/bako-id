@@ -23,6 +23,9 @@ const defaultTheme = extendTheme({
       '#chakra-toast-manager-top-right': {
         mt: 20,
       },
+      '.fuel-connectors': {
+        zIndex: '9999 !important', // Ensure connectors are above other elements
+      },
     }),
   },
 });

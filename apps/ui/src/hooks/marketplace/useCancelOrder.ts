@@ -1,4 +1,4 @@
-import type { Order as ListOrder } from '@/types/marketplace';
+import type { Order as ListOrder, Order } from '@/types/marketplace';
 import { MarketplaceQueryKeys } from '@/utils/constants';
 import type { PaginationResult } from '@/utils/pagination';
 import { useAccount } from '@fuels/react';
@@ -13,10 +13,9 @@ export const useCancelOrder = () => {
   const queryClient = useQueryClient();
   const { account } = useAccount();
   const { chainId } = useChainId();
-  const { page: pageUrl, search } = useSearch({ strict: false });
+  const { search } = useSearch({ strict: false });
 
   const address = account?.toLowerCase();
-  const page = Number(pageUrl || 1);
 
   const {
     mutate: cancelOrder,
@@ -34,19 +33,14 @@ export const useCancelOrder = () => {
     },
     pollConfigs: [
       {
-        getQueryKey: () => [
-          MarketplaceQueryKeys.ORDERS,
-          address,
-          page,
-          chainId,
-        ],
+        getQueryKey: () => [MarketplaceQueryKeys.USER_ORDERS, address],
         isDataReady: (
-          data: PaginationResult<ListOrder> | undefined,
+          data: InfiniteData<PaginationResult<Order>> | undefined,
           payload
         ) => {
           if (!data) return true;
 
-          return !data.data.find((order) => order.id === payload);
+          return !data.pages[0].data.find((order) => order.id === payload);
         },
       },
       {
@@ -55,7 +49,6 @@ export const useCancelOrder = () => {
           chainId,
           search || '', // -> search
         ],
-        // @ts-expect-error - TODO: Fix this type
         isDataReady: (
           data: InfiniteData<PaginationResult<ListOrder>> | undefined,
           payload

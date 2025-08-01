@@ -104,3 +104,36 @@ export enum NetworkId {
   MAINNET = 9889,
   TESTNET = 0,
 }
+
+export const removeRightZeros = (num: string) => {
+  const parts = num.split('.');
+  if (parts.length === 2) {
+    parts[1] = parts[1].replace(/0+$/, '');
+    if (parts[1] === '') {
+      return parts[0]; // Return only the integer part if decimal part is empty
+    }
+    return parts.join('.');
+  }
+  return num; // Return the original number if no decimal part
+};
+
+export const constructUrl = (
+  baseUrl: string,
+  params: Record<string, string | number | string[] | undefined>
+) => {
+  const url = new URL(baseUrl);
+
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined) {
+      if (Array.isArray(value)) {
+        for (const v of value) {
+          url.searchParams.append(key, String(v));
+        }
+      } else {
+        url.searchParams.append(key, String(value));
+      }
+    }
+  }
+
+  return url.toString();
+};

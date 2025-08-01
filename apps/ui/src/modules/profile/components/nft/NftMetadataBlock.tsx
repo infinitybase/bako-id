@@ -1,6 +1,6 @@
 import { CopyText } from '@/components/helpers/copy';
 import { formatAddress, isUrl } from '@/utils/formatter';
-import { Box, Flex, Icon, Text, type FlexProps } from '@chakra-ui/react';
+import { Box, Flex, type FlexProps, Icon, Text } from '@chakra-ui/react';
 import { isB256 } from 'fuels';
 import type { ReactNode } from 'react';
 
@@ -27,7 +27,7 @@ export const NftMetadataBlock = ({
     background="input.600"
     position="relative"
     _before={
-      isUrl(value) && ['image', 'avatar'].includes(title.toLowerCase())
+      isUrl(value) && ['image', 'avatar'].includes(title?.toLowerCase() ?? '')
         ? {
             content: '""',
             display: 'block',

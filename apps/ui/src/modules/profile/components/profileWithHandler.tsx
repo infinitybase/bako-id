@@ -1,7 +1,6 @@
 import { ProfileDrawer } from '@/components';
 import { useScreenSize } from '@/hooks';
 import type { Order } from '@/types/marketplace';
-import type { PaginationResult } from '@/utils/pagination';
 import { Box, Center, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { ProfileCards } from './profileCards';
@@ -12,12 +11,20 @@ export default function ProfileWithHandler({
   owner,
   orders,
   isFetchingOrders,
+  paginationInfos,
+  isPlaceholderData,
 }: {
   domain: string;
   domainParam: string;
   owner: string;
-  orders: PaginationResult<Order> | undefined;
+  orders: Order[] | undefined;
   isFetchingOrders: boolean;
+  paginationInfos: {
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+  isPlaceholderData: boolean;
 }) {
   const { isMobile } = useScreenSize();
   const drawer = useDisclosure();
@@ -81,7 +88,8 @@ export default function ProfileWithHandler({
                 owner={owner}
                 orders={orders}
                 withHandle
-                isFetchingOrders={isFetchingOrders}
+                isFetchingOrders={isFetchingOrders || isPlaceholderData}
+                paginationInfos={paginationInfos}
               />
             </Box>
           </Center>

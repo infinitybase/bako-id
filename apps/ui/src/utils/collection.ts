@@ -1,7 +1,7 @@
 import type { NFTWithImage } from '@/hooks/useCollections';
 import type { FuelAsset } from '@/services/fuel-assets';
 import { groupBy } from 'lodash';
-import { BAKO_CONTRACTS_IDS } from './constants';
+import { BAKO_CONTRACTS_IDS, BAKO_SAFE_BKT_CONTRACT_ID } from './constants';
 
 export type NFTCollection = {
   name: string;
@@ -9,10 +9,15 @@ export type NFTCollection = {
 };
 
 export function determineCollection(nft: FuelAsset) {
-  if (nft.contractId && BAKO_CONTRACTS_IDS.includes(nft.contractId)) {
-    return 'Bako ID';
-  }
+  if (nft.contractId) {
+    if (BAKO_CONTRACTS_IDS.includes(nft.contractId)) {
+      return 'Bako ID';
+    }
 
+    if (BAKO_SAFE_BKT_CONTRACT_ID.includes(nft.contractId)) {
+      return 'Bako';
+    }
+  }
   return nft.collection;
 }
 
@@ -25,8 +30,8 @@ export function groupNftsByCollection(nfts: NFTWithImage[]): NFTCollection[] {
       assets,
     }))
     .sort((a, b) => {
-      if (a.name === 'Bako ID') return -1;
-      if (b.name === 'Bako ID') return 1;
+      if (a.name === 'Bako ID') return 1;
+      if (b.name === 'Bako ID') return -1;
       if (a.name === 'Other') return 1;
       if (b.name === 'Other') return -1;
       return a.name.localeCompare(b.name);

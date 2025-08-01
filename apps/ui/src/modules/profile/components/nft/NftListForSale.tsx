@@ -4,8 +4,6 @@ import { Pagination } from '@/components/pagination';
 import { useResolverName } from '@/hooks';
 import type { Order } from '@/types/marketplace';
 import { AddressUtils } from '@/utils/address';
-import { formatAddress } from '@/utils/formatter';
-import type { PaginationResult } from '@/utils/pagination';
 import {
   Button,
   Grid,
@@ -21,15 +19,19 @@ import { useMemo, useState } from 'react';
 import NftSaleCard from './NftSaleCard';
 
 export const NftListForSale = ({
-  domain,
   address,
   isLoadingOrders,
   orders,
+  paginationInfos,
 }: {
-  domain?: string;
   address: string;
   isLoadingOrders?: boolean;
-  orders: PaginationResult<Order> | undefined;
+  orders: Order[] | undefined;
+  paginationInfos: {
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
 }) => {
   const [isDelistOrder, setIsDelistOrder] = useState(false);
   const { page } = useSearch({ strict: false });
@@ -46,7 +48,7 @@ export const NftListForSale = ({
     navigate({ search: { page } });
   };
 
-  const isEmptyOrders = useMemo(() => !orders?.data?.length, [orders]);
+  const isEmptyOrders = useMemo(() => !orders?.length, [orders]);
 
   const isOwner = useMemo(
     () => AddressUtils.isEqual(wallet?.address.b256Address, address),
@@ -61,12 +63,7 @@ export const NftListForSale = ({
   return (
     <Card hidden={hiddenCard} gap={6} order={isOwner ? 1 : 0}>
       <Stack justifyContent="space-between" direction="row" alignItems="center">
-        <Heading fontSize="lg">
-          <Heading fontSize="lg" as="span" color="yellow.500">
-            {domain ? `@${domain}` : formatAddress(address)}
-          </Heading>{' '}
-          for sale
-        </Heading>
+        <Heading fontSize="lg">For sale</Heading>
 
         {isOwner && (
           <Button
@@ -85,13 +82,14 @@ export const NftListForSale = ({
         templateColumns={{
           base: 'repeat(1, 1fr)',
           sm: 'repeat(2, 1fr)',
-          md: 'repeat(4, 1fr)',
-          lg: 'repeat(6, 1fr)',
+          md: 'repeat(3, 1fr)',
+          lg: 'repeat(4, 1fr)',
+          xl: 'repeat(6, 1fr)',
         }}
         gap={6}
       >
         {!isLoadingOrders &&
-          orders?.data?.map((order) => (
+          orders?.map((order) => (
             <GridItem key={order.id}>
               <NftSaleCard
                 order={order}
@@ -118,10 +116,11 @@ export const NftListForSale = ({
         alignItems="center"
       >
         <Pagination
+          isAccountOrders
           page={Number(page ?? 1)}
-          totalPages={orders?.totalPages}
-          hasNextPage={orders?.hasNextPage}
-          hasPreviousPage={orders?.hasPreviousPage}
+          totalPages={paginationInfos.totalPages}
+          hasNextPage={paginationInfos.hasNextPage}
+          hasPreviousPage={paginationInfos.hasPreviousPage}
           isLoading={isLoadingOrders}
           onPageChange={handlePageChange}
         />
