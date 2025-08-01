@@ -6,12 +6,14 @@ import { useSearch } from '@tanstack/react-router';
 import { useChainId } from '../useChainId';
 import { useMutationWithPolling } from '../useMutationWithPolling';
 import { useMarketplace } from './useMarketplace';
+import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
 
 export const useExecuteOrder = (sellerAddr: string) => {
   const marketplaceContract = useMarketplace();
   const queryClient = useQueryClient();
   const { chainId } = useChainId();
   const { page: pageUrl, search } = useSearch({ strict: false });
+  const { addPurchasedOrder } = useProcessingOrdersStore();
 
   const page = Number(pageUrl || 1);
 
@@ -22,11 +24,14 @@ export const useExecuteOrder = (sellerAddr: string) => {
   } = useMutationWithPolling({
     mutationFn: async (orderId: string) => {
       const marketplace = await marketplaceContract;
-      return await marketplace.executeOrder(orderId);
+      await marketplace.executeOrder(orderId);
+
+      return orderId;
     },
     mutationOpts: {
-      onSuccess: async () => {
+      onSuccess: async (orderId) => {
         await queryClient.invalidateQueries({ queryKey: ['nfts'] });
+        addPurchasedOrder(orderId);
       },
     },
     pollConfigs: [

@@ -9,8 +9,9 @@ import { useAccount } from '@fuels/react';
 import { useChainId } from '../useChainId';
 import { useMutationWithPolling } from '../useMutationWithPolling';
 import { useMarketplace } from './useMarketplace';
+import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
 
-type TUpdateOrder = UpdateOrder & { orderId: string };
+type TUpdateOrder = UpdateOrder & { orderId: string, oldPrice: { oldAmount: number, oldRaw: string }, newPrice: { newAmount: number, newRaw: string, usd: number } };
 
 const removeRightZeros = (str: string) => {
   return str.replace(/0+$/, '');
@@ -21,6 +22,7 @@ export const useUpdateOrder = () => {
   const { chainId } = useChainId();
   const { account } = useAccount();
   const { search } = useSearch({ strict: false });
+  const { addUpdatedOrders } = useProcessingOrdersStore();
 
   const address = account?.toLowerCase();
 
@@ -33,10 +35,24 @@ export const useUpdateOrder = () => {
     unknown,
     InfiniteData<PaginationResult<Order>, unknown>
   >({
-    mutationFn: async ({ orderId, ...data }: TUpdateOrder) => {
+    mutationFn: async ({ orderId, oldPrice, newPrice, ...data }: TUpdateOrder) => {
       const marketplace = await marketplaceContract;
 
-      return await marketplace.updateOrder(orderId, data);
+      await marketplace.updateOrder(orderId, data);
+      return { orderId, oldPrice, newPrice, data };
+    },
+    mutationOpts: {
+      onSuccess: (_, { orderId, oldPrice, newPrice }) => {
+        addUpdatedOrders({
+          orderId: orderId,
+          oldAmount: oldPrice.oldAmount,
+          oldRaw: oldPrice.oldRaw,
+          newAmount: newPrice.newAmount,
+          newRaw: newPrice.newRaw,
+          usd: newPrice.usd,
+        });
+
+      },
     },
 
     pollConfigs: [

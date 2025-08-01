@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 
 interface ProcessingOrderCardProps {
   image: string;
-  assetId: string;
 }
 
 const loopingText = [
@@ -68,6 +67,14 @@ export const ProcessingOrderCard = ({ image }: ProcessingOrderCardProps) => {
         opacity="30%"
         w="185px"
         h="189px"
+        animation="pulse 2s ease-in-out infinite"
+        sx={{
+          '@keyframes pulse': {
+            '0%': { opacity: '0.3' },
+            '50%': { opacity: '0.5' },
+            '100%': { opacity: '0.3' },
+          },
+        }}
       />
 
       <Flex alignItems="center" justifyContent="center" w="full" h="full">

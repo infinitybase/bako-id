@@ -6,7 +6,101 @@ import type { Order } from '@/types/marketplace';
 import type { PaginationResult } from '@/utils/pagination';
 import { marketplaceService } from '@/services/marketplace';
 import { useMemo } from 'react';
-import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
+import {
+  type ProcessingOrder,
+  type ProcessingUpdatedOrder,
+  useProcessingOrdersStore,
+} from '@/modules/marketplace/stores/processingOrdersStore';
+
+const filterAndUpdateOrdersWithProcessingState = ({
+  items,
+  cancelledOrdersId,
+  removeCancelledOrdersId,
+  processingOrders,
+  removeProcessingOrder,
+  updatedOrders,
+  removeUpdatedOrders,
+}: {
+  items: Order[];
+  cancelledOrdersId: string[];
+  removeCancelledOrdersId: (orderId: string) => void;
+  processingOrders: ProcessingOrder[];
+  removeProcessingOrder: (orderId: string) => void;
+  updatedOrders: ProcessingUpdatedOrder[];
+  removeUpdatedOrders: (orderId: string) => void;
+}) => {
+  const currentOrderIds = items.map((order) => order.id);
+  const cancelledOrdersToRemove = cancelledOrdersId.filter(
+    (cancelledId) => !currentOrderIds.includes(cancelledId)
+  );
+
+  // Remove cancelled orders from the store if it's not in the current orders
+  // Which means that our processor already removed it
+  if (items.length >= 1 && cancelledOrdersId.length > 0) {
+    for (const orderId of cancelledOrdersToRemove) {
+      removeCancelledOrdersId(orderId);
+    }
+  }
+
+  // Remove cancelled orders from the items, to not be displayed in the user profile list
+  let filteredData = items.filter(
+    (order) => !cancelledOrdersId.includes(order.id)
+  );
+
+  // Remove processing orders from the store if it's in the list
+  // Which means that our processor already added it
+  if (filteredData.length > 0 && processingOrders.length > 0) {
+    for (const processingOrder of processingOrders) {
+      const isOrderInFilteredData = filteredData.some(
+        (item) => item.id === processingOrder.orderId
+      );
+      if (isOrderInFilteredData) {
+        removeProcessingOrder(processingOrder.orderId);
+      }
+    }
+  }
+
+  if (filteredData.length > 0 && updatedOrders.length > 0) {
+    // Update orders that match with updatedOrders
+    const updatedFilteredData = filteredData.map((order) => {
+      const matchingUpdatedOrder = updatedOrders.find(
+        (updatedOrder) => order.id === updatedOrder.orderId
+      );
+
+      if (matchingUpdatedOrder) {
+        return {
+          ...order,
+          price: {
+            ...order.price,
+            amount: matchingUpdatedOrder.newAmount,
+            raw: matchingUpdatedOrder.newRaw,
+            usd: matchingUpdatedOrder.usd,
+          },
+        };
+      }
+
+      return order;
+    });
+
+    // Remove updated orders from the store only if the order's current values match the new values
+    // Which means that our processor already updated them and the changes are reflected
+    for (const updatedOrder of updatedOrders) {
+      const matchingOrder = filteredData.find(
+        (item) => item.id === updatedOrder.orderId
+      );
+      if (
+        matchingOrder &&
+        matchingOrder.price.amount === updatedOrder.newAmount
+      ) {
+        removeUpdatedOrders(updatedOrder.orderId);
+      }
+    }
+
+    filteredData = updatedFilteredData;
+  }
+
+  return filteredData;
+};
 
 type useListInfiniteOrdersByAddressProps = {
   page?: number;
@@ -31,6 +125,8 @@ export const useListInfiniteOrdersByAddress = ({
     processingOrders,
     removeProcessingOrder,
     isPollingEnabled,
+    updatedOrders,
+    removeUpdatedOrders,
   } = useProcessingOrdersStore();
 
   const activatePolling = useMemo(() => {
@@ -59,31 +155,15 @@ export const useListInfiniteOrdersByAddress = ({
         sellerAddress,
       });
 
-      const currentOrderIds = data.items.map((order) => order.id);
-      const cancelledOrdersToRemove = cancelledOrdersId.filter(
-        (cancelledId) => !currentOrderIds.includes(cancelledId)
-      );
-
-      if (data.items.length >= 1 && cancelledOrdersId.length > 0) {
-        for (const orderId of cancelledOrdersToRemove) {
-          removeCancelledOrdersId(orderId);
-        }
-      }
-
-      const filteredData = data.items.filter(
-        (order) => !cancelledOrdersId.includes(order.id)
-      );
-
-      if (filteredData.length > 0 && processingOrders.length > 0) {
-        for (const processingOrder of processingOrders) {
-          const isOrderInFilteredData = filteredData.some(
-            (item) => item.id === processingOrder.orderId
-          );
-          if (isOrderInFilteredData) {
-            removeProcessingOrder(processingOrder.orderId);
-          }
-        }
-      }
+      const filteredData = filterAndUpdateOrdersWithProcessingState({
+        items: data.items,
+        cancelledOrdersId,
+        removeCancelledOrdersId,
+        processingOrders,
+        removeProcessingOrder,
+        updatedOrders,
+        removeUpdatedOrders,
+      });
 
       return {
         data: filteredData,

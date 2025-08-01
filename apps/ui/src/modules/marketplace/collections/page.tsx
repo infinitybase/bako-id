@@ -24,6 +24,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { CollectionPageBanner } from '../components/banner/collectionBanner';
 import MintPanel from '../components/mintPanel';
 import { useGetMintData } from '@/hooks/marketplace/useGetMintData';
+import { useProcessingOrdersStore } from '../stores/processingOrdersStore';
 
 export const CollectionPage = () => {
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ export const CollectionPage = () => {
     sortBy: 'volumes',
     sortDirection: 'desc',
   });
+  const { purchasedOrders } = useProcessingOrdersStore();
 
   const collectionOrdersLimit = 10;
 
@@ -96,10 +98,12 @@ export const CollectionPage = () => {
     }));
   };
 
-  const data = useMemo(
-    () => collectionOrders?.pages?.flatMap((page) => page.data) ?? [],
-    [collectionOrders]
-  );
+  const data = useMemo(() => {
+    // Remove the orders that were purchased from the list
+    return (collectionOrders?.pages?.flatMap((page) => page.data) ?? []).filter(
+      (order) => !purchasedOrders.includes(order.id)
+    );
+  }, [collectionOrders, purchasedOrders]);
 
   // Reset scroll to top when component mounts
   useEffect(() => {

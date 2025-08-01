@@ -5,6 +5,7 @@ import { useChainId } from '../useChainId';
 import { marketplaceService } from '@/services/marketplace';
 import { Networks } from '@/utils/resolverNetwork';
 import type { Order } from '@/types/marketplace';
+import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
 
 type UseGetCollectionOrdersProps = {
   page?: number;
@@ -23,6 +24,10 @@ export const useGetCollectionOrders = ({
   collectionId,
 }: UseGetCollectionOrdersProps) => {
   const { chainId } = useChainId();
+  const {
+    purchasedOrders,
+    removePurchasedOrder
+  } = useProcessingOrdersStore();
 
   const { data: collectionOrders, ...rest } = useInfiniteQuery<
     PaginationResult<Order>
@@ -53,6 +58,17 @@ export const useGetCollectionOrders = ({
         sortValue,
         sortDirection,
       });
+
+      const currentOrderIds = data.items.map((order) => order.id);
+      const purchasedOrdersToRemove = purchasedOrders.filter(
+        (purchasedOrderId) => !currentOrderIds.includes(purchasedOrderId)
+      );
+
+      if (data.items.length >= 1 && purchasedOrders.length > 0) {
+        for (const purchasedOrderId of purchasedOrdersToRemove) {
+          removePurchasedOrder(purchasedOrderId);
+        }
+      }
 
       return {
         data: data.items,

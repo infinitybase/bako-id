@@ -316,10 +316,7 @@ export const ProfileNfts = ({
               }
               return (
                 <GridItem key={item.key} maxW="175px">
-                  <ProcessingOrderCard
-                    image={item.data.image}
-                    assetId={item.data.assetId}
-                  />
+                  <ProcessingOrderCard image={item.data.image} />
                 </GridItem>
               );
             })}

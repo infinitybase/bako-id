@@ -6,6 +6,7 @@ import { Button, Heading, Stack, Text } from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { useCallback, useMemo } from 'react';
 import { NftCardSaleForm, type NftSaleCardForm } from '../NftCardSaleForm';
+import { removeRightZeros } from '@/utils/removeRightZeros';
 
 export default function NftFormStep({
   assetSymbolUrl,
@@ -31,13 +32,34 @@ export default function NftFormStep({
   const { assets } = useListAssets();
 
   const handleUpdateOrder = useCallback(
-    async (data: NftSaleCardForm) => {
+    async (data: NftSaleCardForm & { currentReceiveAmountInUsd: number }) => {
       try {
         const sellPrice = bn.parseUnits(
           data.sellPrice.toString(),
-          data.sellAsset.decimals,
+          data.sellAsset.decimals
         );
+
+        const oldAmount = order.price.amount;
+        const oldRaw = order.price.raw;
+        const newAmount = Number(
+          removeRightZeros(sellPrice.formatUnits()).replace('.', '')
+        );
+        const newRaw = sellPrice.toString();
+
+        const oldPrice = {
+          oldAmount,
+          oldRaw,
+        };
+
+        const newPrice = {
+          newAmount,
+          newRaw,
+          usd: data.currentReceiveAmountInUsd,
+        };
+
         await updateOrderAsync({
+          oldPrice,
+          newPrice,
           sellPrice,
           sellAsset: data.sellAsset.id,
           orderId: order.id,
@@ -48,12 +70,12 @@ export default function NftFormStep({
         errorToast({ title: 'Failed to update order' });
       }
     },
-    [updateOrderAsync, order.id, successToast, errorToast, onClose],
+    [updateOrderAsync, order, successToast, errorToast, onClose]
   );
 
   const decimals = useMemo(
     () => assets.find((a) => a.id === order.price.assetId)?.metadata?.decimals,
-    [assets, order.price.assetId],
+    [assets, order.price.assetId]
   );
 
   return (
