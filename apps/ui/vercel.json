@@ -1,7 +1,15 @@
 {
   "rewrites": [
     {
-      "source": "/",
+      "source": "/marketplace/(.*)",
+      "destination": "/garage.html"
+    },
+    {
+      "source": "/marketplace",
+      "destination": "/garage.html"
+    },
+    {
+      "source": "/(.*)",
       "destination": "/garage.html",
       "has": [
         {
@@ -11,7 +19,7 @@
       ]
     },
     {
-      "source": "/",
+      "source": "/(.*)",
       "destination": "/garage.html",
       "has": [
         {
@@ -21,15 +29,7 @@
       ]
     },
     {
-      "source": "/marketplace",
-      "destination": "/garage.html"
-    },
-    {
-      "source": "/marketplace/(.*)",
-      "destination": "/garage.html"
-    },
-    {
-      "source": "/",
+      "source": "/(.*)",
       "destination": "/bako.html"
     }
   ]
