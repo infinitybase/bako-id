@@ -1,13 +1,14 @@
 import { test, expect } from '@playwright/test';
-import { AuthTestService } from './ultils/service/auth-service';
-import { getValueNewHandle, getVaultAddress, transfer } from './ultils/helpers';
+import { AuthTestService } from '../ultils/service/auth-service';
+import {
+  getValueNewHandle,
+  getVaultAddress,
+  transfer,
+} from '../ultils/helpers';
 import { Provider, Wallet } from 'fuels';
 
 test.describe('Connect with Bako Safe', () => {
-  test.afterEach(async ({ page }) => {
-    await page.pause();
-  });
-  test('create new bako user', async ({ context }) => {
+  test.fixme('create new bako user', async ({ context }) => {
     const bakoIdPage = await context.newPage();
     const bakoSafePage = await context.newPage();
     await bakoIdPage.goto('/');

@@ -1,12 +1,12 @@
 import { expect, FuelWalletTestHelper, test } from '@fuels/playwright-utils';
-import { E2ETestUtils } from './ultils/setup';
+import { E2ETestUtils } from '../ultils/setup';
 import { WalletUnlocked } from 'fuels';
 import {
   getValueNewHandle,
   editProfile,
   returnFundsToGenesisWallet,
   transfer,
-} from './ultils/helpers';
+} from '../ultils/helpers';
 
 await E2ETestUtils.downloadFuelExtension({ test });
 
