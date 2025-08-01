@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/marketplace/(.*)",
+      "destination": "/garage.html"
+    },
+    {
+      "source": "/marketplace",
+      "destination": "/garage.html"
+    },
+    {
       "source": "/",
       "destination": "/garage.html",
       "has": [
@@ -19,14 +27,6 @@
           "value": "(.+\\.)?garage\\.zone"
         }
       ]
-    },
-    {
-      "source": "/marketplace",
-      "destination": "/garage.html"
-    },
-    {
-      "source": "/marketplace/(.*)",
-      "destination": "/garage.html"
     },
     {
       "source": "/",
