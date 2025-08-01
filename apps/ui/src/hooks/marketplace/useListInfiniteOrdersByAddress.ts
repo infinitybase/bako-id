@@ -54,6 +54,13 @@ const filterAndUpdateOrdersWithProcessingState = ({
       const isOrderInFilteredData = filteredData.some(
         (item) => item.id === processingOrder.orderId
       );
+
+      // If it's in the cancelled orders and it's NOT in the filtered data
+      // We should clear the cancelledOrdersId because our processor already cancelled it
+      const isOrderInCancelledOrders = cancelledOrdersId.includes(processingOrder.orderId);
+      if (isOrderInCancelledOrders && !isOrderInFilteredData) {
+        removeCancelledOrdersId(processingOrder.orderId);
+      }
       if (isOrderInFilteredData) {
         removeProcessingOrder(processingOrder.orderId);
       }
@@ -61,7 +68,6 @@ const filterAndUpdateOrdersWithProcessingState = ({
   }
 
   if (filteredData.length > 0 && updatedOrders.length > 0) {
-    // Update orders that match with updatedOrders
     const updatedFilteredData = filteredData.map((order) => {
       const matchingUpdatedOrder = updatedOrders.find(
         (updatedOrder) => order.id === updatedOrder.orderId
@@ -82,7 +88,7 @@ const filterAndUpdateOrdersWithProcessingState = ({
       return order;
     });
 
-    // Remove updated orders from the store only if the order's current values match the new values
+    // Remove updated orders from the store only if the order's current amount match the new amount
     // Which means that our processor already updated them and the changes are reflected
     for (const updatedOrder of updatedOrders) {
       const matchingOrder = filteredData.find(
@@ -130,8 +136,9 @@ export const useListInfiniteOrdersByAddress = ({
   } = useProcessingOrdersStore();
 
   const activatePolling = useMemo(() => {
-    return processingOrders.length > 0 && !isPollingEnabled;
-  }, [processingOrders, isPollingEnabled]);
+    const anyActionInProgress = processingOrders.length > 0 || updatedOrders.length > 0 || cancelledOrdersId.length > 0;
+    return anyActionInProgress && isPollingEnabled;
+  }, [processingOrders, isPollingEnabled, updatedOrders, cancelledOrdersId]);
 
   const {
     data: orders,
@@ -155,7 +162,7 @@ export const useListInfiniteOrdersByAddress = ({
         sellerAddress,
       });
 
-      const filteredData = filterAndUpdateOrdersWithProcessingState({
+      const filteredData = activatePolling ? filterAndUpdateOrdersWithProcessingState({
         items: data.items,
         cancelledOrdersId,
         removeCancelledOrdersId,
@@ -163,7 +170,7 @@ export const useListInfiniteOrdersByAddress = ({
         removeProcessingOrder,
         updatedOrders,
         removeUpdatedOrders,
-      });
+      }) : data.items;
 
       return {
         data: filteredData,

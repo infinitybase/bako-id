@@ -40,12 +40,12 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
   const { setIsPollingEnabled } = useProcessingOrdersStore();
 
   const handleOpenDialog = () => {
-    setIsPollingEnabled(true);
+    setIsPollingEnabled(false);
     dialog.onOpen();
   };
 
   const handleCloseDialog = () => {
-    setIsPollingEnabled(false);
+    setIsPollingEnabled(true);
     dialog.onClose();
   };
 

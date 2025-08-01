@@ -17,6 +17,7 @@ import {
 import { type MouseEvent, useCallback, useMemo } from 'react';
 import { NftSaleCardModal } from './NftSaleCardModal';
 import { NftCard } from './card';
+import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
 
 interface NftSaleCardProps {
   order: Order;
@@ -42,8 +43,20 @@ const NftSaleCard = ({
   const { successToast, errorToast } = useCustomToast();
   const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const { setIsPollingEnabled } = useProcessingOrdersStore();
+
+  const handleOpenDialog = () => {
+    setIsPollingEnabled(false);
+    onOpen();
+  };
+
+  const handleCloseDialog = () => {
+    setIsPollingEnabled(true);
+    onClose();
+  };
   const delistModal = useDisclosure();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const handleCancelOrder = useCallback(async () => {
     try {
       await cancelOrderAsync(order.id);
@@ -51,14 +64,14 @@ const NftSaleCard = ({
         title: 'Delisted successfully',
         description: 'Your order has been successfully cancelled.',
       });
-      onClose();
+      handleCloseDialog();
     } catch {
       errorToast({
         title: 'Error delisting order',
         description: 'An error occurred while delisting your order.',
       });
     }
-  }, [cancelOrderAsync, order.id, successToast, errorToast, onClose]);
+  }, [cancelOrderAsync, order.id, successToast, errorToast]);
 
   const handleDelist = (e: MouseEvent) => {
     e.stopPropagation();
@@ -78,7 +91,7 @@ const NftSaleCard = ({
         style: 'currency',
         currency: 'USD',
       }).format(Number(order.price.usd)),
-    [order.price.usd],
+    [order.price.usd]
   );
 
   const assetSymbolUrl = order.price.image || UnknownAsset;
@@ -88,7 +101,7 @@ const NftSaleCard = ({
 
   const handleCardClick = () => {
     if (openModalOnClick) {
-      onOpen();
+      handleOpenDialog();
     }
   };
 
@@ -153,7 +166,7 @@ const NftSaleCard = ({
           order={order}
           imageUrl={imageUrl}
           isOpen={isOpen}
-          onClose={onClose}
+          onClose={handleCloseDialog}
           onCancelOrder={handleCancelOrder}
           isCanceling={isCanceling}
           value={order.price.amount}

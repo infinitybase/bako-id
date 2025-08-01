@@ -253,6 +253,7 @@ export const ProfileNfts = ({
                   md: 'repeat(4, 1fr)',
                   lg: 'repeat(6, 1fr)',
                 }}
+                transition="all 0.5s ease-in-out"
                 gap={6}
               >
                 {collection.assets.map((a) => (
@@ -297,6 +298,7 @@ export const ProfileNfts = ({
               lg: 'repeat(6, 1fr)',
             }}
             gap={6}
+            transition="all 0.5s ease-in-out"
             minH={{ base: 'full', md: '272px' }}
           >
             {allOrdersWithProcessing?.map((item) => {

@@ -45,7 +45,7 @@ export const useProcessingOrdersStore = create<ProcessingOrdersState>()(
             cancelledOrdersId: [],
             purchasedOrders: [],
             updatedOrders: [],
-            isPollingEnabled: false,
+            isPollingEnabled: true,
 
             addPurchasedOrder: (orderId: string) => {
                 set((state) => ({

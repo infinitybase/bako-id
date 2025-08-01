@@ -1,4 +1,4 @@
-import { BakoIDQueryKeys } from '@/utils/constants';
+import { BakoIDQueryKeys, MarketplaceQueryKeys } from '@/utils/constants';
 import { useAccount } from '@fuels/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useChainId } from '../useChainId';
@@ -30,6 +30,10 @@ export const useCancelOrder = () => {
       addCancelledOrdersId(cancelledOrderid);
       await queryClient.invalidateQueries({
         queryKey: [BakoIDQueryKeys.NFTS, chainId, address],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: [MarketplaceQueryKeys.USER_ORDERS, address],
       });
     },
   });
