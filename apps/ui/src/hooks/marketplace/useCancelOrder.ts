@@ -1,9 +1,15 @@
 import { BakoIDQueryKeys, MarketplaceQueryKeys } from '@/utils/constants';
 import { useAccount } from '@fuels/react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  type InfiniteData,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { useChainId } from '../useChainId';
 import { useMarketplace } from './useMarketplace';
 import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
+import type { Order } from '@/types/marketplace';
+import type { PaginationResult } from '@/utils/pagination';
 
 export const useCancelOrder = () => {
   const marketplaceContract = useMarketplace();
@@ -27,14 +33,27 @@ export const useCancelOrder = () => {
     },
 
     onSuccess: async (cancelledOrderid) => {
-      addCancelledOrdersId(cancelledOrderid);
       await queryClient.invalidateQueries({
         queryKey: [BakoIDQueryKeys.NFTS, chainId, address],
       });
 
-      await queryClient.invalidateQueries({
-        queryKey: [MarketplaceQueryKeys.USER_ORDERS, address],
-      });
+      addCancelledOrdersId(cancelledOrderid);
+      queryClient.setQueryData(
+        [MarketplaceQueryKeys.USER_ORDERS, address],
+        (old: InfiniteData<PaginationResult<Order>, unknown>) => {
+          return {
+            ...old,
+            pages: old.pages.map((page) => {
+              return {
+                ...page,
+                items: page.data.filter(
+                  (item) => item.id !== cancelledOrderid
+                ),
+              };
+            }),
+          };
+        }
+      );
     },
   });
 

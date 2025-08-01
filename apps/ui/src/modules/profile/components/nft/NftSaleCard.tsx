@@ -10,6 +10,7 @@ import {
   Button,
   Heading,
   Image,
+  Skeleton,
   Text,
   Tooltip,
   useDisclosure,
@@ -43,7 +44,7 @@ const NftSaleCard = ({
   const { successToast, errorToast } = useCustomToast();
   const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const { setIsPollingEnabled } = useProcessingOrdersStore();
+  const { setIsPollingEnabled, updatedOrders } = useProcessingOrdersStore();
 
   const handleOpenDialog = () => {
     setIsPollingEnabled(false);
@@ -105,6 +106,13 @@ const NftSaleCard = ({
     }
   };
 
+  const isProcessigNewPrices = useMemo(() => {
+    const hasNewPrice = updatedOrders.find(
+      (updatedOrder) => updatedOrder.orderId === order.id
+    );
+    return hasNewPrice && order.price.amount !== hasNewPrice?.newAmount;
+  }, [updatedOrders, order.id, order.price.amount]);
+
   return (
     <NftCard.Root onClick={handleCardClick} cursor="pointer" minH="240px">
       {/* {order.nft?.edition && (
@@ -122,23 +130,32 @@ const NftSaleCard = ({
         >
           {name}
         </Text>
-        <Heading
+        <Skeleton
+          isLoaded={!isProcessigNewPrices}
+          rounded="md"
+          h="full"
           display="flex"
-          alignItems="center"
-          gap={1}
-          fontSize="md"
-          color="text.700"
+          flexDir="column"
+          gap={2}
         >
-          <Tooltip label={order.asset?.name}>
-            <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
-          </Tooltip>
-          {order.price.amount}
-        </Heading>
-        {order.price.usd && (
-          <Text color="grey.subtitle" fontSize="sm">
-            {currency}
-          </Text>
-        )}
+          <Heading
+            display="flex"
+            alignItems="center"
+            gap={1}
+            fontSize="md"
+            color="text.700"
+          >
+            <Tooltip label={order.asset?.name}>
+              <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
+            </Tooltip>
+            {order.price.amount}
+          </Heading>
+          {order.price.usd && (
+            <Text color="grey.subtitle" fontSize="sm">
+              {currency}
+            </Text>
+          )}
+        </Skeleton>
 
         {showBuyButton && (
           <Button height="auto" py={1.5} variant={ctaButtonVariant}>
