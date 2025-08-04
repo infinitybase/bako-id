@@ -1,10 +1,12 @@
 import type { UpdateOrder } from '@bako-id/marketplace';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { useAccount } from '@fuels/react';
+import { useAccount, useChainId } from '@fuels/react';
 import { useMarketplace } from './useMarketplace';
 import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
 import { MarketplaceQueryKeys } from '@/utils/constants';
+import { Networks } from '@/utils/resolverNetwork';
+import { marketplaceService } from '@/services/marketplace';
 
 type TUpdateOrder = UpdateOrder & {
   orderId: string;
@@ -16,6 +18,7 @@ export const useUpdateOrder = () => {
   const marketplaceContract = useMarketplace();
   const queryClient = useQueryClient();
   const { account } = useAccount();
+  const { chainId } = useChainId();
   const { addUpdatedOrders } = useProcessingOrdersStore();
 
   const address = account?.toLowerCase();
@@ -32,20 +35,25 @@ export const useUpdateOrder = () => {
       ...data
     }: TUpdateOrder) => {
       const marketplace = await marketplaceContract;
-      await marketplace.updateOrder(orderId, data);
-      return { orderId, oldPrice, newPrice, data };
+      const { transactionResult } = await marketplace.updateOrder(orderId, data);
+      return { orderId, oldPrice, newPrice, data, txId: transactionResult.id };
     },
-    onSuccess: ({ orderId, oldPrice, newPrice }) => {
+    onSuccess: async ({ orderId, oldPrice, newPrice, txId }) => {
       addUpdatedOrders({
-        orderId: orderId,
+        orderId,
         oldAmount: oldPrice.oldAmount,
         oldRaw: oldPrice.oldRaw,
         newAmount: newPrice.newAmount,
         newRaw: newPrice.newRaw,
         usd: newPrice.usd,
+        txId,
       });
       queryClient.invalidateQueries({
         queryKey: [MarketplaceQueryKeys.USER_ORDERS, address],
+      });
+      await marketplaceService.saveReceipt({
+        txId,
+        chainId: chainId ?? Networks.MAINNET,
       });
     },
   });

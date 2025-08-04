@@ -8,8 +8,10 @@ import {
 import { useChainId } from '../useChainId';
 import { useMarketplace } from './useMarketplace';
 import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
-import type { Order } from '@/types/marketplace';
+import { Networks } from '@/utils/resolverNetwork';
+import { marketplaceService } from '@/services/marketplace';
 import type { PaginationResult } from '@/utils/pagination';
+import type { Order } from '@/types/marketplace';
 
 export const useCancelOrder = () => {
   const marketplaceContract = useMarketplace();
@@ -17,9 +19,9 @@ export const useCancelOrder = () => {
   const { account } = useAccount();
   const { chainId } = useChainId();
   const address = account?.toLowerCase() ?? '';
+  // console.log('address', address);
 
   const { addCancelledOrders } = useProcessingOrdersStore();
-
 
   const {
     mutate: cancelOrder,
@@ -28,32 +30,44 @@ export const useCancelOrder = () => {
   } = useMutation({
     mutationFn: async (orderId: string) => {
       const marketplace = await marketplaceContract;
-      await marketplace.cancelOrder(orderId);
-      return orderId;
+      const { transactionResult } = await marketplace.cancelOrder(orderId);
+      return { orderId, txId: transactionResult.id };
     },
 
-    onSuccess: async (cancelledOrderid) => {
+    onSuccess: async ({ orderId, txId }) => {
       await queryClient.invalidateQueries({
         queryKey: [BakoIDQueryKeys.NFTS, chainId, address],
       });
 
-      addCancelledOrders(cancelledOrderid, address);
+      addCancelledOrders({ orderId, owner: address, txId });
+
+      await queryClient.invalidateQueries({
+        queryKey: [MarketplaceQueryKeys.USER_ORDERS, address],
+      });
+
+      await marketplaceService.saveReceipt({
+        txId,
+        chainId: chainId ?? Networks.MAINNET,
+      });
+
       queryClient.setQueryData(
         [MarketplaceQueryKeys.USER_ORDERS, address],
         (old: InfiniteData<PaginationResult<Order>, unknown>) => {
+
           return {
             ...old,
             pages: old.pages.map((page) => {
-              return {
+              const result = {
                 ...page,
-                items: page.data.filter(
-                  (item) => item.id !== cancelledOrderid
-                ),
+                data: page.data.filter((item) => item.id !== orderId),
               };
+              return result;
             }),
           };
         }
       );
+
+
     },
   });
 

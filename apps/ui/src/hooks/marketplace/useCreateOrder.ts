@@ -4,7 +4,12 @@ import { useAccount } from '@fuels/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useChainId } from '../useChainId';
 import { useMarketplace } from './useMarketplace';
-import { useProcessingOrdersStore, type ProcessingOrder } from '@/modules/marketplace/stores/processingOrdersStore';
+import {
+  useProcessingOrdersStore,
+  type ProcessingOrder,
+} from '@/modules/marketplace/stores/processingOrdersStore';
+import { marketplaceService } from '@/services/marketplace';
+import { Networks } from '@/utils/resolverNetwork';
 
 export const useCreateOrder = () => {
   const marketplaceContract = useMarketplace();
@@ -22,8 +27,14 @@ export const useCreateOrder = () => {
   } = useMutation({
     mutationFn: async (order: OrderFromFuel & { image: string }) => {
       const marketplace = await marketplaceContract;
-      const { orderId } = await marketplace.createOrder(order);
-      return { orderId, image: order.image, assetId: order.itemAsset };
+      const { orderId, transactionResult } =
+        await marketplace.createOrder(order);
+      return {
+        orderId,
+        image: order.image,
+        assetId: order.itemAsset,
+        txId: transactionResult.id,
+      };
     },
 
     onSuccess: async (orderResult) => {
@@ -36,9 +47,15 @@ export const useCreateOrder = () => {
         image: orderResult.image,
         assetId: orderResult.assetId,
         owner: address,
+        txId: orderResult.txId,
       };
 
       addProcessingOrders(newProcessingOrder);
+
+      await marketplaceService.saveReceipt({
+        txId: orderResult.txId,
+        chainId: chainId ?? Networks.MAINNET,
+      });
     },
   });
 

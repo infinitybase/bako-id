@@ -6,6 +6,13 @@ export interface ProcessingOrder {
     orderId: string;
     image: string;
     assetId: string;
+    txId: string;
+}
+
+export type CancelledOrder = {
+    orderId: string;
+    owner: string;
+    txId: string;
 }
 
 export interface ProcessingUpdatedOrder {
@@ -15,24 +22,25 @@ export interface ProcessingUpdatedOrder {
     newAmount: number;
     newRaw: string;
     usd: number;
+    txId: string;
 }
 
 
 interface ProcessingOrdersState {
     processingOrders: ProcessingOrder[];
-    cancelledOrders: { orderId: string, owner: string }[];
-    purchasedOrders: string[];
+    cancelledOrders: CancelledOrder[];
+    purchasedOrders: { orderId: string, txId: string }[];
     updatedOrders: ProcessingUpdatedOrder[];
     isPollingEnabled: boolean;
 
     // Actions
     addProcessingOrders: (order: ProcessingOrder) => void;
     removeProcessingOrder: (orderId: string) => void;
-    addCancelledOrders: (orderId: string, owner: string) => void;
+    addCancelledOrders: (order: CancelledOrder) => void;
     removeCancelledOrders: (orderId: string) => void;
     setIsPollingEnabled: (isPolling: boolean) => void;
     clearCancelledOrders: () => void;
-    addPurchasedOrder: (orderId: string) => void;
+    addPurchasedOrder: (orderId: string, txId: string) => void;
     removePurchasedOrder: (orderId: string) => void;
     addUpdatedOrders: (order: ProcessingUpdatedOrder) => void;
     removeUpdatedOrders: (orderId: string) => void;
@@ -47,24 +55,36 @@ export const useProcessingOrdersStore = create<ProcessingOrdersState>()(
             updatedOrders: [],
             isPollingEnabled: true,
 
-            addPurchasedOrder: (orderId: string) => {
+            addPurchasedOrder: (orderId: string, txId: string) => {
                 set((state) => ({
-                    purchasedOrders: [...state.purchasedOrders, orderId],
+                    purchasedOrders: [...state.purchasedOrders, { orderId, txId }],
                 }));
             },
 
             removePurchasedOrder: (orderId: string) => {
                 set((state) => ({
                     purchasedOrders: state.purchasedOrders.filter(
-                        (currentOrderId) => currentOrderId !== orderId
+                        (currentOrder) => currentOrder.orderId !== orderId
                     ),
                 }));
             },
 
             addProcessingOrders: (order: ProcessingOrder) => {
-                set((state) => ({
-                    processingOrders: [...state.processingOrders, order],
-                }));
+                set((state) => {
+                    const filteredUpdatedOrders = state.updatedOrders.filter(
+                        (updatedOrder) => updatedOrder.orderId !== order.orderId
+                    );
+
+                    const filteredCancelledOrders = state.cancelledOrders.filter(
+                        (cancelledOrder) => cancelledOrder.orderId !== order.orderId
+                    );
+
+                    return {
+                        processingOrders: [...state.processingOrders, order],
+                        updatedOrders: filteredUpdatedOrders,
+                        cancelledOrders: filteredCancelledOrders,
+                    };
+                });
             },
 
             removeProcessingOrder: (orderId: string) => {
@@ -75,10 +95,23 @@ export const useProcessingOrdersStore = create<ProcessingOrdersState>()(
                 }));
             },
 
-            addCancelledOrders: (orderId: string, owner: string) => {
-                set((state) => ({
-                    cancelledOrders: [...state.cancelledOrders, { orderId, owner }],
-                }));
+            addCancelledOrders: (order: CancelledOrder) => {
+                set((state) => {
+
+                    const filteredProcessingOrders = state.processingOrders.filter(
+                        (processingOrder) => processingOrder.orderId !== order.orderId
+                    );
+
+                    const filteredUpdatedOrders = state.updatedOrders.filter(
+                        (updatedOrder) => updatedOrder.orderId !== order.orderId
+                    );
+
+                    return {
+                        processingOrders: filteredProcessingOrders,
+                        updatedOrders: filteredUpdatedOrders,
+                        cancelledOrders: [...state.cancelledOrders, order],
+                    };
+                });
             },
 
             removeCancelledOrders: (orderId: string) => {
@@ -99,6 +132,15 @@ export const useProcessingOrdersStore = create<ProcessingOrdersState>()(
 
             addUpdatedOrders: (order: ProcessingUpdatedOrder) => {
                 set((state) => {
+
+                    const filteredProcessingOrders = state.processingOrders.filter(
+                        (processingOrder) => processingOrder.orderId !== order.orderId
+                    );
+
+                    const filteredCancelledOrders = state.cancelledOrders.filter(
+                        (cancelledOrder) => cancelledOrder.orderId !== order.orderId
+                    );
+
                     const existingOrderIndex = state.updatedOrders.findIndex(
                         (existingOrder) => existingOrder.orderId === order.orderId
                     );
@@ -106,11 +148,17 @@ export const useProcessingOrdersStore = create<ProcessingOrdersState>()(
                     if (existingOrderIndex !== -1) {
                         const updatedOrders = [...state.updatedOrders];
                         updatedOrders[existingOrderIndex] = order;
-                        return { updatedOrders };
+                        return {
+                            updatedOrders,
+                            processingOrders: filteredProcessingOrders,
+                            cancelledOrders: filteredCancelledOrders,
+                        };
                     }
 
                     return {
                         updatedOrders: [...state.updatedOrders, order],
+                        processingOrders: filteredProcessingOrders,
+                        cancelledOrders: filteredCancelledOrders,
                     };
                 });
             },

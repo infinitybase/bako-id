@@ -101,7 +101,10 @@ export const CollectionPage = () => {
   const data = useMemo(() => {
     // Remove the orders that were purchased from the list
     return (collectionOrders?.pages?.flatMap((page) => page.data) ?? []).filter(
-      (order) => !purchasedOrders.includes(order.id)
+      (order) =>
+        !purchasedOrders.some(
+          (purchasedOrder) => purchasedOrder.orderId === order.id
+        )
     );
   }, [collectionOrders, purchasedOrders]);
 
