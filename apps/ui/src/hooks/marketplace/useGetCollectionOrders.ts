@@ -65,12 +65,12 @@ export const useGetCollectionOrders = ({
 
       const currentOrderIds = data.items.map((order) => order.id);
       const purchasedOrdersToRemove = purchasedOrders.filter(
-        (purchasedOrderId) => !currentOrderIds.includes(purchasedOrderId)
+        (purchasedOrder) => !currentOrderIds.includes(purchasedOrder.orderId)
       );
 
       if (data.items.length >= 1 && purchasedOrders.length > 0) {
-        for (const purchasedOrderId of purchasedOrdersToRemove) {
-          removePurchasedOrder(purchasedOrderId);
+        for (const purchasedOrder of purchasedOrdersToRemove) {
+          removePurchasedOrder(purchasedOrder.orderId);
         }
       }
 
