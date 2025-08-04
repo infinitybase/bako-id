@@ -16,10 +16,10 @@ export const useCancelOrder = () => {
   const queryClient = useQueryClient();
   const { account } = useAccount();
   const { chainId } = useChainId();
+  const address = account?.toLowerCase() ?? '';
 
-  const { addCancelledOrdersId } = useProcessingOrdersStore();
+  const { addCancelledOrders } = useProcessingOrdersStore();
 
-  const address = account?.toLowerCase();
 
   const {
     mutate: cancelOrder,
@@ -37,7 +37,7 @@ export const useCancelOrder = () => {
         queryKey: [BakoIDQueryKeys.NFTS, chainId, address],
       });
 
-      addCancelledOrdersId(cancelledOrderid);
+      addCancelledOrders(cancelledOrderid, address);
       queryClient.setQueryData(
         [MarketplaceQueryKeys.USER_ORDERS, address],
         (old: InfiniteData<PaginationResult<Order>, unknown>) => {

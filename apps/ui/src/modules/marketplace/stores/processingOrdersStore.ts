@@ -2,10 +2,10 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export interface ProcessingOrder {
+    owner: string;
     orderId: string;
     image: string;
     assetId: string;
-    timestamp: number;
 }
 
 export interface ProcessingUpdatedOrder {
@@ -20,7 +20,7 @@ export interface ProcessingUpdatedOrder {
 
 interface ProcessingOrdersState {
     processingOrders: ProcessingOrder[];
-    cancelledOrdersId: string[];
+    cancelledOrders: { orderId: string, owner: string }[];
     purchasedOrders: string[];
     updatedOrders: ProcessingUpdatedOrder[];
     isPollingEnabled: boolean;
@@ -28,10 +28,10 @@ interface ProcessingOrdersState {
     // Actions
     addProcessingOrders: (order: ProcessingOrder) => void;
     removeProcessingOrder: (orderId: string) => void;
-    addCancelledOrdersId: (orderId: string) => void;
-    removeCancelledOrdersId: (orderId: string) => void;
+    addCancelledOrders: (orderId: string, owner: string) => void;
+    removeCancelledOrders: (orderId: string) => void;
     setIsPollingEnabled: (isPolling: boolean) => void;
-    clearCancelledOrdersId: () => void;
+    clearCancelledOrders: () => void;
     addPurchasedOrder: (orderId: string) => void;
     removePurchasedOrder: (orderId: string) => void;
     addUpdatedOrders: (order: ProcessingUpdatedOrder) => void;
@@ -42,7 +42,7 @@ export const useProcessingOrdersStore = create<ProcessingOrdersState>()(
     persist(
         (set) => ({
             processingOrders: [],
-            cancelledOrdersId: [],
+            cancelledOrders: [],
             purchasedOrders: [],
             updatedOrders: [],
             isPollingEnabled: true,
@@ -75,16 +75,16 @@ export const useProcessingOrdersStore = create<ProcessingOrdersState>()(
                 }));
             },
 
-            addCancelledOrdersId: (orderId: string) => {
+            addCancelledOrders: (orderId: string, owner: string) => {
                 set((state) => ({
-                    cancelledOrdersId: [...state.cancelledOrdersId, orderId],
+                    cancelledOrders: [...state.cancelledOrders, { orderId, owner }],
                 }));
             },
 
-            removeCancelledOrdersId: (orderId: string) => {
+            removeCancelledOrders: (orderId: string) => {
                 set((state) => ({
-                    cancelledOrdersId: state.cancelledOrdersId.filter(
-                        (id) => id !== orderId
+                    cancelledOrders: state.cancelledOrders.filter(
+                        (order) => order.orderId !== orderId
                     ),
                 }));
             },
@@ -93,8 +93,8 @@ export const useProcessingOrdersStore = create<ProcessingOrdersState>()(
                 set({ isPollingEnabled: isPolling });
             },
 
-            clearCancelledOrdersId: () => {
-                set({ cancelledOrdersId: [] });
+            clearCancelledOrders: () => {
+                set({ cancelledOrders: [] });
             },
 
             addUpdatedOrders: (order: ProcessingUpdatedOrder) => {
@@ -124,10 +124,10 @@ export const useProcessingOrdersStore = create<ProcessingOrdersState>()(
             },
         }),
         {
-            name: 'processing-orders-storage',
+            name: '@garage-optimistic',
             partialize: (state) => ({
                 processingOrders: state.processingOrders,
-                cancelledOrdersId: state.cancelledOrdersId,
+                cancelledOrders: state.cancelledOrders,
                 purchasedOrders: state.purchasedOrders,
                 updatedOrders: state.updatedOrders,
             }),

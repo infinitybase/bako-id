@@ -84,14 +84,18 @@ export const ProfileNfts = ({
   }, [orders]);
 
   const processingArray = useMemo(() => {
-    return processingOrders.map((processing, index) => ({
-      id: `processing-${processing.timestamp || index}`,
-      index,
-      orderId: processing.orderId,
-      image: processing.image,
-      assetId: processing.assetId,
-    }));
-  }, [processingOrders]);
+    return processingOrders.map((processing) => {
+      return ownerDomain === processing.owner
+        ? {
+            id: processing.orderId,
+            orderId: processing.orderId,
+            image: processing.image,
+            assetId: processing.assetId,
+            owner: processing.owner,
+          }
+        : null;
+    });
+  }, [processingOrders, ownerDomain]);
 
   const allOrdersWithProcessing = useMemo(() => {
     const realOrders = processedOrders.map((order) => ({
@@ -103,7 +107,7 @@ export const ProfileNfts = ({
     const processings = processingArray.map((processing) => ({
       type: 'processing' as const,
       data: processing,
-      key: processing.id,
+      key: processing?.id,
     }));
 
     return [...realOrders, ...processings];
@@ -317,9 +321,11 @@ export const ProfileNfts = ({
                 );
               }
               return (
-                <GridItem key={item.key} maxW="175px">
-                  <ProcessingOrderCard image={item.data.image} />
-                </GridItem>
+                item.data && (
+                  <GridItem key={item.key} maxW="175px">
+                    <ProcessingOrderCard image={item.data?.image ?? ''} />
+                  </GridItem>
+                )
               );
             })}
           </Grid>

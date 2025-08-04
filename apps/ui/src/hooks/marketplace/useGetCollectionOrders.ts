@@ -6,6 +6,7 @@ import { marketplaceService } from '@/services/marketplace';
 import { Networks } from '@/utils/resolverNetwork';
 import type { Order } from '@/types/marketplace';
 import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
+import { filterAndUpdateOrdersWithProcessingState } from '@/utils/handleOptimisticData';
 
 type UseGetCollectionOrdersProps = {
   page?: number;
@@ -25,8 +26,14 @@ export const useGetCollectionOrders = ({
 }: UseGetCollectionOrdersProps) => {
   const { chainId } = useChainId();
   const {
+    cancelledOrders,
+    removeCancelledOrders,
+    processingOrders,
+    removeProcessingOrder,
+    updatedOrders,
     purchasedOrders,
-    removePurchasedOrder
+    removePurchasedOrder,
+    removeUpdatedOrders,
   } = useProcessingOrdersStore();
 
   const { data: collectionOrders, ...rest } = useInfiniteQuery<
@@ -67,8 +74,18 @@ export const useGetCollectionOrders = ({
         }
       }
 
+      const filteredData = filterAndUpdateOrdersWithProcessingState({
+        items: data.items,
+        cancelledOrders,
+        removeCancelledOrders,
+        processingOrders,
+        removeProcessingOrder,
+        updatedOrders,
+        removeUpdatedOrders,
+      })
+
       return {
-        data: data.items,
+        data: filteredData,
         page: data.pagination.page,
         limit: data.pagination.limit,
         total: data.pagination.total,

@@ -12,8 +12,8 @@ export const useCreateOrder = () => {
   const { chainId } = useChainId();
   const { account } = useAccount();
 
-  const address = account?.toLowerCase();
-  const addProcessingOrders = useProcessingOrdersStore((state) => state.addProcessingOrders);
+  const address = account?.toLowerCase() ?? ' ';
+  const { addProcessingOrders } = useProcessingOrdersStore();
 
   const {
     mutate: createOrder,
@@ -35,7 +35,7 @@ export const useCreateOrder = () => {
         orderId: orderResult.orderId,
         image: orderResult.image,
         assetId: orderResult.assetId,
-        timestamp: Date.now(),
+        owner: address,
       };
 
       addProcessingOrders(newProcessingOrder);
