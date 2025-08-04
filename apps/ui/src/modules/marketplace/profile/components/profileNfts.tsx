@@ -84,18 +84,26 @@ export const ProfileNfts = ({
   }, [orders]);
 
   const processingArray = useMemo(() => {
-    return processingOrders.map((processing) => {
-      return ownerDomain === processing.owner
-        ? {
-            id: processing.orderId,
-            orderId: processing.orderId,
-            image: processing.image,
-            assetId: processing.assetId,
-            owner: processing.owner,
-          }
-        : null;
-    });
-  }, [processingOrders, ownerDomain]);
+    return processingOrders
+      .map((processing) => {
+        return ownerDomain === processing.owner
+          ? {
+              id: processing.orderId,
+              orderId: processing.orderId,
+              image: processing.image,
+              assetId: processing.assetId,
+              owner: processing.owner,
+            }
+          : null;
+      })
+      .filter((item) => {
+        if (!item) return false;
+        const existingOrder = processedOrders.find(
+          (order) => order.id === item.id
+        );
+        return !existingOrder;
+      });
+  }, [processingOrders, ownerDomain, processedOrders]);
 
   const allOrdersWithProcessing = useMemo(() => {
     const realOrders = processedOrders.map((order) => ({
