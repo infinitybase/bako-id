@@ -170,6 +170,7 @@ const NftSaleCard = ({
           usdValue={currency}
           isOwner={isOwner}
           withHandle={withHandle}
+          ctaButtonVariant={ctaButtonVariant}
         />
       )}
     </NftCard.Root>

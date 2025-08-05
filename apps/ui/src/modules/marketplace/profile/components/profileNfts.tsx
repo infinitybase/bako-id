@@ -21,7 +21,6 @@ import type { Order } from '@/types/marketplace';
 import type { NFTCollection } from '@/utils/collection';
 import { useWallet } from '@fuels/react';
 import { useResolverName } from '@/hooks';
-import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
 
 enum TabOptions {
   FOR_SALE = 'for_sale',
@@ -146,11 +145,6 @@ export const ProfileNfts = ({
     );
   }
 
-  const notListedCollectionsWithoutHandles = notListedCollections.filter(
-    (collection) =>
-      !BAKO_CONTRACTS_IDS.includes(collection.assets[0]?.contractId ?? '')
-  );
-
   return (
     <Card
       display="flex"
@@ -210,7 +204,7 @@ export const ProfileNfts = ({
         {selectedTab === TabOptions.NOT_LISTED && isEmptyCollections ? (
           <MartketplaceEmptyState />
         ) : (
-          notListedCollectionsWithoutHandles?.map((collection, index) => (
+          notListedCollections?.map((collection, index) => (
             <Grid
               key={collection.name}
               mt={index > 0 ? 6 : 0}
@@ -280,6 +274,7 @@ export const ProfileNfts = ({
                   showBuyButton={false}
                   withHandle={!!hasDomain}
                   imageSize="full"
+                  ctaButtonVariant="mktPrimary"
                 />
               </GridItem>
             ))}
