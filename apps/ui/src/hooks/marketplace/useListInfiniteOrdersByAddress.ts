@@ -5,6 +5,12 @@ import { Networks } from '@/utils/resolverNetwork';
 import type { Order } from '@/types/marketplace';
 import type { PaginationResult } from '@/utils/pagination';
 import { marketplaceService } from '@/services/marketplace';
+import { useMemo } from 'react';
+import {
+
+  useProcessingOrdersStore,
+} from '@/modules/marketplace/stores/processingOrdersStore';
+import { filterAndUpdateOrdersWithProcessingState } from '@/utils/handleOptimisticData';
 
 type useListInfiniteOrdersByAddressProps = {
   page?: number;
@@ -23,6 +29,22 @@ export const useListInfiniteOrdersByAddress = ({
   limit,
 }: useListInfiniteOrdersByAddressProps) => {
   const { chainId } = useChainId();
+  const {
+    cancelledOrders,
+    removeCancelledOrders,
+    processingOrders,
+    removeProcessingOrder,
+    isPollingEnabled,
+    updatedOrders,
+    removeUpdatedOrders,
+  } = useProcessingOrdersStore();
+
+  const activatePolling = useMemo(() => {
+    const cancelledOrdersOwner = cancelledOrders.some((cancelledOrder) => cancelledOrder.owner === sellerAddress);
+    const processingOrdersOwner = processingOrders.some((processingOrder) => processingOrder.owner === sellerAddress);
+    const anyActionInProgress = processingOrdersOwner || updatedOrders.length > 0 || cancelledOrdersOwner;
+    return anyActionInProgress && isPollingEnabled;
+  }, [processingOrders, isPollingEnabled, updatedOrders, cancelledOrders, sellerAddress]);
 
   const {
     data: orders,
@@ -46,8 +68,18 @@ export const useListInfiniteOrdersByAddress = ({
         sellerAddress,
       });
 
+      const filteredData = activatePolling ? filterAndUpdateOrdersWithProcessingState({
+        items: data.items,
+        cancelledOrders,
+        removeCancelledOrders,
+        processingOrders,
+        removeProcessingOrder,
+        updatedOrders,
+        removeUpdatedOrders,
+      }) : data.items;
+
       return {
-        data: data.items,
+        data: filteredData,
         page: data.pagination.page,
         limit: data.pagination.limit,
         total: data.pagination.total,
@@ -60,7 +92,10 @@ export const useListInfiniteOrdersByAddress = ({
     },
     placeholderData: (data) => data,
     enabled: !!chainId && !!sellerAddress,
-
+    refetchOnMount: activatePolling,
+    refetchOnWindowFocus: false,
+    refetchInterval: activatePolling ? 5000 : false,
+    refetchIntervalInBackground: activatePolling,
   });
 
   return {

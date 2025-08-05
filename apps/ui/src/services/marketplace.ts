@@ -189,4 +189,32 @@ export class marketplaceService {
 
     return data;
   }
+
+  static async saveReceipt(data: {
+    txId: string;
+    chainId: number;
+  }) {
+
+    const { txId, chainId } = data;
+    const network = resolveNetwork(chainId);
+
+    try {
+      return fetch(`${BASE_MARKETPLACE_URL}/${network}/receipts/tx/${txId}`, {
+        method: 'POST',
+      });
+    } catch {
+      return null
+    }
+
+  }
+
+  static async getReceiptStatus(data: {
+    txId: string;
+    chainId: number;
+  }) {
+    const { txId, chainId } = data;
+    const network = resolveNetwork(chainId);
+
+    return fetch(`${BASE_MARKETPLACE_URL}/${network}/receipts/tx/${txId}`);
+  }
 }

@@ -14,6 +14,7 @@ import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
 import { formatAddress } from '@/utils/formatter';
 import { NftCardModal } from './NftCardModal';
 import { NftCard } from './card';
+import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
 
 interface NftCollectionCardProps {
   asset: NFTWithImage;
@@ -35,6 +36,18 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
     symbol,
   } = props.asset;
   const dialog = useDisclosure();
+
+  const { setIsPollingEnabled } = useProcessingOrdersStore();
+
+  const handleOpenDialog = () => {
+    setIsPollingEnabled(false);
+    dialog.onOpen();
+  };
+
+  const handleCloseDialog = () => {
+    setIsPollingEnabled(true);
+    dialog.onClose();
+  };
 
   const image = useMemo(
     () => props.asset.image || nftEmpty,
@@ -67,14 +80,14 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
         metadata={defaultMetadata}
         image={image}
         isOpen={dialog.isOpen}
-        onClose={dialog.onClose}
+        onClose={handleCloseDialog}
         isOwner={props.isOwner}
         collection={collection}
         ctaButtonVariant={props.ctaButtonVariant}
       />
 
       <NftCard.Root
-        onClick={dialog.onOpen}
+        onClick={handleOpenDialog}
         cursor="pointer"
         minW={props.nftCardMinSize}
       >

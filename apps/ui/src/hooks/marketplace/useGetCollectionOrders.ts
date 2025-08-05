@@ -5,6 +5,8 @@ import { useChainId } from '../useChainId';
 import { marketplaceService } from '@/services/marketplace';
 import { Networks } from '@/utils/resolverNetwork';
 import type { Order } from '@/types/marketplace';
+import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
+import { filterAndUpdateOrdersWithProcessingState } from '@/utils/handleOptimisticData';
 
 type UseGetCollectionOrdersProps = {
   page?: number;
@@ -23,6 +25,16 @@ export const useGetCollectionOrders = ({
   collectionId,
 }: UseGetCollectionOrdersProps) => {
   const { chainId } = useChainId();
+  const {
+    cancelledOrders,
+    removeCancelledOrders,
+    processingOrders,
+    removeProcessingOrder,
+    updatedOrders,
+    purchasedOrders,
+    removePurchasedOrder,
+    removeUpdatedOrders,
+  } = useProcessingOrdersStore();
 
   const { data: collectionOrders, ...rest } = useInfiniteQuery<
     PaginationResult<Order>
@@ -30,9 +42,6 @@ export const useGetCollectionOrders = ({
     queryKey: [
       MarketplaceQueryKeys.COLLECTION_ORDERS,
       chainId,
-      search,
-      sortValue,
-      sortDirection,
       collectionId,
     ],
     initialPageParam: 0,
@@ -54,8 +63,29 @@ export const useGetCollectionOrders = ({
         sortDirection,
       });
 
+      const currentOrderIds = data.items.map((order) => order.id);
+      const purchasedOrdersToRemove = purchasedOrders.filter(
+        (purchasedOrder) => !currentOrderIds.includes(purchasedOrder.orderId)
+      );
+
+      if (data.items.length >= 1 && purchasedOrders.length > 0) {
+        for (const purchasedOrder of purchasedOrdersToRemove) {
+          removePurchasedOrder(purchasedOrder.orderId);
+        }
+      }
+
+      const filteredData = filterAndUpdateOrdersWithProcessingState({
+        items: data.items,
+        cancelledOrders,
+        removeCancelledOrders,
+        processingOrders,
+        removeProcessingOrder,
+        updatedOrders,
+        removeUpdatedOrders,
+      })
+
       return {
-        data: data.items,
+        data: filteredData,
         page: data.pagination.page,
         limit: data.pagination.limit,
         total: data.pagination.total,
