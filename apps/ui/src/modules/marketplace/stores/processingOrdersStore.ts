@@ -31,14 +31,12 @@ interface ProcessingOrdersState {
     cancelledOrders: CancelledOrder[];
     purchasedOrders: { orderId: string, txId: string }[];
     updatedOrders: ProcessingUpdatedOrder[];
-    isPollingEnabled: boolean;
 
     // Actions
     addProcessingOrders: (order: ProcessingOrder) => void;
     removeProcessingOrder: (orderId: string) => void;
     addCancelledOrders: (order: CancelledOrder) => void;
     removeCancelledOrders: (orderId: string) => void;
-    setIsPollingEnabled: (isPolling: boolean) => void;
     clearCancelledOrders: () => void;
     addPurchasedOrder: (orderId: string, txId: string) => void;
     removePurchasedOrder: (orderId: string) => void;
@@ -53,7 +51,6 @@ export const useProcessingOrdersStore = create<ProcessingOrdersState>()(
             cancelledOrders: [],
             purchasedOrders: [],
             updatedOrders: [],
-            isPollingEnabled: true,
 
             addPurchasedOrder: (orderId: string, txId: string) => {
                 set((state) => ({
@@ -120,10 +117,6 @@ export const useProcessingOrdersStore = create<ProcessingOrdersState>()(
                         (order) => order.orderId !== orderId
                     ),
                 }));
-            },
-
-            setIsPollingEnabled: (isPolling: boolean) => {
-                set({ isPollingEnabled: isPolling });
             },
 
             clearCancelledOrders: () => {
