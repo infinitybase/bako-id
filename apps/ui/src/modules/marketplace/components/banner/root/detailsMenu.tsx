@@ -34,8 +34,18 @@ const DetailsMenu = ({ collection }: { collection: Collection }) => {
         },
       }}
     >
-      <MenuButton ref={menuRef} h={4} mt={2}>
-        <Icon as={InfoCircleIcon} color="grey.200" />
+      <MenuButton
+        ref={menuRef}
+        h={4}
+        mt={2}
+        bg="transparent"
+        color="grey.200"
+        _hover={{ bg: 'transparent', color: 'white' }}
+        _focus={{ bg: 'transparent' }}
+        _active={{ bg: 'transparent' }}
+        transition="color 0.2s"
+      >
+        <Icon as={InfoCircleIcon} color="inherit" transition="color 0.2s" />
       </MenuButton>
       <MenuList p={0}>
         <MenuItem p={0} m={0} h="full">

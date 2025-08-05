@@ -21,6 +21,7 @@ import profileBanner from '@/assets/marketplace/mktp-profile-banner.png';
 import { UnverifiedBadgeIcon } from '../icons/unverifiedBadgeIcon';
 import { Link } from '@tanstack/react-router';
 import { useResolverName } from '@/hooks/useResolverName';
+import { getHomeUrl } from '@/utils/getHomeUrl';
 
 type ProfilePageBannerProps = {
   name: string;
@@ -36,6 +37,8 @@ export const ProfilePageBanner = ({
   resolver,
 }: ProfilePageBannerProps) => {
   const { data: hasDomain } = useResolverName(resolver);
+
+  const home = getHomeUrl();
 
   return (
     <Stack
@@ -79,7 +82,7 @@ export const ProfilePageBanner = ({
           {!hasDomain && (
             <Button
               as={Link}
-              to="/"
+              to={home}
               borderColor="grey.100"
               color="grey.100"
               variant="outline"

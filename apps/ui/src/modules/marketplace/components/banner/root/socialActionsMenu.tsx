@@ -6,7 +6,7 @@ import { CopyText } from '@/components/helpers/copy';
 import { DiscordIcon as DiscordIconComponent } from '@/components/icons/discordIcon';
 import { ShareMenu } from './shareMenu';
 import type { Collection } from '@/types/marketplace';
-import { TwitterIcon } from '@/components';
+import { TwitterIcon } from '../../icons/twitterIcon';
 import { GlobalIcon } from '../../icons';
 
 export const SocialActionsMenu = ({
@@ -33,33 +33,44 @@ export const SocialActionsMenu = ({
         color="grey.200"
         cursor={siteLink ? 'pointer' : 'default'}
         pointerEvents={siteLink ? 'auto' : 'none'}
+        _hover={{ color: 'white' }}
+        transition="color 0.2s"
         onClick={(e) => {
           e.stopPropagation();
           handleRedirect(siteLink ?? '');
         }}
       />
-      <Icon
-        as={TwitterIcon}
-        color="grey.200"
-        cursor={xLink ? 'pointer' : 'default'}
-        pointerEvents={xLink ? 'auto' : 'none'}
-        onClick={(e) => {
-          e.stopPropagation();
-          handleRedirect(xLink ?? '');
-        }}
-      />
-      <Icon
-        as={DiscordIconComponent}
-        w={5}
-        h={5}
-        color="grey.200"
-        cursor={discordLink ? 'pointer' : 'default'}
-        pointerEvents={discordLink ? 'auto' : 'none'}
-        onClick={(e) => {
-          e.stopPropagation();
-          handleRedirect(discordLink ?? '');
-        }}
-      />
+      {xLink && (
+        <Icon
+          as={TwitterIcon}
+          color="grey.200"
+          cursor="pointer"
+          pointerEvents="auto"
+          _hover={{ color: 'white' }}
+          transition="color 0.2s"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleRedirect(xLink ?? '');
+          }}
+        />
+      )}
+      {discordLink && (
+        <Icon
+          as={DiscordIconComponent}
+          w={5}
+          h={5}
+          color="grey.200"
+          cursor="pointer"
+          pointerEvents="auto"
+          _hover={{ color: 'white' }}
+          transition="color 0.2s"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleRedirect(discordLink ?? '');
+          }}
+        />
+      )}
+
       <ShareMenu discordLink={discordLink} xLink={xLink} />
     </Flex>
   );
