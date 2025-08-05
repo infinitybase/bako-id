@@ -66,7 +66,7 @@ export default function NftDetailsStep({
   });
 
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
-    order.seller
+    order.collection?.address ?? ''
   );
   const { data: sellerDomain, isLoading: isLoadingDomain } = useResolverName(
     order.seller

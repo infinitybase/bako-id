@@ -8,8 +8,6 @@ import { Container } from './container';
 import { MarketplaceMainLayout } from './marketplace';
 import { ProfileLayout } from './profile';
 
-// import { useIsConnected } from '@fuels/react';
-
 interface DashboardLayoutProps {
   children?: React.ReactNode;
   hasSideBar?: boolean;

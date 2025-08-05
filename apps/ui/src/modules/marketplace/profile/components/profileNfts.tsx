@@ -10,7 +10,7 @@ import {
   Grid,
   Skeleton,
 } from '@chakra-ui/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useProfileNftLoader } from '../../hooks/useProfileNftLoader';
 import NftSaleCard from '@/modules/profile/components/nft/NftSaleCard';
@@ -21,6 +21,8 @@ import type { Order } from '@/types/marketplace';
 import type { NFTCollection } from '@/utils/collection';
 import { useWallet } from '@fuels/react';
 import { useResolverName } from '@/hooks';
+import { ProcessingOrderCard } from '@/components/cards/ProcessingOrderCard';
+import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
 
 enum TabOptions {
   FOR_SALE = 'for_sale',
@@ -73,6 +75,50 @@ export const ProfileNfts = ({
   const { ref, inView } = useInView();
   const { wallet } = useWallet();
   const ownerDomain = wallet?.address.b256Address;
+  const { processingOrders } = useProcessingOrdersStore();
+
+  // Using useMemo on both arrays to prevent re-rendering or any side effects because of the polling
+  const processedOrders = useMemo(() => {
+    return orders.filter((order) => !order.processing);
+  }, [orders]);
+
+  const processingArray = useMemo(() => {
+    return processingOrders
+      .map((processing) => {
+        return ownerDomain === processing.owner
+          ? {
+              id: processing.orderId,
+              orderId: processing.orderId,
+              image: processing.image,
+              assetId: processing.assetId,
+              owner: processing.owner,
+            }
+          : null;
+      })
+      .filter((item) => {
+        if (!item) return false;
+        const existingOrder = processedOrders.find(
+          (order) => order.id === item.id
+        );
+        return !existingOrder;
+      });
+  }, [processingOrders, ownerDomain, processedOrders]);
+
+  const allOrdersWithProcessing = useMemo(() => {
+    const realOrders = processedOrders.map((order) => ({
+      type: 'order' as const,
+      data: order,
+      key: order.id,
+    }));
+
+    const processings = processingArray.map((processing) => ({
+      type: 'processing' as const,
+      data: processing,
+      key: processing?.id,
+    }));
+
+    return [...realOrders, ...processings];
+  }, [processedOrders, processingArray]);
 
   const { data: hasDomain } = useResolverName(resolver);
 
@@ -265,19 +311,30 @@ export const ProfileNfts = ({
             }}
             gap={{ base: '22px', sm: '22px', md: '8px', lg: '22px' }}
           >
-            {orders?.map((order) => (
-              <GridItem key={order.id} minW="189px" minH="262px">
-                <NftSaleCard
-                  order={order}
-                  showDelistButton={false}
-                  isOwner={isOwner}
-                  showBuyButton={false}
-                  withHandle={!!hasDomain}
-                  imageSize="full"
-                  ctaButtonVariant="mktPrimary"
-                />
-              </GridItem>
-            ))}
+            {allOrdersWithProcessing?.map((item) => {
+              if (item.type === 'order') {
+                return (
+                  <GridItem key={item.key} minW="189px" minH="262px">
+                    <NftSaleCard
+                      order={item.data}
+                      showDelistButton={false}
+                      isOwner={isOwner}
+                      showBuyButton={false}
+                      withHandle={!!hasDomain}
+                      imageSize="full"
+                      ctaButtonVariant="mktPrimary"
+                    />
+                  </GridItem>
+                );
+              }
+              return (
+                item.data && (
+                  <GridItem key={item.key} maxW="175px">
+                    <ProcessingOrderCard image={item.data?.image ?? ''} />
+                  </GridItem>
+                )
+              );
+            })}
           </Grid>
         )}
       </Box>

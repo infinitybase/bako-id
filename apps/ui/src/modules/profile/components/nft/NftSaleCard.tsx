@@ -8,9 +8,9 @@ import { parseURI } from '@/utils/formatter';
 import {
   type BoxProps,
   Button,
-  Flex,
   Heading,
   Image,
+  Skeleton,
   Text,
   Tooltip,
   useDisclosure,
@@ -18,6 +18,7 @@ import {
 import { type MouseEvent, useCallback, useMemo } from 'react';
 import { NftSaleCardModal } from './NftSaleCardModal';
 import { NftCard } from './card';
+import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
 
 interface NftSaleCardProps {
   order: Order;
@@ -43,8 +44,18 @@ const NftSaleCard = ({
   const { successToast, errorToast } = useCustomToast();
   const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const { updatedOrders } = useProcessingOrdersStore();
+
+  const handleOpenDialog = () => {
+    onOpen();
+  };
+
+  const handleCloseDialog = () => {
+    onClose();
+  };
   const delistModal = useDisclosure();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const handleCancelOrder = useCallback(async () => {
     try {
       await cancelOrderAsync(order.id);
@@ -52,14 +63,14 @@ const NftSaleCard = ({
         title: 'Delisted successfully',
         description: 'Your order has been successfully cancelled.',
       });
-      onClose();
+      handleCloseDialog();
     } catch {
       errorToast({
         title: 'Error delisting order',
         description: 'An error occurred while delisting your order.',
       });
     }
-  }, [cancelOrderAsync, order.id, successToast, errorToast, onClose]);
+  }, [cancelOrderAsync, order.id, successToast, errorToast]);
 
   const handleDelist = (e: MouseEvent) => {
     e.stopPropagation();
@@ -89,9 +100,16 @@ const NftSaleCard = ({
 
   const handleCardClick = () => {
     if (openModalOnClick) {
-      onOpen();
+      handleOpenDialog();
     }
   };
+
+  const isProcessigNewPrices = useMemo(() => {
+    const hasNewPrice = updatedOrders.find(
+      (updatedOrder) => updatedOrder.orderId === order.id
+    );
+    return hasNewPrice && order.price.amount !== hasNewPrice?.newAmount;
+  }, [updatedOrders, order.id, order.price.amount]);
 
   return (
     <NftCard.Root onClick={handleCardClick} cursor="pointer" minH="240px">
@@ -101,22 +119,25 @@ const NftSaleCard = ({
       {showDelistButton && <NftCard.DelistButton onDelist={handleDelist} />}
       <NftCard.Image boxSize={imageSize} src={imageUrl} />
       <NftCard.Content h={showBuyButton ? 'full' : '70px'}>
-        <Flex
-          flexDir="column"
-          justify="center"
-          h={showBuyButton ? 'full' : '54px'}
-          gap="8px"
+        <Text
+          fontSize="xs"
+          color="text.700"
+          whiteSpace="nowrap"
+          textOverflow="ellipsis"
+          overflow="hidden"
+          minH="13px"
+          lineHeight=".9"
         >
-          <Text
-            fontSize="xs"
-            color="text.700"
-            whiteSpace="nowrap"
-            textOverflow="ellipsis"
-            overflow="hidden"
-            lineHeight=".9"
-          >
-            {name}
-          </Text>
+          {name}
+        </Text>
+        <Skeleton
+          isLoaded={!isProcessigNewPrices}
+          rounded="md"
+          minH="30px"
+          gap="8px"
+          display="flex"
+          flexDir="column"
+        >
           <Heading
             display="flex"
             alignItems="center"
@@ -135,13 +156,13 @@ const NftSaleCard = ({
               {currency}
             </Text>
           )}
+        </Skeleton>
 
-          {showBuyButton && (
-            <Button height="auto" py={1.5} variant={ctaButtonVariant}>
-              Buy
-            </Button>
-          )}
-        </Flex>
+        {showBuyButton && (
+          <Button height="auto" py={1.5} variant={ctaButtonVariant}>
+            Buy
+          </Button>
+        )}
       </NftCard.Content>
       {delistModal.isOpen && (
         <ConfirmationDialog
@@ -163,7 +184,7 @@ const NftSaleCard = ({
           order={order}
           imageUrl={imageUrl}
           isOpen={isOpen}
-          onClose={onClose}
+          onClose={handleCloseDialog}
           onCancelOrder={handleCancelOrder}
           isCanceling={isCanceling}
           value={order.price.amount}

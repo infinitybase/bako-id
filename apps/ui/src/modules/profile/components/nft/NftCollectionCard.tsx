@@ -38,6 +38,14 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
   } = props.asset;
   const dialog = useDisclosure();
 
+  const handleOpenDialog = () => {
+    dialog.onOpen();
+  };
+
+  const handleCloseDialog = () => {
+    dialog.onClose();
+  };
+
   const image = useMemo(
     () => props.asset.image || nftEmpty,
     [props.asset.image]
@@ -69,14 +77,14 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
         metadata={defaultMetadata}
         image={image}
         isOpen={dialog.isOpen}
-        onClose={dialog.onClose}
+        onClose={handleCloseDialog}
         isOwner={props.isOwner}
         collection={collection}
         ctaButtonVariant={props.ctaButtonVariant}
       />
 
       <NftCard.Root
-        onClick={dialog.onOpen}
+        onClick={handleOpenDialog}
         cursor="pointer"
         minW={props.nftCardMinSize}
       >
