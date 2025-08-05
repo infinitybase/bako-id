@@ -27,12 +27,7 @@ export const useGetCollectionOrders = ({
   const { chainId } = useChainId();
   const {
     cancelledOrders,
-    removeCancelledOrders,
-    processingOrders,
-    removeProcessingOrder,
     updatedOrders,
-    purchasedOrders,
-    removePurchasedOrder,
     removeUpdatedOrders,
   } = useProcessingOrdersStore();
 
@@ -63,23 +58,9 @@ export const useGetCollectionOrders = ({
         sortDirection,
       });
 
-      const currentOrderIds = data.items.map((order) => order.id);
-      const purchasedOrdersToRemove = purchasedOrders.filter(
-        (purchasedOrder) => !currentOrderIds.includes(purchasedOrder.orderId)
-      );
-
-      if (data.items.length >= 1 && purchasedOrders.length > 0) {
-        for (const purchasedOrder of purchasedOrdersToRemove) {
-          removePurchasedOrder(purchasedOrder.orderId);
-        }
-      }
-
       const filteredData = filterAndUpdateOrdersWithProcessingState({
         items: data.items,
         cancelledOrders,
-        removeCancelledOrders,
-        processingOrders,
-        removeProcessingOrder,
         updatedOrders,
         removeUpdatedOrders,
       })

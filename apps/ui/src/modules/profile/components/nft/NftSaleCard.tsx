@@ -44,15 +44,13 @@ const NftSaleCard = ({
   const { successToast, errorToast } = useCustomToast();
   const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const { setIsPollingEnabled, updatedOrders } = useProcessingOrdersStore();
+  const { updatedOrders } = useProcessingOrdersStore();
 
   const handleOpenDialog = () => {
-    setIsPollingEnabled(false);
     onOpen();
   };
 
   const handleCloseDialog = () => {
-    setIsPollingEnabled(true);
     onClose();
   };
   const delistModal = useDisclosure();
