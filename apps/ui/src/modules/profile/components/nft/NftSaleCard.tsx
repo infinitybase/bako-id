@@ -8,6 +8,7 @@ import { parseURI } from '@/utils/formatter';
 import {
   type BoxProps,
   Button,
+  Flex,
   Heading,
   Image,
   Text,
@@ -78,7 +79,7 @@ const NftSaleCard = ({
         style: 'currency',
         currency: 'USD',
       }).format(Number(order.price.usd)),
-    [order.price.usd],
+    [order.price.usd]
   );
 
   const assetSymbolUrl = order.price.image || UnknownAsset;
@@ -99,39 +100,48 @@ const NftSaleCard = ({
       )} */}
       {showDelistButton && <NftCard.DelistButton onDelist={handleDelist} />}
       <NftCard.Image boxSize={imageSize} src={imageUrl} />
-      <NftCard.Content spacing={2}>
-        <Text
-          fontSize="sm"
-          color="text.700"
-          whiteSpace="nowrap"
-          textOverflow="ellipsis"
-          overflow="hidden"
+      <NftCard.Content h={showBuyButton ? 'full' : '70px'}>
+        <Flex
+          flexDir="column"
+          justify="center"
+          h={showBuyButton ? 'full' : '54px'}
+          gap="8px"
         >
-          {name}
-        </Text>
-        <Heading
-          display="flex"
-          alignItems="center"
-          gap={1}
-          fontSize="md"
-          color="text.700"
-        >
-          <Tooltip label={order.asset?.name}>
-            <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
-          </Tooltip>
-          {order.price.amount}
-        </Heading>
-        {order.price.usd && (
-          <Text color="grey.subtitle" fontSize="sm">
-            {currency}
+          <Text
+            fontSize="xs"
+            color="text.700"
+            whiteSpace="nowrap"
+            textOverflow="ellipsis"
+            overflow="hidden"
+            lineHeight=".9"
+          >
+            {name}
           </Text>
-        )}
+          <Heading
+            display="flex"
+            alignItems="center"
+            gap={1}
+            fontSize="md"
+            color="text.700"
+            h="14px"
+          >
+            <Tooltip label={order.asset?.name}>
+              <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
+            </Tooltip>
+            {order.price.amount}
+          </Heading>
+          {order.price.usd && (
+            <Text color="grey.subtitle" fontSize="xs" lineHeight=".9">
+              {currency}
+            </Text>
+          )}
 
-        {showBuyButton && (
-          <Button height="auto" py={1.5} variant={ctaButtonVariant}>
-            Buy
-          </Button>
-        )}
+          {showBuyButton && (
+            <Button height="auto" py={1.5} variant={ctaButtonVariant}>
+              Buy
+            </Button>
+          )}
+        </Flex>
       </NftCard.Content>
       {delistModal.isOpen && (
         <ConfirmationDialog

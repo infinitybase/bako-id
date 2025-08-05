@@ -153,12 +153,13 @@ export const ProfileNfts = ({
 
   return (
     <Card
-      w="full"
       display="flex"
       backdropFilter="blur(6px)"
       flexDirection="column"
       boxShadow="lg"
-      p="23px"
+      p={{ base: '10px', sm: '23px' }}
+      bg={{ base: 'transparent', sm: 'gradient.200' }}
+      borderColor={{ base: 'transparent', sm: 'stroke.500' }}
     >
       <Flex mb={6} alignItems="center" justify="space-between">
         <Heading fontSize="14px">NFT's</Heading>
@@ -204,39 +205,47 @@ export const ProfileNfts = ({
             ? 'block'
             : 'none'
         }
+        w="full"
       >
         {selectedTab === TabOptions.NOT_LISTED && isEmptyCollections ? (
           <MartketplaceEmptyState />
         ) : (
-          notListedCollectionsWithoutHandles?.map((collection) => (
-            <Box key={collection.name} mt={6}>
-              <Grid
-                templateColumns={{
-                  base: 'repeat(1, 1fr)',
-                  sm: 'repeat(2, 1fr)',
-                  md: 'repeat(4, 1fr)',
-                  lg: 'repeat(6, 1fr)',
-                }}
-                gap={6}
-              >
-                {collection.assets.map((a) => (
-                  <GridItem key={a.assetId} maxW="175px" p={0} m={0}>
-                    <NftCollectionCard
-                      key={a.assetId}
-                      asset={a}
-                      assets={assets}
-                      resolver={resolver}
-                      isOwner={isOwner}
-                      ctaButtonVariant="mktPrimary"
-                      nftCardMinSize="179px"
-                      nftImageProps={{
-                        minH: { base: 'full', md: '177px' },
-                      }}
-                    />
-                  </GridItem>
-                ))}
-              </Grid>
-            </Box>
+          notListedCollectionsWithoutHandles?.map((collection, index) => (
+            <Grid
+              key={collection.name}
+              mt={index > 0 ? 6 : 0}
+              templateColumns={{
+                base: 'repeat(2, 1fr)',
+                sm: 'repeat(3, 1fr)',
+                md: 'repeat(5, 1fr)',
+                lg: 'repeat(6, 1fr)',
+              }}
+              gap={{ base: '22px', sm: '22px', md: '8px', lg: '22px' }}
+            >
+              {collection.assets.map((a) => (
+                <GridItem key={a.assetId} minW="189px" minH="259px">
+                  <NftCollectionCard
+                    key={a.assetId}
+                    asset={a}
+                    assets={assets}
+                    resolver={resolver}
+                    isOwner={isOwner}
+                    ctaButtonVariant="mktPrimary"
+                    nftImageProps={{
+                      boxSize: '185px',
+                    }}
+                    contentProps={{
+                      h: '70px',
+                      sx: {
+                        '& > p': {
+                          fontSize: '12px',
+                        },
+                      },
+                    }}
+                  />
+                </GridItem>
+              ))}
+            </Grid>
           ))
         )}
       </Box>
@@ -255,16 +264,15 @@ export const ProfileNfts = ({
         ) : (
           <Grid
             templateColumns={{
-              base: 'repeat(1, 1fr)',
-              sm: 'repeat(2, 1fr)',
-              md: 'repeat(4, 1fr)',
+              base: 'repeat(2, 1fr)',
+              sm: 'repeat(3, 1fr)',
+              md: 'repeat(5, 1fr)',
               lg: 'repeat(6, 1fr)',
             }}
-            gap={6}
-            minH={{ base: 'full', md: '272px' }}
+            gap={{ base: '22px', sm: '22px', md: '8px', lg: '22px' }}
           >
             {orders?.map((order) => (
-              <GridItem key={order.id} maxW="175px">
+              <GridItem key={order.id} minW="189px" minH="262px">
                 <NftSaleCard
                   order={order}
                   showDelistButton={false}
