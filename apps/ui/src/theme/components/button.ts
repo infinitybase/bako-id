@@ -55,6 +55,7 @@ const mktPrimary = defineStyle({
   w: 'full',
   bgColor: 'garage.100',
   color: 'input.600',
+  borderRadius: '4px',
   _hover: {
     opacity: 0.8,
     _disabled: {

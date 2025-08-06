@@ -4,6 +4,7 @@ import {
   Text,
   Tooltip,
   useDisclosure,
+  type BoxProps,
 } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
@@ -23,6 +24,7 @@ interface NftCollectionCardProps {
   ctaButtonVariant?: 'primary' | 'mktPrimary';
   nftCardMinSize?: string;
   nftImageProps?: ImageProps;
+  contentProps?: BoxProps;
 }
 
 export const NftCollectionCard = (props: NftCollectionCardProps) => {
@@ -92,7 +94,7 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
           src={props.asset.image ?? image}
           {...props.nftImageProps}
         />
-        <NftCard.Content spacing={2}>
+        <NftCard.Content spacing={2} {...props.contentProps}>
           <Text
             fontSize="sm"
             whiteSpace="nowrap"
@@ -108,10 +110,11 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
               label={isBakoIdNft ? 'This NFT is not allowed to be sold' : ''}
             >
               <Button
-                mt={2}
+                mt={{ base: 0, sm: 1 }}
                 disabled={isBakoIdNft}
                 variant={props.ctaButtonVariant ?? 'primary'}
                 size="sm"
+                h="24px"
               >
                 List
               </Button>

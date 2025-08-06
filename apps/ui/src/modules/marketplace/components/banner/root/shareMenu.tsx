@@ -52,7 +52,8 @@ export const ShareMenu = ({
         as={IconButton}
         icon={<ShareIcon2 />}
         variant="ghost"
-        _hover={{ bg: 'transparent' }}
+        color="grey.200"
+        _hover={{ bg: 'transparent', color: 'white' }}
         _focus={{ bg: 'transparent', border: 'none', outline: 'none' }}
         _active={{ bg: 'transparent', border: 'none' }}
         _focusVisible={{ bg: 'transparent', border: 'none', outline: 'none' }}
@@ -60,6 +61,7 @@ export const ShareMenu = ({
         p={0}
         minW="1px"
         h={4}
+        transition="color 0.2s"
       />
       <MenuList
         bg="#181818"

@@ -118,23 +118,25 @@ const NftSaleCard = ({
       )} */}
       {showDelistButton && <NftCard.DelistButton onDelist={handleDelist} />}
       <NftCard.Image boxSize={imageSize} src={imageUrl} />
-      <NftCard.Content spacing={2}>
+      <NftCard.Content h={showBuyButton ? 'full' : '70px'}>
         <Text
-          fontSize="sm"
+          fontSize="xs"
           color="text.700"
           whiteSpace="nowrap"
           textOverflow="ellipsis"
           overflow="hidden"
+          minH="13px"
+          lineHeight=".9"
         >
           {name}
         </Text>
         <Skeleton
           isLoaded={!isProcessigNewPrices}
           rounded="md"
-          h="full"
+          minH="30px"
+          gap="8px"
           display="flex"
           flexDir="column"
-          gap={2}
         >
           <Heading
             display="flex"
@@ -142,6 +144,7 @@ const NftSaleCard = ({
             gap={1}
             fontSize="md"
             color="text.700"
+            h="14px"
           >
             <Tooltip label={order.asset?.name}>
               <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
@@ -149,7 +152,7 @@ const NftSaleCard = ({
             {order.price.amount}
           </Heading>
           {order.price.usd && (
-            <Text color="grey.subtitle" fontSize="sm">
+            <Text color="grey.subtitle" fontSize="xs" lineHeight=".9">
               {currency}
             </Text>
           )}
@@ -188,6 +191,7 @@ const NftSaleCard = ({
           usdValue={currency}
           isOwner={isOwner}
           withHandle={withHandle}
+          ctaButtonVariant={ctaButtonVariant}
         />
       )}
     </NftCard.Root>

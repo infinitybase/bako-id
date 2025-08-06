@@ -28,6 +28,7 @@ import { useCallback, useMemo } from 'react';
 import { NftListMetadata } from '../NftListMetadata';
 import { NftMetadataBlock } from '../NftMetadataBlock';
 import ShareOrder from '../ShareOrder';
+import { getHomeUrl } from '@/utils/getHomeUrl';
 
 export default function NftDetailsStep({
   onClose,
@@ -52,6 +53,7 @@ export default function NftDetailsStep({
 }) {
   const { connect, isConnected } = useConnectUI();
   const { errorToast, successToast } = useCustomToast();
+  const homeUrl = getHomeUrl();
 
   const { account } = useAccount();
   const {
@@ -181,6 +183,9 @@ export default function NftDetailsStep({
           py={4}
           onClick={onCancelOrder}
           isLoading={isCanceling}
+          _hover={{
+            bg: 'tertiary',
+          }}
         >
           Delist NFT
         </Button>
@@ -238,12 +243,11 @@ export default function NftDetailsStep({
           />
         </GridItem>
 
-        <GridItem
-          pointerEvents={ctaButtonVariant === 'mktPrimary' ? 'none' : 'auto'}
-          opacity={ctaButtonVariant === 'mktPrimary' ? 0.5 : 1}
-        >
+        <GridItem>
           <Skeleton isLoaded={!isLoadingDomain} borderRadius="md">
-            <Link to={`/profile/${sellerDomain ? sellerDomain : order.seller}`}>
+            <Link
+              to={`${homeUrl}profile/${sellerDomain ? sellerDomain : order.seller}`}
+            >
               <NftMetadataBlock
                 title="Seller"
                 value={handle as string}
