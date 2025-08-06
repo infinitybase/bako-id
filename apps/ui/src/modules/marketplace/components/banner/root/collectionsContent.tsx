@@ -40,6 +40,7 @@ const CollectionsContent = ({
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
         backgroundSize: 'cover',
+        borderRadius: { base: '8px', sm: 'none' },
       }}
     >
       {/* Gradient */}
@@ -62,7 +63,8 @@ const CollectionsContent = ({
         mx="auto"
         alignItems="flex-end"
         maxW="1280px"
-        px="23px"
+        px={{ base: '16px', sm: '23px' }}
+        gap={{ base: 3, sm: 0 }}
       >
         <Box color="#fff" maxW="lg" mt="auto" mb={4}>
           <VStack align="flex-start" mb={4}>
@@ -101,20 +103,38 @@ const CollectionsContent = ({
             />
           </Flex>
         </Box>
+
         <Button
-          rightIcon={<ArrowForwardIcon />}
+          rightIcon={
+            <ArrowForwardIcon display={{ base: 'none', sm: 'block' }} />
+          }
           color="#222"
           bg="#fff"
           borderRadius="8px"
           fontWeight={500}
-          fontSize="16px"
           px={6}
           py={2}
           _hover={{ bg: 'gray.100' }}
           zIndex={3}
           mb={4}
+          h={{ base: '55px', sm: 'unset' }}
+          fontSize={{ base: '12px', sm: '16px' }}
+          whiteSpace="nowrap"
         >
-          Explore collection
+          <VStack
+            spacing={0}
+            align="center"
+            display={{ base: 'flex', sm: 'none' }}
+          >
+            <Text>Explore</Text>
+            <Flex align="center" gap={1}>
+              <Text>Collection</Text>
+              <ArrowForwardIcon />
+            </Flex>
+          </VStack>
+          <Text display={{ base: 'none', sm: 'block' }}>
+            Explore collection
+          </Text>
         </Button>
       </Flex>
     </Box>

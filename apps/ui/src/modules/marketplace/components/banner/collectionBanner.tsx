@@ -17,8 +17,18 @@ export const CollectionPageBanner = ({
   const navigate = useNavigate();
 
   return (
-    <Stack gap={4}>
-      <Box height="350px" position="relative">
+    <Stack
+      gap={4}
+      w={{ base: 'calc(100% - 23px)', sm: 'full' }}
+      mx="auto"
+      borderRadius="8px"
+    >
+      <Box
+        height="350px"
+        position="relative"
+        borderRadius={{ base: '8px', sm: '0' }}
+        overflow="hidden"
+      >
         <Box
           w="full"
           h="full"
@@ -44,13 +54,11 @@ export const CollectionPageBanner = ({
               position: 'absolute',
               top: 0,
               left: 0,
-              borderRadius: '0',
             }}
             imageProps={{
               objectFit: 'cover',
               objectPosition: 'center',
               boxSize: 'full',
-              borderRadius: '0',
             }}
           />
         </Box>

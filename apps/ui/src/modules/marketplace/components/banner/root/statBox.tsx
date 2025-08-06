@@ -16,6 +16,9 @@ const StatBox = ({
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
+      overflow="hidden"
+      textOverflow="ellipsis"
+      whiteSpace="nowrap"
     >
       <Text fontSize="xs" color="gray.100" mb={1}>
         {label}
