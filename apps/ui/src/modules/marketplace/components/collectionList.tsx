@@ -53,6 +53,7 @@ export const CollectionList = ({
 
       {!isEmptyCollections && (
         <Grid
+          display={{ base: 'none', sm: 'flex' }}
           templateColumns={{
             base: '1fr',
             sm: '1fr 80px 120px 120px .5fr',

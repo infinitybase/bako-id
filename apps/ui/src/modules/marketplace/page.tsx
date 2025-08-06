@@ -1,13 +1,14 @@
 import { useDebounce } from '@/hooks/useDebounce';
-import { Box, Container, Stack } from '@chakra-ui/react';
+import { Box, Container, Stack, useMediaQuery } from '@chakra-ui/react';
 import { Outlet, useNavigate, useSearch } from '@tanstack/react-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { SearchBar, MarketplacePageSkeleton } from './components';
+import { MarketplacePageSkeleton, SearchBar } from './components';
 import { CollectionList } from './components/collectionList';
 
 import { useGetCollections } from '@/hooks/marketplace/useListCollections';
 import { useInView } from 'react-intersection-observer';
 import { MarketplaceBanner } from './components/banner/collectionsBanner';
+import { MobileCollectionList } from './components/mobile/mobileCollectionList';
 
 export const MarketplacePage = () => {
   const navigate = useNavigate();
@@ -16,6 +17,8 @@ export const MarketplacePage = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const { search } = useSearch({ strict: false });
   const debouncedSearch = useDebounce<string>(search ?? '', 700);
+
+  const [isMobile] = useMediaQuery('(min-width: 425px) and (max-width: 767px)');
 
   const {
     collections,
@@ -72,7 +75,11 @@ export const MarketplacePage = () => {
       <MarketplaceBanner />
       <Container
         maxW="1280px"
-        px="23px"
+        pr={{
+          base: 0,
+          sm: '23px',
+        }}
+        pl={{ base: 3, sm: '23px' }}
         py={8}
         overflowY="hidden"
         sx={{
@@ -81,7 +88,7 @@ export const MarketplacePage = () => {
           },
         }}
         pb={{
-          base: 15,
+          base: 0,
           sm: 8,
         }}
       >
@@ -89,16 +96,20 @@ export const MarketplacePage = () => {
           <SearchBar
             value={search}
             onChange={handleChangeSearch}
-            placeholder="Search by collection name"
+            placeholder="Search collection"
           />
 
-          <CollectionList
-            collections={data}
-            sortValue={sortValue}
-            sortDirection={sortDirection}
-            onSortChange={handleSortChange}
-            isLoading={isLoading}
-          />
+          {isMobile ? (
+            <MobileCollectionList collections={data} isLoading={isLoading} />
+          ) : (
+            <CollectionList
+              collections={data}
+              sortValue={sortValue}
+              sortDirection={sortDirection}
+              onSortChange={handleSortChange}
+              isLoading={isLoading}
+            />
+          )}
         </Stack>
         {/* Render the Outlet for nested routes */}
         <Outlet />

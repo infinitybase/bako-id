@@ -7,6 +7,7 @@ import {
   MenuList,
   MenuItem,
   Icon,
+  type BoxProps,
 } from '@chakra-ui/react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import { useState } from 'react';
@@ -19,16 +20,18 @@ const options = [
 
 interface CustomSelectFilterProps {
   onChange: (value: string) => void;
+  props?: BoxProps;
 }
 
 export default function CustomSelectFilter({
   onChange,
+  props,
 }: CustomSelectFilterProps) {
   const [selectedValue, setSelectedValue] = useState('');
   const selected = options.find((opt) => opt.value === selectedValue);
 
   return (
-    <Box position="relative" maxW="192px" w="100%">
+    <Box position="relative" maxW="192px" w="100%" {...props}>
       <Text
         position="absolute"
         left="16px"

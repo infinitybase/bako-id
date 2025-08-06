@@ -23,13 +23,18 @@ const MarketplaceFilter = ({
           value={searchValue}
           onChange={onSearchChange}
           placeholder={
-            isCollectionPage
-              ? 'Search by asset id'
-              : 'Search by collection name'
+            isCollectionPage ? 'Search by asset id' : 'Search collection'
           }
         />
       </Box>
-      <CustomSelectFilter onChange={onSortChange} />
+
+      <CustomSelectFilter
+        onChange={onSortChange}
+        props={{
+          display: { base: 'block', sm: !isCollectionPage ? 'none' : 'block' },
+          pr: { base: !isCollectionPage ? '10px' : '0', sm: '0' },
+        }}
+      />
     </Flex>
   </Box>
 );
