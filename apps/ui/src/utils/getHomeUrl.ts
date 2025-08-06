@@ -1,11 +1,8 @@
 const productionUrl = 'https://app.bako.id/';
 const developmentUrl = 'http://localhost:5173/';
 
-const environment = import.meta.env.VITE_ENVIRONMENT;
+const isDev = import.meta.env.DEV;
 
 export const getHomeUrl = () => {
-    const url =
-        environment === 'production' ? productionUrl : developmentUrl;
-
-    return url;
+  return isDev ? developmentUrl : productionUrl;
 };
