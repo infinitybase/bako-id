@@ -1,12 +1,13 @@
-import type { Collection } from '@/types/marketplace';
-import { Box, Flex, Heading, useMediaQuery } from '@chakra-ui/react';
 import { ImageLoader } from '@/components/imageLoader';
+import type { Collection } from '@/types/marketplace';
 import { usdValueFormatter } from '@/utils/formatter';
+import { Box, Flex, Heading, useMediaQuery } from '@chakra-ui/react';
 import { BannerRoot } from '.';
 
 const CollectionContent = ({ collection }: { collection: Collection }) => {
-  if (!collection) return null;
   const [isMobile] = useMediaQuery('(min-width: 320px) and (max-width: 767px)');
+
+  if (!collection) return null;
 
   return (
     <Flex
