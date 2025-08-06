@@ -64,6 +64,7 @@ export const OrderList = ({
         xs: 2,
         base: 1,
       }}
+      mx={{ base: 'auto', sm: 'unset' }}
     >
       {orders.map((order) => (
         <Link

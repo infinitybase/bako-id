@@ -6,7 +6,7 @@ import { BannerRoot } from '.';
 
 const CollectionContent = ({ collection }: { collection: Collection }) => {
   if (!collection) return null;
-  const [isMobile] = useMediaQuery('(min-width: 425px) and (max-width: 767px)');
+  const [isMobile] = useMediaQuery('(min-width: 320px) and (max-width: 767px)');
 
   return (
     <Flex

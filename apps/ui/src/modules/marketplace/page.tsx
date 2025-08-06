@@ -18,7 +18,7 @@ export const MarketplacePage = () => {
   const { search } = useSearch({ strict: false });
   const debouncedSearch = useDebounce<string>(search ?? '', 700);
 
-  const [isMobile] = useMediaQuery('(min-width: 425px) and (max-width: 767px)');
+  const [isMobile] = useMediaQuery('(min-width: 350px) and (max-width: 767px)');
 
   const {
     collections,
