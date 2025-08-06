@@ -119,7 +119,7 @@ export const CollectionPage = () => {
 
       <Container
         maxW="1280px"
-        px="22px"
+        px={{ base: '16px', sm: '22px' }}
         py={8}
         overflowY="hidden"
         sx={{

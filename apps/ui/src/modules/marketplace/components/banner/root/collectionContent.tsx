@@ -1,25 +1,28 @@
 import type { Collection } from '@/types/marketplace';
-import { Flex, Heading } from '@chakra-ui/react';
+import { Box, Flex, Heading, useMediaQuery } from '@chakra-ui/react';
 import { ImageLoader } from '@/components/imageLoader';
 import { usdValueFormatter } from '@/utils/formatter';
 import { BannerRoot } from '.';
 
 const CollectionContent = ({ collection }: { collection: Collection }) => {
   if (!collection) return null;
+  const [isMobile] = useMediaQuery('(min-width: 425px) and (max-width: 767px)');
 
   return (
     <Flex
+      flexDir={{ base: 'column', sm: 'row' }}
       zIndex={3}
       h="full"
-      align="center"
+      align={{ base: 'start', sm: 'center' }}
       justify="space-between"
       alignItems="flex-end"
       mb={2.5}
       maxW="1280px"
       px="23px"
       mx="auto"
+      gap={{ base: 4, sm: 0 }}
     >
-      <Flex align="center" gap={2} minW="0">
+      <Flex align="center" gap={2} minW="0" w={{ base: 'full', sm: 'auto' }}>
         <ImageLoader
           skeletonProps={{
             boxSize: '62px',
@@ -35,12 +38,16 @@ const CollectionContent = ({ collection }: { collection: Collection }) => {
             {collection.name}
           </Heading>
 
-          <BannerRoot.DetailsMenu collection={collection} />
-          <BannerRoot.SocialActionsMenu collection={collection} />
+          {!isMobile && (
+            <>
+              <BannerRoot.DetailsMenu collection={collection} />
+              <BannerRoot.SocialActionsMenu collection={collection} />
+            </>
+          )}
         </Flex>
       </Flex>
 
-      <Flex gap={4}>
+      <Flex gap={4} w={{ base: 'full', sm: 'auto' }}>
         <BannerRoot.StatBox label="Items" value={collection.metrics.sales} />
         <BannerRoot.StatBox
           label="Floor price"
@@ -50,6 +57,12 @@ const CollectionContent = ({ collection }: { collection: Collection }) => {
           label="Volume"
           value={usdValueFormatter(collection.metrics.volume ?? 0)}
         />
+
+        {isMobile && (
+          <Box ml="auto" mt="auto">
+            <BannerRoot.DetailsMenu collection={collection} />
+          </Box>
+        )}
       </Flex>
     </Flex>
   );
