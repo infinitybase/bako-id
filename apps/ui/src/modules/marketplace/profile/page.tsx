@@ -49,6 +49,7 @@ export const ProfilePage = () => {
   } = useCollections({
     address: owner,
     page: fuelCollectionsPage,
+    isInfiniteScroll: true,
   });
 
   const notListedCollectionsWithoutHandles = notListedCollections.filter(
