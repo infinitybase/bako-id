@@ -12,7 +12,6 @@ import {
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { VerifiedBadgeIcon } from '../icons/verifiedBadgeIcon';
-import { StatBox } from './root/statBox';
 import { AvatarIcon } from '@/components';
 import { MetadataKeys } from '@/utils/metadataKeys';
 import { useMetadata } from '@/hooks/useMetadata';
@@ -21,6 +20,7 @@ import profileBanner from '@/assets/marketplace/mktp-profile-banner.png';
 import { UnverifiedBadgeIcon } from '../icons/unverifiedBadgeIcon';
 import { Link } from '@tanstack/react-router';
 import { useResolverName } from '@/hooks/useResolverName';
+import { getHomeUrl } from '@/utils/getHomeUrl';
 
 type ProfilePageBannerProps = {
   name: string;
@@ -36,6 +36,8 @@ export const ProfilePageBanner = ({
   resolver,
 }: ProfilePageBannerProps) => {
   const { data: hasDomain } = useResolverName(resolver);
+
+  const home = getHomeUrl();
 
   return (
     <Stack
@@ -54,8 +56,10 @@ export const ProfilePageBanner = ({
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
         backgroundSize: 'cover',
-        borderRadius: 'md',
+        borderRadius: '8px',
       }}
+      w={{ base: 'calc(100% - 23px)', sm: 'full' }}
+      mx="auto"
     >
       <VStack
         maxW="1280px"
@@ -77,7 +81,7 @@ export const ProfilePageBanner = ({
           {!hasDomain && (
             <Button
               as={Link}
-              to="/"
+              to={home}
               borderColor="grey.100"
               color="grey.100"
               variant="outline"
@@ -128,7 +132,7 @@ export const ProfilePageBanner = ({
 const ProfileSummary = ({
   name,
   isDomain,
-  nftQuantity,
+  // nftQuantity,
   // usdValue,
 }: {
   name: string;
@@ -147,10 +151,11 @@ const ProfileSummary = ({
   return (
     <Flex
       w="full"
-      align="center"
       justify="space-between"
-      alignItems="flex-end"
+      alignItems={{ base: 'flex-start', sm: 'flex-end' }}
       mb={2.5}
+      flexDir={{ base: 'column', sm: 'row' }}
+      gap={{ base: 3, sm: 0 }}
     >
       <Flex align="start" h="61px" gap={2}>
         {loadingMetadata ? (
@@ -170,32 +175,29 @@ const ProfileSummary = ({
           <Icon w="61px" h="61px" as={AvatarIcon} />
         )}
 
-        <VStack align="flex-start" spacing={0}>
-          <Flex flexDir="column" justifyContent="space-between" h="61px">
-            <Flex gap={2} align="center" mt="auto">
-              <Heading
-                fontSize="2xl"
-                fontWeight={600}
-                color="#fff"
-                lineHeight="1"
-              >
-                {name}
-              </Heading>
-              <Icon
-                as={isDomain ? VerifiedBadgeIcon : UnverifiedBadgeIcon}
-                w={4}
-                h={4}
-                mt="auto"
-              />
-            </Flex>
-          </Flex>
-        </VStack>
+        <Flex gap={2} align="center" mt="auto" h="full">
+          <Heading
+            fontSize="2xl"
+            fontWeight={600}
+            color="#fff"
+            lineHeight="1"
+            mt="auto"
+          >
+            {name}
+          </Heading>
+          <Icon
+            as={isDomain ? VerifiedBadgeIcon : UnverifiedBadgeIcon}
+            w={4}
+            h={4}
+            mt="auto"
+          />
+        </Flex>
       </Flex>
 
-      <Flex gap={4}>
-        <StatBox label="NFT's" value={nftQuantity} />
-        {/* <StatBox label="USD value" value={formattedUsdValue} /> */}
-      </Flex>
+      {/* <Flex gap={4}> */}
+      {/* <StatBox label="NFT's" value={nftQuantity} /> */}
+      {/* <StatBox label="USD value" value={formattedUsdValue} /> */}
+      {/* </Flex> */}
     </Flex>
   );
 };

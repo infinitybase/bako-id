@@ -5,6 +5,8 @@ import { useChainId } from '../useChainId';
 import { marketplaceService } from '@/services/marketplace';
 import { Networks } from '@/utils/resolverNetwork';
 import type { Order } from '@/types/marketplace';
+import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
+import { filterAndUpdateOrdersWithProcessingState } from '@/utils/handleOptimisticData';
 
 type UseGetCollectionOrdersProps = {
   page?: number;
@@ -23,6 +25,11 @@ export const useGetCollectionOrders = ({
   collectionId,
 }: UseGetCollectionOrdersProps) => {
   const { chainId } = useChainId();
+  const {
+    cancelledOrders,
+    updatedOrders,
+    removeUpdatedOrders,
+  } = useProcessingOrdersStore();
 
   const { data: collectionOrders, ...rest } = useInfiniteQuery<
     PaginationResult<Order>
@@ -30,10 +37,10 @@ export const useGetCollectionOrders = ({
     queryKey: [
       MarketplaceQueryKeys.COLLECTION_ORDERS,
       chainId,
+      collectionId,
       search,
       sortValue,
       sortDirection,
-      collectionId,
     ],
     initialPageParam: 0,
     getNextPageParam: (lastPage) => {
@@ -54,8 +61,15 @@ export const useGetCollectionOrders = ({
         sortDirection,
       });
 
+      const filteredData = filterAndUpdateOrdersWithProcessingState({
+        items: data.items,
+        cancelledOrders,
+        updatedOrders,
+        removeUpdatedOrders,
+      })
+
       return {
-        data: data.items,
+        data: filteredData,
         page: data.pagination.page,
         limit: data.pagination.limit,
         total: data.pagination.total,

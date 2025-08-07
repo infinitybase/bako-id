@@ -2,12 +2,15 @@ import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { Container } from './container';
 import { Content } from './content';
 import { MarketplaceHeader } from '@/modules/marketplace/components';
+import { useOrderEventPolling } from '@/hooks/marketplace/useOrderEventPolling';
 
 interface MarketplaceLayoutProps {
   children?: React.ReactNode;
 }
 
 const MarketplaceMainLayout = (props: MarketplaceLayoutProps) => {
+  // Initialize the polling for order events
+  useOrderEventPolling();
   return (
     <Container h="full" overflowY="auto" bg="input.900" backgroundImage="none">
       <MarketplaceHeader />
@@ -18,6 +21,5 @@ const MarketplaceMainLayout = (props: MarketplaceLayoutProps) => {
     </Container>
   );
 };
-
 export { MarketplaceMainLayout };
 export const MarketplaceLayout = MarketplaceMainLayout;

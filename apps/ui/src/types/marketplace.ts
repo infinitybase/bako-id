@@ -45,10 +45,12 @@ export interface Order {
     name: string;
     symbol: string;
     usd: number;
+    raw: string
   };
   seller: string;
   status: number;
   updatedAt: string;
+  processing?: boolean;
 }
 
 export interface OrderWithMedatada {

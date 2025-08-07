@@ -24,19 +24,21 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { CollectionPageBanner } from '../components/banner/collectionBanner';
 import MintPanel from '../components/mintPanel';
 import { useGetMintData } from '@/hooks/marketplace/useGetMintData';
+import { useProcessingOrdersStore } from '../stores/processingOrdersStore';
 
 export const CollectionPage = () => {
   const navigate = useNavigate();
   const { collectionId } = useParams({ strict: false });
   const { search } = useSearch({ strict: false });
-  const debouncedSearch = useDebounce<string>(search ?? '', 700);
+  const debouncedSearch = useDebounce<string>(search.trim(), 700);
   const [filters, setFilters] = useState<{
     sortBy: string;
     sortDirection: 'desc' | 'asc';
   }>({
-    sortBy: 'volumes',
+    sortBy: 'createdAt',
     sortDirection: 'desc',
   });
+  const { purchasedOrders } = useProcessingOrdersStore();
 
   const collectionOrdersLimit = 10;
 
@@ -96,10 +98,15 @@ export const CollectionPage = () => {
     }));
   };
 
-  const data = useMemo(
-    () => collectionOrders?.pages?.flatMap((page) => page.data) ?? [],
-    [collectionOrders]
-  );
+  const data = useMemo(() => {
+    // Remove the orders that were purchased from the list
+    return (collectionOrders?.pages?.flatMap((page) => page.data) ?? []).filter(
+      (order) =>
+        !purchasedOrders.some(
+          (purchasedOrder) => purchasedOrder.orderId === order.id
+        )
+    );
+  }, [collectionOrders, purchasedOrders]);
 
   // Reset scroll to top when component mounts
   useEffect(() => {
@@ -112,7 +119,7 @@ export const CollectionPage = () => {
 
       <Container
         maxW="1280px"
-        px="22px"
+        px={{ base: '16px', sm: '22px' }}
         py={8}
         overflowY="hidden"
         sx={{
@@ -128,7 +135,7 @@ export const CollectionPage = () => {
       >
         <Tabs variant="soft-rounded">
           <TabList>
-            {data.length > 0 && (
+            {(data.length > 0 || debouncedSearch) && (
               <Tab
                 _selected={{
                   bg: 'grey.600',
@@ -158,7 +165,7 @@ export const CollectionPage = () => {
           </TabList>
           <Divider my={0} py={0} borderColor="grey.600" />
           <TabPanels>
-            {data.length > 0 && (
+            {(data.length > 0 || debouncedSearch) && (
               <TabPanel px={0}>
                 <Stack gap={8}>
                   <MarketplaceFilter

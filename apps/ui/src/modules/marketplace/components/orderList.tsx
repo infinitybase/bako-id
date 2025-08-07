@@ -56,7 +56,7 @@ export const OrderList = ({
 
   return (
     <SimpleGrid
-      gap={3}
+      gap={4}
       pb={10}
       columns={{
         md: 5,
@@ -64,6 +64,7 @@ export const OrderList = ({
         xs: 2,
         base: 1,
       }}
+      mx={{ base: 'auto', sm: 'unset' }}
     >
       {orders.map((order) => (
         <Link

@@ -16,7 +16,13 @@ const CopyText = ({
       : CopyIcon;
 
   return (
-    <Icon as={IconState} onClick={onCopy} cursor="pointer" color={color} />
+    <Icon
+      as={IconState}
+      onClick={onCopy}
+      cursor="pointer"
+      color={color}
+      _hover={{ color: 'white' }}
+    />
   );
 };
 
