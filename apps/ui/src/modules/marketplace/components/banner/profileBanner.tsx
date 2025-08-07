@@ -1,0 +1,204 @@
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Icon,
+  Image,
+  Skeleton,
+  Stack,
+  VStack,
+} from '@chakra-ui/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import { VerifiedBadgeIcon } from '../icons/verifiedBadgeIcon';
+import { StatBox } from './root/statBox';
+import { AvatarIcon } from '@/components';
+import { MetadataKeys } from '@/utils/metadataKeys';
+import { useMetadata } from '@/hooks/useMetadata';
+import { PoweredByIcon } from '../icons/poweredByIcon';
+import profileBanner from '@/assets/marketplace/mktp-profile-banner.png';
+import { UnverifiedBadgeIcon } from '../icons/unverifiedBadgeIcon';
+import { Link } from '@tanstack/react-router';
+import { useResolverName } from '@/hooks/useResolverName';
+import { getHomeUrl } from '@/utils/getHomeUrl';
+
+type ProfilePageBannerProps = {
+  name: string;
+  nftQuantity: number;
+  usdValue: number;
+  resolver: string;
+};
+
+export const ProfilePageBanner = ({
+  name,
+  nftQuantity,
+  usdValue,
+  resolver,
+}: ProfilePageBannerProps) => {
+  const { data: hasDomain } = useResolverName(resolver);
+
+  const home = getHomeUrl();
+
+  return (
+    <Stack
+      gap={4}
+      minH="250px"
+      position="relative"
+      _before={{
+        content: '""',
+        display: 'block',
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
+        backgroundImage: `url('${profileBanner}')`,
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        borderRadius: '8px',
+      }}
+      w={{ base: 'calc(100% - 23px)', sm: 'full' }}
+      mx="auto"
+    >
+      <VStack
+        maxW="1280px"
+        mx="auto"
+        w="full"
+        zIndex={80}
+        justifyContent="space-between"
+        h="full"
+        px="23px"
+      >
+        <Flex
+          pt={4}
+          align="center"
+          gap={4}
+          cursor="pointer"
+          w="full"
+          justifyContent="space-between"
+        >
+          {!hasDomain && (
+            <Button
+              as={Link}
+              to={home}
+              borderColor="grey.100"
+              color="grey.100"
+              variant="outline"
+              width="fit-content"
+              fontSize="xs"
+              _hover={{
+                opacity: 0.7,
+              }}
+              _focus={{
+                bg: 'none',
+              }}
+            >
+              Get your Handle
+            </Button>
+          )}
+          <Box position="relative" w="full" h="full">
+            <Icon
+              as={PoweredByIcon}
+              w="118px"
+              h="65px"
+              position="absolute"
+              top={0}
+              right={-4}
+            />
+          </Box>
+        </Flex>
+        <Flex
+          align="center"
+          justify="space-between"
+          alignItems="flex-end"
+          mt="auto"
+          mb={1.5}
+          zIndex={10}
+          w="full"
+        >
+          <ProfileSummary
+            name={name}
+            isDomain={!!hasDomain}
+            nftQuantity={nftQuantity}
+            usdValue={usdValue}
+          />
+        </Flex>
+      </VStack>
+    </Stack>
+  );
+};
+
+const ProfileSummary = ({
+  name,
+  isDomain,
+  nftQuantity,
+  // usdValue,
+}: {
+  name: string;
+  isDomain: boolean;
+  nftQuantity: number;
+  usdValue: number;
+}) => {
+  const { metadata, loadingMetadata } = useMetadata();
+  const avatar = metadata?.find((m) => m.key === MetadataKeys.AVATAR);
+
+  // const formattedUsdValue = usdValue.toLocaleString('en-US', {
+  //   style: 'currency',
+  //   currency: 'USD',
+  // });
+
+  return (
+    <Flex
+      w="full"
+      justify="space-between"
+      alignItems={{ base: 'flex-start', sm: 'flex-end' }}
+      mb={2.5}
+      flexDir={{ base: 'column', sm: 'row' }}
+      gap={{ base: 3, sm: 0 }}
+    >
+      <Flex align="start" h="61px" gap={2}>
+        {loadingMetadata ? (
+          <Skeleton w="61px" h="61px" rounded="lg" />
+        ) : avatar?.value ? (
+          <Image
+            src={avatar.value}
+            referrerPolicy="no-referrer"
+            fetchPriority="high"
+            alt="Profile avatar"
+            w="61px"
+            h="61px"
+            objectFit="cover"
+            rounded="lg"
+          />
+        ) : (
+          <Icon w="61px" h="61px" as={AvatarIcon} />
+        )}
+
+        <Flex gap={2} align="center" mt="auto" h="full">
+          <Heading
+            fontSize="2xl"
+            fontWeight={600}
+            color="#fff"
+            lineHeight="1"
+            mt="auto"
+          >
+            {name}
+          </Heading>
+          <Icon
+            as={isDomain ? VerifiedBadgeIcon : UnverifiedBadgeIcon}
+            w={4}
+            h={4}
+            mt="auto"
+          />
+        </Flex>
+      </Flex>
+
+      <Flex gap={4}>
+        <StatBox label="NFT's" value={nftQuantity} />
+        {/* <StatBox label="USD value" value={formattedUsdValue} /> */}
+      </Flex>
+    </Flex>
+  );
+};

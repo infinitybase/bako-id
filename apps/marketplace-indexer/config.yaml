@@ -25,6 +25,6 @@ networks:
         address: 0xc905465054211ca2186d2afe389b1ead7d06d484168483c8cbdcd990665b50b1
   - id: 9889
     start_block: 0
-    contracts: 
+    contracts:
       - name: marketplace
         address: 0x7722e9314e1efbef5a18545a2440b79dac36cfc2f22d0d27bd0c1e4f2ec6df15

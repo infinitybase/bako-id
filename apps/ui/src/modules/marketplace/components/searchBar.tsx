@@ -20,7 +20,7 @@ const SearchBar = ({
   value,
 }: SearchBarProps) => {
   return (
-    <FormControl>
+    <FormControl pr={{ base: 3, sm: 0 }}>
       <InputGroup position="relative">
         <Input
           onChange={(e) => onChange(e.target.value)}
@@ -28,10 +28,24 @@ const SearchBar = ({
           type="text"
           size="lg"
           variant="outlined"
+          bg="input.600"
           value={value}
+          border="grey.600"
         />
 
-        <FormLabel>{placeholder}</FormLabel>
+        <FormLabel
+          textOverflow="ellipsis"
+          overflow="hidden"
+          whiteSpace="nowrap"
+          style={{ textWrap: 'nowrap' }}
+          fontSize={{
+            base: 'xs',
+            sm: 'sm',
+            md: 'md',
+          }}
+        >
+          {placeholder}
+        </FormLabel>
 
         <InputRightElement
           position="absolute"

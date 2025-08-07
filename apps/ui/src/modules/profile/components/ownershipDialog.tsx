@@ -12,7 +12,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { isB256 } from 'fuels';
 import { Controller, useForm } from 'react-hook-form';
 import { BlueWarningIcon, Dialog, useCustomToast } from '../../../components';
@@ -22,9 +22,11 @@ import { useMutationProgress } from '../../../hooks/useMutationProgress.ts';
 
 export interface OwnershipDialogProps extends Omit<ModalProps, 'children'> {
   doamin: string;
+  domainName: string;
 }
 
 export const OwnershipDialog = (props: OwnershipDialogProps) => {
+  const queryClient = useQueryClient();
   const form = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
@@ -44,12 +46,15 @@ export const OwnershipDialog = (props: OwnershipDialogProps) => {
         address,
       });
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       form.reset({ address: '' });
       successToast({
         title: 'Transaction success',
         description: 'The owner of the handle has been updated',
       });
+
+      await queryClient.invalidateQueries({ queryKey: ['nfts'] });
+
       setTimeout(() => {
         props.onClose();
       }, 700);

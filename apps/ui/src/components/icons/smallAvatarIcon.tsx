@@ -4,7 +4,6 @@ const SmallAvatarIcon = createIcon({
   displayName: 'SmallAvatarIcon',
   viewBox: '0 0 32 32',
   path: (
-    // biome-ignore lint/a11y/noSvgWithoutTitle: <explanation>
     <svg
       width="32"
       height="32"

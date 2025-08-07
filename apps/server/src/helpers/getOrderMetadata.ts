@@ -1,7 +1,5 @@
 import { FuelAssetService } from '@/services/fuel-assets';
 import type { Order } from '@/types/marketplace';
-import { parseURI } from '@/utils';
-import { assignIn, merge } from 'lodash';
 import { metadataArrayToObject } from './metadata';
 
 export type OrderResponse = Omit<Order, 'nft' | 'asset'> & {
@@ -37,44 +35,4 @@ export const formatMetadataFromIpfs = (metadata: Record<string, string>) => {
     }
   }
   return metadataObject;
-};
-
-export const getOrderMetadata = async (
-  order: OrderResponse,
-  chainId?: number | null
-): Promise<Order> => {
-  const assetMetadata = await getAssetMetadata(order.asset, chainId);
-  const fuelMetadata = await getAssetMetadata(order.itemAsset, chainId);
-  const ipfsMetadata: Record<string, string> = {};
-
-  if (fuelMetadata?.uri) {
-    const json: Record<string, string> = await fetch(fuelMetadata.uri)
-      .then((res) => res.json())
-      .catch(() => ({}));
-    assignIn(ipfsMetadata, json);
-  }
-
-  const metadata = formatMetadataFromIpfs(
-    merge(ipfsMetadata, fuelMetadata?.metadata ?? {})
-  );
-
-  return {
-    ...order,
-    asset: assetMetadata
-      ? {
-          ...assetMetadata,
-          id: order.asset,
-        }
-      : null,
-    nft: {
-      metadata,
-      ipfs: ipfsMetadata,
-      contractId: fuelMetadata?.contractId,
-      id: order.itemAsset,
-      edition: ipfsMetadata?.edition ? `#${ipfsMetadata.edition}` : undefined,
-      name: metadata?.name,
-      image: metadata?.image ? parseURI(metadata?.image) : undefined,
-      description: ipfsMetadata?.description,
-    },
-  };
 };

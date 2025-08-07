@@ -45,7 +45,7 @@ describe('[METHODS] Registry Contract', () => {
     const nftCall = await nft.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
       )
       .call();
     await nftCall.waitForResult();
@@ -54,7 +54,7 @@ describe('[METHODS] Registry Contract', () => {
       .constructor(
         { bits: owner.address.toB256() },
         { bits: manager.id.toB256() },
-        { bits: nftAbi.id.toB256() },
+        { bits: nftAbi.id.toB256() }
       )
       .call();
     await registerCall.waitForResult();
@@ -62,11 +62,27 @@ describe('[METHODS] Registry Contract', () => {
     const managerCall = await manager.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
       )
       .call();
     await managerCall.waitForResult();
   });
+
+  const getResolver = async (domain: string) => {
+    const { value: newResolver } = await manager.functions
+      .get_resolver(domain)
+      .get();
+
+    return newResolver?.Address?.bits;
+  };
+
+  const getDomainResolver = async (address: string) => {
+    const { value: newResolver } = await manager.functions
+      .get_name({ Address: { bits: address } })
+      .get();
+
+    return newResolver;
+  };
 
   afterAll(() => {
     node.cleanup();
@@ -112,7 +128,7 @@ describe('[METHODS] Registry Contract', () => {
         .constructor(
           { bits: owner.address.toB256() },
           { bits: manager.id.toB256() },
-          { bits: manager.id.toB256() },
+          { bits: manager.id.toB256() }
         )
         .call();
       const { transactionResult } = await waitForResult();
@@ -198,7 +214,7 @@ describe('[METHODS] Registry Contract', () => {
       .transfer_funds(
         contractBalance,
         { bits: baseAssetId },
-        { bits: recipient.address.toB256() },
+        { bits: recipient.address.toB256() }
       )
       .call();
     await transferCall.waitForResult();
@@ -235,7 +251,7 @@ describe('[METHODS] Registry Contract', () => {
         .transfer_funds(
           contractBalance,
           { bits: baseAssetId },
-          { bits: recipient.address.toB256() },
+          { bits: recipient.address.toB256() }
         )
         .call();
       await transferCall.waitForResult();
@@ -252,7 +268,7 @@ describe('[METHODS] Registry Contract', () => {
     const contractFund = await owner.transferToContract(
       registry.id,
       bn(100),
-      baseAssetId,
+      baseAssetId
     );
     await contractFund.waitForResult();
 
@@ -260,7 +276,7 @@ describe('[METHODS] Registry Contract', () => {
       .constructor(
         { bits: owner.address.toB256() },
         { bits: manager.id.toB256() },
-        { bits: manager.id.toB256() },
+        { bits: manager.id.toB256() }
       )
       .call();
     const { transactionResult } = await constructCall.waitForResult();
@@ -271,7 +287,7 @@ describe('[METHODS] Registry Contract', () => {
       .call();
     const transferOwnershipResult = await transferOwnerShipCall.waitForResult();
     expect(transferOwnershipResult.transactionResult.status).toBe(
-      TransactionStatus.success,
+      TransactionStatus.success
     );
 
     await expect(async () => {
@@ -279,7 +295,7 @@ describe('[METHODS] Registry Contract', () => {
         .transfer_funds(
           bn(100),
           { bits: baseAssetId },
-          { bits: newOwner.address.toB256() },
+          { bits: newOwner.address.toB256() }
         )
         .call();
       await waitForResult();
@@ -307,7 +323,7 @@ describe('[METHODS] Registry Contract', () => {
     const nftCall = await nft.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
       )
       .call();
     await nftCall.waitForResult();
@@ -316,7 +332,7 @@ describe('[METHODS] Registry Contract', () => {
       .constructor(
         { bits: owner.address.toB256() },
         { bits: manager.id.toB256() },
-        { bits: nft.id.toB256() },
+        { bits: nft.id.toB256() }
       )
       .call();
     await registerCall.waitForResult();
@@ -324,7 +340,7 @@ describe('[METHODS] Registry Contract', () => {
     const managerCall = await manager.functions
       .constructor(
         { Address: { bits: owner.address.toB256() } },
-        { ContractId: { bits: registry.id.toB256() } },
+        { ContractId: { bits: registry.id.toB256() } }
       )
       .call();
     await managerCall.waitForResult();
@@ -343,7 +359,7 @@ describe('[METHODS] Registry Contract', () => {
         .register(
           '@domainn',
           { Address: { bits: owner.address.toB256() } },
-          bn(1),
+          bn(1)
         )
         .addContracts([manager, nft])
         .callParams({
@@ -384,19 +400,26 @@ describe('[METHODS] Registry Contract', () => {
       .call();
     await changeResolverCall.waitForResult();
 
-    const { value: newResolver } = await manager.functions
-      .get_resolver(domain)
-      .get();
-    expect(newResolver?.Address?.bits).toBe(resolver.address.toB256());
+    const newResolver = await getResolver(domain);
+    expect(newResolver).toBe(resolver.address.toB256());
 
     // Should throw an error when change to a resolver in use
-    await expect(async () => {
-      const changeResolverCall = await registry.functions
-        .set_resolver(domain, { Address: { bits: resolver.address.toB256() } })
-        .addContracts([manager])
-        .call();
-      await changeResolverCall.waitForResult();
-    }).rejects.toThrow(/ResolverAlreadyInUse/);
+    const newResolver2 = Wallet.generate();
+    const changeResolverCall2 = await registry.functions
+      .set_resolver(domain, {
+        Address: { bits: newResolver2.address.toB256() },
+      })
+      .addContracts([manager])
+      .call();
+    await changeResolverCall2.waitForResult();
+
+    const newResolver2Address = await getResolver(domain);
+    expect(newResolver2Address).toBe(newResolver2.address.toB256());
+
+    const oldDomainResolver = await getDomainResolver(newResolver!);
+    const newDomainResolver = await getDomainResolver(newResolver2Address!);
+    expect(oldDomainResolver).toBeUndefined();
+    expect(newDomainResolver).toBe(domain);
 
     // Should throw an error when not owner
     registry.account = notOwner;
@@ -483,6 +506,6 @@ describe('[METHODS] Registry Contract', () => {
       } catch (error) {
         expectErrors(error);
       }
-    },
+    }
   );
 });

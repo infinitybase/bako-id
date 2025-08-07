@@ -5,9 +5,8 @@ import { useMemo } from 'react';
 import '../../theme/global.css';
 import { Header } from '../header';
 import { Container } from './container';
+import { MarketplaceMainLayout } from './marketplace';
 import { ProfileLayout } from './profile';
-
-// import { useIsConnected } from '@fuels/react';
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;
@@ -27,6 +26,14 @@ const DashboardLayout = (props: DashboardLayoutProps) => (
     <Outlet />
   </ProfileLayout>
 );
+
+export const MarketplaceLayout = () => {
+  return (
+    <MarketplaceMainLayout>
+      <Outlet />
+    </MarketplaceMainLayout>
+  );
+};
 
 const MainLayout = () => {
   const { location } = useRouterState();

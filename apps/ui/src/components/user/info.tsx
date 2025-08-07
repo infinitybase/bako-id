@@ -29,6 +29,7 @@ import { SmallCloseIcon } from '../icons/smallCloseIcon.tsx';
 import { UserIcon } from '../icons/userIcon.tsx';
 import { TermsOfUseDialog } from '../termsOfUseDialog/index.tsx';
 import { useCustomToast } from '../toast/index.tsx';
+import { useResolverName } from '@/hooks/useResolverName.ts';
 
 export const Info = ({
   name,
@@ -37,6 +38,10 @@ export const Info = ({
   name: string;
   account: string | Address;
 }) => {
+  const { data: hasDomain } = useResolverName(
+    typeof account === 'string' ? account : account.toB256()
+  );
+
   const {
     fuel: { disconnect },
   } = useFuel();
@@ -63,8 +68,6 @@ export const Info = ({
     await disconnect();
     navigate({ to: '/' });
   };
-
-  const isDomain = !name?.includes('...');
 
   const icon = (
     <Box
@@ -209,7 +212,7 @@ export const Info = ({
                 my={2}
                 gap={2}
                 onClick={() =>
-                  navigate({ to: `/profile/${isDomain ? name : account}` })
+                  navigate({ to: `/profile/${hasDomain ? name : account}` })
                 }
                 _hover={{
                   cursor: 'pointer',

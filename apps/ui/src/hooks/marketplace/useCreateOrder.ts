@@ -1,79 +1,62 @@
-import type { Order as OrderWithMetadata } from '@/types/marketplace';
-import { MarketplaceQueryKeys } from '@/utils/constants';
-import type { PaginationResult } from '@/utils/pagination';
-import type { Order } from '@bako-id/marketplace';
+import { BakoIDQueryKeys } from '@/utils/constants';
+import type { Order as OrderFromFuel } from '@bako-id/marketplace';
 import { useAccount } from '@fuels/react';
-import { useQueryClient, type InfiniteData } from '@tanstack/react-query';
-import { useSearch } from '@tanstack/react-router';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useChainId } from '../useChainId';
-import { useMutationWithPolling } from '../useMutationWithPolling';
 import { useMarketplace } from './useMarketplace';
+import {
+  useProcessingOrdersStore,
+  type ProcessingOrder,
+} from '@/modules/marketplace/stores/processingOrdersStore';
+import { marketplaceService } from '@/services/marketplace';
+import { Networks } from '@/utils/resolverNetwork';
 
 export const useCreateOrder = () => {
   const marketplaceContract = useMarketplace();
   const queryClient = useQueryClient();
   const { chainId } = useChainId();
   const { account } = useAccount();
-  const { page: pageUrl, search } = useSearch({ strict: false });
 
-  const address = account?.toLowerCase();
-  const page = Number(pageUrl || 1);
+  const address = account?.toLowerCase() ?? ' ';
+  const { addProcessingOrders } = useProcessingOrdersStore();
 
   const {
     mutate: createOrder,
     mutateAsync: createOrderAsync,
     ...rest
-  } = useMutationWithPolling({
-    mutationFn: async (order: Order) => {
+  } = useMutation({
+    mutationFn: async (order: OrderFromFuel & { image: string }) => {
       const marketplace = await marketplaceContract;
-      return await marketplace.createOrder(order);
+      const { orderId, transactionResult } =
+        await marketplace.createOrder(order);
+      return {
+        orderId,
+        image: order.image,
+        assetId: order.itemAsset,
+        txId: transactionResult.id,
+      };
     },
-    mutationOpts: {
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: ['nfts'] });
-      },
+
+    onSuccess: async (orderResult) => {
+      queryClient.invalidateQueries({
+        queryKey: [BakoIDQueryKeys.NFTS, chainId, address],
+      });
+
+      const newProcessingOrder: ProcessingOrder = {
+        orderId: orderResult.orderId,
+        image: orderResult.image,
+        assetId: orderResult.assetId,
+        owner: address,
+        txId: orderResult.txId,
+      };
+
+      addProcessingOrders(newProcessingOrder);
+
+      await marketplaceService.saveReceipt({
+        txId: orderResult.txId,
+        chainId: chainId ?? Networks.MAINNET,
+      });
     },
-    pollConfigs: [
-      {
-        getQueryKey: () => [
-          MarketplaceQueryKeys.ORDERS,
-          address,
-          page,
-          chainId,
-        ],
-        isDataReady: (
-          data: PaginationResult<OrderWithMetadata> | undefined,
-          _,
-          { orderId }
-        ) => {
-          if (!data) return true;
-          const order = data.data.find((order) => order.id === orderId);
-
-          return !!order;
-        },
-      },
-      {
-        getQueryKey: () => [
-          MarketplaceQueryKeys.ALL_ORDERS,
-          chainId,
-          search ?? '',
-        ],
-        // @ts-expect-error - TODO: fix this type
-        isDataReady: (
-          data: InfiniteData<PaginationResult<OrderWithMetadata>> | undefined,
-          _,
-          { orderId }
-        ) => {
-          if (!data) return true;
-
-          const order = data.pages
-            .flatMap((page) => page.data)
-            .find((order) => order.id === orderId);
-
-          return !!order;
-        },
-      },
-    ],
   });
 
   return { createOrder, createOrderAsync, ...rest };

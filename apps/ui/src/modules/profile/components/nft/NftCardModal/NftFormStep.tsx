@@ -13,6 +13,8 @@ export default function NftFormStep({
   onCancel,
   userWithHandle,
   assets,
+  ctaButtonVariant = 'primary',
+  nftImage,
 }: {
   name: React.ReactNode;
   assetId: string;
@@ -20,6 +22,8 @@ export default function NftFormStep({
   userWithHandle: boolean;
   onCancel: () => void;
   assets: Asset[];
+  ctaButtonVariant?: 'primary' | 'mktPrimary';
+  nftImage: string;
 }) {
   const { createOrderAsync, isPending } = useCreateOrder();
   const { errorToast, successToast } = useCustomToast();
@@ -35,6 +39,7 @@ export default function NftFormStep({
             data.sellAsset.decimals
           ),
           sellAsset: data.sellAsset.id,
+          image: nftImage,
         });
         successToast({ title: 'Order created successfully!' });
         onClose();
@@ -51,7 +56,7 @@ export default function NftFormStep({
         });
       }
     },
-    [assetId, createOrderAsync, errorToast, onClose, successToast]
+    [assetId, createOrderAsync, errorToast, onClose, successToast, nftImage]
   );
 
   return (
@@ -78,7 +83,7 @@ export default function NftFormStep({
           Cancel
         </Button>
         <Button
-          variant="primary"
+          variant={ctaButtonVariant}
           type="submit"
           form="nft-sale-form"
           isLoading={isPending}

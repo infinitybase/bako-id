@@ -111,7 +111,7 @@ export const EditTextValueInput = (props: IEditTextValueInput) => {
                   textColor="text.700"
                   background="input.900"
                   type="text"
-                  maxLength={31}
+                  maxLength={57}
                   h={12}
                   errorBorderColor="error.500"
                   onChange={(e) => {

@@ -51,6 +51,20 @@ export const deployContractsEOA = async () => {
 
   const contract = new Marketplace(proxy.id, manager);
 
+  try {
+    console.log("Initializing marketplace...");
+    await callAndWait(
+      contract.functions.initialize({
+        Address: { bits: account.address.toB256() },
+      }),
+    );
+  } catch (e) {
+    // @ts-ignore
+    if (String(e.message).includes('CannotReinitialized')) {
+      console.warn("Marketplace already initialized, skipping initialization.");
+    }
+  }
+
   console.log("Adding assets...");
   const assets = getAssetsConfig(await provider.getChainId());
   const batchCall = assets.map(asset =>

@@ -77,23 +77,21 @@ impl Manager for Contract {
         let record_data = storage.records_data.get(name_hash).try_read();
         require(record_data.is_some(), ManagerError::RecordNotFound);
 
-        require(
-            storage
-                .records_resolver
-                .get(resolver)
-                .try_read()
-                .is_none(),
-            ManagerError::ResolverAlreadyInUse,
-        );
-
         let mut records_data = record_data.unwrap();
         let old_resolver = records_data.resolver;
 
         records_data.resolver = resolver;
+        
+        let old_name_hash = storage.records_resolver.get(old_resolver).try_read();
+        if (old_name_hash.is_some() && old_name_hash == Some(name_hash)) {
+            storage.records_resolver.remove(old_resolver);
+        }
+        
+        if (storage.records_resolver.get(resolver).try_read().is_none()) {
+            storage.records_resolver.insert(resolver, name_hash);
+        }
 
-        storage.records_resolver.remove(old_resolver);
         storage.records_data.insert(name_hash, records_data);
-        storage.records_resolver.insert(resolver, name_hash);
 
         log(ResolverChangedEvent {
             name,

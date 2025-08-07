@@ -1,12 +1,10 @@
 import { Card, CurrencyInput } from '@/components';
 import { CloseIcon } from '@/components/icons/closeIcon';
 import type { Asset } from '@/types/marketplace';
-import { ETH_ID } from '@/utils/constants';
+import { FUEL_ASSET_ID } from '@/utils/constants';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Button,
-  Divider,
-  Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -27,6 +25,7 @@ import { isNaN as lodashIsNaN } from 'lodash';
 import { useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { NftSearchAssetModal } from './NftSearchAssetModal';
+import SummaryFeeCard from './SummaryFeeCard';
 
 export type NftSaleCardForm = {
   sellAsset: {
@@ -40,7 +39,9 @@ export type NftSaleCardForm = {
 
 interface NftCardSaleFormProps {
   initialValues?: NftSaleCardForm;
-  onSubmit: (data: NftSaleCardForm) => void;
+  onSubmit: (
+    data: NftSaleCardForm & { currentReceiveAmountInUsd: number }
+  ) => void;
   assets: Asset[];
   userWithHandle: boolean;
 }
@@ -70,7 +71,7 @@ export const NftCardSaleForm = ({
   );
 
   const findDefaultAsset = useMemo(
-    () => assets.find((asset) => asset.id === ETH_ID),
+    () => assets.find((asset) => asset.id === FUEL_ASSET_ID),
     [assets]
   );
   const defaultAsset = {
@@ -95,7 +96,7 @@ export const NftCardSaleForm = ({
   }, [currentSellAsset]);
 
   const currentFee = useMemo(() => {
-    if (!currentSellAsset) return 0;
+    if (!currentSellAsset) return '0';
     return userWithHandle
       ? userWithHandleFee // User with handle pays the second fee
       : userWithoutHandleFee; // User without handle pays the first fee
@@ -136,7 +137,14 @@ export const NftCardSaleForm = ({
     <Grid
       as="form"
       id="nft-sale-form"
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit((data) =>
+        onSubmit({
+          ...data,
+          currentReceiveAmountInUsd: Number(
+            currentReceiveAmountInUsd.replace(/[~$]/g, '').trim()
+          ),
+        })
+      )}
       templateColumns="repeat(2, 1fr)"
       gap={4}
     >
@@ -160,7 +168,7 @@ export const NftCardSaleForm = ({
                     top="50%"
                     boxSize="18px"
                     src={field.value.icon}
-                    alt=""
+                    alt={field.value.name}
                   />
                 )}
                 <InputGroup position="relative">
@@ -204,6 +212,7 @@ export const NftCardSaleForm = ({
                 onClose={onClose}
                 isOpen={isOpen}
                 onSelect={field.onChange}
+                userWithHandle={userWithHandle}
               />
             </>
           )}
@@ -213,7 +222,7 @@ export const NftCardSaleForm = ({
         <Controller
           control={control}
           name="sellPrice"
-          defaultValue={0}
+          defaultValue={undefined}
           rules={{
             required: 'Amount is required',
             validate: {
@@ -264,7 +273,7 @@ export const NftCardSaleForm = ({
               </InputGroup>
               <FormLabel fontSize="sm">Amount</FormLabel>
               {errors.sellPrice && (
-                <FormErrorMessage fontSize="sm">
+                <FormErrorMessage fontSize="xs" lineHeight=".1">
                   {errors.sellPrice.message}
                 </FormErrorMessage>
               )}
@@ -274,44 +283,14 @@ export const NftCardSaleForm = ({
       </GridItem>
 
       <GridItem colSpan={2}>
-        <Card p={4} pb={1}>
-          <Stack spacing={4}>
-            <Flex justifyContent="space-between" alignItems="center">
-              <Text fontSize="xs" color="grey.subtitle">
-                Price
-              </Text>
-              <Text fontSize="xs" color="grey.100">
-                {currentValue} {currentSellAsset?.metadata?.symbol}
-              </Text>
-            </Flex>
-
-            <Flex justifyContent="space-between" alignItems="center">
-              <Text fontSize="xs" color="grey.subtitle">
-                Bako fee
-              </Text>
-              <Text fontSize="xs" color="grey.100">
-                {`${(Number(currentFee) / 100).toFixed(2)}%`}
-              </Text>
-            </Flex>
-
-            <Divider />
-
-            <Flex justifyContent="space-between" alignItems="center">
-              <Text fontSize="xs" color="grey.subtitle" alignSelf="flex-start">
-                You will receive
-              </Text>
-              <Stack gap={0} alignItems="flex-end">
-                <Text fontSize="xs" color="grey.100">
-                  {Number(valueToReceive) || '0'}{' '}
-                  {currentSellAsset?.metadata?.symbol}
-                </Text>
-                <Text fontSize="2xs" color="grey.subtitle">
-                  {currentReceiveAmountInUsd}
-                </Text>
-              </Stack>
-            </Flex>
-          </Stack>
-        </Card>
+        <SummaryFeeCard
+          assetSymbol={currentSellAsset?.metadata?.symbol || 'FUEL'}
+          currentFee={currentFee}
+          currentValue={currentValue}
+          currentReceiveAmountInUsd={currentReceiveAmountInUsd}
+          valueToReceive={valueToReceive}
+          isFuelToken={currentSellAsset?.id === FUEL_ASSET_ID}
+        />
       </GridItem>
 
       {!userWithHandle && (

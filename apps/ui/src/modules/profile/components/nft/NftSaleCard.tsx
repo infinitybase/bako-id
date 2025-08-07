@@ -4,11 +4,21 @@ import UnknownAsset from '@/assets/unknown-asset.png';
 import { ConfirmationDialog, useCustomToast } from '@/components';
 import { useCancelOrder } from '@/hooks/marketplace';
 import type { Order } from '@/types/marketplace';
-import { Button, Heading, Image, Text, useDisclosure } from '@chakra-ui/react';
-import { bn } from 'fuels';
-import { useCallback, useMemo, type MouseEvent } from 'react';
+import { parseURI } from '@/utils/formatter';
+import {
+  type BoxProps,
+  Button,
+  Heading,
+  Image,
+  Skeleton,
+  Text,
+  Tooltip,
+  useDisclosure,
+} from '@chakra-ui/react';
+import { type MouseEvent, useCallback, useMemo } from 'react';
 import { NftSaleCardModal } from './NftSaleCardModal';
 import { NftCard } from './card';
+import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
 
 interface NftSaleCardProps {
   order: Order;
@@ -16,6 +26,9 @@ interface NftSaleCardProps {
   isOwner: boolean;
   showBuyButton: boolean;
   withHandle: boolean;
+  openModalOnClick?: boolean;
+  imageSize?: BoxProps['boxSize'];
+  ctaButtonVariant?: 'primary' | 'mktPrimary';
 }
 
 const NftSaleCard = ({
@@ -23,28 +36,41 @@ const NftSaleCard = ({
   showDelistButton,
   isOwner,
   showBuyButton,
+  openModalOnClick = true,
   withHandle,
+  imageSize,
+  ctaButtonVariant = 'primary',
 }: NftSaleCardProps) => {
   const { successToast, errorToast } = useCustomToast();
   const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { updatedOrders } = useProcessingOrdersStore();
+
+  const handleOpenDialog = () => {
+    onOpen();
+  };
+
+  const handleCloseDialog = () => {
+    onClose();
+  };
   const delistModal = useDisclosure();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const handleCancelOrder = useCallback(async () => {
     try {
       await cancelOrderAsync(order.id);
       successToast({
-        title: 'Order cancelled',
+        title: 'Delisted successfully',
         description: 'Your order has been successfully cancelled.',
       });
-      onClose();
+      handleCloseDialog();
     } catch {
       errorToast({
-        title: 'Error cancelling order',
-        description: 'An error occurred while cancelling your order.',
+        title: 'Error delisting order',
+        description: 'An error occurred while delisting your order.',
       });
     }
-  }, [cancelOrderAsync, order.id, successToast, errorToast, onClose]);
+  }, [cancelOrderAsync, order.id, successToast, errorToast]);
 
   const handleDelist = (e: MouseEvent) => {
     e.stopPropagation();
@@ -56,15 +82,6 @@ const NftSaleCard = ({
     delistModal.onClose();
   };
 
-  const rate = useMemo(() => order.asset?.rate ?? 0, [order.asset?.rate]);
-
-  const value = useMemo(
-    () => bn(order.itemPrice).formatUnits(order.asset?.decimals),
-    [order.itemPrice, order.asset?.decimals]
-  );
-
-  const usdValue = useMemo(() => Number(value) * rate, [value, rate]);
-
   const currency = useMemo(
     () =>
       Intl.NumberFormat('en-US', {
@@ -72,72 +89,81 @@ const NftSaleCard = ({
         maximumFractionDigits: 2,
         style: 'currency',
         currency: 'USD',
-      }).format(Number(usdValue)),
-    [usdValue]
+      }).format(Number(order.price.usd)),
+    [order.price.usd]
   );
 
-  const removeRightZeros = useCallback((num: string) => {
-    const parts = num.split('.');
-    if (parts.length === 2) {
-      parts[1] = parts[1].replace(/0+$/, '');
-      if (parts[1] === '') {
-        return parts[0]; // Return only the integer part if decimal part is empty
-      }
-      return parts.join('.');
+  const assetSymbolUrl = order.price.image || UnknownAsset;
+
+  const imageUrl = parseURI(order.asset?.image) || nftEmpty;
+  const name = order.asset.name || 'Unknown NFT';
+
+  const handleCardClick = () => {
+    if (openModalOnClick) {
+      handleOpenDialog();
     }
-    return num; // Return the original number if no decimal part
-  }, []);
+  };
 
-  const nftPrice = useMemo(
-    () => removeRightZeros(value),
-    [value, removeRightZeros]
-  );
-
-  const assetSymbolUrl = order.asset?.icon || UnknownAsset;
-
-  const imageUrl = order.nft?.image || nftEmpty;
-  const name = order.nft?.name || 'Unknown NFT';
+  const isProcessigNewPrices = useMemo(() => {
+    const hasNewPrice = updatedOrders.find(
+      (updatedOrder) => updatedOrder.orderId === order.id
+    );
+    return hasNewPrice && order.price.amount !== hasNewPrice?.newAmount;
+  }, [updatedOrders, order.id, order.price.amount]);
 
   return (
-    <NftCard.Root onClick={onOpen} cursor="pointer" minH="240px">
-      {order.nft?.edition && (
+    <NftCard.Root onClick={handleCardClick} cursor="pointer" minH="240px">
+      {/* {order.nft?.edition && (
         <NftCard.EditionBadge edition={order.nft?.edition} />
-      )}
+      )} */}
       {showDelistButton && <NftCard.DelistButton onDelist={handleDelist} />}
-      <NftCard.Image src={imageUrl} />
-      <NftCard.Content spacing={2}>
+      <NftCard.Image boxSize={imageSize} src={imageUrl} />
+      <NftCard.Content h={showBuyButton ? 'full' : '70px'}>
         <Text
-          fontSize="sm"
+          fontSize="xs"
           color="text.700"
           whiteSpace="nowrap"
           textOverflow="ellipsis"
           overflow="hidden"
+          minH="13px"
+          lineHeight=".9"
         >
           {name}
         </Text>
-        <Heading
+        <Skeleton
+          isLoaded={!isProcessigNewPrices}
+          rounded="md"
+          minH="30px"
+          gap="8px"
           display="flex"
-          alignItems="center"
-          gap={1}
-          fontSize="md"
-          color="text.700"
+          flexDir="column"
         >
-          <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
-          {nftPrice}
-        </Heading>
-        {order.asset?.rate && (
-          <Text color="grey.subtitle" fontSize="sm">
-            {currency}
-          </Text>
-        )}
+          <Heading
+            display="flex"
+            alignItems="center"
+            gap={1}
+            fontSize="md"
+            color="text.700"
+            h="14px"
+          >
+            <Tooltip label={order.asset?.name}>
+              <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
+            </Tooltip>
+            {order.price.amount}
+          </Heading>
+          {order.price.usd && (
+            <Text color="grey.subtitle" fontSize="xs" lineHeight=".9">
+              {currency}
+            </Text>
+          )}
+        </Skeleton>
 
         {showBuyButton && (
-          <Button height="auto" py={1.5} variant="primary">
+          <Button height="auto" py={1.5} variant={ctaButtonVariant}>
             Buy
           </Button>
         )}
       </NftCard.Content>
-
       {delistModal.isOpen && (
         <ConfirmationDialog
           title="Delist NFT"
@@ -153,19 +179,19 @@ const NftSaleCard = ({
           </Text>
         </ConfirmationDialog>
       )}
-
       {isOpen && (
         <NftSaleCardModal
           order={order}
           imageUrl={imageUrl}
           isOpen={isOpen}
-          onClose={onClose}
+          onClose={handleCloseDialog}
           onCancelOrder={handleCancelOrder}
           isCanceling={isCanceling}
-          value={nftPrice}
+          value={order.price.amount}
           usdValue={currency}
           isOwner={isOwner}
           withHandle={withHandle}
+          ctaButtonVariant={ctaButtonVariant}
         />
       )}
     </NftCard.Root>

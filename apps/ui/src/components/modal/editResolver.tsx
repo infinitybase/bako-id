@@ -4,9 +4,9 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  Input,
   ListItem,
   Text,
-  Textarea,
   UnorderedList,
   VStack,
   useDisclosure,
@@ -210,23 +210,40 @@ const EditResolverStepModal = ({
                 }}
                 render={({ field }) => (
                   <>
-                    <FormLabel fontSize="medium">Address</FormLabel>
-                    <Textarea
+                    <Input
                       {...field}
                       onChange={(e) => {
                         field.onChange(e.target.value);
                         setNewResolver(e.target.value);
                       }}
-                      px={3}
-                      rounded="lg"
+                      variant="autocomplete"
+                      color="white"
                       fontWeight="normal"
-                      fontSize="sm"
-                      bgColor="input.600"
-                      pt={4}
-                      rows={3}
-                      border="1px solid"
-                      borderColor="text.500"
+                      w="full"
+                      fontSize={['xs', 'md']}
+                      placeholder=" "
+                      autoComplete="off"
+                      textColor="text.700"
+                      background="input.900"
+                      type="text"
+                      errorBorderColor="error.500"
+                      flex={1}
+                      sx={{
+                        _placeholder: { color: 'grey.200' },
+                        textOverflow: 'ellipsis',
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                      }}
                     />
+
+                    <FormLabel
+                      isTruncated
+                      fontWeight="normal"
+                      maxW="80%"
+                      fontSize="sm"
+                    >
+                      Address
+                    </FormLabel>
                   </>
                 )}
               />
