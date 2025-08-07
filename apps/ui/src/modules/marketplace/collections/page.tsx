@@ -30,7 +30,7 @@ export const CollectionPage = () => {
   const navigate = useNavigate();
   const { collectionId } = useParams({ strict: false });
   const { search } = useSearch({ strict: false });
-  const debouncedSearch = useDebounce<string>(search.trim(), 700);
+  const debouncedSearch = useDebounce<string>(search?.trim() ?? '', 700);
   const [filters, setFilters] = useState<{
     sortBy: string;
     sortDirection: 'desc' | 'asc';
