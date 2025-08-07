@@ -45,7 +45,6 @@ export const MarketplaceBanner = () => {
         <Swiper
           direction="horizontal"
           slidesPerView={1}
-          mousewheel
           modules={[Pagination, Mousewheel, Autoplay]}
           autoplay={{ delay: 4000, disableOnInteraction: false }}
           style={{
