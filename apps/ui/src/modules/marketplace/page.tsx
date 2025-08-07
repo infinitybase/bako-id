@@ -13,7 +13,7 @@ import { MobileCollectionList } from './components/mobile/mobileCollectionList';
 export const MarketplacePage = () => {
   const navigate = useNavigate();
   const { ref, inView } = useInView();
-  const [sortValue, setSortValue] = useState('');
+  const [sortValue, setSortValue] = useState('metrics.sales');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const { search } = useSearch({ strict: false });
   const debouncedSearch = useDebounce<string>(search ?? '', 700);
