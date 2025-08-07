@@ -35,7 +35,7 @@ export const MarketplaceBanner = () => {
   }
 
   return (
-    <Flex flexDir="column" gap={2} h={{ base: '250px', sm: '350px' }} mt={0.5}>
+    <Flex flexDir="column" gap={2} h={{ base: '250px', sm: '352px' }} mt={0.5}>
       <Box
         position="relative"
         h="full"
@@ -43,7 +43,7 @@ export const MarketplaceBanner = () => {
         mx="auto"
       >
         <Swiper
-          direction="vertical"
+          direction="horizontal"
           slidesPerView={1}
           mousewheel
           modules={[Pagination, Mousewheel, Autoplay]}
@@ -57,7 +57,7 @@ export const MarketplaceBanner = () => {
           onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
         >
           {banners?.map((collection) => (
-            <SwiperSlide key={collection.name} style={{ height: '250px' }}>
+            <SwiperSlide key={collection.name} style={{ height: 'full' }}>
               <BannerRoot.CollectionsContent
                 collection={collection}
                 handleRedirect={handleRedirect}
@@ -69,15 +69,9 @@ export const MarketplaceBanner = () => {
           banners={banners}
           activeIndex={activeIndex}
           swiperRef={swiperRef}
-          display={{ base: 'none', sm: 'block' }}
+          // display={{ base: 'block', sm: 'none' }}
         />
       </Box>
-      <DotButtons
-        banners={banners}
-        activeIndex={activeIndex}
-        swiperRef={swiperRef}
-        display={{ base: 'block', sm: 'none' }}
-      />
     </Flex>
   );
 };
@@ -94,27 +88,22 @@ const DotButtons = ({
 } & BoxProps) => {
   return (
     <Flex
-      position={{ base: 'unset', sm: 'absolute' }}
-      mx={{ base: 'auto', sm: 'unset' }}
-      right={0}
-      top="50%"
-      transform="translateY(-50%)"
+      mx="auto"
       zIndex={5}
       onClick={(e) => e.stopPropagation()}
       w="40px"
-      height="100px"
       alignItems="center"
       justifyContent="center"
       {...props}
     >
       <Box
         display="flex"
-        flexDir={{ base: 'row', sm: 'column' }}
+        flexDir="row"
         gap={2}
         alignItems="center"
         justifyContent="center"
         w="full"
-        mt={{ base: 6, sm: 0 }}
+        mt={6}
       >
         {banners?.map((col, idx) =>
           idx === activeIndex ? (

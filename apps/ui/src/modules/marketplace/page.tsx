@@ -81,6 +81,7 @@ export const MarketplacePage = () => {
     <Stack w="full" p={0} m={0}>
       <MarketplaceBanner />
       <Container
+        mt={6}
         maxW="1280px"
         pr={{
           base: 0,
