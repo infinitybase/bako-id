@@ -135,7 +135,8 @@ export const CollectionPage = () => {
       >
         <Tabs variant="soft-rounded">
           <TabList>
-            {data.length > 0 && (
+            {(data.length > 0 ||
+              (debouncedSearch && debouncedSearch.trim() !== '')) && (
               <Tab
                 _selected={{
                   bg: 'grey.600',
@@ -165,7 +166,8 @@ export const CollectionPage = () => {
           </TabList>
           <Divider my={0} py={0} borderColor="grey.600" />
           <TabPanels>
-            {data.length > 0 && (
+            {(data.length > 0 ||
+              (debouncedSearch && debouncedSearch.trim() !== '')) && (
               <TabPanel px={0}>
                 <Stack gap={8}>
                   <MarketplaceFilter
