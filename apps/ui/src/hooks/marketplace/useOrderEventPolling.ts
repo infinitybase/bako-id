@@ -91,10 +91,14 @@ export const useOrderEventPolling = () => {
                 const orderToRemove = purchasedOrders.find(
                     (order) => order.txId === txId
                 );
+
                 if (orderToRemove) {
                     removePurchasedOrder(orderToRemove.orderId);
                     queryClient.invalidateQueries({
-                        queryKey: [BakoIDQueryKeys.NFTS, chainId, address],
+                        queryKey: [MarketplaceQueryKeys.COLLECTION_ORDERS,
+                            chainId,
+                        ],
+                        exact: false
                     });
                 }
             },
@@ -146,12 +150,13 @@ export const useOrderEventPolling = () => {
 
             for (const { source, txId } of transactionIds) {
                 try {
-                    await marketplaceService.getReceiptStatus({
+                    const receipt = await marketplaceService.getReceiptStatus({
                         txId,
                         chainId: chainId ?? Networks.MAINNET,
                     });
-
-                    clearStorageByEvent(source, txId);
+                    if (receipt?.data.isProcessed) {
+                        clearStorageByEvent(source, txId);
+                    }
                 } catch (error) {
                     console.error(`Error fetching status for txId ${txId}:`, error);
                 }
