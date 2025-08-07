@@ -35,7 +35,7 @@ export const CollectionPage = () => {
     sortBy: string;
     sortDirection: 'desc' | 'asc';
   }>({
-    sortBy: 'volumes',
+    sortBy: 'createdAt',
     sortDirection: 'desc',
   });
   const { purchasedOrders } = useProcessingOrdersStore();

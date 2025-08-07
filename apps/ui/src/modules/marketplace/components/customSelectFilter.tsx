@@ -27,7 +27,7 @@ export default function CustomSelectFilter({
   onChange,
   props,
 }: CustomSelectFilterProps) {
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState('created_at');
   const selected = options.find((opt) => opt.value === selectedValue);
 
   return (
