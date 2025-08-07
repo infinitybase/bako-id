@@ -7,28 +7,35 @@ type SortDirection = 'asc' | 'desc';
 
 type CollectionListProps = {
   collections: Collection[];
-  sortValue: string;
+  sortValue: SortableColumns;
   sortDirection: SortDirection;
-  onSortChange: (column: string) => void;
+  onSortChange: (column: SortableColumns) => void;
   isLoading: boolean;
 };
+
+export enum SortableColumns {
+  SALES = 'metrics.sales',
+  VOLUME = 'metrics.volume',
+  FLOOR_PRICE = 'metrics.floorPrice',
+  LAST_SOLD = 'lastSold',
+}
 
 const listHeaderItems = [
   {
     label: 'Sales',
-    sortKey: 'metrics.sales',
+    sortKey: SortableColumns.SALES,
   },
   {
     label: 'Volume',
-    sortKey: 'metrics.volume',
+    sortKey: SortableColumns.VOLUME,
   },
   {
     label: 'Floor price',
-    sortKey: 'metrics.floorPrice',
+    sortKey: SortableColumns.FLOOR_PRICE,
   },
   {
     label: 'Last sold',
-    sortKey: 'lastSold',
+    sortKey: SortableColumns.LAST_SOLD,
   },
 ];
 
