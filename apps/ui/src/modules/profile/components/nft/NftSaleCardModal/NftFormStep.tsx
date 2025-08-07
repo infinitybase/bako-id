@@ -60,6 +60,7 @@ export default function NftFormStep({
           sellPrice,
           sellAsset: data.sellAsset.id,
           orderId: order.id,
+          assetIcon: data.sellAsset.icon ?? '',
         });
         successToast({ title: 'Order updated successfully!' });
         onClose();

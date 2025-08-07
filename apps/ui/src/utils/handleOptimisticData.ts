@@ -34,6 +34,7 @@ export const filterAndUpdateOrdersWithProcessingState = ({
                         amount: matchingUpdatedOrder.newAmount,
                         raw: matchingUpdatedOrder.newRaw,
                         usd: matchingUpdatedOrder.usd,
+                        image: matchingUpdatedOrder.assetIcon
                     },
                 };
             }
