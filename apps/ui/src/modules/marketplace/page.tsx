@@ -3,7 +3,7 @@ import { Box, Container, Stack, useMediaQuery } from '@chakra-ui/react';
 import { Outlet, useNavigate, useSearch } from '@tanstack/react-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { MarketplacePageSkeleton, SearchBar } from './components';
-import { CollectionList } from './components/collectionList';
+import { CollectionList, SortableColumns } from './components/collectionList';
 
 import { useGetCollections } from '@/hooks/marketplace/useListCollections';
 import { useInView } from 'react-intersection-observer';
@@ -13,7 +13,9 @@ import { MobileCollectionList } from './components/mobile/mobileCollectionList';
 export const MarketplacePage = () => {
   const navigate = useNavigate();
   const { ref, inView } = useInView();
-  const [sortValue, setSortValue] = useState('');
+  const [sortValue, setSortValue] = useState<SortableColumns>(
+    SortableColumns.SALES
+  );
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const { search } = useSearch({ strict: false });
   const debouncedSearch = useDebounce<string>(search ?? '', 700);
@@ -64,7 +66,7 @@ export const MarketplacePage = () => {
     [navigate]
   );
 
-  const handleSortChange = (column: string) => {
+  const handleSortChange = (column: SortableColumns) => {
     if (sortValue === column) {
       setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
     } else {

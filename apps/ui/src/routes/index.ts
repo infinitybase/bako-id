@@ -30,7 +30,7 @@ const marketplaceRouterTree = marketplaceRootRoute.addChildren([
   marketplaceProfileRoute,
 ]);
 
-export const resolveRouterTree = () => {
+export const shouldRenderMarketplace = () => {
   const { hostname, pathname } = new URL(window.location.href);
 
   const environment = import.meta.env.VITE_ENVIRONMENT;
@@ -39,28 +39,47 @@ export const resolveRouterTree = () => {
 
   // Production: Use marketplace router for 'garage' domain
   if (hostname.includes('garage')) {
-    return marketplaceRouterTree;
+    return true;
   }
 
   // Development: Use marketplace router for 'marketplace' subdomain
   if (isDev) {
     const [subdomain] = hostname.split('.');
     if (subdomain === 'marketplace') {
-      return marketplaceRouterTree;
+      return true;
     }
   }
 
   // Development/Preview: Handle marketplace pathname
   if ((isDev || isPreview) && pathname.includes('marketplace')) {
-    const newPathname = pathname.replace(
-      '/marketplace',
-      pathname === '/marketplace' ? '/' : ''
-    );
-    window.history.replaceState(null, '', newPathname);
+    return true;
+  }
+
+  // Default: Return false (bakoId router)
+  return false;
+};
+
+export const resolveRouterTree = () => {
+  const isMarketplace = shouldRenderMarketplace();
+
+  if (isMarketplace) {
+    // Handle pathname replacement for marketplace
+    const { pathname } = new URL(window.location.href);
+    const environment = import.meta.env.VITE_ENVIRONMENT;
+    const isDev = import.meta.env.DEV;
+    const isPreview = environment === 'preview';
+
+    if ((isDev || isPreview) && pathname.includes('marketplace')) {
+      const newPathname = pathname.replace(
+        '/marketplace',
+        pathname === '/marketplace' ? '/' : ''
+      );
+      window.history.replaceState(null, '', newPathname);
+    }
+
     return marketplaceRouterTree;
   }
 
-  // Default: Return bakoId router tree
   return bakoIdRouterTree;
 };
 

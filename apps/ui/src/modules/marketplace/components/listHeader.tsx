@@ -1,12 +1,13 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import { Box, type BoxProps, Icon, Text, VStack } from '@chakra-ui/react';
+import type { SortableColumns } from './collectionList';
 
 type ListHeaderProps = {
-  sortValue: string;
+  sortValue: SortableColumns;
   sortDirection: 'asc' | 'desc';
-  onSortChange: (column: string) => void;
+  onSortChange: (column: SortableColumns) => void;
   label: string;
-  sortKey: string;
+  sortKey: SortableColumns;
 } & BoxProps;
 
 export const ListHeader = ({
