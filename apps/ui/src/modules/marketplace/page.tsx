@@ -34,10 +34,17 @@ export const MarketplacePage = () => {
     sortDirection,
   });
 
-  const data = useMemo(
-    () => collections?.pages?.flatMap((page) => page.data) ?? [],
-    [collections]
-  );
+  const data = useMemo(() => {
+    const flatData = collections?.pages?.flatMap((page) => page.data) ?? [];
+    // Sort to prioritize items that don't have "0x" + numbers in their name
+    return flatData.sort((a, b) => {
+      const aHasHexName = /^0x[0-9a-fA-F]/.test(a.name);
+      const bHasHexName = /^0x[0-9a-fA-F]/.test(b.name);
+      if (!aHasHexName && bHasHexName) return -1;
+      if (aHasHexName && !bHasHexName) return 1;
+      return 0;
+    });
+  }, [collections]);
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
