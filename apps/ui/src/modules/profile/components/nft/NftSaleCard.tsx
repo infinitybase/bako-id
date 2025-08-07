@@ -105,11 +105,15 @@ const NftSaleCard = ({
   };
 
   const isProcessigNewPrices = useMemo(() => {
-    const hasNewPrice = updatedOrders.find(
+    const hasOrderUpdated = updatedOrders.find(
       (updatedOrder) => updatedOrder.orderId === order.id
     );
-    return hasNewPrice && order.price.amount !== hasNewPrice?.newAmount;
-  }, [updatedOrders, order.id, order.price.amount]);
+    return (
+      hasOrderUpdated &&
+      (order.price.amount !== hasOrderUpdated?.newAmount ||
+        order.price.image !== hasOrderUpdated?.assetIcon)
+    );
+  }, [updatedOrders, order.id, order.price.amount, order.price.image]);
 
   return (
     <NftCard.Root onClick={handleCardClick} cursor="pointer" minH="240px">

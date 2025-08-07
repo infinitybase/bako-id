@@ -6,7 +6,6 @@ import { Button, Heading, Stack, Text } from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { useCallback, useMemo } from 'react';
 import { NftCardSaleForm, type NftSaleCardForm } from '../NftCardSaleForm';
-import { removeRightZeros } from '@/utils/removeRightZeros';
 
 export default function NftFormStep({
   assetSymbolUrl,
@@ -41,9 +40,7 @@ export default function NftFormStep({
 
         const oldAmount = order.price.amount;
         const oldRaw = order.price.raw;
-        const newAmount = Number(
-          removeRightZeros(sellPrice.formatUnits()).replace('.', '')
-        );
+        const newAmount = Number(data.sellPrice);
         const newRaw = sellPrice.toString();
 
         const oldPrice = {
@@ -63,6 +60,7 @@ export default function NftFormStep({
           sellPrice,
           sellAsset: data.sellAsset.id,
           orderId: order.id,
+          assetIcon: data.sellAsset.icon ?? '',
         });
         successToast({ title: 'Order updated successfully!' });
         onClose();

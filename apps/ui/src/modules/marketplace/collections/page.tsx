@@ -30,12 +30,12 @@ export const CollectionPage = () => {
   const navigate = useNavigate();
   const { collectionId } = useParams({ strict: false });
   const { search } = useSearch({ strict: false });
-  const debouncedSearch = useDebounce<string>(search ?? '', 700);
+  const debouncedSearch = useDebounce<string>(search.trim(), 700);
   const [filters, setFilters] = useState<{
     sortBy: string;
     sortDirection: 'desc' | 'asc';
   }>({
-    sortBy: 'volumes',
+    sortBy: 'createdAt',
     sortDirection: 'desc',
   });
   const { purchasedOrders } = useProcessingOrdersStore();
@@ -135,7 +135,7 @@ export const CollectionPage = () => {
       >
         <Tabs variant="soft-rounded">
           <TabList>
-            {data.length > 0 && (
+            {(data.length > 0 || debouncedSearch) && (
               <Tab
                 _selected={{
                   bg: 'grey.600',
@@ -165,7 +165,7 @@ export const CollectionPage = () => {
           </TabList>
           <Divider my={0} py={0} borderColor="grey.600" />
           <TabPanels>
-            {data.length > 0 && (
+            {(data.length > 0 || debouncedSearch) && (
               <TabPanel px={0}>
                 <Stack gap={8}>
                   <MarketplaceFilter

@@ -81,6 +81,7 @@ const MobileCollectionItem = ({ col }: { col: Collection }) => {
         {/* Scrollable columns */}
         <Box
           overflowX="auto"
+          overflowY="hidden"
           flex={1}
           sx={{
             '&::-webkit-scrollbar': {

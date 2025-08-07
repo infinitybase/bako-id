@@ -12,6 +12,7 @@ type TUpdateOrder = UpdateOrder & {
   orderId: string;
   oldPrice: { oldAmount: number; oldRaw: string };
   newPrice: { newAmount: number; newRaw: string; usd: number };
+  assetIcon: string;
 };
 
 export const useUpdateOrder = () => {
@@ -32,13 +33,14 @@ export const useUpdateOrder = () => {
       orderId,
       oldPrice,
       newPrice,
+      assetIcon,
       ...data
     }: TUpdateOrder) => {
       const marketplace = await marketplaceContract;
       const { transactionResult } = await marketplace.updateOrder(orderId, data);
-      return { orderId, oldPrice, newPrice, data, txId: transactionResult.id };
+      return { orderId, oldPrice, newPrice, data, txId: transactionResult.id, assetIcon };
     },
-    onSuccess: async ({ orderId, oldPrice, newPrice, txId }) => {
+    onSuccess: async ({ orderId, oldPrice, newPrice, txId, assetIcon }) => {
       addUpdatedOrders({
         orderId,
         oldAmount: oldPrice.oldAmount,
@@ -47,6 +49,7 @@ export const useUpdateOrder = () => {
         newRaw: newPrice.newRaw,
         usd: newPrice.usd,
         txId,
+        assetIcon,
       });
       queryClient.invalidateQueries({
         queryKey: [MarketplaceQueryKeys.USER_ORDERS, address],

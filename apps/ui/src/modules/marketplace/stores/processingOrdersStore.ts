@@ -23,6 +23,7 @@ export interface ProcessingUpdatedOrder {
     newRaw: string;
     usd: number;
     txId: string;
+    assetIcon: string
 }
 
 

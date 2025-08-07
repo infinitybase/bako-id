@@ -38,6 +38,9 @@ export const useGetCollectionOrders = ({
       MarketplaceQueryKeys.COLLECTION_ORDERS,
       chainId,
       collectionId,
+      search,
+      sortValue,
+      sortDirection,
     ],
     initialPageParam: 0,
     getNextPageParam: (lastPage) => {

@@ -12,7 +12,6 @@ import {
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { VerifiedBadgeIcon } from '../icons/verifiedBadgeIcon';
-import { StatBox } from './root/statBox';
 import { AvatarIcon } from '@/components';
 import { MetadataKeys } from '@/utils/metadataKeys';
 import { useMetadata } from '@/hooks/useMetadata';
@@ -133,7 +132,7 @@ export const ProfilePageBanner = ({
 const ProfileSummary = ({
   name,
   isDomain,
-  nftQuantity,
+  // nftQuantity,
   // usdValue,
 }: {
   name: string;
@@ -195,10 +194,10 @@ const ProfileSummary = ({
         </Flex>
       </Flex>
 
-      <Flex gap={4}>
-        <StatBox label="NFT's" value={nftQuantity} />
-        {/* <StatBox label="USD value" value={formattedUsdValue} /> */}
-      </Flex>
+      {/* <Flex gap={4}> */}
+      {/* <StatBox label="NFT's" value={nftQuantity} /> */}
+      {/* <StatBox label="USD value" value={formattedUsdValue} /> */}
+      {/* </Flex> */}
     </Flex>
   );
 };
