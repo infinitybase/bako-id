@@ -3,7 +3,6 @@ import NftSaleCard from '@/modules/profile/components/nft/NftSaleCard';
 import type { Order } from '@/types/marketplace';
 import { GridItem, Heading, SimpleGrid, Skeleton } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
-import { Link, useParams } from '@tanstack/react-router';
 import { ZeroBytes32 } from 'fuels';
 import { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -31,8 +30,6 @@ export const OrderList = ({
   const { ref, inView } = useInView();
   const isEmptyOrders = !orders?.length;
   const { data } = useResolverName(wallet?.address.b256Address ?? ZeroBytes32);
-
-  const { collectionId } = useParams({ strict: false });
 
   const address = useMemo(() => wallet?.address.b256Address, [wallet]);
 
@@ -67,26 +64,19 @@ export const OrderList = ({
       mx={{ base: 'auto', sm: 'unset' }}
     >
       {orders.map((order) => (
-        <Link
-          to={`/collection/${collectionId}/order/${order.id}`}
+        <NftSaleCard
           key={order.id}
-          style={{
-            maxWidth: '260px',
+          order={order}
+          showDelistButton={false}
+          isOwner={address === order.seller}
+          showBuyButton
+          withHandle={!!data}
+          openModalOnClick={false}
+          imageSize={{
+            xl: '260px',
           }}
-        >
-          <NftSaleCard
-            order={order}
-            showDelistButton={false}
-            isOwner={address === order.seller}
-            showBuyButton
-            withHandle={!!data}
-            openModalOnClick={false}
-            imageSize={{
-              xl: '260px',
-            }}
-            ctaButtonVariant="mktPrimary"
-          />
-        </Link>
+          ctaButtonVariant="mktPrimary"
+        />
       ))}
 
       {isLoadingOrders &&

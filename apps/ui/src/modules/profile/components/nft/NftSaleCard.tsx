@@ -2,12 +2,13 @@
 import nftEmpty from '@/assets/nft-empty.png';
 import UnknownAsset from '@/assets/unknown-asset.png';
 import { ConfirmationDialog, useCustomToast } from '@/components';
-import { useCancelOrder } from '@/hooks/marketplace';
+import { useCancelOrder, useExecuteOrder } from '@/hooks/marketplace';
 import type { Order } from '@/types/marketplace';
 import { parseURI } from '@/utils/formatter';
 import {
   type BoxProps,
   Button,
+  Flex,
   Heading,
   Image,
   Skeleton,
@@ -19,6 +20,9 @@ import { type MouseEvent, useCallback, useMemo } from 'react';
 import { NftSaleCardModal } from './NftSaleCardModal';
 import { NftCard } from './card';
 import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
+import { Link, useParams } from '@tanstack/react-router';
+import { useAccount, useBalance, useConnectUI } from '@fuels/react';
+import { bn } from 'fuels';
 
 interface NftSaleCardProps {
   order: Order;
@@ -45,6 +49,47 @@ const NftSaleCard = ({
   const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { updatedOrders } = useProcessingOrdersStore();
+  const { account } = useAccount();
+  const { collectionId } = useParams({ strict: false });
+  const { connect, isConnected } = useConnectUI();
+
+  const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
+    collectionId ?? ''
+  );
+
+  const { balance: walletAssetBalance, isLoading: isLoadingWalletBalance } =
+    useBalance({
+      address: account,
+      assetId: order.price.assetId,
+    });
+
+  const notEnoughBalance = useMemo(() => {
+    if (isLoadingWalletBalance || !walletAssetBalance) return true;
+
+    return walletAssetBalance.lt(bn(order.price.raw));
+  }, [walletAssetBalance, isLoadingWalletBalance, order.price.raw]);
+
+  const handleExecuteOrder = useCallback(async () => {
+    if (!isConnected) {
+      connect();
+      return;
+    }
+    try {
+      await executeOrderAsync(order.id);
+      successToast({ title: 'Order executed successfully!' });
+      onClose();
+    } catch {
+      errorToast({ title: 'Failed to execute order' });
+    }
+  }, [
+    connect,
+    executeOrderAsync,
+    order.id,
+    onClose,
+    successToast,
+    errorToast,
+    isConnected,
+  ]);
 
   const handleOpenDialog = () => {
     onOpen();
@@ -121,53 +166,74 @@ const NftSaleCard = ({
         <NftCard.EditionBadge edition={order.nft?.edition} />
       )} */}
       {showDelistButton && <NftCard.DelistButton onDelist={handleDelist} />}
-      <NftCard.Image boxSize={imageSize} src={imageUrl} />
-      <NftCard.Content h={showBuyButton ? 'full' : '70px'}>
-        <Text
-          fontSize="xs"
-          color="text.700"
-          whiteSpace="nowrap"
-          textOverflow="ellipsis"
-          overflow="hidden"
-          minH="13px"
-          lineHeight=".9"
-        >
-          {name}
-        </Text>
-        <Skeleton
-          isLoaded={!isProcessigNewPrices}
-          rounded="md"
-          minH="30px"
-          gap="8px"
-          display="flex"
-          flexDir="column"
-        >
-          <Heading
-            display="flex"
-            alignItems="center"
-            gap={1}
-            fontSize="md"
+      <Flex
+        as={Link}
+        to={`/collection/${collectionId}/order/${order.id}`}
+        flexDir="column"
+      >
+        <NftCard.Image boxSize={imageSize} src={imageUrl} />
+        <NftCard.Content h={showBuyButton ? 'full' : '70px'}>
+          <Text
+            fontSize="xs"
             color="text.700"
-            h="14px"
+            whiteSpace="nowrap"
+            textOverflow="ellipsis"
+            overflow="hidden"
+            minH="13px"
+            lineHeight=".9"
           >
-            <Tooltip label={order.asset?.name}>
-              <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
-            </Tooltip>
-            {order.price.amount}
-          </Heading>
-          {order.price.usd && (
-            <Text color="grey.subtitle" fontSize="xs" lineHeight=".9">
-              {currency}
-            </Text>
-          )}
+            {name}
+          </Text>
+          <Skeleton
+            isLoaded={!isProcessigNewPrices}
+            rounded="md"
+            minH="30px"
+            gap="8px"
+            display="flex"
+            flexDir="column"
+          >
+            <Heading
+              display="flex"
+              alignItems="center"
+              gap={1}
+              fontSize="md"
+              color="text.700"
+              h="14px"
+            >
+              <Tooltip label={order.asset?.name}>
+                <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
+              </Tooltip>
+              {order.price.amount}
+            </Heading>
+            {order.price.usd && (
+              <Text color="grey.subtitle" fontSize="xs" lineHeight=".9">
+                {currency}
+              </Text>
+            )}
+          </Skeleton>
+        </NftCard.Content>
+      </Flex>
+      {showBuyButton && (
+        <Skeleton isLoaded={!isLoadingWalletBalance} borderRadius="md">
+          <Tooltip
+            label={notEnoughBalance && isConnected ? 'Not enough balance' : ''}
+          >
+            <Button
+              variant={ctaButtonVariant}
+              height="auto"
+              py={1.5}
+              isLoading={isExecuting}
+              disabled={(notEnoughBalance && isConnected) || isExecuting}
+              onClick={(e) => {
+                e.stopPropagation();
+                void handleExecuteOrder();
+              }}
+            >
+              Buy
+            </Button>
+          </Tooltip>
         </Skeleton>
-
-        {showBuyButton && (
-          <Button height="auto" py={1.5} variant={ctaButtonVariant}>
-            Buy
-          </Button>
-        )}
-      </NftCard.Content>
+      )}
       {delistModal.isOpen && (
         <ConfirmationDialog
           title="Delist NFT"
