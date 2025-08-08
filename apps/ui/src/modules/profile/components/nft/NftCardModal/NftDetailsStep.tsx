@@ -5,15 +5,18 @@ import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
 import {
   Box,
   Button,
+  Flex,
   Grid,
   GridItem,
   Heading,
+  Icon,
   Stack,
   Text,
 } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { NftListMetadata } from '../NftListMetadata';
 import { NftMetadataBlock } from '../NftMetadataBlock';
+import { CloseIcon } from '@/components/icons/closeIcon';
 
 export default function NftDetailStep({
   nftName,
@@ -24,6 +27,7 @@ export default function NftDetailStep({
   isOwner,
   onSellClick,
   ctaButtonVariant = 'primary',
+  onClose,
 }: {
   nftName: React.ReactNode;
   isOwner: boolean;
@@ -33,6 +37,7 @@ export default function NftDetailStep({
   collection?: string;
   onSellClick: () => void;
   ctaButtonVariant?: 'primary' | 'mktPrimary';
+  onClose: () => void;
 }) {
   const metadataArray = useMemo(() => {
     return Object.entries(metadata ?? {}).map(([key, value]) => ({
@@ -55,8 +60,24 @@ export default function NftDetailStep({
       }}
       style={{ scrollbarWidth: 'none' }}
       maxH={{ md: '480px' }}
+      position="relative"
     >
-      <Heading fontSize="xl">{nftName}</Heading>
+      <Flex
+        alignItems="center"
+        justifyContent="space-between"
+        w="full"
+        position={{
+          base: 'relative',
+          sm: 'sticky',
+        }}
+        bg="background.900"
+        top={0}
+        right={0}
+        zIndex={1}
+      >
+        <Heading>{nftName}</Heading>
+        <Icon as={CloseIcon} cursor="pointer" onClick={onClose} />
+      </Flex>
       <Stack spacing={6} flex={1} mt={6} maxH="full">
         <Box>
           <Heading fontSize="md">Description</Heading>
@@ -64,7 +85,6 @@ export default function NftDetailStep({
             {metadata?.description ?? 'Description not provided.'}
           </Text>
         </Box>
-
         <Grid templateColumns="repeat(2, 1fr)" gap={4}>
           {assetId && (
             <GridItem>
@@ -96,7 +116,6 @@ export default function NftDetailStep({
             />
           </GridItem>
         </Grid>
-
         {isOwner && !isBakoIdNft && (
           <Button
             variant={ctaButtonVariant}
@@ -107,7 +126,6 @@ export default function NftDetailStep({
             List
           </Button>
         )}
-
         <NftListMetadata metadata={metadataArray} />
       </Stack>
     </Stack>

@@ -71,9 +71,9 @@ export const NftCardModal = ({
             collection={collection}
             onSellClick={handleChangeStepToSell}
             ctaButtonVariant={ctaButtonVariant}
+            onClose={onClose}
           />
         )}
-
         {step === 1 && (
           <NftFormStep
             assetId={assetId}
@@ -87,7 +87,7 @@ export const NftCardModal = ({
           />
         )}
 
-        <NftModal.CloseIcon onClose={onClose} />
+        {step !== 0 && <NftModal.CloseIcon onClose={onClose} />}
       </NftModal.Content>
     </NftModal.Root>
   );
