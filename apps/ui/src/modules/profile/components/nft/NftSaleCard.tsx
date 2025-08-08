@@ -16,7 +16,7 @@ import {
   Tooltip,
   useDisclosure,
 } from '@chakra-ui/react';
-import { type MouseEvent, useCallback, useMemo } from 'react';
+import { type MouseEvent, useCallback, useMemo, useState } from 'react';
 import { NftSaleCardModal } from './NftSaleCardModal';
 import { NftCard } from './card';
 import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
@@ -52,6 +52,7 @@ const NftSaleCard = ({
   const { account } = useAccount();
   const { collectionId } = useParams({ strict: false });
   const { connect, isConnected } = useConnectUI();
+  const [displayBuyButton, setDisplayBuyButton] = useState(false);
 
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
     collectionId ?? ''
@@ -161,7 +162,14 @@ const NftSaleCard = ({
   }, [updatedOrders, order.id, order.price.amount, order.price.image]);
 
   return (
-    <NftCard.Root onClick={handleCardClick} cursor="pointer" minH="240px">
+    <NftCard.Root
+      onClick={handleCardClick}
+      cursor="pointer"
+      minH="240px"
+      onMouseEnter={() => setDisplayBuyButton(true)}
+      onMouseLeave={() => setDisplayBuyButton(false)}
+      position="relative"
+    >
       {/* {order.nft?.edition && (
         <NftCard.EditionBadge edition={order.nft?.edition} />
       )} */}
@@ -205,7 +213,7 @@ const NftSaleCard = ({
               </Tooltip>
               {order.price.amount}
             </Heading>
-            {order.price.usd && (
+            {order.price.usd && !displayBuyButton && (
               <Text color="grey.subtitle" fontSize="xs" lineHeight=".9">
                 {currency}
               </Text>
@@ -214,13 +222,31 @@ const NftSaleCard = ({
         </NftCard.Content>
       </Flex>
       {showBuyButton && (
-        <Skeleton isLoaded={!isLoadingWalletBalance} borderRadius="md">
+        <Skeleton
+          isLoaded={!isLoadingWalletBalance}
+          borderRadius="md"
+          position="absolute"
+          display="flex"
+          alignItems="center"
+          bottom={2}
+          left={0}
+          right={0}
+          zIndex={10}
+          transition="transform 0.25s ease, opacity 0.25s ease"
+          bgColor="grey.600"
+          w="93%"
+          mx="auto"
+          boxShadow="0 0 10px 4px rgba(39, 39, 39, 0.84)"
+          opacity={displayBuyButton ? 1 : 0}
+          transform={displayBuyButton ? 'translateY(0)' : 'translateY(12px)'}
+          pointerEvents={displayBuyButton ? 'auto' : 'none'}
+        >
           <Tooltip
             label={notEnoughBalance && isConnected ? 'Not enough balance' : ''}
           >
             <Button
               variant={ctaButtonVariant}
-              height="auto"
+              h="24px"
               py={1.5}
               isLoading={isExecuting}
               disabled={(notEnoughBalance && isConnected) || isExecuting}
@@ -229,7 +255,7 @@ const NftSaleCard = ({
                 void handleExecuteOrder();
               }}
             >
-              Buy
+              Buy Now
             </Button>
           </Tooltip>
         </Skeleton>
