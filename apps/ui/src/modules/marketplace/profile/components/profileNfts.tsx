@@ -167,6 +167,8 @@ export const ProfileNfts = ({
     selectedTab,
   ]);
 
+  console.log('notListedCollections', notListedCollections);
+
   if (startCollectionsLoading || startOrdersLoading) {
     return (
       <Card>
@@ -246,6 +248,13 @@ export const ProfileNfts = ({
             : 'none'
         }
         w="full"
+        mb={
+          notListedCollections.length > 0 &&
+          allOrdersWithProcessing.length > 0 &&
+          selectedTab === TabOptions.ALL
+            ? '21px'
+            : '0px'
+        }
       >
         {selectedTab === TabOptions.NOT_LISTED && isEmptyCollections ? (
           <MartketplaceEmptyState />
