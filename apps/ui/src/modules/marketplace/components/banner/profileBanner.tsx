@@ -42,7 +42,7 @@ export const ProfilePageBanner = ({
   return (
     <Stack
       gap={4}
-      minH="250px"
+      minH="350px"
       position="relative"
       _before={{
         content: '""',
@@ -190,6 +190,7 @@ const ProfileSummary = ({
             w={4}
             h={4}
             mt="auto"
+            mb="3px"
           />
         </Flex>
       </Flex>

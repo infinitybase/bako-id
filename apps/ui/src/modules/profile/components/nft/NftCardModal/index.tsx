@@ -3,7 +3,7 @@ import type { Asset } from '@/types/marketplace';
 import { parseURI } from '@/utils/formatter';
 import { useWallet } from '@fuels/react';
 import { ZeroBytes32 } from 'fuels';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { NftModal } from '../modal';
 import NftDetailStep from './NftDetailsStep';
 import NftFormStep from './NftFormStep';
@@ -20,6 +20,8 @@ interface NftCardModalProps {
   isOwner: boolean;
   collection?: string;
   ctaButtonVariant?: 'primary' | 'mktPrimary';
+  setStep: (step: number) => void;
+  step: number;
 }
 
 export const NftCardModal = ({
@@ -34,18 +36,19 @@ export const NftCardModal = ({
   isOwner,
   collection,
   ctaButtonVariant = 'primary',
+  setStep,
+  step,
 }: NftCardModalProps) => {
-  const [step, setStep] = useState(0);
   const { wallet } = useWallet();
   const { data } = useResolverName(wallet?.address.b256Address || ZeroBytes32);
 
   const handleChangeStepToSell = useCallback(() => {
     setStep(1);
-  }, []);
+  }, [setStep]);
 
   const handleChangeStepToDetails = useCallback(() => {
     setStep(0);
-  }, []);
+  }, [setStep]);
 
   return (
     <NftModal.Root onClose={onClose} isOpen={isOpen}>
