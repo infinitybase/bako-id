@@ -56,7 +56,7 @@ export const OrderList = ({
 
   return (
     <SimpleGrid
-      gap={4}
+      gap="22px"
       pb={10}
       columns={{
         md: 5,
