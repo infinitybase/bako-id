@@ -241,7 +241,7 @@ export const ProfileNfts = ({
       <Box
         display={
           selectedTab === TabOptions.NOT_LISTED ||
-          selectedTab === TabOptions.ALL
+          (selectedTab === TabOptions.ALL && !isEmptyCollections)
             ? 'block'
             : 'none'
         }
@@ -292,9 +292,9 @@ export const ProfileNfts = ({
 
       {/* FOR SALE TAB */}
       <Box
-        mt={6}
         display={
-          selectedTab === TabOptions.FOR_SALE || selectedTab === TabOptions.ALL
+          selectedTab === TabOptions.FOR_SALE ||
+          (selectedTab === TabOptions.ALL && !isEmptyOrders)
             ? 'block'
             : 'none'
         }
@@ -339,7 +339,7 @@ export const ProfileNfts = ({
         )}
       </Box>
 
-      <Box ref={ref} h="2px" w="full" />
+      <Box ref={ref} h="1px" w="full" />
     </Card>
   );
 };
