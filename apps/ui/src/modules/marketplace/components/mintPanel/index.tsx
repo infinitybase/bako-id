@@ -1,11 +1,11 @@
-import { Box, Flex, Heading, Image, Stack, Text } from '@chakra-ui/react';
-import MintContent from './mintContent';
-import { parseURI } from '@/utils/formatter';
 import { ImageLoader } from '@/components/imageLoader';
-import MintPanelSkeleton from '../skeletons/mintPanelSkeleton';
 import { useMintToken } from '@/hooks/marketplace/useMintToken';
+import { parseURI } from '@/utils/formatter';
+import { Box, Flex, Heading, Image, Stack, Text } from '@chakra-ui/react';
 import type { AssetInfo, BN } from 'fuels';
 import type { CollectionConfig } from '../../utils/mint';
+import MintPanelSkeleton from '../skeletons/mintPanelSkeleton';
+import MintContent from './mintContent';
 
 type MintPanelProps = {
   collectionId?: string;
@@ -50,7 +50,7 @@ const MintPanel = ({
       >
         <Flex direction="row" gap={4} align="flex-start">
           <ImageLoader
-            src={parseURI(config?.avatar ?? '')}
+            src={parseURI(config?.previews?.[0] ?? config?.avatar ?? '')}
             skeletonProps={{
               boxSize: '500px',
               borderRadius: 'lg',
@@ -104,7 +104,7 @@ const MintPanel = ({
           {about.map((item) => {
             if (item.type === 'image') {
               return (
-                <Box maxW="480px" h="270px" flex={1}>
+                <Box maxW="480px" flex={1}>
                   <ImageLoader
                     key={item.value}
                     src={item.value}
