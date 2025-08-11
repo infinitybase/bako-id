@@ -43,6 +43,7 @@ const SearchBar = ({
             sm: 'sm',
             md: 'md',
           }}
+          pt={1}
         >
           {placeholder}
         </FormLabel>
