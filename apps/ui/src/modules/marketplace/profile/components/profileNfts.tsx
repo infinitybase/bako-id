@@ -9,6 +9,7 @@ import {
   Box,
   Grid,
   Skeleton,
+  useMediaQuery,
 } from '@chakra-ui/react';
 import { useMemo, useState, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -75,6 +76,9 @@ export const ProfileNfts = ({
   const { ref, inView } = useInView();
   const { wallet } = useWallet();
   const ownerDomain = wallet?.address.b256Address;
+  const [isSmallMobile] = useMediaQuery(
+    '(min-width: 320px) and (max-width: 420px)'
+  );
   const { processingOrders } = useProcessingOrdersStore();
 
   // Using useMemo on both arrays to prevent re-rendering or any side effects because of the polling
@@ -167,8 +171,6 @@ export const ProfileNfts = ({
     selectedTab,
   ]);
 
-  console.log('notListedCollections', notListedCollections);
-
   if (startCollectionsLoading || startOrdersLoading) {
     return (
       <Card>
@@ -199,11 +201,11 @@ export const ProfileNfts = ({
       backdropFilter="blur(6px)"
       flexDirection="column"
       boxShadow="lg"
-      p={{ base: '10px', sm: '23px' }}
+      p={{ base: '10px', sm: '22px' }}
       bg={{ base: 'transparent', sm: 'gradient.200' }}
       borderColor={{ base: 'transparent', sm: 'stroke.500' }}
     >
-      <Flex mb={6} alignItems="center" justify="space-between">
+      <Flex mb={6} alignItems="center" justify="space-between" px="1px">
         <Heading fontSize="14px">NFT's</Heading>
         <Tabs variant="unstyled" defaultValue={TabOptions.ALL} defaultIndex={2}>
           <TabList>
@@ -269,10 +271,14 @@ export const ProfileNfts = ({
                 md: 'repeat(5, 1fr)',
                 lg: 'repeat(6, 1fr)',
               }}
-              gap={{ base: '22px', sm: '22px', md: '8px', lg: '22px' }}
+              gap={{ base: '22px', sm: '22px', md: '8px', lg: '14px' }}
             >
               {collection.assets.map((a) => (
-                <GridItem key={a.assetId} minW="189px" minH="259px">
+                <GridItem
+                  key={a.assetId}
+                  minW={isSmallMobile ? '100px' : '189px'}
+                  minH="259px"
+                >
                   <NftCollectionCard
                     key={a.assetId}
                     asset={a}
@@ -323,7 +329,11 @@ export const ProfileNfts = ({
             {allOrdersWithProcessing?.map((item) => {
               if (item.type === 'order') {
                 return (
-                  <GridItem key={item.key} minW="189px" minH="262px">
+                  <GridItem
+                    key={item.key}
+                    minW={isSmallMobile ? '100px' : '189px'}
+                    minH="262px"
+                  >
                     <NftSaleCard
                       order={item.data}
                       showDelistButton={false}

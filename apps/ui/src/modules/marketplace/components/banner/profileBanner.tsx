@@ -68,7 +68,7 @@ export const ProfilePageBanner = ({
         zIndex={80}
         justifyContent="space-between"
         h="full"
-        px="23px"
+        px="24px"
       >
         <Flex
           pt={4}
