@@ -79,8 +79,7 @@ export const MarketplaceHeader = () => {
         maxW="1280px"
         mx="auto"
         w="full"
-        pr={{ base: '12px', sm: '23px' }}
-        pl={{ base: '14px', sm: '25px' }}
+        px="24px"
       >
         <Box
           display="flex"
