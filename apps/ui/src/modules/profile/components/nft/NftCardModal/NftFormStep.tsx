@@ -79,6 +79,10 @@ export default function NftFormStep({
           type="button"
           onClick={onCancel}
           isDisabled={isPending}
+          _hover={{
+            borderColor: 'garage.100',
+            color: 'garage.100',
+          }}
         >
           Cancel
         </Button>
