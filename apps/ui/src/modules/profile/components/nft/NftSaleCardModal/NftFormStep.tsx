@@ -40,7 +40,7 @@ export default function NftFormStep({
 
         const oldAmount = order.price.amount;
         const oldRaw = order.price.raw;
-        const newAmount = Number(data.sellPrice);
+        const newAmount = data.sellPrice;
         const newRaw = sellPrice.toString();
 
         const oldPrice = {
