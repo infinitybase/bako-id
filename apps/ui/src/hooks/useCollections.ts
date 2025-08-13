@@ -22,6 +22,7 @@ type UseCollectionsProps = {
   address: string;
   page: number;
   pageSize?: number;
+  isInfiniteScroll?: boolean;
 };
 
 type NFTMetadata = Record<string, string>;
@@ -33,6 +34,7 @@ export const useCollections = ({
   address,
   page,
   pageSize = PAGE_SIZE,
+  isInfiniteScroll = false,
 }: UseCollectionsProps) => {
   const { chainId } = useChainId();
 
@@ -53,9 +55,21 @@ export const useCollections = ({
 
   const totalPages = allNfts ? Math.ceil(allNfts.length / pageSize) : 0;
 
-  const currentPageNfts = allNfts
-    ? chunk(allNfts, pageSize)[page - 1] || []
-    : [];
+
+  const getCurrentPageNfts = () => {
+    if (!allNfts) return [];
+
+    if (isInfiniteScroll) {
+      // For infinite scroll, include all NFTs from page 1 to current page similar to useInfiniteQuery
+      const endIndex = page * pageSize;
+      return allNfts.slice(0, endIndex);
+    }
+
+    // For regular pagination, only include NFTs from current page (Manual pagination)
+    return chunk(allNfts, pageSize)[page - 1] || [];
+  };
+
+  const currentPageNfts = getCurrentPageNfts();
 
   const {
     data: nftsWithMetadata,

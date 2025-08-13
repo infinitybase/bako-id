@@ -12,9 +12,7 @@
       "require": "./dist/index.js"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand --silent",
     "build": "tsup",
@@ -25,7 +23,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fuels": "0.100.1"
+    "fuels": "0.101.3"
   },
   "devDependencies": {
     "@types/jest": "^29.5.11",
