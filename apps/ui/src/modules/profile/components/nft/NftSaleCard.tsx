@@ -20,7 +20,7 @@ import { type MouseEvent, useCallback, useMemo, useState } from 'react';
 import { NftSaleCardModal } from './NftSaleCardModal';
 import { NftCard } from './card';
 import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
-import { Link, useLocation, useParams } from '@tanstack/react-router';
+import { Link, useParams } from '@tanstack/react-router';
 import { useAccount, useBalance, useConnectUI } from '@fuels/react';
 import { bn } from 'fuels';
 import { useScreenSize } from '@/hooks';
@@ -34,6 +34,7 @@ interface NftSaleCardProps {
   openModalOnClick?: boolean;
   imageSize?: BoxProps['boxSize'];
   ctaButtonVariant?: 'primary' | 'mktPrimary';
+  isProfilePage?: boolean;
 }
 
 const NftSaleCard = ({
@@ -45,10 +46,9 @@ const NftSaleCard = ({
   withHandle,
   imageSize,
   ctaButtonVariant = 'primary',
+  isProfilePage,
 }: NftSaleCardProps) => {
-  const isProfilePage = useLocation().pathname.includes('/profile');
   const { isMobile } = useScreenSize();
-
   const { successToast, errorToast } = useCustomToast();
   const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -61,6 +61,8 @@ const NftSaleCard = ({
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
     collectionId ?? ''
   );
+
+  const showDisplayBuyButton = displayBuyButton || isExecuting;
 
   const { balance: walletAssetBalance, isLoading: isLoadingWalletBalance } =
     useBalance({
@@ -182,7 +184,11 @@ const NftSaleCard = ({
       {showDelistButton && <NftCard.DelistButton onDelist={handleDelist} />}
       <Flex
         as={Link}
-        to={`/collection/${collectionId}/order/${order.id}`}
+        to={
+          isProfilePage
+            ? undefined
+            : `/collection/${collectionId}/order/${order.id}`
+        }
         flexDir="column"
       >
         <NftCard.Image boxSize={imageSize} src={imageUrl} />
@@ -244,11 +250,11 @@ const NftSaleCard = ({
           left={0}
           right={0}
           zIndex={10}
-          opacity={isMobile ? 1 : displayBuyButton ? 1 : 0}
+          opacity={isMobile ? 1 : showDisplayBuyButton ? 1 : 0}
           transform={
             isMobile
               ? 'translateY(0)'
-              : displayBuyButton
+              : showDisplayBuyButton
                 ? 'translateY(0)'
                 : 'translateY(12px)'
           }

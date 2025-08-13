@@ -287,7 +287,7 @@ export const ProfileNfts = ({
                     isOwner={isOwner}
                     ctaButtonVariant="mktPrimary"
                     nftImageProps={{
-                      boxSize: '185px',
+                      boxSize: 'full',
                     }}
                     contentProps={{
                       h: '70px',
@@ -324,7 +324,7 @@ export const ProfileNfts = ({
               md: 'repeat(5, 1fr)',
               lg: 'repeat(6, 1fr)',
             }}
-            gap={{ base: '22px', sm: '22px', md: '8px', lg: '22px' }}
+            gap={{ base: '22px', sm: '22px', md: '8px', lg: '14px' }}
           >
             {allOrdersWithProcessing?.map((item) => {
               if (item.type === 'order') {
@@ -342,6 +342,7 @@ export const ProfileNfts = ({
                       withHandle={!!hasDomain}
                       imageSize="full"
                       ctaButtonVariant="mktPrimary"
+                      isProfilePage={true}
                     />
                   </GridItem>
                 );
