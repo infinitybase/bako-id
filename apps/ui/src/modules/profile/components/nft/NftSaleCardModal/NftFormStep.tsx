@@ -98,7 +98,15 @@ export default function NftFormStep({
       />
 
       <Stack direction="row" justifyContent="space-between" mt="auto">
-        <Button type="button" variant="secondary" onClick={onCancel}>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onCancel}
+          _hover={{
+            borderColor: 'garage.100',
+            color: 'garage.100',
+          }}
+        >
           Cancel
         </Button>
         <Button

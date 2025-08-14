@@ -23,6 +23,7 @@ import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processin
 import { Link, useParams } from '@tanstack/react-router';
 import { useAccount, useBalance, useConnectUI } from '@fuels/react';
 import { bn } from 'fuels';
+import { useScreenSize } from '@/hooks';
 
 interface NftSaleCardProps {
   order: Order;
@@ -33,6 +34,7 @@ interface NftSaleCardProps {
   openModalOnClick?: boolean;
   imageSize?: BoxProps['boxSize'];
   ctaButtonVariant?: 'primary' | 'mktPrimary';
+  isProfilePage?: boolean;
 }
 
 const NftSaleCard = ({
@@ -44,7 +46,9 @@ const NftSaleCard = ({
   withHandle,
   imageSize,
   ctaButtonVariant = 'primary',
+  isProfilePage,
 }: NftSaleCardProps) => {
+  const { isMobile } = useScreenSize();
   const { successToast, errorToast } = useCustomToast();
   const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -57,6 +61,8 @@ const NftSaleCard = ({
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
     collectionId ?? ''
   );
+
+  const showDisplayBuyButton = displayBuyButton || isExecuting;
 
   const { balance: walletAssetBalance, isLoading: isLoadingWalletBalance } =
     useBalance({
@@ -166,7 +172,9 @@ const NftSaleCard = ({
       onClick={handleCardClick}
       cursor="pointer"
       minH="240px"
-      onMouseEnter={() => setDisplayBuyButton(true)}
+      onMouseEnter={() =>
+        isMobile ? null : setDisplayBuyButton(!isProfilePage)
+      }
       onMouseLeave={() => setDisplayBuyButton(false)}
       position="relative"
     >
@@ -176,7 +184,11 @@ const NftSaleCard = ({
       {showDelistButton && <NftCard.DelistButton onDelist={handleDelist} />}
       <Flex
         as={Link}
-        to={`/collection/${collectionId}/order/${order.id}`}
+        to={
+          isProfilePage
+            ? undefined
+            : `/collection/${collectionId}/order/${order.id}`
+        }
         flexDir="column"
       >
         <NftCard.Image boxSize={imageSize} src={imageUrl} />
@@ -225,28 +237,35 @@ const NftSaleCard = ({
         <Skeleton
           isLoaded={!isLoadingWalletBalance}
           borderRadius="md"
-          position="absolute"
           display="flex"
           alignItems="center"
-          bottom={2}
-          left={0}
-          right={0}
-          zIndex={10}
           transition="transform 0.25s ease, opacity 0.25s ease"
           bgColor="grey.600"
           w="93%"
           mx="auto"
           boxShadow="0 0 10px 4px rgba(39, 39, 39, 0.84)"
-          opacity={displayBuyButton ? 1 : 0}
-          transform={displayBuyButton ? 'translateY(0)' : 'translateY(12px)'}
-          pointerEvents={displayBuyButton ? 'auto' : 'none'}
+          position={isMobile ? 'relative' : 'absolute'}
+          mb={isMobile ? 2 : 0}
+          bottom={isMobile ? 0 : 2}
+          left={0}
+          right={0}
+          zIndex={10}
+          opacity={isMobile ? 1 : showDisplayBuyButton ? 1 : 0}
+          transform={
+            isMobile
+              ? 'translateY(0)'
+              : showDisplayBuyButton
+                ? 'translateY(0)'
+                : 'translateY(12px)'
+          }
+          pointerEvents={isMobile ? 'auto' : displayBuyButton ? 'auto' : 'none'}
         >
           <Tooltip
             label={notEnoughBalance && isConnected ? 'Not enough balance' : ''}
           >
             <Button
               variant={ctaButtonVariant}
-              h="24px"
+              h={isMobile ? '32px' : '24px'}
               py={1.5}
               isLoading={isExecuting}
               disabled={(notEnoughBalance && isConnected) || isExecuting}

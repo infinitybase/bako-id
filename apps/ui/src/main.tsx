@@ -59,7 +59,8 @@ export const BASE_NETWORK_CONFIGS: NetworkConfig[] = [
   },
 ];
 
-if (!shouldRenderMarketplace() || import.meta.env.DEV) {
+const isPreview = import.meta.env.VITE_ENVIRONMENT === 'preview';
+if (isPreview || !shouldRenderMarketplace() || import.meta.env.DEV) {
   BASE_NETWORK_CONFIGS.push({
     chainId: CHAIN_IDS.fuel.testnet,
     url: 'https://testnet.fuel.network/v1/graphql',
