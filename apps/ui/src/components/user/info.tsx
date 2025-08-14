@@ -90,7 +90,6 @@ export const Info = ({
           boxSize={avatar ? '48px' : 'full'}
           borderColor="black"
           borderWidth={avatar ? 0 : 3}
-          p={0.5}
         />
       </Box>
     </Skeleton>
