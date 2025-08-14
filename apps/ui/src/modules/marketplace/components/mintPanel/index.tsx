@@ -68,7 +68,7 @@ const MintPanel = ({
               boxSize: 'full',
               borderRadius: 'lg',
               bg: 'grey.900',
-              maxW: { base: 'full', sm: '500px', md: '480px', lg: '600px' },
+              maxW: { base: 'full', sm: '500px', md: '480px', lg: 'auto' },
             }}
             imageProps={{
               boxSize: 'full',

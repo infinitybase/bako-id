@@ -71,12 +71,9 @@ const MintContent = ({
       justifyContent="space-between"
     >
       <Flex direction="column" gap={4}>
-        <Heading fontSize="18px" mt={6} mb={2}>
+        <Heading fontSize="18px" mb={2}>
           {title}
         </Heading>
-        <Text color="white" fontWeight={700} fontSize="sm">
-          Description
-        </Text>
         <Text fontSize="xs" color="section.500" mb={4}>
           {description}
         </Text>
