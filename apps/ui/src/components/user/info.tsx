@@ -73,7 +73,7 @@ export const Info = ({
   };
 
   const icon = (
-    <Skeleton isLoaded={!isLoadingAvatar} boxSize="48px">
+    <Skeleton isLoaded={!isLoadingAvatar} boxSize="48px" rounded="lg">
       <Box
         bg={
           avatar
