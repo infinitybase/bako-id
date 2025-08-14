@@ -5,6 +5,7 @@ import { useChainId } from '../useChainId';
 import { Networks } from '@/utils/resolverNetwork';
 import type { Collection } from '@/types/marketplace';
 import { marketplaceService } from '@/services/marketplace';
+import { useWallet } from '@fuels/react';
 
 type useGetCollectionsProps = {
   page?: number;
@@ -21,13 +22,16 @@ export const useGetCollections = ({
   sortDirection,
 }: useGetCollectionsProps) => {
   const { chainId, isLoading } = useChainId();
+  const { wallet } = useWallet();
+  const defaultChainId = !wallet && chainId === 0 ? Networks.MAINNET : chainId;
+
 
   const { data: collections, ...rest } = useInfiniteQuery<
     PaginationResult<Collection>
   >({
     queryKey: [
       MarketplaceQueryKeys.ALL_COLLECTIONS,
-      chainId,
+      defaultChainId,
       search,
       sortValue,
       sortDirection,
@@ -41,11 +45,12 @@ export const useGetCollections = ({
       return undefined;
     },
     queryFn: async ({ pageParam = 1 }) => {
+
       const { data } = await marketplaceService.listCollections({
         page: pageParam as number,
         limit,
         search,
-        chainId: chainId ?? Networks.MAINNET,
+        chainId: defaultChainId ?? Networks.MAINNET,
         sortValue,
         sortDirection,
       });

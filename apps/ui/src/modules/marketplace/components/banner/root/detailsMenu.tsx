@@ -27,6 +27,8 @@ const DetailsMenu = ({ collection }: { collection: Collection }) => {
 
   return (
     <Menu
+      placement="bottom-start"
+      strategy="fixed"
       styleConfig={{
         menu: {
           bg: 'transparent',
@@ -47,7 +49,7 @@ const DetailsMenu = ({ collection }: { collection: Collection }) => {
       >
         <Icon as={InfoCircleIcon} color="inherit" transition="color 0.2s" />
       </MenuButton>
-      <MenuList p={0}>
+      <MenuList p={0} zIndex={200}>
         <MenuItem p={0} m={0} h="full">
           <Flex
             p={6}
@@ -106,7 +108,16 @@ const DetailsMenu = ({ collection }: { collection: Collection }) => {
               </VStack>
             </Flex>
 
-            <Text color="section.500" fontSize="xs" fontWeight={400} mt={6}>
+            <Text
+              color="section.500"
+              fontSize="xs"
+              fontWeight={400}
+              mt={6}
+              maxW={{ base: '270px', sm: 'full' }}
+              w="full"
+              whiteSpace="pre-wrap"
+              textOverflow="ellipsis"
+            >
               {collection.config.description}
             </Text>
           </Flex>
