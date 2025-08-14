@@ -11,7 +11,8 @@ import {
 import { CopyIcon2 } from '../../icons';
 import { ShareIcon2 } from '../../icons/shareIcon2';
 import { TwitterIcon } from '../../icons/twitterIcon';
-
+import { twitterLink } from '@/utils/formatter';
+const REDIRECT_URL = import.meta.env.VITE_MARKETPLACE_METADATA_SERVER;
 const menuItems = [
   {
     icon: CopyIcon2,
@@ -26,22 +27,26 @@ const menuItems = [
 ];
 
 export const ShareMenu = ({
-  discordLink,
-  xLink,
+  collectionId,
+  collectionName,
 }: {
-  discordLink?: string;
-  xLink?: string;
+  collectionId: string;
+  collectionName: string;
 }) => {
+  const collectionLink = `${REDIRECT_URL}/collection/${collectionId}`;
+
   const handleOnClick = (key: string) => {
     switch (key) {
+      case 'x':
+        window.open(
+          twitterLink(collectionLink, {
+            title: `Take a look at this cool collection ${collectionName} on @garagedotzone:`,
+            related: [],
+          })
+        );
+        break;
       case 'link':
         navigator.clipboard.writeText(window.location.href);
-        break;
-      case 'x':
-        window.open(xLink, '_blank');
-        break;
-      case 'discord':
-        window.open(discordLink, '_blank');
         break;
     }
   };
@@ -81,18 +86,7 @@ export const ShareMenu = ({
             borderBottom={index !== menuItems.length - 1 ? '1px solid' : 'none'}
             borderColor="grey.300"
             onClick={() => handleOnClick(item.key)}
-            cursor={
-              (!discordLink && item.key === 'discord') ||
-              (!xLink && item.key === 'x')
-                ? 'not-allowed'
-                : 'pointer'
-            }
-            pointerEvents={
-              (!discordLink && item.key === 'discord') ||
-              (!xLink && item.key === 'x')
-                ? 'none'
-                : 'auto'
-            }
+            cursor="pointer"
           >
             <Flex
               w="full"

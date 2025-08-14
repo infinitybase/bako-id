@@ -2,6 +2,7 @@ import { TwitterIcon, useCustomToast } from '@/components';
 import { CopyIcon } from '@/components/icons/copyIcon';
 import { ShareIcon2 } from '@/components/icons/shareIcon2';
 import { twitterLink } from '@/utils/formatter';
+const REDIRECT_URL = import.meta.env.VITE_MARKETPLACE_METADATA_SERVER;
 import {
   Menu,
   MenuButton,
@@ -20,7 +21,7 @@ export default function ShareOrder({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { successToast } = useCustomToast();
 
-  const orderLink = `${import.meta.env.VITE_API_URL.replace('/api', '')}/m/${orderId}?collectionId=${collectionId}`;
+  const orderLink = `${REDIRECT_URL}/${orderId}?collectionId=${collectionId}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(orderLink);
@@ -44,7 +45,7 @@ export default function ShareOrder({
           onClick={() => {
             window.open(
               twitterLink(orderLink, {
-                title: `Just listed my ${nftName} on Bako Marketplace. Grab it here:`,
+                title: `Just listed my ${nftName} on @garagedotzone. Grab it here:`,
                 related: [],
               })
             );

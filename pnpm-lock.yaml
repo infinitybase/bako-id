@@ -224,7 +224,7 @@ importers:
         version: 14.2.5(eslint@8.57.1)(typescript@5.4.5)
       ts-jest:
         specifier: ^29.1.1
-        version: 29.4.0(@babel/core@7.28.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.0))(esbuild@0.25.0)(jest-util@29.7.0)(jest@29.7.0(@types/node@20.19.9)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@types/node@20.19.9)(typescript@5.4.5)))(typescript@5.4.5)
+        version: 29.4.0(@babel/core@7.28.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.0))(esbuild@0.17.19)(jest-util@29.7.0)(jest@29.7.0(@types/node@20.19.9)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@types/node@20.19.9)(typescript@5.4.5)))(typescript@5.4.5)
       typescript:
         specifier: ^5
         version: 5.4.5
@@ -264,6 +264,9 @@ importers:
       '@fuels/react':
         specifier: 0.39.2
         version: 0.39.2(@tanstack/react-query@5.84.0(react@18.3.1))(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(fuels@0.100.1(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.17.0)(terser@5.43.1)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@hono/node-server':
+        specifier: ^1.18.2
+        version: 1.18.2(hono@4.9.1)
       '@tanstack/react-query':
         specifier: ^5.59.16
         version: 5.84.0(react@18.3.1)
@@ -285,12 +288,18 @@ importers:
       dayjs:
         specifier: ^1.11.11
         version: 1.11.13
+      dotenv:
+        specifier: ^17.2.1
+        version: 17.2.1
       framer-motion:
         specifier: ^11.3.4
         version: 11.18.2(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       fuels:
         specifier: 0.100.1
         version: 0.100.1(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.17.0)(terser@5.43.1))
+      hono:
+        specifier: ^4.9.1
+        version: 4.9.1
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -364,6 +373,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
         version: 4.7.0(vite@5.4.19(@types/node@22.17.0)(terser@5.43.1))
+      concurrently:
+        specifier: ^9.2.0
+        version: 9.2.0
       eslint:
         specifier: ^8.55.0
         version: 8.57.1
@@ -373,6 +385,9 @@ importers:
       eslint-plugin-react-refresh:
         specifier: ^0.4.5
         version: 0.4.20(eslint@8.57.1)
+      tsx:
+        specifier: ^4.20.4
+        version: 4.20.4
       typescript:
         specifier: ^5.2.2
         version: 5.4.5
@@ -536,7 +551,7 @@ importers:
         version: 10.9.2(@types/node@20.19.9)(typescript@5.4.5)
       tsup:
         specifier: ^8.0.1
-        version: 8.5.0(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.4.5)(yaml@2.8.0)
+        version: 8.5.0(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.4)(typescript@5.4.5)(yaml@2.8.0)
 
   shared/tsup:
     dependencies:
@@ -2581,6 +2596,12 @@ packages:
       react: ^16 || ^17 || ^18
       react-dom: ^16 || ^17 || ^18
 
+  '@hono/node-server@1.18.2':
+    resolution: {integrity: sha512-icgNvC0vRYivzyuSSaUv9ttcwtN8fDyd1k3AOIBDJgYd84tXRZSS6na8X54CY/oYoFTNhEmZraW/Rb9XYwX4KA==}
+    engines: {node: '>=18.14.1'}
+    peerDependencies:
+      hono: ^4
+
   '@humanwhocodes/config-array@0.13.0':
     resolution: {integrity: sha512-DZLEEqFWQFiyK6h5YIeynKx7JlvCYWL0cImfSRXZ9l4Sg2efkFGTuFf6vzXjK1cq6IYkU+Eg/JizXw+TD2vRNw==}
     engines: {node: '>=10.10.0'}
@@ -3682,7 +3703,6 @@ packages:
   '@resvg/resvg-js-linux-x64-gnu@2.6.2':
     resolution: {integrity: sha512-IVUe+ckIerA7xMZ50duAZzwf1U7khQe2E0QpUxu5MBJNao5RqC0zwV/Zm965vw6D3gGFUl7j4m+oJjubBVoftw==}
     engines: {node: '>= 10'}
-    cpu: [x64]
     os: [linux]
 
   '@resvg/resvg-js-linux-x64-musl@2.6.2':
@@ -6080,6 +6100,11 @@ packages:
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
+  concurrently@9.2.0:
+    resolution: {integrity: sha512-IsB/fiXTupmagMW4MNp2lx2cdSN2FfZq78vF90LBB+zZHArbIQZjQtzXCiXnvTxCZSvXanTqFLWBjw2UkLx1SQ==}
+    engines: {node: '>=18'}
+    hasBin: true
+
   confbox@0.1.8:
     resolution: {integrity: sha512-RMtmw0iFkeR4YV+fUOSucriAQNb9g8zFR52MWCtl+cCZOFRNL6zeB395vPzFhEjjn4fMxXudmELnl/KF/WrK6w==}
 
@@ -6636,6 +6661,10 @@ packages:
 
   dotenv@16.4.7:
     resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
+    engines: {node: '>=12'}
+
+  dotenv@17.2.1:
+    resolution: {integrity: sha512-kQhDYKZecqnM0fCnzI5eIv5L4cAe/iRI+HqMbO/hbRdTAeXDG+M9FjipUxNfbARuEg4iHIbhnhs78BCHNbSxEQ==}
     engines: {node: '>=12'}
 
   dset@3.1.4:
@@ -7716,6 +7745,10 @@ packages:
 
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
+
+  hono@4.9.1:
+    resolution: {integrity: sha512-qfvdJ42t6CQE0N/iSCa8KsW8SQqYD67YB+TYbwPHlnALvX+s7ynh8otR1NEk5jXtUg73gpV/B82OSufDmwtX3w==}
+    engines: {node: '>=16.9.0'}
 
   hookable@5.5.3:
     resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
@@ -11235,8 +11268,8 @@ packages:
       typescript:
         optional: true
 
-  tsx@4.20.3:
-    resolution: {integrity: sha512-qjbnuR9Tr+FJOMBqJCW5ehvIo/buZq7vH7qD7JziU98h6l3qGy0a/yPFjwO+y0/T7GFpNgNAvEcPPVfyT8rrPQ==}
+  tsx@4.20.4:
+    resolution: {integrity: sha512-yyxBKfORQ7LuRt/BQKBXrpcq59ZvSW0XxwfjAt3w2/8PmdxaFzijtMhTawprSHhpzeM5BgU2hXHG3lklIERZXg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -15332,6 +15365,10 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
+  '@hono/node-server@1.18.2(hono@4.9.1)':
+    dependencies:
+      hono: 4.9.1
+
   '@humanwhocodes/config-array@0.13.0':
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
@@ -17593,7 +17630,7 @@ snapshots:
       prettier: 3.6.2
       recast: 0.23.11
       source-map: 0.7.6
-      tsx: 4.20.3
+      tsx: 4.20.4
       zod: 3.25.76
     transitivePeerDependencies:
       - supports-color
@@ -20593,6 +20630,16 @@ snapshots:
 
   concat-map@0.0.1: {}
 
+  concurrently@9.2.0:
+    dependencies:
+      chalk: 4.1.2
+      lodash: 4.17.21
+      rxjs: 7.8.2
+      shell-quote: 1.8.3
+      supports-color: 8.1.1
+      tree-kill: 1.2.2
+      yargs: 17.7.2
+
   confbox@0.1.8: {}
 
   connect@3.7.0:
@@ -21181,6 +21228,8 @@ snapshots:
 
   dotenv@16.4.7: {}
 
+  dotenv@17.2.1: {}
+
   dset@3.1.4: {}
 
   dunder-proto@1.0.1:
@@ -21596,7 +21645,7 @@ snapshots:
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.5(eslint@8.57.1)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.57.1)
@@ -21626,7 +21675,7 @@ snapshots:
       tinyglobby: 0.2.14
       unrs-resolver: 1.11.1
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -21641,7 +21690,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.4.5))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -22797,6 +22846,8 @@ snapshots:
   hoist-non-react-statics@3.3.2:
     dependencies:
       react-is: 16.13.1
+
+  hono@4.9.1: {}
 
   hookable@5.5.3: {}
 
@@ -25636,13 +25687,13 @@ snapshots:
       postcss: 8.5.6
       ts-node: 10.9.2(@types/node@22.17.0)(typescript@5.4.5)
 
-  postcss-load-config@6.0.1(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.3)(yaml@2.8.0):
+  postcss-load-config@6.0.1(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.4)(yaml@2.8.0):
     dependencies:
       lilconfig: 3.1.3
     optionalDependencies:
       jiti: 2.5.1
       postcss: 8.5.6
-      tsx: 4.20.3
+      tsx: 4.20.4
       yaml: 2.8.0
 
   postcss@8.4.31:
@@ -27241,6 +27292,27 @@ snapshots:
 
   ts-interface-checker@0.1.13: {}
 
+  ts-jest@29.4.0(@babel/core@7.28.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.0))(esbuild@0.17.19)(jest-util@29.7.0)(jest@29.7.0(@types/node@20.19.9)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@types/node@20.19.9)(typescript@5.4.5)))(typescript@5.4.5):
+    dependencies:
+      bs-logger: 0.2.6
+      ejs: 3.1.10
+      fast-json-stable-stringify: 2.1.0
+      jest: 29.7.0(@types/node@20.19.9)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@types/node@20.19.9)(typescript@5.4.5))
+      json5: 2.2.3
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.7.2
+      type-fest: 4.41.0
+      typescript: 5.4.5
+      yargs-parser: 21.1.1
+    optionalDependencies:
+      '@babel/core': 7.28.0
+      '@jest/transform': 29.7.0
+      '@jest/types': 29.6.3
+      babel-jest: 29.7.0(@babel/core@7.28.0)
+      esbuild: 0.17.19
+      jest-util: 29.7.0
+
   ts-jest@29.4.0(@babel/core@7.28.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.0))(esbuild@0.17.19)(jest-util@29.7.0)(jest@29.7.0(@types/node@22.17.0)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@types/node@22.17.0)(typescript@5.4.5)))(typescript@5.4.5):
     dependencies:
       bs-logger: 0.2.6
@@ -27260,27 +27332,6 @@ snapshots:
       '@jest/types': 29.6.3
       babel-jest: 29.7.0(@babel/core@7.28.0)
       esbuild: 0.17.19
-      jest-util: 29.7.0
-
-  ts-jest@29.4.0(@babel/core@7.28.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.0))(esbuild@0.25.0)(jest-util@29.7.0)(jest@29.7.0(@types/node@20.19.9)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@types/node@20.19.9)(typescript@5.4.5)))(typescript@5.4.5):
-    dependencies:
-      bs-logger: 0.2.6
-      ejs: 3.1.10
-      fast-json-stable-stringify: 2.1.0
-      jest: 29.7.0(@types/node@20.19.9)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@types/node@20.19.9)(typescript@5.4.5))
-      json5: 2.2.3
-      lodash.memoize: 4.1.2
-      make-error: 1.3.6
-      semver: 7.7.2
-      type-fest: 4.41.0
-      typescript: 5.4.5
-      yargs-parser: 21.1.1
-    optionalDependencies:
-      '@babel/core': 7.28.0
-      '@jest/transform': 29.7.0
-      '@jest/types': 29.6.3
-      babel-jest: 29.7.0(@babel/core@7.28.0)
-      esbuild: 0.25.0
       jest-util: 29.7.0
 
   ts-jest@29.4.0(@babel/core@7.28.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.0))(esbuild@0.25.8)(jest-util@29.7.0)(jest@29.7.0(@types/node@20.19.9)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@types/node@20.19.9)(typescript@5.4.5)))(typescript@5.4.5):
@@ -27420,7 +27471,7 @@ snapshots:
       - supports-color
       - ts-node
 
-  tsup@8.5.0(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.4.5)(yaml@2.8.0):
+  tsup@8.5.0(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.4)(typescript@5.4.5)(yaml@2.8.0):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.25.8)
       cac: 6.7.14
@@ -27431,7 +27482,7 @@ snapshots:
       fix-dts-default-cjs-exports: 1.0.1
       joycon: 3.1.1
       picocolors: 1.1.1
-      postcss-load-config: 6.0.1(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.3)(yaml@2.8.0)
+      postcss-load-config: 6.0.1(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.4)(yaml@2.8.0)
       resolve-from: 5.0.0
       rollup: 4.46.2
       source-map: 0.8.0-beta.0
@@ -27448,7 +27499,7 @@ snapshots:
       - tsx
       - yaml
 
-  tsx@4.20.3:
+  tsx@4.20.4:
     dependencies:
       esbuild: 0.25.8
       get-tsconfig: 4.10.1
