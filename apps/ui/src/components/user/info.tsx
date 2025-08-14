@@ -10,6 +10,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Skeleton,
   Text,
   useMediaQuery,
 } from '@chakra-ui/react';
@@ -30,6 +31,7 @@ import { UserIcon } from '../icons/userIcon.tsx';
 import { TermsOfUseDialog } from '../termsOfUseDialog/index.tsx';
 import { useCustomToast } from '../toast/index.tsx';
 import { useResolverName } from '@/hooks/useResolverName.ts';
+import { useAvatar } from '@/hooks/useAvatar.ts';
 
 export const Info = ({
   name,
@@ -39,8 +41,9 @@ export const Info = ({
   account: string | Address;
 }) => {
   const { data: hasDomain } = useResolverName(
-    typeof account === 'string' ? account : account.toB256()
+    typeof account === 'string' ? account : account.toB256(),
   );
+  const { avatar, isLoading: isLoadingAvatar } = useAvatar(name);
 
   const {
     fuel: { disconnect },
@@ -70,21 +73,27 @@ export const Info = ({
   };
 
   const icon = (
-    <Box
-      bg="linear-gradient(132.19deg, #FFC010 0%, #EBA312 48%, #D38015 71%, #B24F18 99%)"
-      p="1px"
-      rounded="lg"
-    >
-      <Avatar
-        borderRadius="lg"
-        src={accoutIcon}
-        objectFit="fill"
-        h="full"
-        borderColor="black"
-        borderWidth={3}
-        p={0.5}
-      />
-    </Box>
+    <Skeleton isLoaded={!isLoadingAvatar} boxSize="48px">
+      <Box
+        bg={
+          avatar
+            ? 'transparent'
+            : 'linear-gradient(132.19deg, #FFC010 0%, #EBA312 48%, #D38015 71%, #B24F18 99%)'
+        }
+        p={avatar ? 0 : '1px'}
+        rounded="lg"
+        boxSize="full"
+      >
+        <Avatar
+          borderRadius="lg"
+          src={avatar || accoutIcon}
+          boxSize={avatar ? '48px' : 'full'}
+          borderColor="black"
+          borderWidth={avatar ? 0 : 3}
+          p={0.5}
+        />
+      </Box>
+    </Skeleton>
   );
 
   return (
