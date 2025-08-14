@@ -12,7 +12,10 @@ import { CopyIcon2 } from '../../icons';
 import { ShareIcon2 } from '../../icons/shareIcon2';
 import { TwitterIcon } from '../../icons/twitterIcon';
 import { twitterLink } from '@/utils/formatter';
-const REDIRECT_URL = import.meta.env.VITE_MARKETPLACE_METADATA_SERVER;
+import { useProvider } from '@fuels/react';
+import { Networks, resolveNetwork } from '@/utils/resolverNetwork';
+import { shortenUrl } from '@/utils/urlShortner';
+const MarketplaceAPIURL = import.meta.env.VITE_MARKETPLACE_URL;
 const menuItems = [
   {
     icon: CopyIcon2,
@@ -33,18 +36,25 @@ export const ShareMenu = ({
   collectionId: string;
   collectionName: string;
 }) => {
-  const collectionLink = `${REDIRECT_URL}/collection/${collectionId}`;
+  const { provider } = useProvider();
+  const chainId = provider?.url.includes('mainnet')
+    ? Networks.MAINNET
+    : Networks.TESTNET;
+  const network = resolveNetwork(chainId).toLowerCase();
+  const twitterUrl = `${MarketplaceAPIURL}/${network}/collections/s/${collectionId}`;
 
-  const handleOnClick = (key: string) => {
+  const handleOnClick = async (key: string) => {
     switch (key) {
-      case 'x':
+      case 'x': {
+        const shortUrl = await shortenUrl(twitterUrl);
         window.open(
-          twitterLink(collectionLink, {
-            title: `Take a look at this cool collection ${collectionName} on @garagedotzone:`,
+          twitterLink(shortUrl, {
+            title: `${collectionName} on @garagedotzone:`,
             related: [],
           })
         );
         break;
+      }
       case 'link':
         navigator.clipboard.writeText(window.location.href);
         break;
