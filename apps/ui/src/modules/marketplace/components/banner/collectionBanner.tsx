@@ -1,8 +1,8 @@
 import { Box, Stack } from '@chakra-ui/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import type { Collection } from '@/types/marketplace';
 import { ImageLoader } from '@/components/imageLoader';
+import type { Collection } from '@/types/marketplace';
 import { useNavigate } from '@tanstack/react-router';
 import { BannerRoot } from './root';
 
@@ -68,8 +68,8 @@ export const CollectionPageBanner = ({
           bottom={0}
           left={0}
           right={0}
-          height={!hasBanner ? 'full' : '80px'}
-          bgGradient="linear(0deg, rgba(21,20,19,0.85) 0%, rgba(21,20,19,0.00) 100%)"
+          height="full"
+          bgGradient="linear-gradient(0deg, rgba(21, 20, 19, 0.85) 0%, rgba(21, 20, 19, 0) 100%)"
           zIndex={2}
           cursor="pointer"
           onClick={(e) => {

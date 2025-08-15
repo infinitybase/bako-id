@@ -85,7 +85,7 @@ export default function SummaryFeeCard({
               <QuestionIcon ml={1} fontSize="md" />
             </Tooltip>
           </Text>
-          <Text fontSize="xs" color={isFuelToken ? 'green.500' : 'grey.100'}>
+          <Text fontSize="xs" color={isFuelToken ? '#8CEEB3' : 'grey.100'}>
             {isFuelToken && (
               <Text
                 as="span"

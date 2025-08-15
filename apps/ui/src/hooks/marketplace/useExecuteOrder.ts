@@ -32,6 +32,7 @@ export const useExecuteOrder = (collectionId: string) => {
           chainId,
           collectionId,
         ],
+        exact: false
       });
       addPurchasedOrder(orderId, txId);
       await marketplaceService.saveReceipt({

@@ -141,7 +141,7 @@ export const NftCardSaleForm = ({
         onSubmit({
           ...data,
           currentReceiveAmountInUsd: Number(
-            currentReceiveAmountInUsd.replace(/[~$]/g, '').trim()
+            currentReceiveAmountInUsd.replace(/[^\d.]/g, '').trim()
           ),
         })
       )}

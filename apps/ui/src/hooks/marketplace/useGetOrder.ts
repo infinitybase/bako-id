@@ -1,8 +1,9 @@
-import { MarketplaceQueryKeys } from '@/utils/constants';
-import { useQuery } from '@tanstack/react-query';
-import { useChainId } from '../useChainId';
 import { marketplaceService } from '@/services/marketplace';
+import { MarketplaceQueryKeys } from '@/utils/constants';
 import { Networks } from '@/utils/resolverNetwork';
+import { useQuery } from '@tanstack/react-query';
+import { isNumber } from 'lodash';
+import { useChainId } from '../useChainId';
 
 type useGetOrderProps = { id: string };
 
@@ -19,7 +20,7 @@ export const useGetOrder = ({ id }: useGetOrderProps) => {
 
       return data;
     },
-    enabled: !!chainId && !!id,
+    enabled: isNumber(chainId) && !!id,
   });
 
   return { order, ...rest };
