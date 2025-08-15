@@ -20,7 +20,7 @@ export default function ShareOrder({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { successToast } = useCustomToast();
 
-  const orderLink = `${import.meta.env.VITE_API_URL.replace('/api', '')}/m/${orderId}?collectionId=${collectionId}`;
+  const orderLink = `${import.meta.env.VITE_MARKETPLACE_UI_URL}/collection/${collectionId}/order/${orderId}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(orderLink);
