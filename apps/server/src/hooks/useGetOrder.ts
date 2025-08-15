@@ -2,6 +2,7 @@ import { MarketplaceQueryKeys } from '@/helpers/constant';
 import { marketplaceService } from '@/services/marketplace';
 import { NetworkId } from '@/utils';
 import { useQuery } from '@tanstack/react-query';
+import { isNumber } from 'lodash';
 
 type useGetOrderProps = { id: string; chainId: number };
 
@@ -16,7 +17,7 @@ export const useGetOrder = ({ id, chainId }: useGetOrderProps) => {
 
       return data;
     },
-    enabled: !!chainId,
+    enabled: isNumber(chainId),
   });
 
   return { order, ...rest };
