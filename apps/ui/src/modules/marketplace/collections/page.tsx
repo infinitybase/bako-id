@@ -71,7 +71,8 @@ export const CollectionPage = () => {
     isFetched: isFetchedMintData,
   } = useGetMintData(collectionId, collection?.data?.isMintable ?? false);
 
-  const wasAllSupplyMinted = Number(maxSupply) === Number(totalMinted);
+  const wasAllSupplyMinted =
+    Number(maxSupply) > 0 && Number(maxSupply) === Number(totalMinted);
 
   const isMintable =
     Number(maxSupply) > 0 && Number(totalMinted) < Number(maxSupply);
