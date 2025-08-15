@@ -153,7 +153,7 @@ export const CollectionPage = () => {
             )}
             {showMintTab && (
               <Tab
-                _selected={{ bg: '#63930f', color: 'black' }}
+                _selected={{ bg: '#63930f', color: 'white' }}
                 color="black"
                 bg="#63930f"
                 borderRadius="8px 8px 0 0"
