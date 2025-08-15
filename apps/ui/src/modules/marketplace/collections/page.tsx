@@ -72,6 +72,7 @@ export const CollectionPage = () => {
   } = useGetMintData(collectionId, collection?.data?.isMintable ?? false);
 
   const wasAllSupplyMinted = Number(maxSupply) === Number(totalMinted);
+
   const isMintable =
     Number(maxSupply) > 0 && Number(totalMinted) < Number(maxSupply);
 
@@ -149,7 +150,7 @@ export const CollectionPage = () => {
                 Items
               </Tab>
             )}
-            {showMintTab && (
+            {(showMintTab || wasAllSupplyMinted) && (
               <Tab
                 _selected={{ bg: 'grey.600', color: 'white' }}
                 color="disabled.500"
