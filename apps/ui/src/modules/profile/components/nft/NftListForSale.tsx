@@ -97,6 +97,8 @@ export const NftListForSale = ({
                 isOwner={isOwner}
                 showBuyButton={!isOwner}
                 withHandle={!!data}
+                isProfilePage={true}
+                imageSize="full"
               />
             </GridItem>
           ))}
@@ -116,7 +118,6 @@ export const NftListForSale = ({
         alignItems="center"
       >
         <Pagination
-          isAccountOrders
           page={Number(page ?? 1)}
           totalPages={paginationInfos.totalPages}
           hasNextPage={paginationInfos.hasNextPage}
