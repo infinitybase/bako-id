@@ -74,7 +74,7 @@ export const useListInfiniteOrdersByAddress = ({
       };
     },
     placeholderData: (data) => data,
-    enabled: !!chainId && !!sellerAddress,
+    enabled: chainId !== undefined && chainId !== null && !!sellerAddress,
   });
 
   return {
