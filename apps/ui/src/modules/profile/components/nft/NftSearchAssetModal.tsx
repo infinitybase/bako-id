@@ -38,7 +38,7 @@ export const NftSearchAssetModal = ({
 }: NftSearchAssetModalProps) => {
   const [search, setSearch] = useState('');
   const { assets, isLoading: isAssetsLoading } = useListAssets();
-  const [yellowLight] = useToken('colors', ['yellow-light']);
+  const [garage] = useToken('colors', ['garage.100']);
 
   const { data, isLoading: isBalancesLoading } = useAssetsBalance({ assets });
 
@@ -152,10 +152,10 @@ export const NftSearchAssetModal = ({
                     <Badge
                       variant="outline"
                       shadow="none"
-                      borderColor={`${yellowLight}26`}
+                      borderColor={`${garage}26`}
                       py={1}
                       px={2}
-                      color="yellow-light"
+                      color="garage.100"
                       title={`${userWithHandle ? asset.fees?.[1] : asset.fees?.[0]} Fee`}
                     >
                       {getFeePercentage(asset)}% Fee

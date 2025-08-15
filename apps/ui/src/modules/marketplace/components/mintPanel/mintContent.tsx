@@ -1,19 +1,19 @@
-import {
-  Box,
-  Flex,
-  Heading,
-  Text,
-  Image,
-  Stack,
-  Progress,
-  Button,
-  IconButton,
-} from '@chakra-ui/react';
-import { useMemo, useState } from 'react';
-import { AddIcon, MinusIcon } from '@chakra-ui/icons';
-import type { AssetInfo, BN } from 'fuels';
 import UnknownAsset from '@/assets/unknown-asset.png';
 import { convertToUsd } from '@/utils/convertToUsd';
+import { AddIcon, MinusIcon } from '@chakra-ui/icons';
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  IconButton,
+  Image,
+  Progress,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
+import type { AssetInfo, BN } from 'fuels';
+import { useMemo, useState } from 'react';
 
 type MintContentProps = {
   title: string;
@@ -71,12 +71,9 @@ const MintContent = ({
       justifyContent="space-between"
     >
       <Flex direction="column" gap={4}>
-        <Heading fontSize="18px" mt={6} mb={2}>
+        <Heading fontSize="18px" mb={2}>
           {title}
         </Heading>
-        <Text color="white" fontWeight={700} fontSize="sm">
-          Description
-        </Text>
         <Text fontSize="xs" color="section.500" mb={4}>
           {description}
         </Text>
@@ -106,7 +103,12 @@ const MintContent = ({
         </Text> */}
         <Stack direction="row" justify="space-between" align="center" mt={4}>
           <Flex align="center" gap={1}>
-            <Image src={asset?.icon ?? UnknownAsset} alt="ETH" rounded="full" />
+            <Image
+              w={35}
+              src={asset?.icon ?? UnknownAsset}
+              alt="ETH"
+              rounded="full"
+            />
             <Flex align="center" gap={2} w="full">
               <Text fontWeight="bold" fontSize="sm">
                 {mintPrice} {asset?.symbol}

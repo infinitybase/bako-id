@@ -4,6 +4,7 @@ import type { Collection } from '@/types/marketplace';
 import { MarketplaceQueryKeys } from '@/utils/constants';
 import { Networks } from '@/utils/resolverNetwork';
 import { useChainId } from '../useChainId';
+import { useWallet } from '@fuels/react';
 
 type useListMintableCollectionsProps = {
     page?: number;
@@ -14,6 +15,8 @@ export const useListMintableCollections = ({
     limit,
 }: useListMintableCollectionsProps) => {
     const { chainId } = useChainId();
+    const { wallet } = useWallet();
+    const defaultChainId = !wallet && chainId === 0 ? Networks.MAINNET : chainId;
     const {
         data: collections,
         isLoading: isLoadingCollections,
@@ -22,11 +25,11 @@ export const useListMintableCollections = ({
         queryKey: [
             MarketplaceQueryKeys.ALL_MINTABLE_COLLECTIONS,
             limit,
-            chainId,
+            defaultChainId,
         ],
         queryFn: async () => {
             const { data } = await marketplaceService.listMintableCollections({
-                chainId: chainId ?? Networks.TESTNET,
+                chainId: defaultChainId ?? Networks.MAINNET,
                 limit: limit ?? 3,
             });
 

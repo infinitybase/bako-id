@@ -6,7 +6,7 @@ import {
   useDisclosure,
   type BoxProps,
 } from '@chakra-ui/react';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import nftEmpty from '@/assets/nft-empty.png';
 import type { NFTWithImage } from '@/hooks/useCollections';
@@ -36,15 +36,8 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
     collection,
     symbol,
   } = props.asset;
+  const [step, setStep] = useState(1);
   const dialog = useDisclosure();
-
-  const handleOpenDialog = () => {
-    dialog.onOpen();
-  };
-
-  const handleCloseDialog = () => {
-    dialog.onClose();
-  };
 
   const image = useMemo(
     () => props.asset.image || nftEmpty,
@@ -77,14 +70,16 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
         metadata={defaultMetadata}
         image={image}
         isOpen={dialog.isOpen}
-        onClose={handleCloseDialog}
+        onClose={dialog.onClose}
         isOwner={props.isOwner}
         collection={collection}
         ctaButtonVariant={props.ctaButtonVariant}
+        step={step}
+        setStep={setStep}
       />
 
       <NftCard.Root
-        onClick={handleOpenDialog}
+        onClick={dialog.onOpen}
         cursor="pointer"
         minW={props.nftCardMinSize}
       >
@@ -115,6 +110,7 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
                 variant={props.ctaButtonVariant ?? 'primary'}
                 size="sm"
                 h="24px"
+                onClick={() => setStep(1)}
               >
                 List
               </Button>
