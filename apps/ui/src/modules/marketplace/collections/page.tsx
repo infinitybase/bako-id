@@ -71,9 +71,13 @@ export const CollectionPage = () => {
     isFetched: isFetchedMintData,
   } = useGetMintData(collectionId, collection?.data?.isMintable ?? false);
 
-  const wasAllSupplyMinted = Number(maxSupply) === Number(totalMinted);
+  const wasAllSupplyMinted =
+    Number(maxSupply) > 0 && Number(maxSupply) === Number(totalMinted);
 
-  const showMintTab = !isLoadingMintData;
+  const isMintable =
+    Number(maxSupply) > 0 && Number(totalMinted) < Number(maxSupply);
+
+  const showMintTab = !isLoadingMintData && (isMintable || wasAllSupplyMinted);
 
   const handleChangeSearch = useCallback(
     (search: string) => {
