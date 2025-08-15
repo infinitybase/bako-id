@@ -1,5 +1,5 @@
 import UnknownAsset from '@/assets/unknown-asset.png';
-import { convertToUsd } from '@/utils/convertToUsd';
+import { convertToUsd, formatAmount } from '@/utils/convertToUsd';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -46,7 +46,13 @@ const MintContent = ({
     [progress, maxSupply]
   );
   const mintPrice = useMemo(
-    () => tokenPrice?.mul(quantity).formatUnits(asset?.decimals ?? 0),
+    () => formatAmount({
+      amount: tokenPrice,
+      options: {
+        units: asset?.decimals || 0,
+        precision: Math.min(asset?.decimals || 0, 3),
+      }
+    }),
     [tokenPrice, quantity, asset?.decimals]
   );
   const usdPrice = useMemo(
