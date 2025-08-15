@@ -2,6 +2,9 @@ import { TwitterIcon, useCustomToast } from '@/components';
 import { CopyIcon } from '@/components/icons/copyIcon';
 import { ShareIcon2 } from '@/components/icons/shareIcon2';
 import { twitterLink } from '@/utils/formatter';
+import { Networks, resolveNetwork } from '@/utils/resolverNetwork';
+import { shortenUrl } from '@/utils/urlShortner';
+const MarketplaceAPIURL = import.meta.env.VITE_MARKETPLACE_URL;
 import {
   Menu,
   MenuButton,
@@ -11,16 +14,22 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useProvider } from '@fuels/react';
 
 export default function ShareOrder({
   orderId,
-  collectionId,
   nftName,
-}: { orderId: string; collectionId: string; nftName: string }) {
+}: { orderId: string; nftName: string }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { successToast } = useCustomToast();
+  const { provider } = useProvider();
+  const chainId = provider?.url.includes('mainnet')
+    ? Networks.MAINNET
+    : Networks.TESTNET;
+  const network = resolveNetwork(chainId).toLowerCase();
 
-  const orderLink = `${import.meta.env.VITE_API_URL.replace('/api', '')}/m/${orderId}?collectionId=${collectionId}`;
+  const twitterCardUrl = `${MarketplaceAPIURL}/${network}/orders/s/${orderId}`;
+  const orderLink = window.location.href;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(orderLink);
@@ -41,10 +50,11 @@ export default function ShareOrder({
           bg="input.600"
           cursor="pointer"
           icon={<TwitterIcon fontSize="md" />}
-          onClick={() => {
+          onClick={async () => {
+            const shortUrl = await shortenUrl(twitterCardUrl);
             window.open(
-              twitterLink(orderLink, {
-                title: `Just listed my ${nftName} on Bako Marketplace. Grab it here:`,
+              twitterLink(shortUrl, {
+                title: `Just listed my ${nftName} on @garagedotzone. Grab it here:`,
                 related: [],
               })
             );
