@@ -13,14 +13,14 @@ import {
   Text,
 } from '@chakra-ui/react';
 import type { AssetInfo, BN } from 'fuels';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 type MintContentProps = {
   title: string;
   description: string;
   progress: number;
   maxSupply: number;
-  // maxPerWallet: number;
+  maxPerWallet: number;
   tokenPrice: BN;
   isMinting: boolean;
   asset: AssetInfo | null | undefined;
@@ -33,7 +33,7 @@ const MintContent = ({
   description,
   progress,
   maxSupply,
-  // maxPerWallet,
+  maxPerWallet,
   tokenPrice,
   isMinting,
   asset,
@@ -41,6 +41,10 @@ const MintContent = ({
   wasAllSupplyMinted,
 }: MintContentProps) => {
   const [quantity, setQuantity] = useState(1);
+  const remainingSupply = useMemo(() => {
+    if (maxSupply) return maxSupply - progress;
+  }, [progress, maxSupply]);
+
   const progressPercentage = useMemo(
     () => (progress / maxSupply) * 100,
     [progress, maxSupply]
@@ -62,6 +66,12 @@ const MintContent = ({
   const handleMint = () => {
     onMint(quantity);
   };
+
+  useEffect(() => {
+    if (remainingSupply && quantity > remainingSupply) {
+      setQuantity(remainingSupply);
+    }
+  }, [remainingSupply, quantity]);
 
   return (
     <Flex
@@ -153,7 +163,10 @@ const MintContent = ({
                 _hover={{ bg: 'grey.600' }}
                 border="none"
                 onClick={() => setQuantity((q) => q + 1)}
-                // isDisabled={quantity >= maxPerWallet}
+                isDisabled={
+                  quantity >= maxPerWallet ||
+                  Boolean(remainingSupply && quantity >= remainingSupply)
+                }
               />
             </Flex>
           )}

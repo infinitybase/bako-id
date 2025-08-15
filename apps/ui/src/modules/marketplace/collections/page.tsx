@@ -77,7 +77,7 @@ export const CollectionPage = () => {
   const isMintable =
     Number(maxSupply) > 0 && Number(totalMinted) < Number(maxSupply);
 
-  const showMintTab = !isLoadingMintData && isMintable;
+  const showMintTab = !isLoadingMintData && (isMintable || wasAllSupplyMinted);
 
   const handleChangeSearch = useCallback(
     (search: string) => {
@@ -151,7 +151,7 @@ export const CollectionPage = () => {
                 Items
               </Tab>
             )}
-            {(showMintTab || wasAllSupplyMinted) && (
+            {showMintTab && (
               <Tab
                 _selected={{ bg: 'grey.600', color: 'white' }}
                 color="disabled.500"
