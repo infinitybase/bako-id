@@ -1,12 +1,12 @@
 import {
   Container,
-  Stack,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
   Divider,
+  Stack,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
 } from '@chakra-ui/react';
 import {
   Outlet,
@@ -14,16 +14,16 @@ import {
   useParams,
   useSearch,
 } from '@tanstack/react-router';
-import { useCallback, useMemo, useState, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { OrderList } from '../components/orderList';
 
-import MarketplaceFilter from '../components/marketplaceFilter';
 import { useGetCollection } from '@/hooks/marketplace/useGetCollection';
 import { useGetCollectionOrders } from '@/hooks/marketplace/useGetCollectionOrders';
+import { useGetMintData } from '@/hooks/marketplace/useGetMintData';
 import { useDebounce } from '@/hooks/useDebounce';
 import { CollectionPageBanner } from '../components/banner/collectionBanner';
+import MarketplaceFilter from '../components/marketplaceFilter';
 import MintPanel from '../components/mintPanel';
-import { useGetMintData } from '@/hooks/marketplace/useGetMintData';
 import { useProcessingOrdersStore } from '../stores/processingOrdersStore';
 
 export const CollectionPage = () => {
@@ -71,12 +71,13 @@ export const CollectionPage = () => {
     isFetched: isFetchedMintData,
   } = useGetMintData(collectionId, collection?.data?.isMintable ?? false);
 
+  const wasAllSupplyMinted =
+    Number(maxSupply) > 0 && Number(maxSupply) === Number(totalMinted);
+
   const isMintable =
     Number(maxSupply) > 0 && Number(totalMinted) < Number(maxSupply);
 
-  const wasAllSupplyMinted = Number(maxSupply) === Number(totalMinted);
-
-  const showMintTab = !isLoadingMintData && isMintable;
+  const showMintTab = !isLoadingMintData && (isMintable || wasAllSupplyMinted);
 
   const handleChangeSearch = useCallback(
     (search: string) => {

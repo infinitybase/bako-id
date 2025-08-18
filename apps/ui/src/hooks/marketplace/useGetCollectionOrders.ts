@@ -1,12 +1,13 @@
-import { MarketplaceQueryKeys } from '@/utils/constants';
-import type { PaginationResult } from '@/utils/pagination';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useChainId } from '../useChainId';
-import { marketplaceService } from '@/services/marketplace';
-import { Networks } from '@/utils/resolverNetwork';
-import type { Order } from '@/types/marketplace';
 import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
+import { marketplaceService } from '@/services/marketplace';
+import type { Order } from '@/types/marketplace';
+import { MarketplaceQueryKeys } from '@/utils/constants';
 import { filterAndUpdateOrdersWithProcessingState } from '@/utils/handleOptimisticData';
+import type { PaginationResult } from '@/utils/pagination';
+import { Networks } from '@/utils/resolverNetwork';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { isNumber } from 'lodash';
+import { useChainId } from '../useChainId';
 
 type UseGetCollectionOrdersProps = {
   page?: number;
@@ -25,11 +26,8 @@ export const useGetCollectionOrders = ({
   collectionId,
 }: UseGetCollectionOrdersProps) => {
   const { chainId } = useChainId();
-  const {
-    cancelledOrders,
-    updatedOrders,
-    removeUpdatedOrders,
-  } = useProcessingOrdersStore();
+  const { cancelledOrders, updatedOrders, removeUpdatedOrders } =
+    useProcessingOrdersStore();
 
   const { data: collectionOrders, ...rest } = useInfiniteQuery<
     PaginationResult<Order>
@@ -66,7 +64,7 @@ export const useGetCollectionOrders = ({
         cancelledOrders,
         updatedOrders,
         removeUpdatedOrders,
-      })
+      });
 
       return {
         data: filteredData,
@@ -79,7 +77,7 @@ export const useGetCollectionOrders = ({
       };
     },
     placeholderData: (data) => data,
-    enabled: !!chainId && !!collectionId,
+    enabled: isNumber(chainId) && !!collectionId,
   });
 
   return { collectionOrders, ...rest };

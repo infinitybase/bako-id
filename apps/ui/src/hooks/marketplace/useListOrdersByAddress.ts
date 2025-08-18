@@ -1,9 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
 import { marketplaceService } from '@/services/marketplace';
 import type { Order } from '@/types/marketplace';
-import type { PaginationResult } from '@/utils/pagination';
 import { MarketplaceQueryKeys } from '@/utils/constants';
+import type { PaginationResult } from '@/utils/pagination';
 import { Networks } from '@/utils/resolverNetwork';
+import { useQuery } from '@tanstack/react-query';
+import { isNumber } from 'lodash';
 import { useChainId } from '../useChainId';
 
 type useListOrdersByAddressProps = {
@@ -56,7 +57,7 @@ export const useListOrdersByAddress = ({
       };
     },
     placeholderData: (data) => data,
-    enabled: !!chainId && !!sellerAddress,
+    enabled: isNumber(chainId) && !!sellerAddress,
   });
 
   return {

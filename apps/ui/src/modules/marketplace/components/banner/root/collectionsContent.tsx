@@ -1,9 +1,9 @@
-import { Box, Button, Flex, Heading, Text, VStack } from '@chakra-ui/react';
+import { useGetMintData } from '@/hooks/marketplace/useGetMintData';
+import type { Collection } from '@/types/marketplace';
 import { parseURI, usdValueFormatter } from '@/utils/formatter';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
+import { Box, Button, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import { StatBox } from './statBox';
-import type { Collection } from '@/types/marketplace';
-import { useGetMintData } from '@/hooks/marketplace/useGetMintData';
 
 type CollectionsContentProps = {
   collection: Collection;
@@ -49,8 +49,8 @@ const CollectionsContent = ({
         left={0}
         bottom={0}
         width="100%"
-        height="40%"
-        bgGradient="linear(0deg, rgba(21,20,19,0.85) 0%, rgba(21,20,19,0.00) 100%)"
+        height="full"
+        bgGradient="linear-gradient(0deg, rgba(21, 20, 19, 0.85) 0%, rgba(21, 20, 19, 0) 100%)"
         zIndex={2}
         pointerEvents="none"
       />

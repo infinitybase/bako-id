@@ -15,6 +15,8 @@ import type { CollectionConfig } from '../../utils/mint';
 import MintPanelSkeleton from '../skeletons/mintPanelSkeleton';
 import MintContent from './mintContent';
 
+const MAX_PER_WALLET = 70;
+
 type MintPanelProps = {
   collectionId?: string;
   maxSupply: string;
@@ -68,7 +70,7 @@ const MintPanel = ({
               boxSize: 'full',
               borderRadius: 'lg',
               bg: 'grey.900',
-              maxW: { base: 'full', sm: '500px', md: '480px', lg: '600px' },
+              maxW: { base: 'full', sm: '500px', md: '480px', lg: 'auto' },
             }}
             imageProps={{
               boxSize: 'full',
@@ -103,7 +105,7 @@ const MintPanel = ({
           description={config?.description ?? ''}
           progress={Number(totalMinted)}
           maxSupply={Number(maxSupply)}
-          // maxPerWallet={MAX_PER_WALLET}
+          maxPerWallet={MAX_PER_WALLET}
           tokenPrice={mintPrice}
           isMinting={isPending}
           onMint={mintToken}

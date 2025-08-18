@@ -19,7 +19,8 @@ import { useProvider } from '@fuels/react';
 export default function ShareOrder({
   orderId,
   nftName,
-}: { orderId: string; nftName: string }) {
+  collectionId,
+}: { orderId: string; nftName: string; collectionId: string }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { successToast } = useCustomToast();
   const { provider } = useProvider();
@@ -29,7 +30,7 @@ export default function ShareOrder({
   const network = resolveNetwork(chainId).toLowerCase();
 
   const twitterCardUrl = `${MarketplaceAPIURL}/${network}/orders/s/${orderId}`;
-  const orderLink = window.location.href;
+  const orderLink = `${import.meta.env.VITE_MARKETPLACE_UI_URL}/collection/${collectionId}/order/${orderId}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(orderLink);
