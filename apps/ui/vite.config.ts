@@ -10,10 +10,12 @@ const configs = {
   garage: {
     favicon: '/garage-favicon.svg',
     title: 'Garage',
+    gtm: 'G-33E9T67CEZ',
   },
   bako: {
     favicon: '/logo.svg',
     title: 'Bako Identity',
+    gtm: 'G-21RDZZWWHB',
   },
 };
 
@@ -21,7 +23,6 @@ function multiDomainPlugin() {
   return {
     name: 'multi-domain',
     generateBundle(_, bundle) {
-      // Encontra os arquivos JS e CSS gerados
       const jsFiles = Object.keys(bundle).filter((name) =>
         name.endsWith('.js')
       );
@@ -56,7 +57,8 @@ function multiDomainPlugin() {
       Object.entries(configs).forEach(([key, config]) => {
         const html = template
           .replace(/{LOGO}/g, config.favicon)
-          .replace(/{TITLE}/g, config.title);
+          .replace(/{TITLE}/g, config.title)
+          .replace(/{GTM}/g, config.gtm);
 
         this.emitFile({
           type: 'asset',
