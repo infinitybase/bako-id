@@ -14,12 +14,14 @@
         const hostname = window.location.hostname;
         const pathname = window.location.pathname;
         const isDev = window.location.hostname.includes('localhost')
-
+        const isPreview = hostname.includes('preview.') || hostname.includes('vercel');
 
         const isMarketplaceRoute =
           hostname.includes('garage') ||
           (isDev && hostname.split('.')[0] === 'marketplace') ||
           (isDev && pathname.includes('marketplace'));
+
+        const isBakoId = hostname.includes('bako.id');
 
         if (isMarketplaceRoute) {
           document.title = 'Garage';
@@ -29,10 +31,21 @@
           }
         }
 
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', isMarketplaceRoute ? 'G-33E9T67CEZ' : 'G-21RDZZWWHB');
+        if (isMarketplaceRoute && !isDev && !isPreview) {
+          console.log('[DEV] Garage');
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-33E9T67CEZ');
+        }
+
+        if (isBakoId && !isDev && !isPreview) {
+          console.log('[DEV] Bako Identity');
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-21RDZZWWHB');
+        }
       })();
     </script>
   </head>
