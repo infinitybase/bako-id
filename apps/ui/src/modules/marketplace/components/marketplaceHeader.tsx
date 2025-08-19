@@ -66,6 +66,8 @@ export const MarketplaceHeader = () => {
     });
   };
 
+  const isProfileButtonVisible = !initialLoadState && isConnected;
+
   return (
     <Center
       as="header"
@@ -81,7 +83,14 @@ export const MarketplaceHeader = () => {
       zIndex={100}
       bg="input.900"
     >
-      <Flex alignItems="center" maxW="1280px" mx="auto" w="full" px="24px">
+      <Flex
+        alignItems="center"
+        maxW="1280px"
+        mx="auto"
+        w="full"
+        px="24px"
+        justifyContent={isProfileButtonVisible ? 'flex-start' : 'space-between'}
+      >
         <Box
           display="flex"
           alignItems="center"
@@ -91,7 +100,7 @@ export const MarketplaceHeader = () => {
           <Image src={Logo} alt="Logo" />
         </Box>
 
-        {!initialLoadState && isConnected && (
+        {isProfileButtonVisible && (
           <Button
             onClick={goToProfile}
             p="8px 6px"
