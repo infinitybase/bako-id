@@ -1,4 +1,4 @@
-import { Box, Center, Flex, Image } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, Icon, Image, Text } from '@chakra-ui/react';
 import {
   useAccount,
   useConnectUI,
@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useGetPrimaryHandleName } from '../../../hooks';
 import { MarketplaceConnect } from './marketplaceConnectButton';
 import Logo from '@/assets/marketplace/logo-garage.svg';
+import { UserIcon } from '@/components';
 
 export const MarketplaceHeader = () => {
   const [initialLoadState, setInitialLoadState] = useState(true);
@@ -58,6 +59,13 @@ export const MarketplaceHeader = () => {
     navigate({ to: '/' }).then();
   };
 
+  const goToProfile = () => {
+    navigate({
+      to: '/profile/$name',
+      params: { name: domain },
+    });
+  };
+
   return (
     <Center
       as="header"
@@ -73,14 +81,7 @@ export const MarketplaceHeader = () => {
       zIndex={100}
       bg="input.900"
     >
-      <Flex
-        alignItems="center"
-        justifyContent="space-between"
-        maxW="1280px"
-        mx="auto"
-        w="full"
-        px="24px"
-      >
+      <Flex alignItems="center" maxW="1280px" mx="auto" w="full" px="24px">
         <Box
           display="flex"
           alignItems="center"
@@ -89,6 +90,28 @@ export const MarketplaceHeader = () => {
         >
           <Image src={Logo} alt="Logo" />
         </Box>
+
+        {!initialLoadState && isConnected && (
+          <Button
+            onClick={goToProfile}
+            p="8px 6px"
+            ml="auto"
+            bg="input.600"
+            color="#fff"
+            borderRadius="8px"
+            fontSize="12px"
+            h="28px"
+            fontWeight={500}
+            boxShadow="0px 8px 16px 0px rgba(0, 0, 0, 0.25)"
+            letterSpacing="0.2px"
+            lineHeight="1.2"
+            _hover={{ bg: 'input.500' }}
+            mr={4}
+          >
+            <Text mr={2}>Profile</Text>
+            <Icon as={UserIcon} />
+          </Button>
+        )}
         <MarketplaceConnect
           isLoading={initialLoadState}
           domain={domain!}
