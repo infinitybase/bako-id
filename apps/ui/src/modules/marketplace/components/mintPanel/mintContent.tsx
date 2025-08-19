@@ -12,6 +12,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import { useConnectUI } from '@fuels/react';
 import type { AssetInfo, BN } from 'fuels';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -45,18 +46,21 @@ const MintContent = ({
     if (maxSupply) return maxSupply - progress;
   }, [progress, maxSupply]);
 
+  const { connect, isConnected, isConnecting } = useConnectUI();
+
   const progressPercentage = useMemo(
     () => (progress / maxSupply) * 100,
     [progress, maxSupply]
   );
   const mintPrice = useMemo(
-    () => formatAmount({
-      amount: tokenPrice,
-      options: {
-        units: asset?.decimals || 0,
-        precision: Math.min(asset?.decimals || 0, 3),
-      }
-    }),
+    () =>
+      formatAmount({
+        amount: tokenPrice,
+        options: {
+          units: asset?.decimals || 0,
+          precision: Math.min(asset?.decimals || 0, 3),
+        },
+      }),
     [tokenPrice, quantity, asset?.decimals]
   );
   const usdPrice = useMemo(
@@ -70,6 +74,10 @@ const MintContent = ({
   );
 
   const handleMint = () => {
+    if (!isConnected && !isConnecting) {
+      connect();
+      return;
+    }
     onMint(quantity);
   };
 
@@ -186,7 +194,7 @@ const MintContent = ({
           borderRadius="md"
           letterSpacing=".5px"
           onClick={handleMint}
-          isLoading={isMinting}
+          isLoading={isMinting || isConnecting}
           isDisabled={isMinting || wasAllSupplyMinted}
         >
           {wasAllSupplyMinted

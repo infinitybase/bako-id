@@ -1,6 +1,8 @@
 import {
+  Box,
   Container,
   Divider,
+  Skeleton,
   Stack,
   Tab,
   TabList,
@@ -31,6 +33,7 @@ export const CollectionPage = () => {
   const { collectionId } = useParams({ strict: false });
   const { search } = useSearch({ strict: false });
   const debouncedSearch = useDebounce<string>(search?.trim() ?? '', 700);
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [filters, setFilters] = useState<{
     sortBy: string;
     sortDirection: 'desc' | 'asc';
@@ -74,10 +77,11 @@ export const CollectionPage = () => {
   const wasAllSupplyMinted =
     Number(maxSupply) > 0 && Number(maxSupply) === Number(totalMinted);
 
-  const isMintable =
+  const isCollectionStillMintable =
     Number(maxSupply) > 0 && Number(totalMinted) < Number(maxSupply);
 
-  const showMintTab = !isLoadingMintData && (isMintable || wasAllSupplyMinted);
+  const shouldShowMintTab =
+    !isLoadingMintData && (isCollectionStillMintable || wasAllSupplyMinted);
 
   const handleChangeSearch = useCallback(
     (search: string) => {
@@ -109,10 +113,27 @@ export const CollectionPage = () => {
     );
   }, [collectionOrders, purchasedOrders]);
 
+  const hasItems = data.length > 0 || debouncedSearch;
+  const shouldDefaultToMintTab =
+    isFetched &&
+    !isLoadingMintData &&
+    collection?.data?.isMintable &&
+    isCollectionStillMintable;
+
   // Reset scroll to top when component mounts
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
+
+  useEffect(() => {
+    if (shouldDefaultToMintTab) {
+      if (shouldShowMintTab && hasItems) {
+        setActiveTabIndex(1);
+      } else if (!shouldShowMintTab) {
+        setActiveTabIndex(0);
+      }
+    }
+  }, [hasItems, shouldShowMintTab, shouldDefaultToMintTab]);
 
   return (
     <Stack w="full" p={0} m={0}>
@@ -134,80 +155,123 @@ export const CollectionPage = () => {
           sm: 8,
         }}
       >
-        <Tabs variant="soft-rounded">
-          <TabList>
-            {(data.length > 0 || debouncedSearch) && (
-              <Tab
-                _selected={{
-                  bg: 'grey.600',
-                  color: 'white',
-                }}
-                color="disabled.500"
-                bg="input.600"
-                borderRadius="8px 8px 0 0"
-                fontSize="xs"
-                letterSpacing=".5px"
-              >
-                Items
-              </Tab>
-            )}
-            {showMintTab && (
-              <Tab
-                _selected={{ bg: 'garage.100', color: 'black' }}
-                color="black"
-                bg="#63930f"
-                borderRadius="8px 8px 0 0"
-                fontSize="xs"
-                letterSpacing=".5px"
-              >
-                {wasAllSupplyMinted ? 'About' : 'Mint'}
-              </Tab>
-            )}
-          </TabList>
-          <Divider my={0} py={0} borderColor="grey.600" />
-          <TabPanels>
-            {(data.length > 0 || debouncedSearch) && (
-              <TabPanel px={0}>
-                <Stack gap={8}>
-                  <MarketplaceFilter
-                    searchValue={search}
-                    onSearchChange={handleChangeSearch}
-                    sortValue={filters.sortBy}
-                    onSortChange={handleSortChange}
-                    isCollectionPage
-                  />
-                  <OrderList
-                    orders={data}
-                    hasNextPage={hasNextPage}
-                    onFetchNextPage={fetchNextPage}
-                    isLoadingOrders={!isFetched || isLoading}
-                    isFetchingNextPage={isFetchingNextPage}
-                    collectionOrdersLimit={collectionOrdersLimit}
-                    isPlaceholderData={isPlaceholderData}
-                  />
-                </Stack>
-              </TabPanel>
-            )}
+        {collection?.data?.isMintable && (!isFetched || isLoadingMintData) ? (
+          <TabSkeleton />
+        ) : (
+          <Tabs
+            variant="soft-rounded"
+            index={activeTabIndex}
+            onChange={setActiveTabIndex}
+          >
+            <TabList>
+              {(data.length > 0 || debouncedSearch) && (
+                <Tab
+                  _selected={{
+                    bg: 'grey.600',
+                    color: 'white',
+                  }}
+                  color="disabled.500"
+                  bg="input.600"
+                  borderRadius="8px 8px 0 0"
+                  fontSize="xs"
+                  letterSpacing=".5px"
+                >
+                  Items
+                </Tab>
+              )}
+              {shouldShowMintTab && (
+                <Tab
+                  _selected={{ bg: 'garage.100', color: 'black' }}
+                  color="black"
+                  bg="#63930f"
+                  borderRadius="8px 8px 0 0"
+                  fontSize="xs"
+                  letterSpacing=".5px"
+                >
+                  {wasAllSupplyMinted ? 'About' : 'Mint'}
+                </Tab>
+              )}
+            </TabList>
+            <Divider my={0} py={0} borderColor="grey.600" />
+            <TabPanels>
+              {(data.length > 0 || debouncedSearch) && (
+                <TabPanel px={0}>
+                  <Stack gap={8}>
+                    <MarketplaceFilter
+                      searchValue={search}
+                      onSearchChange={handleChangeSearch}
+                      sortValue={filters.sortBy}
+                      onSortChange={handleSortChange}
+                      isCollectionPage
+                    />
+                    <OrderList
+                      orders={data}
+                      hasNextPage={hasNextPage}
+                      onFetchNextPage={fetchNextPage}
+                      isLoadingOrders={!isFetched || isLoading}
+                      isFetchingNextPage={isFetchingNextPage}
+                      collectionOrdersLimit={collectionOrdersLimit}
+                      isPlaceholderData={isPlaceholderData}
+                    />
+                  </Stack>
+                </TabPanel>
+              )}
 
-            {showMintTab && (
-              <TabPanel p={0}>
-                <MintPanel
-                  collectionName={collection?.data?.name ?? ''}
-                  collectionId={collectionId ?? ''}
-                  maxSupply={maxSupply}
-                  totalMinted={totalMinted}
-                  mintPrice={mintPrice}
-                  config={collection?.data?.config}
-                  asset={asset}
-                  isLoading={isLoadingMintData || !isFetchedMintData}
-                  wasAllSupplyMinted={wasAllSupplyMinted}
-                />
-              </TabPanel>
-            )}
-          </TabPanels>
-        </Tabs>
+              {shouldShowMintTab && (
+                <TabPanel p={0}>
+                  <MintPanel
+                    collectionName={collection?.data?.name ?? ''}
+                    collectionId={collectionId ?? ''}
+                    maxSupply={maxSupply}
+                    totalMinted={totalMinted}
+                    mintPrice={mintPrice}
+                    config={collection?.data?.config}
+                    asset={asset}
+                    isLoading={isLoadingMintData || !isFetchedMintData}
+                    wasAllSupplyMinted={wasAllSupplyMinted}
+                  />
+                </TabPanel>
+              )}
+            </TabPanels>
+          </Tabs>
+        )}
         <Outlet />
       </Container>
     </Stack>
   );
 };
+
+const TabSkeleton = () => (
+  <Stack spacing={0} w="full">
+    <Stack direction="row" spacing={0} h="33px">
+      <Skeleton
+        bg="input.600"
+        borderRadius="8px 8px 0 0"
+        p="8px 16px"
+        h="100%"
+        w="66px"
+      />
+
+      <Box
+        bg="#63930f"
+        borderRadius="8px 8px 0 0"
+        p="8px 16px"
+        h="100%"
+        w="56px"
+        sx={{
+          animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          '@keyframes pulse': {
+            '0%, 100%': {
+              opacity: 1,
+            },
+            '50%': {
+              opacity: 0.5,
+            },
+          },
+        }}
+      />
+    </Stack>
+
+    <Divider mb={6} py={0} borderColor="grey.600" />
+  </Stack>
+);
