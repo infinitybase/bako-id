@@ -24,9 +24,11 @@ export default function ShareOrder({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { successToast } = useCustomToast();
   const { provider } = useProvider();
-  const chainId = provider?.url.includes('mainnet')
-    ? Networks.MAINNET
-    : Networks.TESTNET;
+  const chainId =
+    provider?.url?.includes('mainnet') || !provider
+      ? Networks.MAINNET
+      : Networks.TESTNET;
+
   const network = resolveNetwork(chainId).toLowerCase();
 
   const twitterCardUrl = `${MarketplaceAPIURL}/${network}/orders/s/${orderId}`;

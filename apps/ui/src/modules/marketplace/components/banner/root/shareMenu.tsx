@@ -37,9 +37,10 @@ export const ShareMenu = ({
   collectionName: string;
 }) => {
   const { provider } = useProvider();
-  const chainId = provider?.url.includes('mainnet')
-    ? Networks.MAINNET
-    : Networks.TESTNET;
+  const chainId =
+    provider?.url?.includes('mainnet') || !provider
+      ? Networks.MAINNET
+      : Networks.TESTNET;
   const network = resolveNetwork(chainId).toLowerCase();
   const twitterUrl = `${MarketplaceAPIURL}/${network}/collections/s/${collectionId}`;
 
