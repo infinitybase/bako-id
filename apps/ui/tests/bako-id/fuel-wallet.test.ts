@@ -183,9 +183,13 @@ test.describe('Connect with Fuel Wallet', () => {
         .getByRole('textbox', { name: 'X' })
         .fill('https://x.com/infinitybase_');
       await page.getByRole('button', { name: 'Save' }).click();
-      await page.getByRole('button', { name: 'Save changes' }).click();
-      await page.getByRole('button', { name: 'Confirm' }).click();
-
+      try {
+        await page.getByRole('button', { name: 'Save changes' }).click();
+        await page.getByRole('button', { name: 'Confirm' }).click();
+      } catch {
+        await page.getByRole('button', { name: 'Save changes' }).click();
+        await page.getByRole('button', { name: 'Confirm' }).click();
+      }
       const { value, connectedAddress } =
         await editProfile(fuelWalletTestHelper);
 

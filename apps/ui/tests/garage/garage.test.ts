@@ -30,7 +30,7 @@ test.describe('Connect with fuel wallet', () => {
     });
   });
 
-  test.only('mint 1 NFT', async ({ page }) => {
+  test('mint 1 NFT', async ({ page }) => {
     await page.goto('https://preview.garage.zone/');
     await page.getByRole('button', { name: 'Connect Wallet' }).dblclick();
     await page.getByLabel('Connect to Fuel Wallet').click();

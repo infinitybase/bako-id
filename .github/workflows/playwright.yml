@@ -4,7 +4,7 @@ on:
     branches: ['**']
 
 jobs:
-    fuel:
+  fuel:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -30,42 +30,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: blob-report-fuel
-          path: blob-report
-          retention-days: 1
-
-  bako:
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-      - name: Install dependencies
-        run: npm install -g pnpm && pnpm install
-
-      - name: Install Chromium
-        run: |
-          cd apps/ui/
-          pnpm exec playwright install chromium --with-deps
-
-      - name: Run Playwright tests
-        run: |
-          cd apps/ui/
-          pnpm exec playwright test tests/bako.test.ts
-
-      - name: Upload blob report to GitHub Actions Artifacts
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: blob-report-bako
-          path: blob-report
+          path: apps/ui/blob-report
           retention-days: 1
 
   merge-reports:
     if: ${{ !cancelled() }}
-    needs: [bako, fuel]
-
+    needs: [fuel]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -91,4 +61,3 @@ jobs:
           name: html-report
           path: playwright-report
           retention-days: 14
-
