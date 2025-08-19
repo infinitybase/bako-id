@@ -120,6 +120,9 @@ export const CollectionPage = () => {
     collection?.data?.isMintable &&
     isCollectionStillMintable;
 
+  const renderSkeletonTab =
+    collection?.data?.isMintable && (!isFetched || isLoadingMintData);
+
   // Reset scroll to top when component mounts
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -155,7 +158,7 @@ export const CollectionPage = () => {
           sm: 8,
         }}
       >
-        {collection?.data?.isMintable && (!isFetched || isLoadingMintData) ? (
+        {renderSkeletonTab ? (
           <TabSkeleton />
         ) : (
           <Tabs
@@ -192,7 +195,8 @@ export const CollectionPage = () => {
                 </Tab>
               )}
             </TabList>
-            <Divider my={0} py={0} borderColor="grey.600" />
+
+            {isFetched && <Divider my={0} py={0} borderColor="grey.600" />}
             <TabPanels>
               {(data.length > 0 || debouncedSearch) && (
                 <TabPanel px={0}>
