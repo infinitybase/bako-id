@@ -1,4 +1,4 @@
-import { Address } from 'fuels';
+import { Address, isB256 } from 'fuels';
 
 const UI_URL = 'https://bako.id';
 
@@ -162,11 +162,21 @@ export class BakoIDClient {
 
   /**
    * Retrieves the avatar URL for a given name.
-   * @param {string} name - The name to get the avatar for.
+   * @param {string} nameOrAddress - The name or address to get the avatar for.
    * @param {number} chainId - The network to resolve on.
    * @returns {Promise<File | null>} A promise that resolves to the avatar file.
    */
-  async avatar(name: string, chainId: number): Promise<string | null> {
+  async avatar(nameOrAddress: string, chainId: number): Promise<string | null> {
+    const isAddr = isB256(nameOrAddress);
+    const name = isAddr
+      ? await this.name(nameOrAddress, chainId)
+      : nameOrAddress;
+
+    // don't have handle
+    if (!name) {
+      return null;
+    }
+
     const { url } = await this.httpClient.get<{ url: string | null }>(
       resolveNetwork(chainId),
       `/avatar/${name}/url`,
