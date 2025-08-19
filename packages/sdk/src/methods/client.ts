@@ -161,15 +161,15 @@ export class BakoIDClient {
   }
 
   /**
-   * Retrieves the avatar URL for a given resolver.
-   * @param {string} resolver - The resolver to get the avatar for.
+   * Retrieves the avatar URL for a given name.
+   * @param {string} name - The name to get the avatar for.
    * @param {number} chainId - The network to resolve on.
    * @returns {Promise<File | null>} A promise that resolves to the avatar file.
    */
-  async avatar(resolver: string, chainId: number): Promise<string | null> {
+  async avatar(name: string, chainId: number): Promise<string | null> {
     const { url } = await this.httpClient.get<{ url: string | null }>(
       resolveNetwork(chainId),
-      `/avatar/${resolver}/url`,
+      `/avatar/${name}/url`,
     );
 
     return url;
