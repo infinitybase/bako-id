@@ -2,6 +2,7 @@ name: Playwright Tests
 on:
   pull_request:
     branches: ['**']
+  workflow_dispatch:
 
 jobs:
   fuel:
