@@ -7,7 +7,6 @@ export enum MarketplaceQueryKeys {
   ASSET = 'asset',
   ORDERS = 'orders',
   ORDER = 'order',
-  ALL_ORDERS = 'allOrders',
   ALL_COLLECTIONS = 'allCollections',
   ALL_MINTABLE_COLLECTIONS = 'allMintableCollections',
   COLLECTION = 'collection',

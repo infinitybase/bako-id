@@ -1,8 +1,8 @@
-import { useCustomToast } from "@/components";
-import { NFTCollection } from "@/modules/marketplace/utils/mint";
-import { MarketplaceQueryKeys } from "@/utils/constants";
-import { useWallet } from "@fuels/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCustomToast } from '@/components';
+import { NFTCollection } from '@/modules/marketplace/utils/mint';
+import { MarketplaceQueryKeys } from '@/utils/constants';
+import { useWallet } from '@fuels/react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const useMintToken = (collectionId: string) => {
     const { successToast, errorToast } = useCustomToast();
@@ -14,29 +14,30 @@ export const useMintToken = (collectionId: string) => {
             const mintContract = new NFTCollection(collectionId, wallet!);
             await mintContract.mint(quantity);
 
-            return quantity
+            return quantity;
         },
         onSuccess: (quantity) => {
             successToast({
                 title: `You have successfully minted ${quantity} tokens`,
-                description:
-                    'You can now view your tokens in your wallet',
+                description: 'You can now view your tokens in your wallet',
             });
             queryClient.invalidateQueries({
                 queryKey: [MarketplaceQueryKeys.MINT_TOKEN, collectionId],
             });
         },
-        onError: () => {
+        onError: (err) => {
+            const description = err.message.includes('insufficient coins available')
+                ? 'Insufficient balance to cover the transaction'
+                : 'An error occurred while minting the tokens';
             errorToast({
                 title: 'Transaction error',
-                description: 'An error occurred while minting the tokens',
+                description,
             });
         },
     });
 
-
     return {
         mintToken,
         isPending,
-    }
-}
+    };
+};

@@ -8,6 +8,7 @@ import { useWallet } from '@fuels/react';
 import { ProfilePageBanner } from '../components/banner/profileBanner';
 import { useResolverName } from '@/hooks';
 import { formatAddress } from '@/utils/formatter';
+import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
 
 export const ProfilePage = () => {
   const { wallet } = useWallet();
@@ -48,14 +49,20 @@ export const ProfilePage = () => {
   } = useCollections({
     address: owner,
     page: fuelCollectionsPage,
+    isInfiniteScroll: true,
   });
+
+  const notListedCollectionsWithoutHandles = notListedCollections.filter(
+    (collection) =>
+      !BAKO_CONTRACTS_IDS.includes(collection.assets[0]?.contractId ?? '')
+  );
 
   return (
     <Stack direction="column" gap={0} w="full" mx="auto">
       <ProfilePageBanner
         resolver={owner}
         name={domain ?? formatAddress(owner) ?? ''}
-        nftQuantity={data.length + notListedCollections.length}
+        nftQuantity={data.length + notListedCollectionsWithoutHandles.length}
         usdValue={totalUsdValue}
       />
       <Container
@@ -74,7 +81,7 @@ export const ProfilePage = () => {
           <ProfileNfts
             assets={assets}
             orders={data}
-            notListedCollections={notListedCollections}
+            notListedCollections={notListedCollectionsWithoutHandles}
             isLoadingCollections={!isCollectionsFetched || isLoadingCollections}
             isLoadingOrders={!isOrdersFetched || isLoadingOrders}
             isPlaceholderData={isPlaceholderData}

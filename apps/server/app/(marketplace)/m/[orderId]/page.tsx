@@ -1,8 +1,7 @@
 import { getOrder } from '@/helpers/queries';
 import { Provider } from 'fuels';
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import Redirect from './Redirect';
+import { notFound, redirect } from 'next/navigation';
 
 type Params = {
   params: Promise<{ orderId: string }>;
@@ -47,5 +46,13 @@ export async function generateMetadata({ params }: Params) {
 export default async function Page({ params, searchParams }: Params) {
   const { orderId } = await params;
   const { collectionId } = await searchParams;
-  return <Redirect orderId={orderId} collectionId={collectionId ?? ''} />;
+
+  const BAKO_MARKETPLACE_URL = process.env.NEXT_PUBLIC_APP_URL;
+  if (!BAKO_MARKETPLACE_URL) {
+    throw new Error('NEXT_PUBLIC_APP_URL is not defined');
+  }
+
+  const redirectUrl = `${BAKO_MARKETPLACE_URL}/collection/${collectionId}/order/${orderId}`;
+
+  redirect(redirectUrl);
 }

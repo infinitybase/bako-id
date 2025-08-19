@@ -1,26 +1,26 @@
+import UnknownAsset from '@/assets/unknown-asset.png';
+import { convertToUsd, formatAmount } from '@/utils/convertToUsd';
+import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import {
   Box,
+  Button,
   Flex,
   Heading,
-  Text,
-  Image,
-  Stack,
-  Progress,
-  Button,
   IconButton,
+  Image,
+  Progress,
+  Stack,
+  Text,
 } from '@chakra-ui/react';
-import { useMemo, useState } from 'react';
-import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import type { AssetInfo, BN } from 'fuels';
-import UnknownAsset from '@/assets/unknown-asset.png';
-import { convertToUsd } from '@/utils/convertToUsd';
+import { useEffect, useMemo, useState } from 'react';
 
 type MintContentProps = {
   title: string;
   description: string;
   progress: number;
   maxSupply: number;
-  // maxPerWallet: number;
+  maxPerWallet: number;
   tokenPrice: BN;
   isMinting: boolean;
   asset: AssetInfo | null | undefined;
@@ -33,7 +33,7 @@ const MintContent = ({
   description,
   progress,
   maxSupply,
-  // maxPerWallet,
+  maxPerWallet,
   tokenPrice,
   isMinting,
   asset,
@@ -41,12 +41,22 @@ const MintContent = ({
   wasAllSupplyMinted,
 }: MintContentProps) => {
   const [quantity, setQuantity] = useState(1);
+  const remainingSupply = useMemo(() => {
+    if (maxSupply) return maxSupply - progress;
+  }, [progress, maxSupply]);
+
   const progressPercentage = useMemo(
     () => (progress / maxSupply) * 100,
     [progress, maxSupply]
   );
   const mintPrice = useMemo(
-    () => tokenPrice?.mul(quantity).formatUnits(asset?.decimals ?? 0),
+    () => formatAmount({
+      amount: tokenPrice,
+      options: {
+        units: asset?.decimals || 0,
+        precision: Math.min(asset?.decimals || 0, 3),
+      }
+    }),
     [tokenPrice, quantity, asset?.decimals]
   );
   const usdPrice = useMemo(
@@ -63,6 +73,12 @@ const MintContent = ({
     onMint(quantity);
   };
 
+  useEffect(() => {
+    if (remainingSupply && quantity > remainingSupply) {
+      setQuantity(remainingSupply);
+    }
+  }, [remainingSupply, quantity]);
+
   return (
     <Flex
       flex="1"
@@ -71,12 +87,9 @@ const MintContent = ({
       justifyContent="space-between"
     >
       <Flex direction="column" gap={4}>
-        <Heading fontSize="18px" mt={6} mb={2}>
+        <Heading fontSize="18px" mb={2}>
           {title}
         </Heading>
-        <Text color="white" fontWeight={700} fontSize="sm">
-          Description
-        </Text>
         <Text fontSize="xs" color="section.500" mb={4}>
           {description}
         </Text>
@@ -106,7 +119,12 @@ const MintContent = ({
         </Text> */}
         <Stack direction="row" justify="space-between" align="center" mt={4}>
           <Flex align="center" gap={1}>
-            <Image src={asset?.icon ?? UnknownAsset} alt="ETH" rounded="full" />
+            <Image
+              w={35}
+              src={asset?.icon ?? UnknownAsset}
+              alt="ETH"
+              rounded="full"
+            />
             <Flex align="center" gap={2} w="full">
               <Text fontWeight="bold" fontSize="sm">
                 {mintPrice} {asset?.symbol}
@@ -151,7 +169,10 @@ const MintContent = ({
                 _hover={{ bg: 'grey.600' }}
                 border="none"
                 onClick={() => setQuantity((q) => q + 1)}
-                // isDisabled={quantity >= maxPerWallet}
+                isDisabled={
+                  quantity >= maxPerWallet ||
+                  Boolean(remainingSupply && quantity >= remainingSupply)
+                }
               />
             </Flex>
           )}

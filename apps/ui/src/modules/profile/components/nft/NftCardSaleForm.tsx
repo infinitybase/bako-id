@@ -39,7 +39,9 @@ export type NftSaleCardForm = {
 
 interface NftCardSaleFormProps {
   initialValues?: NftSaleCardForm;
-  onSubmit: (data: NftSaleCardForm) => void;
+  onSubmit: (
+    data: NftSaleCardForm & { currentReceiveAmountInUsd: number }
+  ) => void;
   assets: Asset[];
   userWithHandle: boolean;
 }
@@ -65,12 +67,12 @@ export const NftCardSaleForm = ({
 
   const currentSellAsset = useMemo(
     () => assets.find((asset) => asset.id === sellAssetId),
-    [assets, sellAssetId],
+    [assets, sellAssetId]
   );
 
   const findDefaultAsset = useMemo(
     () => assets.find((asset) => asset.id === FUEL_ASSET_ID),
-    [assets],
+    [assets]
   );
   const defaultAsset = {
     id: findDefaultAsset?.id,
@@ -112,7 +114,7 @@ export const NftCardSaleForm = ({
 
     const valueInBaseUnits = bn.parseUnits(
       currentValue.toString(),
-      currentSellAsset.metadata?.decimals || 9,
+      currentSellAsset.metadata?.decimals || 9
     );
     const feeAmount = valueInBaseUnits.mul(currentFee).div(10000);
     const valueAfterFee = valueInBaseUnits.sub(feeAmount);
@@ -135,7 +137,14 @@ export const NftCardSaleForm = ({
     <Grid
       as="form"
       id="nft-sale-form"
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit((data) =>
+        onSubmit({
+          ...data,
+          currentReceiveAmountInUsd: Number(
+            currentReceiveAmountInUsd.replace(/[^\d.]/g, '').trim()
+          ),
+        })
+      )}
       templateColumns="repeat(2, 1fr)"
       gap={4}
     >

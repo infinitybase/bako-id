@@ -20,7 +20,7 @@ const SearchBar = ({
   value,
 }: SearchBarProps) => {
   return (
-    <FormControl>
+    <FormControl pr={{ base: 3, sm: 0 }}>
       <InputGroup position="relative">
         <Input
           onChange={(e) => onChange(e.target.value)}
@@ -43,6 +43,7 @@ const SearchBar = ({
             sm: 'sm',
             md: 'md',
           }}
+          pt={1}
         >
           {placeholder}
         </FormLabel>

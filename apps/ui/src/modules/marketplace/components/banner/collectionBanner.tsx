@@ -1,8 +1,8 @@
 import { Box, Stack } from '@chakra-ui/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import type { Collection } from '@/types/marketplace';
 import { ImageLoader } from '@/components/imageLoader';
+import type { Collection } from '@/types/marketplace';
 import { useNavigate } from '@tanstack/react-router';
 import { BannerRoot } from './root';
 
@@ -17,8 +17,18 @@ export const CollectionPageBanner = ({
   const navigate = useNavigate();
 
   return (
-    <Stack gap={4}>
-      <Box height="350px" position="relative">
+    <Stack
+      gap={4}
+      w={{ base: 'calc(100% - 23px)', sm: 'full' }}
+      mx="auto"
+      borderRadius="8px"
+    >
+      <Box
+        height="350px"
+        position="relative"
+        borderRadius={{ base: '8px', sm: '0' }}
+        overflow="hidden"
+      >
         <Box
           w="full"
           h="full"
@@ -44,13 +54,11 @@ export const CollectionPageBanner = ({
               position: 'absolute',
               top: 0,
               left: 0,
-              borderRadius: '0',
             }}
             imageProps={{
               objectFit: 'cover',
               objectPosition: 'center',
               boxSize: 'full',
-              borderRadius: '0',
             }}
           />
         </Box>
@@ -60,8 +68,8 @@ export const CollectionPageBanner = ({
           bottom={0}
           left={0}
           right={0}
-          height={!hasBanner ? 'full' : '80px'}
-          bgGradient="linear(0deg, rgba(21,20,19,0.85) 0%, rgba(21,20,19,0.00) 100%)"
+          height="full"
+          bgGradient="linear-gradient(0deg, rgba(21, 20, 19, 0.85) 0%, rgba(21, 20, 19, 0) 100%)"
           zIndex={2}
           cursor="pointer"
           onClick={(e) => {

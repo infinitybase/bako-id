@@ -13,6 +13,13 @@ const BASE_API_URL = import.meta.env.VITE_API_URL;
 
 const BASE_MARKETPLACE_URL = import.meta.env.VITE_MARKETPLACE_URL;
 
+export enum ORDER_EVENTS {
+  OrderCreatedEvent = 'OrderCreatedEvent',
+  OrderExecutedEvent = 'OrderExecutedEvent',
+  OrderCancelledEvent = 'OrderCancelledEvent',
+  OrderEditedEvent = 'OrderEditedEvent',
+}
+
 export class marketplaceService {
   static async getAssets({
     chainId = Networks.MAINNET,
@@ -188,5 +195,51 @@ export class marketplaceService {
     const data = await response.json();
 
     return data;
+  }
+
+  static async saveReceipt(data: {
+    txId: string;
+    chainId: number;
+  }) {
+
+    const { txId, chainId } = data;
+    const network = resolveNetwork(chainId);
+
+    try {
+      const url = constructUrl(`${BASE_MARKETPLACE_URL}/${network}/receipts/tx/${txId}`, {});
+
+      const response = await fetch(url, {
+        method: 'POST',
+      });
+
+      return response.json();
+    } catch {
+      return null
+    }
+
+  }
+
+  static async getReceiptStatus(data: {
+    txId: string;
+    chainId: number;
+  }): Promise<{
+    success: boolean;
+    data: {
+      isProcessed: boolean;
+      event: keyof typeof ORDER_EVENTS;
+    };
+  } | null> {
+    const { txId, chainId } = data;
+    const network = resolveNetwork(chainId);
+
+    try {
+      const url = constructUrl(`${BASE_MARKETPLACE_URL}/${network}/receipts/tx/${txId}`, {});
+
+      const response = await fetch(url);
+
+      return response.json();
+    } catch {
+      return null
+    }
   }
 }

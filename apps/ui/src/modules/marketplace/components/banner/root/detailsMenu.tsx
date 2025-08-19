@@ -1,19 +1,19 @@
+import { CloseIcon } from '@/components/icons/closeIcon';
+import { ImageLoader } from '@/components/imageLoader';
+import type { Collection } from '@/types/marketplace';
 import {
+  Flex,
+  Heading,
+  Icon,
   Menu,
   MenuButton,
-  MenuList,
   MenuItem,
-  Flex,
-  VStack,
-  Heading,
+  MenuList,
   Text,
-  Icon,
+  VStack,
 } from '@chakra-ui/react';
-import { InfoCircleIcon } from '../../icons';
 import { useRef } from 'react';
-import { CloseIcon } from '@/components/icons/closeIcon';
-import type { Collection } from '@/types/marketplace';
-import { ImageLoader } from '@/components/imageLoader';
+import { InfoCircleIcon } from '../../icons';
 import { SocialActionsMenu } from './socialActionsMenu';
 
 const DetailsMenu = ({ collection }: { collection: Collection }) => {
@@ -27,6 +27,8 @@ const DetailsMenu = ({ collection }: { collection: Collection }) => {
 
   return (
     <Menu
+      placement="bottom-start"
+      strategy="fixed"
       styleConfig={{
         menu: {
           bg: 'transparent',
@@ -34,10 +36,20 @@ const DetailsMenu = ({ collection }: { collection: Collection }) => {
         },
       }}
     >
-      <MenuButton ref={menuRef} h={4} mt={2}>
-        <Icon as={InfoCircleIcon} color="grey.200" />
+      <MenuButton
+        ref={menuRef}
+        h={4}
+        mt={2}
+        bg="transparent"
+        color="grey.200"
+        _hover={{ bg: 'transparent', color: 'white' }}
+        _focus={{ bg: 'transparent' }}
+        _active={{ bg: 'transparent' }}
+        transition="color 0.2s"
+      >
+        <Icon as={InfoCircleIcon} color="inherit" transition="color 0.2s" />
       </MenuButton>
-      <MenuList p={0}>
+      <MenuList p={0} zIndex={200}>
         <MenuItem p={0} m={0} h="full">
           <Flex
             p={6}
@@ -96,8 +108,17 @@ const DetailsMenu = ({ collection }: { collection: Collection }) => {
               </VStack>
             </Flex>
 
-            <Text color="section.500" fontSize="xs" fontWeight={400} mt={6}>
-              {collection.config.description}
+            <Text
+              color="section.500"
+              fontSize="xs"
+              fontWeight={400}
+              mt={6}
+              maxW={{ base: '270px', sm: 'full' }}
+              w="full"
+              whiteSpace="pre-wrap"
+              textOverflow="ellipsis"
+            >
+              {collection.description ?? collection.config.description}
             </Text>
           </Flex>
         </MenuItem>

@@ -9,7 +9,7 @@
       "destination": "/garage.html"
     },
     {
-      "source": "/",
+      "source": "/(.*)",
       "destination": "/garage.html",
       "has": [
         {
@@ -19,7 +19,7 @@
       ]
     },
     {
-      "source": "/",
+      "source": "/(.*)",
       "destination": "/garage.html",
       "has": [
         {
@@ -29,7 +29,7 @@
       ]
     },
     {
-      "source": "/",
+      "source": "/(.*)",
       "destination": "/bako.html"
     }
   ]

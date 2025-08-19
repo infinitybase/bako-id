@@ -1,4 +1,4 @@
-import { Box, Flex, Skeleton } from '@chakra-ui/react';
+import { Box, type BoxProps, Flex, Skeleton } from '@chakra-ui/react';
 import { useRouter } from '@tanstack/react-router';
 import { useRef, useState } from 'react';
 import { Autoplay, Mousewheel, Pagination } from 'swiper/modules';
@@ -10,6 +10,7 @@ import { HexagonFillIcon } from '@/components/icons/hexagonFill';
 import { useListMintableCollections } from '@/hooks/marketplace/useListMintableCollections';
 import type { Swiper as SwiperType } from 'swiper';
 import { BannerRoot } from './root';
+import type { Collection } from '@/types/marketplace';
 
 export const MarketplaceBanner = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -34,43 +35,74 @@ export const MarketplaceBanner = () => {
   }
 
   return (
-    <Box position="relative" height="350px" overflow="hidden">
-      <Swiper
-        direction="vertical"
-        slidesPerView={1}
-        mousewheel
-        modules={[Pagination, Mousewheel, Autoplay]}
-        autoplay={{ delay: 4000, disableOnInteraction: false }}
-        style={{
-          height: '100%',
-        }}
-        onSwiper={(swiper) => {
-          swiperRef.current = swiper;
-        }}
-        onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
+    <Flex flexDir="column" gap={2} h={{ base: '250px', sm: '352px' }} mt={0.5}>
+      <Box
+        position="relative"
+        h="full"
+        w={{ base: 'calc(100% - 23px)', sm: 'full' }}
+        mx="auto"
       >
-        {banners?.map((collection) => (
-          <SwiperSlide key={collection.name}>
-            <BannerRoot.CollectionsContent
-              collection={collection}
-              handleRedirect={handleRedirect}
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
-      <Flex
-        direction="column"
+        <Swiper
+          direction="horizontal"
+          slidesPerView={1}
+          modules={[Pagination, Mousewheel, Autoplay]}
+          autoplay={{ delay: 4000, disableOnInteraction: false }}
+          style={{
+            height: '100%',
+          }}
+          onSwiper={(swiper) => {
+            swiperRef.current = swiper;
+          }}
+          onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
+        >
+          {banners?.map((collection) => (
+            <SwiperSlide key={collection.name} style={{ height: 'full' }}>
+              <BannerRoot.CollectionsContent
+                collection={collection}
+                handleRedirect={handleRedirect}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+        <DotButtons
+          banners={banners}
+          activeIndex={activeIndex}
+          swiperRef={swiperRef}
+          // display={{ base: 'block', sm: 'none' }}
+        />
+      </Box>
+    </Flex>
+  );
+};
+
+const DotButtons = ({
+  banners,
+  activeIndex,
+  swiperRef,
+  ...props
+}: {
+  banners: Collection[] | undefined;
+  activeIndex: number;
+  swiperRef: React.RefObject<SwiperType | null>;
+} & BoxProps) => {
+  return (
+    <Flex
+      mx="auto"
+      zIndex={5}
+      onClick={(e) => e.stopPropagation()}
+      w="40px"
+      alignItems="center"
+      justifyContent="center"
+      {...props}
+    >
+      <Box
+        display="flex"
+        flexDir="row"
         gap={2}
-        position="absolute"
-        right={0}
-        top="50%"
-        transform="translateY(-50%)"
-        zIndex={5}
-        onClick={(e) => e.stopPropagation()}
-        w="40px"
-        height="100px"
         alignItems="center"
         justifyContent="center"
+        w="full"
+        mt={6}
       >
         {banners?.map((col, idx) =>
           idx === activeIndex ? (
@@ -89,7 +121,7 @@ export const MarketplaceBanner = () => {
             />
           )
         )}
-      </Flex>
-    </Box>
+      </Box>
+    </Flex>
   );
 };

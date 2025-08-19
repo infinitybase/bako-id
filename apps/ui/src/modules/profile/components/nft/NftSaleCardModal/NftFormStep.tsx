@@ -31,16 +31,36 @@ export default function NftFormStep({
   const { assets } = useListAssets();
 
   const handleUpdateOrder = useCallback(
-    async (data: NftSaleCardForm) => {
+    async (data: NftSaleCardForm & { currentReceiveAmountInUsd: number }) => {
       try {
         const sellPrice = bn.parseUnits(
           data.sellPrice.toString(),
-          data.sellAsset.decimals,
+          data.sellAsset.decimals
         );
+
+        const oldAmount = order.price.amount;
+        const oldRaw = order.price.raw;
+        const newAmount = data.sellPrice;
+        const newRaw = sellPrice.toString();
+
+        const oldPrice = {
+          oldAmount,
+          oldRaw,
+        };
+
+        const newPrice = {
+          newAmount,
+          newRaw,
+          usd: data.currentReceiveAmountInUsd,
+        };
+
         await updateOrderAsync({
+          oldPrice,
+          newPrice,
           sellPrice,
           sellAsset: data.sellAsset.id,
           orderId: order.id,
+          assetIcon: data.sellAsset.icon ?? '',
         });
         successToast({ title: 'Order updated successfully!' });
         onClose();
@@ -48,12 +68,12 @@ export default function NftFormStep({
         errorToast({ title: 'Failed to update order' });
       }
     },
-    [updateOrderAsync, order.id, successToast, errorToast, onClose],
+    [updateOrderAsync, order, successToast, errorToast, onClose]
   );
 
   const decimals = useMemo(
     () => assets.find((a) => a.id === order.price.assetId)?.metadata?.decimals,
-    [assets, order.price.assetId],
+    [assets, order.price.assetId]
   );
 
   return (
@@ -78,7 +98,15 @@ export default function NftFormStep({
       />
 
       <Stack direction="row" justifyContent="space-between" mt="auto">
-        <Button type="button" variant="secondary" onClick={onCancel}>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onCancel}
+          _hover={{
+            borderColor: 'garage.100',
+            color: 'garage.100',
+          }}
+        >
           Cancel
         </Button>
         <Button
