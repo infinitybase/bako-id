@@ -16,7 +16,7 @@ export async function GET(
       MetadataKeys.AVATAR,
     );
 
-    return NextResponse.json({ url: avatarUrl });
+    return NextResponse.json({ url: avatarUrl ?? null });
   } catch (e) {
     const error = e as Error;
     const status =
