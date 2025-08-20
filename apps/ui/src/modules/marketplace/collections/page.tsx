@@ -119,6 +119,14 @@ export const CollectionPage = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
+  useEffect(() => {
+    if (collection?.data === null) {
+      navigate({
+        to: '/',
+      });
+    }
+  }, [collection?.data, navigate]);
+
   return (
     <Stack w="full" p={0} m={0}>
       <CollectionPageBanner collection={collection?.data!} />
