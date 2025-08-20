@@ -24,7 +24,7 @@ jobs:
       - name: Run Playwright tests
         run: |
           cd apps/ui/
-          pnpm exec playwright test tests/fuel-wallet.test.ts
+          pnpm exec playwright test tests/bako-id/fuel-wallet.test.ts
 
       - name: Upload blob report to GitHub Actions Artifacts
         if: ${{ !cancelled() }}
