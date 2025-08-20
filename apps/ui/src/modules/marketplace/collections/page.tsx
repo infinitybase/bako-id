@@ -10,7 +10,6 @@ import {
 } from '@chakra-ui/react';
 import {
   Outlet,
-  useLocation,
   useNavigate,
   useParams,
   useSearch,
@@ -31,7 +30,6 @@ import { slugify } from '@/utils/slugify';
 export const CollectionPage = () => {
   const navigate = useNavigate();
   const { collectionName } = useParams({ strict: false });
-  const isMintPage = useLocation().pathname.includes('mint');
   const slugifiedCollectionName = slugify(collectionName);
   const { search } = useSearch({ strict: false });
   const debouncedSearch = useDebounce<string>(search?.trim() ?? '', 700);

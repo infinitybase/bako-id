@@ -71,17 +71,6 @@ export const marketplaceCollectionRoute = createRoute({
   },
 });
 
-export const marketplaceCollectionMintRoute = createRoute({
-  getParentRoute: () => marketplaceRootRoute,
-  component: CollectionPage,
-  path: '/collection/$collectionName/mint',
-  context(ctx) {
-    return {
-      collectionName: ctx.params.collectionName,
-    };
-  },
-});
-
 export const marketplaceProfileRoute = createRoute({
   getParentRoute: () => marketplaceRootRoute,
   component: ProfilePage,
