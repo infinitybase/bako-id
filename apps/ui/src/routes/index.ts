@@ -6,6 +6,7 @@ import {
   homeRoute,
   learnMoreRoute,
   marketplaceCollectionRoute,
+  marketplaceCollectionMintRoute,
   marketplaceProfileRoute,
   marketplaceRoute,
   moreRoute,
@@ -27,6 +28,7 @@ const bakoIdRouterTree = rootRoute.addChildren([
 const marketplaceRouterTree = marketplaceRootRoute.addChildren([
   marketplaceRoute.addChildren([orderRoute]),
   marketplaceCollectionRoute,
+  marketplaceCollectionMintRoute,
   marketplaceProfileRoute,
 ]);
 
