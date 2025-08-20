@@ -5,6 +5,7 @@ import { Flex, Text, Grid, GridItem, Box } from '@chakra-ui/react';
 import { useRouter } from '@tanstack/react-router';
 import { isB256 } from 'fuels';
 import { useScrollReset } from '@/hooks/useScrollReset';
+import { slugify } from '@/utils/slugify';
 
 const CollectionItem = ({ col }: { col: Collection }) => {
   const router = useRouter();
@@ -34,9 +35,9 @@ const CollectionItem = ({ col }: { col: Collection }) => {
       cursor="pointer"
       onClick={async () => {
         await router.navigate({
-          to: '/collection/$collectionId',
+          to: '/collection/$collectionName',
           params: {
-            collectionId: col.id,
+            collectionName: slugify(col.name),
           },
         });
         resetScroll();

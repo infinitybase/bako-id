@@ -25,10 +25,12 @@ import { CollectionPageBanner } from '../components/banner/collectionBanner';
 import MarketplaceFilter from '../components/marketplaceFilter';
 import MintPanel from '../components/mintPanel';
 import { useProcessingOrdersStore } from '../stores/processingOrdersStore';
+import { slugify } from '@/utils/slugify';
 
 export const CollectionPage = () => {
   const navigate = useNavigate();
-  const { collectionId } = useParams({ strict: false });
+  const { collectionName } = useParams({ strict: false });
+  const slugifiedCollectionName = slugify(collectionName);
   const { search } = useSearch({ strict: false });
   const debouncedSearch = useDebounce<string>(search?.trim() ?? '', 700);
   const [filters, setFilters] = useState<{
@@ -51,7 +53,7 @@ export const CollectionPage = () => {
     isFetched,
     isPlaceholderData,
   } = useGetCollectionOrders({
-    collectionId,
+    collectionId: slugifiedCollectionName,
     sortValue: filters.sortBy,
     sortDirection: filters.sortDirection,
     limit: collectionOrdersLimit,
@@ -59,7 +61,7 @@ export const CollectionPage = () => {
   });
 
   const { collection } = useGetCollection({
-    collectionId,
+    collectionId: slugifiedCollectionName,
   });
 
   const {
@@ -69,7 +71,10 @@ export const CollectionPage = () => {
     asset,
     isLoading: isLoadingMintData,
     isFetched: isFetchedMintData,
-  } = useGetMintData(collectionId, collection?.data?.isMintable ?? false);
+  } = useGetMintData(
+    collection?.data?.id ?? '',
+    collection?.data?.isMintable ?? false
+  );
 
   const wasAllSupplyMinted =
     Number(maxSupply) > 0 && Number(maxSupply) === Number(totalMinted);
@@ -113,6 +118,14 @@ export const CollectionPage = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
+
+  useEffect(() => {
+    if (collection?.data === null) {
+      navigate({
+        to: '/',
+      });
+    }
+  }, [collection?.data, navigate]);
 
   return (
     <Stack w="full" p={0} m={0}>
@@ -192,8 +205,8 @@ export const CollectionPage = () => {
             {showMintTab && (
               <TabPanel p={0}>
                 <MintPanel
-                  collectionName={collection?.data?.name ?? ''}
-                  collectionId={collectionId ?? ''}
+                  collectionName={slugifiedCollectionName ?? ''}
+                  collectionId={collection?.data?.id ?? ''}
                   maxSupply={maxSupply}
                   totalMinted={totalMinted}
                   mintPrice={mintPrice}

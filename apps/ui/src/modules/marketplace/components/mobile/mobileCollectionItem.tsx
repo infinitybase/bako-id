@@ -24,9 +24,9 @@ const MobileCollectionItem = ({ col }: { col: Collection }) => {
       cursor="pointer"
       onClick={async () => {
         await router.navigate({
-          to: '/collection/$collectionId',
+          to: '/collection/$collectionName',
           params: {
-            collectionId: col.id,
+            collectionName: col.name,
           },
         });
         resetScroll();

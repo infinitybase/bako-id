@@ -4,6 +4,7 @@ import { useResolverName } from '@/hooks';
 import { useCancelOrder, useGetOrder } from '@/hooks/marketplace';
 import { NftSaleCardModal } from '@/modules/profile/components/nft/NftSaleCardModal';
 import { parseURI } from '@/utils/formatter';
+import { slugify } from '@/utils/slugify';
 import { useDisclosure } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
 import { Navigate, useNavigate, useParams } from '@tanstack/react-router';
@@ -21,11 +22,12 @@ export default function OrderPage() {
     wallet?.address.b256Address || ZeroBytes32
   );
 
-  const { collectionId } = useParams({ strict: false });
+  const { collectionName } = useParams({ strict: false });
+  const slugifiedCollectionName = slugify(collectionName);
 
   const { order, isLoading, isFetched } = useGetOrder({ id: orderId });
 
-  const redirectUrl = `/collection/${collectionId}`;
+  const redirectUrl = `/collection/${slugifiedCollectionName}`;
 
   const handleClose = useCallback(() => {
     navigate({
