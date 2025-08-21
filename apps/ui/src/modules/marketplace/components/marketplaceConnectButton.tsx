@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
 import { WalletIcon2 } from '@/modules/marketplace/components/icons/wallet2';
-import { useCustomToast, UserIcon } from '@/components';
+import { useCustomToast } from '@/components';
 import { useNavigate } from '@tanstack/react-router';
 import { isB256, type Account } from 'fuels';
 import { formatAddress } from '@/utils/formatter';
@@ -54,13 +54,6 @@ export const MarketplaceConnect = ({
   const handleLogout = async () => {
     await disconnect();
     navigate({ to: '/' });
-  };
-
-  const handleRedirect = () => {
-    navigate({
-      to: '/profile/$name',
-      params: { name: parsedDomain },
-    });
   };
 
   if (isLoading) {
@@ -126,30 +119,6 @@ export const MarketplaceConnect = ({
           p={0}
           minW="145px"
         >
-          <MenuItem
-            w="full"
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            bg="transparent"
-            py={3}
-            px={2}
-            borderBottom="1px solid"
-            borderColor="grey.400"
-            onClick={handleRedirect}
-            _hover={{ bg: 'input.500' }}
-            borderRadius="8px 8px 0 0"
-          >
-            <Text
-              onClick={handleRedirect}
-              fontSize="12px"
-              letterSpacing="0.5px"
-              lineHeight="1.2"
-            >
-              Profile
-            </Text>
-            <Icon as={UserIcon} />
-          </MenuItem>
           <MenuItem
             w="full"
             display="flex"
