@@ -11,9 +11,10 @@ import {
   Progress,
   Stack,
   Text,
+  Tooltip,
 } from '@chakra-ui/react';
-import { useConnectUI } from '@fuels/react';
-import type { AssetInfo, BN } from 'fuels';
+import { useAccount, useBalance, useConnectUI } from '@fuels/react';
+import { bn, type AssetInfo, type BN } from 'fuels';
 import { useEffect, useMemo, useState } from 'react';
 
 type MintContentProps = {
@@ -47,11 +48,21 @@ const MintContent = ({
   }, [progress, maxSupply]);
 
   const { connect, isConnected, isConnecting } = useConnectUI();
+  const { account } = useAccount();
+  const {
+    balance: walletAssetBalance,
+    isLoading: isLoadingWalletBalance,
+    isFetching: isFetchingBalance,
+  } = useBalance({
+    address: account,
+    assetId: asset?.assetId,
+  });
 
   const progressPercentage = useMemo(
     () => (progress / maxSupply) * 100,
     [progress, maxSupply]
   );
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const mintPrice = useMemo(
     () =>
       formatAmount({
@@ -63,6 +74,13 @@ const MintContent = ({
       }),
     [tokenPrice, quantity, asset?.decimals]
   );
+
+  const notEnoughBalance = useMemo(() => {
+    if (isLoadingWalletBalance || !walletAssetBalance) return true;
+
+    return walletAssetBalance.lt(bn(tokenPrice.mul(quantity).toString()));
+  }, [walletAssetBalance, isLoadingWalletBalance, tokenPrice, quantity]);
+
   const usdPrice = useMemo(
     () =>
       convertToUsd(
@@ -185,22 +203,29 @@ const MintContent = ({
             </Flex>
           )}
         </Stack>
-        <Button
-          mt={wasAllSupplyMinted ? 4 : 0}
-          variant="mktPrimary"
-          size="lg"
-          w="full"
-          fontWeight="bold"
-          borderRadius="md"
-          letterSpacing=".5px"
-          onClick={handleMint}
-          isLoading={isMinting || isConnecting}
-          isDisabled={isMinting || wasAllSupplyMinted}
-        >
-          {wasAllSupplyMinted
-            ? 'Minted'
-            : `Mint ${quantity} NFT${quantity > 1 ? 's' : ''}`}
-        </Button>
+        <Tooltip label={notEnoughBalance ? 'Not enough balance' : ''}>
+          <Button
+            mt={wasAllSupplyMinted ? 4 : 0}
+            variant="mktPrimary"
+            size="lg"
+            w="full"
+            fontWeight="bold"
+            borderRadius="md"
+            letterSpacing=".5px"
+            onClick={handleMint}
+            isLoading={isMinting}
+            isDisabled={
+              isMinting ||
+              wasAllSupplyMinted ||
+              notEnoughBalance ||
+              isFetchingBalance
+            }
+          >
+            {wasAllSupplyMinted
+              ? 'Minted'
+              : `Mint ${quantity} NFT${quantity > 1 ? 's' : ''}`}
+          </Button>
+        </Tooltip>
       </Stack>
     </Flex>
   );
