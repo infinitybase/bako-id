@@ -151,6 +151,9 @@ const NftSaleCard = ({
       }).format(Number(order.price.usd)),
     [order.price.usd]
   );
+  const orderPrice = useMemo(() => {
+    return Intl.NumberFormat('en-US').format(Number(order.price.amount));
+  }, [order.price.amount]);
 
   const assetSymbolUrl = order.price.image || UnknownAsset;
 
@@ -230,7 +233,7 @@ const NftSaleCard = ({
               <Tooltip label={order.asset?.name}>
                 <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
               </Tooltip>
-              {order.price.amount}
+              {orderPrice}
             </Heading>
             {order.price.usd && !displayBuyButton && (
               <Text color="grey.subtitle" fontSize="xs" lineHeight=".9">
