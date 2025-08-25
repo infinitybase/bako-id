@@ -1,4 +1,4 @@
-import { Address } from 'fuels';
+import { Address, isB256 } from 'fuels';
 
 const UI_URL = 'https://bako.id';
 
@@ -62,7 +62,7 @@ const httpClient = (config: HTTPClientConfig) => {
   return {
     get: async <R>(network: string, endpoint: string) =>
       fetch(`${apiUrl}/${network}${endpoint}`).then(
-        (res) => res.json() as Promise<R>
+        (res) => res.json() as Promise<R>,
       ),
     post: async <T>(network: string, endpoint: string, body: T) =>
       fetch(`${apiUrl}/${network}${endpoint}`, {
@@ -100,7 +100,7 @@ export class BakoIDClient {
   async records(owner: string, chainId: number): Promise<IDRecord[]> {
     const { records } = await this.httpClient.get<{ records: IDRecord[] }>(
       resolveNetwork(chainId),
-      `/records/${Address.fromDynamicInput(owner).toB256()}`
+      `/records/${Address.fromDynamicInput(owner).toB256()}`,
     );
     return records || [];
   }
@@ -114,7 +114,7 @@ export class BakoIDClient {
   async resolver(name: string, chainId: number) {
     const { address } = await this.httpClient.get<{ address: string | null }>(
       resolveNetwork(chainId),
-      `/addr/${name}`
+      `/addr/${name}`,
     );
 
     return address ? Address.fromDynamicInput(address).toString() : null;
@@ -129,7 +129,7 @@ export class BakoIDClient {
   async name(addr: string, chainId: number) {
     const { name } = await this.httpClient.get<{ name: string | null }>(
       resolveNetwork(chainId),
-      `/name/${Address.fromDynamicInput(addr).toB256()}`
+      `/name/${Address.fromDynamicInput(addr).toB256()}`,
     );
     return name ?? null;
   }
@@ -158,5 +158,30 @@ export class BakoIDClient {
    */
   profile(name: string) {
     return `${UI_URL}/${name.replace('@', '')}`;
+  }
+
+  /**
+   * Retrieves the avatar URL for a given name.
+   * @param {string} nameOrAddress - The name or address to get the avatar for.
+   * @param {number} chainId - The network to resolve on.
+   * @returns {Promise<File | null>} A promise that resolves to the avatar file.
+   */
+  async avatar(nameOrAddress: string, chainId: number): Promise<string | null> {
+    const isAddr = isB256(nameOrAddress);
+    const name = isAddr
+      ? await this.name(nameOrAddress, chainId)
+      : nameOrAddress;
+
+    // don't have handle
+    if (!name) {
+      return null;
+    }
+
+    const { url } = await this.httpClient.get<{ url: string | null }>(
+      resolveNetwork(chainId),
+      `/avatar/${name}/url`,
+    );
+
+    return url;
   }
 }
