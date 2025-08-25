@@ -13,7 +13,7 @@ import {
   Text,
   Tooltip,
 } from '@chakra-ui/react';
-import { useAccount, useBalance } from '@fuels/react';
+import { useAccount, useBalance, useConnectUI } from '@fuels/react';
 import { bn, type AssetInfo, type BN } from 'fuels';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -47,6 +47,7 @@ const MintContent = ({
     if (maxSupply) return maxSupply - progress;
   }, [progress, maxSupply]);
 
+  const { connect, isConnected, isConnecting } = useConnectUI();
   const { account } = useAccount();
   const {
     balance: walletAssetBalance,
@@ -91,6 +92,10 @@ const MintContent = ({
   );
 
   const handleMint = () => {
+    if (!isConnected && !isConnecting) {
+      connect();
+      return;
+    }
     onMint(quantity);
   };
 
