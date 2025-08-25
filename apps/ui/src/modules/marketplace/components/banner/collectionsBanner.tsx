@@ -23,8 +23,8 @@ export const MarketplaceBanner = () => {
   const handleRedirect = () => {
     if (!banners) return;
     router.navigate({
-      to: '/collection/$collectionId',
-      params: { collectionId: banners[activeIndex].id },
+      to: '/collection/$collectionName',
+      params: { collectionName: banners[activeIndex].name },
     });
   };
 
@@ -68,7 +68,6 @@ export const MarketplaceBanner = () => {
           banners={banners}
           activeIndex={activeIndex}
           swiperRef={swiperRef}
-          // display={{ base: 'block', sm: 'none' }}
         />
       </Box>
     </Flex>

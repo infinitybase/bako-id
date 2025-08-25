@@ -63,13 +63,14 @@ export const marketplaceRoute = createRoute({
 export const marketplaceCollectionRoute = createRoute({
   getParentRoute: () => marketplaceRootRoute,
   component: CollectionPage,
-  path: '/collection/$collectionId',
+  path: '/collection/$collectionName',
   context(ctx) {
     return {
-      collectionId: ctx.params.collectionId,
+      collectionName: ctx.params.collectionName,
     };
   },
 });
+
 export const marketplaceProfileRoute = createRoute({
   getParentRoute: () => marketplaceRootRoute,
   component: ProfilePage,
@@ -79,5 +80,5 @@ export const marketplaceProfileRoute = createRoute({
 export const orderRoute = createRoute({
   getParentRoute: () => marketplaceCollectionRoute,
   component: OrderPage,
-  path: '/collection/$collectionId/order/$orderId',
+  path: '/collection/$collectionName/order/$orderId',
 });

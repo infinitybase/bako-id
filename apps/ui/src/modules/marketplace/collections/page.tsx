@@ -27,10 +27,12 @@ import { CollectionPageBanner } from '../components/banner/collectionBanner';
 import MarketplaceFilter from '../components/marketplaceFilter';
 import MintPanel from '../components/mintPanel';
 import { useProcessingOrdersStore } from '../stores/processingOrdersStore';
+import { slugify } from '@/utils/slugify';
 
 export const CollectionPage = () => {
   const navigate = useNavigate();
-  const { collectionId } = useParams({ strict: false });
+  const { collectionName } = useParams({ strict: false });
+  const slugifiedCollectionName = slugify(collectionName);
   const { search } = useSearch({ strict: false });
   const debouncedSearch = useDebounce<string>(search?.trim() ?? '', 700);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
@@ -54,7 +56,7 @@ export const CollectionPage = () => {
     isFetched,
     isPlaceholderData,
   } = useGetCollectionOrders({
-    collectionId,
+    collectionId: slugifiedCollectionName,
     sortValue: filters.sortBy,
     sortDirection: filters.sortDirection,
     limit: collectionOrdersLimit,
@@ -62,7 +64,7 @@ export const CollectionPage = () => {
   });
 
   const { collection } = useGetCollection({
-    collectionId,
+    collectionId: slugifiedCollectionName,
   });
 
   const {
@@ -72,7 +74,10 @@ export const CollectionPage = () => {
     asset,
     isLoading: isLoadingMintData,
     isFetched: isFetchedMintData,
-  } = useGetMintData(collectionId, collection?.data?.isMintable ?? false);
+  } = useGetMintData(
+    collection?.data?.id ?? '',
+    collection?.data?.isMintable ?? false
+  );
 
   const wasAllSupplyMinted =
     Number(maxSupply) > 0 && Number(maxSupply) === Number(totalMinted);
@@ -102,7 +107,7 @@ export const CollectionPage = () => {
       sortDirection: column.includes('asc') ? 'asc' : 'desc',
     }));
   };
-
+  
   const data = useMemo(() => {
     // Remove the orders that were purchased from the list
     return (collectionOrders?.pages?.flatMap((page) => page.data) ?? []).filter(
@@ -136,7 +141,15 @@ export const CollectionPage = () => {
         setActiveTabIndex(0);
       }
     }
-  }, [hasItems, shouldShowMintTab, shouldDefaultToMintTab]);
+  }, [hasItems, shouldShowMintTab, shouldDefaultToMintTab]) 
+
+  useEffect(() => {
+    if (collection?.data === null) {
+      navigate({
+        to: '/',
+      });
+    }
+  }, [collection?.data, navigate]);
 
   return (
     <Stack w="full" p={0} m={0}>
@@ -224,8 +237,8 @@ export const CollectionPage = () => {
               {shouldShowMintTab && (
                 <TabPanel p={0}>
                   <MintPanel
-                    collectionName={collection?.data?.name ?? ''}
-                    collectionId={collectionId ?? ''}
+                    collectionName={slugifiedCollectionName ?? ''}
+                    collectionId={collection?.data?.id ?? ''}
                     maxSupply={maxSupply}
                     totalMinted={totalMinted}
                     mintPrice={mintPrice}
