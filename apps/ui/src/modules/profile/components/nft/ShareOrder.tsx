@@ -4,6 +4,7 @@ import { ShareIcon2 } from '@/components/icons/shareIcon2';
 import { TwitterIcon } from '@/modules/marketplace/components/icons';
 import { twitterLink } from '@/utils/formatter';
 import { Networks, resolveNetwork } from '@/utils/resolverNetwork';
+import { slugify } from '@/utils/slugify';
 import { shortenUrl } from '@/utils/urlShortner';
 const MarketplaceAPIURL = import.meta.env.VITE_MARKETPLACE_URL;
 import {
@@ -22,16 +23,17 @@ import { useProvider } from '@fuels/react';
 export default function ShareOrder({
   orderId,
   nftName,
-  collectionId,
+  collectionName,
   onlyShareButton = false,
   twitterTitle,
 }: {
   orderId: string;
   nftName: string;
-  collectionId: string;
+  collectionName: string;
   onlyShareButton?: boolean;
   twitterTitle?: string;
 }) {
+  const slugifiedCollectionName = slugify(collectionName);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { successToast } = useCustomToast();
   const { provider } = useProvider();
@@ -43,7 +45,7 @@ export default function ShareOrder({
   const network = resolveNetwork(chainId).toLowerCase();
 
   const twitterCardUrl = `${MarketplaceAPIURL}/${network}/orders/s/${orderId}`;
-  const orderLink = `${import.meta.env.VITE_MARKETPLACE_UI_URL}/collection/${collectionId}/order/${orderId}`;
+  const orderLink = `${import.meta.env.VITE_MARKETPLACE_UI_URL}/collection/${slugifiedCollectionName}/order/${orderId}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(orderLink);
