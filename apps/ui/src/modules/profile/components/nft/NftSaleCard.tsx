@@ -57,6 +57,7 @@ const NftSaleCard = ({
   const { collectionId } = useParams({ strict: false });
   const { connect, isConnected } = useConnectUI();
   const [displayBuyButton, setDisplayBuyButton] = useState(false);
+  const [isExecuted, setIsExecuted] = useState(false);
 
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
     collectionId ?? ''
@@ -84,7 +85,7 @@ const NftSaleCard = ({
     try {
       await executeOrderAsync(order.id);
       successToast({ title: 'Order executed successfully!' });
-      onClose();
+      setIsExecuted(true);
     } catch {
       errorToast({ title: 'Failed to execute order' });
     }
@@ -92,7 +93,6 @@ const NftSaleCard = ({
     connect,
     executeOrderAsync,
     order.id,
-    onClose,
     successToast,
     errorToast,
     isConnected,
@@ -100,10 +100,16 @@ const NftSaleCard = ({
 
   const handleOpenDialog = () => {
     onOpen();
+    if (isExecuted) {
+      setIsExecuted(false);
+    }
   };
 
   const handleCloseDialog = () => {
     onClose();
+    if (isExecuted) {
+      setIsExecuted(false);
+    }
   };
   const delistModal = useDisclosure();
 
@@ -310,6 +316,7 @@ const NftSaleCard = ({
           isOwner={isOwner}
           withHandle={withHandle}
           ctaButtonVariant={ctaButtonVariant}
+          isExecuted={isExecuted}
         />
       )}
     </NftCard.Root>
