@@ -7,10 +7,10 @@ import NftFormStep from './NftFormStep';
 import { useGetOrder } from '@/hooks/marketplace';
 import { OrderSkeleton } from '@/modules/marketplace/order/components/orderSkeleton';
 import { useParams } from '@tanstack/react-router';
-import { Button, Flex, Image, Stack } from '@chakra-ui/react';
-
-import NftOwned from '@/assets/marketplace/nft-owned.svg';
-import ShareOrder from '../ShareOrder';
+import { Flex, Heading, Icon } from '@chakra-ui/react';
+import { useScreenSize } from '@/hooks';
+import { CloseIcon } from '@/components/icons/closeIcon';
+import NftSuccessStep from './NftSuccessStep';
 
 interface NftSaleCardModalProps {
   order: Order;
@@ -46,6 +46,7 @@ export const NftSaleCardModal = ({
   const [step, setStep] = useState(0);
 
   const { orderId } = useParams({ strict: false });
+  const { isMobile } = useScreenSize();
 
   const { order: orderData } = useGetOrder({
     id: orderId ?? order.id,
@@ -57,6 +58,10 @@ export const NftSaleCardModal = ({
 
   const handleChangeStepToDetails = () => {
     setStep(0);
+  };
+
+  const handleChangeStepToSuccess = () => {
+    setStep(2);
   };
 
   const nftName = orderData?.asset?.name ?? 'Unknown NFT';
@@ -80,11 +85,27 @@ export const NftSaleCardModal = ({
           base: 'scroll',
           md: 'hidden',
         }}
+        position="relative"
+        py={isMobile ? 0 : 6}
+        pb={6}
       >
         {isLoadingOrder && <OrderSkeleton />}
 
         {!isLoadingOrder && orderData && (
           <>
+            {isMobile && (
+              <Flex
+                pt={4}
+                alignItems="center"
+                justifyContent="space-between"
+                w="full"
+                zIndex={1}
+              >
+                <Heading>{nftName}</Heading>
+                <Icon as={CloseIcon} cursor="pointer" onClick={onClose} />
+              </Flex>
+            )}
+
             <NftModal.Image w="full" src={imageUrl} alt={nftName} />
 
             {step === 0 && orderData && (
@@ -98,6 +119,7 @@ export const NftSaleCardModal = ({
                 value={value}
                 onEdit={handleChangeStepToSell}
                 ctaButtonVariant={ctaButtonVariant}
+                onSuccess={handleChangeStepToSuccess}
               />
             )}
 
@@ -115,27 +137,16 @@ export const NftSaleCardModal = ({
             )}
 
             {step === 2 && orderData && (
-              <Stack w="full" spacing={4} maxW="438px">
-                <Image src={NftOwned} alt="NftOwned" boxSize="full" />
-                <Flex gap={2}>
-                  <Button w="full" variant="secondary">
-                    List Now
-                  </Button>
-
-                  <ShareOrder
-                    orderId={orderData.id}
-                    nftName={nftName}
-                    collectionId={orderData.collection.address}
-                    onlyShareButton
-                    twitterTitle={`Just bought my ${nftName} on @garagedotzone`}
-                  />
-                </Flex>
-              </Stack>
+              <NftSuccessStep
+                orderData={orderData}
+                onClose={onClose}
+                nftName={nftName}
+                collectionName={orderData.collection.name}
+                onListNow={handleChangeStepToSell}
+              />
             )}
           </>
         )}
-
-        {step !== 0 && <NftModal.CloseIcon onClose={onClose} />}
       </NftModal.Content>
     </NftModal.Root>
   );

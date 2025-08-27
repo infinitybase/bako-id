@@ -9,7 +9,6 @@ import {
   Box,
   Grid,
   Skeleton,
-  useMediaQuery,
 } from '@chakra-ui/react';
 import { useMemo, useState, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -21,7 +20,7 @@ import type { AssetMetadata } from '@/utils/getOrderMetadata';
 import type { Order } from '@/types/marketplace';
 import type { NFTCollection } from '@/utils/collection';
 import { useWallet } from '@fuels/react';
-import { useResolverName } from '@/hooks';
+import { useResolverName, useScreenSize } from '@/hooks';
 import { ProcessingOrderCard } from '@/components/cards/ProcessingOrderCard';
 import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
 
@@ -76,9 +75,7 @@ export const ProfileNfts = ({
   const { ref, inView } = useInView();
   const { wallet } = useWallet();
   const ownerDomain = wallet?.address.b256Address;
-  const [isSmallMobile] = useMediaQuery(
-    '(min-width: 320px) and (max-width: 420px)'
-  );
+  const { isSmallMobile } = useScreenSize();
   const { processingOrders } = useProcessingOrdersStore();
 
   // Using useMemo on both arrays to prevent re-rendering or any side effects because of the polling
