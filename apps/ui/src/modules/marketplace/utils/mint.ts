@@ -1,10 +1,15 @@
-import { type Account, type Provider, Contract } from 'fuels';
+import {
+    type Account,
+    type Provider,
+    Contract,
+    type FunctionResult,
+} from 'fuels';
 import abi from './collection-contract-abi.json';
 
 const Address = {
     bits: (account: string | Account) => {
         return {
-            bits: typeof account === "string" ? account : account.address.toB256(),
+            bits: typeof account === 'string' ? account : account.address.toB256(),
         };
     },
 };
@@ -16,7 +21,6 @@ export const Identity = {
         };
     },
 };
-
 
 // Types
 type ContentItem =
@@ -61,7 +65,7 @@ export class NFTCollection {
      * @return {Promise<Object>} A promise that resolves to the result of the minting operation.
      * Throws an error if the account is a provider or if the balance is insufficient.
      */
-    async mint(quantity = 1): Promise<unknown> {
+    async mint(quantity = 1): Promise<FunctionResult<unknown>> {
         if ('url' in this.account)
             throw new Error('Cannot mint NFTs from a provider');
 
@@ -133,7 +137,7 @@ export class NFTCollection {
      * @return {Promise<{maxSupply: number, totalAssets: number, mintPrice: {asset: string, amount: number}, config: CollectionConfig}>} A promise that resolves to the resume mint data.
      */
     async getResumeMint() {
-        const [maxSupply, totalAssets, mintPrice,] = await Promise.all([
+        const [maxSupply, totalAssets, mintPrice] = await Promise.all([
             this.getMaxSupply(),
             this.getTotalAssets(),
             this.mintPrice(),

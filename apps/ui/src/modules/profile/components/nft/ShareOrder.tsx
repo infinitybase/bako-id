@@ -1,12 +1,15 @@
-import { TwitterIcon, useCustomToast } from '@/components';
+import { useCustomToast } from '@/components';
 import { CopyIcon } from '@/components/icons/copyIcon';
 import { ShareIcon2 } from '@/components/icons/shareIcon2';
+import { TwitterIcon } from '@/modules/marketplace/components/icons';
 import { twitterLink } from '@/utils/formatter';
 import { Networks, resolveNetwork } from '@/utils/resolverNetwork';
 import { slugify } from '@/utils/slugify';
 import { shortenUrl } from '@/utils/urlShortner';
 const MarketplaceAPIURL = import.meta.env.VITE_MARKETPLACE_URL;
 import {
+  Button,
+  Icon,
   Menu,
   MenuButton,
   MenuDivider,
@@ -21,7 +24,15 @@ export default function ShareOrder({
   orderId,
   nftName,
   collectionName,
-}: { orderId: string; nftName: string; collectionName: string }) {
+  onlyShareButton = false,
+  twitterTitle,
+}: {
+  orderId: string;
+  nftName: string;
+  collectionName: string;
+  onlyShareButton?: boolean;
+  twitterTitle?: string;
+}) {
   const slugifiedCollectionName = slugify(collectionName);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { successToast } = useCustomToast();
@@ -45,38 +56,55 @@ export default function ShareOrder({
     onClose();
   };
 
+  const handleShareOnX = async () => {
+    const shortUrl = await shortenUrl(twitterCardUrl);
+    window.open(
+      twitterLink(shortUrl, {
+        title: twitterTitle
+          ? twitterTitle
+          : `Just listed my ${nftName} on @garagedotzone. Grab it here:`,
+        related: [],
+      })
+    );
+  };
+
   return (
-    <Menu isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement="top-end">
-      <MenuButton>
-        <ShareIcon2 />
-      </MenuButton>
-      <MenuList bg="input.600" rounded="lg" borderColor="grey.600">
-        <MenuItem
-          bg="input.600"
-          cursor="pointer"
-          icon={<TwitterIcon fontSize="md" />}
-          onClick={async () => {
-            const shortUrl = await shortenUrl(twitterCardUrl);
-            window.open(
-              twitterLink(shortUrl, {
-                title: `Just listed my ${nftName} on @garagedotzone. Grab it here:`,
-                related: [],
-              })
-            );
-          }}
+    <>
+      {onlyShareButton ? (
+        <Button variant="mktPrimary" w="full" onClick={handleShareOnX}>
+          Share on <Icon ml={1} as={TwitterIcon} />
+        </Button>
+      ) : (
+        <Menu
+          isOpen={isOpen}
+          onOpen={onOpen}
+          onClose={onClose}
+          placement="top-end"
         >
-          <Text>Share on X</Text>
-        </MenuItem>
-        <MenuDivider />
-        <MenuItem
-          bg="input.600"
-          cursor="pointer"
-          icon={<CopyIcon fontSize="md" />}
-          onClick={handleCopyLink}
-        >
-          <Text>Copy sale link</Text>
-        </MenuItem>
-      </MenuList>
-    </Menu>
+          <MenuButton>
+            <ShareIcon2 />
+          </MenuButton>
+          <MenuList bg="input.600" rounded="lg" borderColor="grey.600">
+            <MenuItem
+              bg="input.600"
+              cursor="pointer"
+              icon={<TwitterIcon fontSize="md" />}
+              onClick={handleShareOnX}
+            >
+              <Text>Share on X</Text>
+            </MenuItem>
+            <MenuDivider />
+            <MenuItem
+              bg="input.600"
+              cursor="pointer"
+              icon={<CopyIcon fontSize="md" />}
+              onClick={handleCopyLink}
+            >
+              <Text>Copy sale link</Text>
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      )}
+    </>
   );
 }

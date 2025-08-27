@@ -7,6 +7,7 @@ import {
   Flex,
   Icon,
   Text,
+  Button,
 } from '@chakra-ui/react';
 import { CopyIcon2 } from '../../icons';
 import { ShareIcon2 } from '../../icons/shareIcon2';
@@ -30,11 +31,15 @@ const menuItems = [
 ];
 
 export const ShareMenu = ({
-  collectionId,
+  collectionIdOrSlug,
   collectionName,
+  onlyShareOnX = false,
+  twitterTitle,
 }: {
-  collectionId: string;
+  collectionIdOrSlug: string;
   collectionName: string;
+  onlyShareOnX?: boolean;
+  twitterTitle?: string;
 }) => {
   const { provider } = useProvider();
   const chainId =
@@ -42,18 +47,22 @@ export const ShareMenu = ({
       ? Networks.MAINNET
       : Networks.TESTNET;
   const network = resolveNetwork(chainId).toLowerCase();
-  const twitterUrl = `${MarketplaceAPIURL}/${network}/collections/s/${collectionId}`;
 
+  const twitterUrl = `${MarketplaceAPIURL}/${network}/collections/s/${collectionIdOrSlug}`;
+
+  const handleShareOnX = async () => {
+    const shortUrl = await shortenUrl(twitterUrl);
+    window.open(
+      twitterLink(shortUrl, {
+        title: twitterTitle ?? `${collectionName} on @garagedotzone:`,
+        related: [],
+      })
+    );
+  };
   const handleOnClick = async (key: string) => {
     switch (key) {
       case 'x': {
-        const shortUrl = await shortenUrl(twitterUrl);
-        window.open(
-          twitterLink(shortUrl, {
-            title: `${collectionName} on @garagedotzone:`,
-            related: [],
-          })
-        );
+        handleShareOnX();
         break;
       }
       case 'link':
@@ -63,55 +72,69 @@ export const ShareMenu = ({
   };
 
   return (
-    <Menu placement="bottom-end">
-      <MenuButton
-        as={IconButton}
-        icon={<ShareIcon2 />}
-        variant="ghost"
-        color="grey.200"
-        _hover={{ bg: 'transparent', color: 'white' }}
-        _focus={{ bg: 'transparent', border: 'none', outline: 'none' }}
-        _active={{ bg: 'transparent', border: 'none' }}
-        _focusVisible={{ bg: 'transparent', border: 'none', outline: 'none' }}
-        aria-label="Share"
-        p={0}
-        minW="1px"
-        h={4}
-        transition="color 0.2s"
-      />
-      <MenuList
-        bg="#181818"
-        borderRadius="8px"
-        boxShadow="0 6px 24px 0 #00000080"
-        minW="180px"
-        border="1px solid "
-        borderColor="grey.300"
-        p={0}
-      >
-        {menuItems.map((item, index) => (
-          <MenuItem
-            key={item.label}
-            bg="transparent"
-            w="full"
-            fontSize="xs"
-            borderBottom={index !== menuItems.length - 1 ? '1px solid' : 'none'}
+    <>
+      {onlyShareOnX ? (
+        <Button variant="mktPrimary" w="full" onClick={handleShareOnX}>
+          Share on <Icon ml={1} as={TwitterIcon} />
+        </Button>
+      ) : (
+        <Menu placement="bottom-end">
+          <MenuButton
+            as={IconButton}
+            icon={<ShareIcon2 />}
+            variant="ghost"
+            color="grey.200"
+            _hover={{ bg: 'transparent', color: 'white' }}
+            _focus={{ bg: 'transparent', border: 'none', outline: 'none' }}
+            _active={{ bg: 'transparent', border: 'none' }}
+            _focusVisible={{
+              bg: 'transparent',
+              border: 'none',
+              outline: 'none',
+            }}
+            aria-label="Share"
+            p={0}
+            minW="1px"
+            h={4}
+            transition="color 0.2s"
+          />
+          <MenuList
+            bg="#181818"
+            borderRadius="8px"
+            boxShadow="0 6px 24px 0 #00000080"
+            minW="180px"
+            border="1px solid "
             borderColor="grey.300"
-            onClick={() => handleOnClick(item.key)}
-            cursor="pointer"
+            p={0}
           >
-            <Flex
-              w="full"
-              align="center"
-              justify="space-between"
-              color="grey.200"
-              _hover={{ color: 'white' }}
-            >
-              <Text fontSize="xs">{item.label}</Text>
-              <Icon as={item.icon} color="grey.200" />
-            </Flex>
-          </MenuItem>
-        ))}
-      </MenuList>
-    </Menu>
+            {menuItems.map((item, index) => (
+              <MenuItem
+                key={item.label}
+                bg="transparent"
+                w="full"
+                fontSize="xs"
+                borderBottom={
+                  index !== menuItems.length - 1 ? '1px solid' : 'none'
+                }
+                borderColor="grey.300"
+                onClick={() => handleOnClick(item.key)}
+                cursor="pointer"
+              >
+                <Flex
+                  w="full"
+                  align="center"
+                  justify="space-between"
+                  color="grey.200"
+                  _hover={{ color: 'white' }}
+                >
+                  <Text fontSize="xs">{item.label}</Text>
+                  <Icon as={item.icon} color="grey.200" />
+                </Flex>
+              </MenuItem>
+            ))}
+          </MenuList>
+        </Menu>
+      )}
+    </>
   );
 };

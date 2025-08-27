@@ -15,6 +15,7 @@ import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
 import { formatAddress } from '@/utils/formatter';
 import { NftCardModal } from './NftCardModal';
 import { NftCard } from './card';
+import { useListNowStore } from '@/modules/marketplace/stores/listNowStore';
 
 interface NftCollectionCardProps {
   asset: NFTWithImage;
@@ -38,6 +39,7 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
   } = props.asset;
   const [step, setStep] = useState(1);
   const dialog = useDisclosure();
+  const { nftIdToList, removeNftIdToList } = useListNowStore();
 
   const image = useMemo(
     () => props.asset.image || nftEmpty,
@@ -59,6 +61,10 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
   );
 
   const edition = defaultMetadata?.edition;
+  const handleCloseDialog = () => {
+    dialog.onClose();
+    removeNftIdToList(assetId);
+  };
 
   return (
     <>
@@ -69,8 +75,8 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
         contractId={contractId}
         metadata={defaultMetadata}
         image={image}
-        isOpen={dialog.isOpen}
-        onClose={dialog.onClose}
+        isOpen={dialog.isOpen || nftIdToList === assetId}
+        onClose={handleCloseDialog}
         isOwner={props.isOwner}
         collection={collection}
         ctaButtonVariant={props.ctaButtonVariant}

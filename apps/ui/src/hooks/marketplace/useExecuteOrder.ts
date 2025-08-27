@@ -6,7 +6,7 @@ import { MarketplaceQueryKeys } from '@/utils/constants';
 import { Networks } from '@/utils/resolverNetwork';
 import { marketplaceService } from '@/services/marketplace';
 
-export const useExecuteOrder = (collectionId: string) => {
+export const useExecuteOrder = (collectionId: string, setTxId?: (txId: string) => void) => {
   const marketplaceContract = useMarketplace();
   const queryClient = useQueryClient();
   const { chainId } = useChainId();
@@ -34,11 +34,14 @@ export const useExecuteOrder = (collectionId: string) => {
         ],
         exact: false
       });
-      addPurchasedOrder(orderId, txId);
+      if (!setTxId) {
+        addPurchasedOrder(orderId, txId);
+      }
       await marketplaceService.saveReceipt({
         txId,
         chainId: chainId ?? Networks.MAINNET,
       });
+      setTxId?.(txId);
     },
   });
 

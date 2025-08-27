@@ -1,6 +1,7 @@
-import { Box, Flex, useMediaQuery } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import SearchBar from './searchBar';
 import CustomSelectFilter from './customSelectFilter';
+import { useScreenSize } from '@/hooks';
 
 interface MarketplaceFilterProps {
   searchValue: string;
@@ -16,10 +17,7 @@ const MarketplaceFilter = ({
   onSortChange,
   isCollectionPage,
 }: MarketplaceFilterProps) => {
-  const [isSmallMobile] = useMediaQuery(
-    '(min-width: 320px) and (max-width: 420px)'
-  );
-
+  const { isSmallMobile } = useScreenSize();
   return (
     <Box p={2} px={0} borderRadius="md" w="100%" maxW="100vw" mx="auto" mt={2}>
       <Flex align="center" gap={4} flexDir={isSmallMobile ? 'column' : 'row'}>
