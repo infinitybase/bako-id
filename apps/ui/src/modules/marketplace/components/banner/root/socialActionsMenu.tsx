@@ -72,7 +72,7 @@ export const SocialActionsMenu = ({
       )}
 
       <ShareMenu
-        collectionId={collection.id}
+        collectionIdOrSlug={collection.id}
         collectionName={collection.name}
       />
     </Flex>
