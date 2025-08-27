@@ -4,12 +4,15 @@ import ShareOrder from '../ShareOrder';
 import type { Order } from '@/types/marketplace';
 import { CloseIcon } from '@/components/icons/closeIcon';
 import { useScreenSize } from '@/hooks';
+import { useListNowStore } from '@/modules/marketplace/stores/listNowStore';
+import { useNavigate } from '@tanstack/react-router';
+import { useWallet } from '@fuels/react';
 
 type NftSuccessStepProps = {
   orderData: Order;
   nftName: string;
   collectionName: string;
-  onListNow: () => void;
+
   onClose: () => void;
 };
 
@@ -17,10 +20,20 @@ export default function NftSuccessStep({
   orderData,
   nftName,
   collectionName,
-  onListNow,
   onClose,
 }: NftSuccessStepProps) {
   const { isMobile } = useScreenSize();
+  const { wallet } = useWallet();
+  const { addNftIdToList } = useListNowStore();
+  const navigate = useNavigate();
+  const userAddress = wallet?.address.toB256();
+
+  const handleOnListNow = () => {
+    addNftIdToList(orderData.asset.id);
+    navigate({
+      to: `/profile/${userAddress}`,
+    });
+  };
 
   return (
     <Stack
@@ -62,7 +75,7 @@ export default function NftSuccessStep({
         <Button
           w="full"
           variant="secondary"
-          onClick={onListNow}
+          onClick={handleOnListNow}
           _hover={{
             borderColor: 'garage.100',
             color: 'garage.100',

@@ -142,7 +142,6 @@ export const NftSaleCardModal = ({
                 onClose={onClose}
                 nftName={nftName}
                 collectionName={orderData.collection.name}
-                onListNow={handleChangeStepToSell}
               />
             )}
           </>
