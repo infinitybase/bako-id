@@ -274,26 +274,8 @@ export const CollectionPage = () => {
               <MintSuccess
                 isOpen={successMintDialog.isOpen}
                 collectionName={collectionName ?? ''}
-                // isOpen={true}
                 onClose={handleCloseMintSuccessDialog}
                 mints={mintedAssets?.mintedAssets ?? []}
-                // mints={[
-                //   {
-                //     name: 'Thermal Punks #1',
-                //     image:
-                //       'https://i2.seadn.io/collection/thermal-punks/image_type_preview_media/b7d197ea373535ac769ac3e8e7b2a5/3eb7d197ea373535ac769ac3e8e7b2a5.gif?w=1920',
-                //   },
-                //   {
-                //     name: 'Thermal Punks #2',
-                //     image:
-                //       'https://i2.seadn.io/collection/thermal-punks/image_type_preview_media/b7d197ea373535ac769ac3e8e7b2a5/3eb7d197ea373535ac769ac3e8e7b2a5.gif?w=1920',
-                //   },
-                //   {
-                //     name: 'Thermal Punks #3',
-                //     image:
-                //       'https://i2.seadn.io/collection/thermal-punks/image_type_preview_media/b7d197ea373535ac769ac3e8e7b2a5/3eb7d197ea373535ac769ac3e8e7b2a5.gif?w=1920',
-                //   },
-                // ]}
                 transactionId={mintedAssets?.transactionId ?? ''}
               />
             </TabPanels>
