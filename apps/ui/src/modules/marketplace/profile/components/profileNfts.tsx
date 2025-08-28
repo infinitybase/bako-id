@@ -336,9 +336,8 @@ export const ProfileNfts = ({
                   >
                     <NftSaleCard
                       order={item.data}
-                      showDelistButton={false}
                       isOwner={isOwner}
-                      showBuyButton={false}
+                      showAnimatedButton={false}
                       withHandle={!!hasDomain}
                       imageSize="full"
                       ctaButtonVariant="mktPrimary"

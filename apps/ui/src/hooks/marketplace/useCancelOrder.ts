@@ -19,7 +19,6 @@ export const useCancelOrder = () => {
   const { account } = useAccount();
   const { chainId } = useChainId();
   const address = account?.toLowerCase() ?? '';
-  // console.log('address', address);
 
   const { addCancelledOrders } = useProcessingOrdersStore();
 
@@ -45,6 +44,10 @@ export const useCancelOrder = () => {
         queryKey: [MarketplaceQueryKeys.USER_ORDERS, address],
       });
 
+      await queryClient.invalidateQueries({
+        queryKey: [MarketplaceQueryKeys.COLLECTION_ORDERS, chainId], exact: false,
+      });
+
       await marketplaceService.saveReceipt({
         txId,
         chainId: chainId ?? Networks.MAINNET,
@@ -53,7 +56,6 @@ export const useCancelOrder = () => {
       queryClient.setQueryData(
         [MarketplaceQueryKeys.USER_ORDERS, address],
         (old: InfiniteData<PaginationResult<Order>, unknown>) => {
-
           return {
             ...old,
             pages: old.pages.map((page) => {
@@ -66,7 +68,6 @@ export const useCancelOrder = () => {
           };
         }
       );
-
 
     },
   });

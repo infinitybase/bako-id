@@ -31,7 +31,9 @@ export const OrderList = ({
   const isEmptyOrders = !orders?.length;
   const { data } = useResolverName(wallet?.address.b256Address ?? ZeroBytes32);
 
-  const address = useMemo(() => wallet?.address.b256Address, [wallet]);
+  const isOwner = useMemo(() => {
+    return wallet?.address.b256Address === orders[0].seller;
+  }, [wallet, orders]);
 
   useEffect(() => {
     if (
@@ -67,9 +69,8 @@ export const OrderList = ({
         <NftSaleCard
           key={order.id}
           order={order}
-          showDelistButton={false}
-          isOwner={address === order.seller}
-          showBuyButton
+          isOwner={isOwner}
+          showAnimatedButton
           withHandle={!!data}
           openModalOnClick={false}
           imageSize={{
