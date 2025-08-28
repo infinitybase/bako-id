@@ -114,10 +114,10 @@ const MintPanel = ({
         />
       </Flex>
 
-      {config?.about?.map((about) => (
+      {config?.about?.map((about, index) => (
         <Grid
           gridTemplateColumns={{ base: '1fr', sm: 'repeat(2, 1fr)' }}
-          key={`about-${Math.random()}`}
+          key={about[index].type}
           gap={{ base: 4, sm: '60px', md: '173px' }}
           my={6}
           py={{ base: 10, sm: '72px' }}

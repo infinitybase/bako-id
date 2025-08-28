@@ -46,7 +46,7 @@ export const MarketplaceBanner = () => {
           direction="horizontal"
           slidesPerView={1}
           modules={[Pagination, Mousewheel, Autoplay]}
-          autoplay={{ delay: 4000, disableOnInteraction: false }}
+          autoplay={{ delay: 6000, disableOnInteraction: false }}
           style={{
             height: '100%',
           }}

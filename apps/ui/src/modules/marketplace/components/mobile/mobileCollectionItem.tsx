@@ -65,16 +65,6 @@ const MobileCollectionItem = ({ col }: { col: Collection }) => {
             <Text color="white" fontSize="xs" minW="120px">
               {isB256(col.name) ? formatAddress(col.name) : col.name}
             </Text>
-            <Text
-              fontSize="xs"
-              color="section.500"
-              fontWeight={300}
-              textOverflow="ellipsis"
-              noOfLines={1}
-              maxW="320px"
-            >
-              {col.config.description}
-            </Text>
           </Flex>
         </Box>
 

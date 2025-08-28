@@ -1,10 +1,16 @@
 import { ImageLoader } from '@/components/imageLoader';
 import type { Collection } from '@/types/marketplace';
 import { usdValueFormatter } from '@/utils/formatter';
-import { Box, Flex, Heading, useMediaQuery } from '@chakra-ui/react';
+import { Box, Flex, Heading, Text, useMediaQuery } from '@chakra-ui/react';
 import { BannerRoot } from '.';
 
-const CollectionContent = ({ collection }: { collection: Collection }) => {
+const CollectionContent = ({
+  collection,
+  stillMintable,
+}: {
+  collection: Collection;
+  stillMintable: boolean;
+}) => {
   const [isMobile] = useMediaQuery('(min-width: 320px) and (max-width: 767px)');
 
   if (!collection) return null;
@@ -35,9 +41,30 @@ const CollectionContent = ({ collection }: { collection: Collection }) => {
           }}
         />
         <Flex gap={4} align="center" mt="auto">
-          <Heading fontSize="2xl" fontWeight={700} color="#fff" noOfLines={1}>
-            {collection.name}
-          </Heading>
+          <Flex flexDir="column" gap={1}>
+            {stillMintable && (
+              <Text
+                bg="#B3FF2E1A"
+                borderRadius="100px"
+                w="fit-content"
+                py={1}
+                px={4}
+                backdropBlur="blur(24px)"
+                color="garage.100"
+                letterSpacing="0.05em"
+                fontSize="10px"
+                border="1px solid #B3FF2E40"
+                boxShadow="0px 6px 12px 0px #00000040"
+                bgGradient="linear(to-r, #00000040, #00000040)"
+                mb={1}
+              >
+                Now Minting
+              </Text>
+            )}
+            <Heading fontSize="2xl" fontWeight={700} color="#fff" noOfLines={1}>
+              {collection.name}
+            </Heading>
+          </Flex>
 
           {!isMobile && (
             <>
