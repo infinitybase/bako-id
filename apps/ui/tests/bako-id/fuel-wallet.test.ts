@@ -202,7 +202,7 @@ test.describe('Connect with Fuel Wallet', () => {
     });
   });
 
-  test('create new Bako to other resolver', async ({ page, context }) => {
+  test.only('create new Bako to other resolver', async ({ page, context }) => {
     const [address0, address1] = await E2ETestUtils.getTwoAddresses(context);
 
     const newHandle = `automation${Date.now()}`;
