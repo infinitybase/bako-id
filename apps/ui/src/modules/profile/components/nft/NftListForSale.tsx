@@ -95,9 +95,8 @@ export const NftListForSale = ({
             <GridItem key={order.id}>
               <NftSaleCard
                 order={order}
-                showDelistButton={isDelistOrder}
                 isOwner={isOwner}
-                showBuyButton={!isOwner}
+                showAnimatedButton={!isOwner}
                 withHandle={!!data}
                 isProfilePage={isProfilePage}
               />
