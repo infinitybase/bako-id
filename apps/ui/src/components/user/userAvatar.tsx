@@ -166,6 +166,13 @@ const ProfileAvatar = ({
 }: EditProfilePicAvatarProps) => {
   const hasAvatar = avatar && !noAvatarFromUrl;
   const [initialLoading, setInitialLoading] = useState(true);
+
+  useEffect(() => {
+    if (avatar === undefined) {
+      setInitialLoading(false);
+    }
+  }, [avatar]);
+
   return (
     <AvatarContainer
       size="large"
@@ -175,7 +182,7 @@ const ProfileAvatar = ({
       {(initialLoading || isAvatarLoading) && (
         <Skeleton w="full" h="full" rounded="lg" />
       )}
-      {avatar && !noAvatarFromUrl ? (
+      {hasAvatar ? (
         <Image
           src={avatar}
           referrerPolicy="no-referrer"
