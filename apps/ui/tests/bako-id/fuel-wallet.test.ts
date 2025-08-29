@@ -209,16 +209,10 @@ test.describe('Connect with Fuel Wallet', () => {
     // console.log('new handle: ', newHandle);
 
     await test.step('connect wallet 2', async () => {
-      try {
-        await fuelWalletTestHelper.addAccount();
+      await fuelWalletTestHelper.addAccount();
 
-        await page.getByRole('button', { name: 'Connect Wallet' }).click();
-      } catch {
-        await page
-          .getByRole('button', { name: 'Connect Wallet' })
-          .nth(1)
-          .click();
-      }
+      await page.getByRole('button', { name: 'Connect Wallet' }).click();
+
       await page.getByLabel('Connect to Fuel Wallet').click();
       await fuelWalletTestHelper.walletConnect(['Account 2']);
     });
