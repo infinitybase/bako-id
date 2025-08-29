@@ -71,7 +71,10 @@ export const SocialActionsMenu = ({
         />
       )}
 
-      <ShareMenu discordLink={discordLink} xLink={xLink} />
+      <ShareMenu
+        collectionId={collection.id}
+        collectionName={collection.name}
+      />
     </Flex>
   );
 };

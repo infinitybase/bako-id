@@ -11,7 +11,11 @@ import {
 import { CopyIcon2 } from '../../icons';
 import { ShareIcon2 } from '../../icons/shareIcon2';
 import { TwitterIcon } from '../../icons/twitterIcon';
-
+import { twitterLink } from '@/utils/formatter';
+import { useProvider } from '@fuels/react';
+import { Networks, resolveNetwork } from '@/utils/resolverNetwork';
+import { shortenUrl } from '@/utils/urlShortner';
+const MarketplaceAPIURL = import.meta.env.VITE_MARKETPLACE_URL;
 const menuItems = [
   {
     icon: CopyIcon2,
@@ -26,22 +30,34 @@ const menuItems = [
 ];
 
 export const ShareMenu = ({
-  discordLink,
-  xLink,
+  collectionId,
+  collectionName,
 }: {
-  discordLink?: string;
-  xLink?: string;
+  collectionId: string;
+  collectionName: string;
 }) => {
-  const handleOnClick = (key: string) => {
+  const { provider } = useProvider();
+  const chainId =
+    provider?.url?.includes('mainnet') || !provider
+      ? Networks.MAINNET
+      : Networks.TESTNET;
+  const network = resolveNetwork(chainId).toLowerCase();
+  const twitterUrl = `${MarketplaceAPIURL}/${network}/collections/s/${collectionId}`;
+
+  const handleOnClick = async (key: string) => {
     switch (key) {
+      case 'x': {
+        const shortUrl = await shortenUrl(twitterUrl);
+        window.open(
+          twitterLink(shortUrl, {
+            title: `${collectionName} on @garagedotzone:`,
+            related: [],
+          })
+        );
+        break;
+      }
       case 'link':
         navigator.clipboard.writeText(window.location.href);
-        break;
-      case 'x':
-        window.open(xLink, '_blank');
-        break;
-      case 'discord':
-        window.open(discordLink, '_blank');
         break;
     }
   };
@@ -81,18 +97,7 @@ export const ShareMenu = ({
             borderBottom={index !== menuItems.length - 1 ? '1px solid' : 'none'}
             borderColor="grey.300"
             onClick={() => handleOnClick(item.key)}
-            cursor={
-              (!discordLink && item.key === 'discord') ||
-              (!xLink && item.key === 'x')
-                ? 'not-allowed'
-                : 'pointer'
-            }
-            pointerEvents={
-              (!discordLink && item.key === 'discord') ||
-              (!xLink && item.key === 'x')
-                ? 'none'
-                : 'auto'
-            }
+            cursor="pointer"
           >
             <Flex
               w="full"

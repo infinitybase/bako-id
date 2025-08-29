@@ -1,68 +1,90 @@
-import { bn, type BN } from 'fuels';
+import { BNInput, FormatConfig, bn, type BN } from 'fuels';
 
 const MONEY_PRECISION = 2;
 
 
 function countDecimals(value: number): number {
-    if (Math.floor(value) === value) return 0;
+  if (Math.floor(value) === value) return 0;
 
-    // Really low numbers will add a scientific notation
-    const str = value.toString();
+  // Really low numbers will add a scientific notation
+  const str = value.toString();
 
-    // Handle scientific notation
-    if (str.includes('e-')) {
-        const [nonExp, exp] = str.split('e-');
-        if (nonExp.includes('.')) {
-            const [, decimals] = nonExp.split('.');
-            return Number(exp) + decimals.length;
-        }
-        return Number(exp);
+  // Handle scientific notation
+  if (str.includes('e-')) {
+    const [nonExp, exp] = str.split('e-');
+    if (nonExp.includes('.')) {
+      const [, decimals] = nonExp.split('.');
+      return Number(exp) + decimals.length;
     }
-    return str.split('.')[1]?.length || 0;
+    return Number(exp);
+  }
+  return str.split('.')[1]?.length || 0;
 }
 
 function getTargetPrecision(rateDecimals: number, amountDecimals: number) {
-    return Math.max(rateDecimals, amountDecimals);
+  return Math.max(rateDecimals, amountDecimals);
+}
+
+export const MAX_FRACTION_DIGITS = 3;
+
+export function formatAmount(opt: { amount?: BNInput; options?: FormatConfig }) {
+  const { amount, options } = opt;
+  const formatParams = {
+    precision: MAX_FRACTION_DIGITS,
+    ...(options ?? {})
+  };
+
+  const isZeroUnits = !options?.units;
+  // covers a bug in the sdk that format don't work when unit is zero. we'll use 1 instead, then multiply by 10 later
+  if (isZeroUnits) {
+    // we'll multiply by 10, then can reduce 1 unit later, resulting in same zero units
+    const amountZeroUnits = bn(amount).mul(10);
+    formatParams.units = 1;
+    formatParams.precision = 0;
+    return amountZeroUnits.format(formatParams);
+  }
+
+  return bn(amount).format(formatParams);
 }
 
 export function convertToUsd(
-    amount: BN,
-    decimals: number,
-    rate: number
+  amount: BN,
+  decimals: number,
+  rate: number
 ): { value: number; formatted: string } {
-    if (!rate) return { value: 0, formatted: '$0' };
+  if (!rate) return { value: 0, formatted: '$0' };
 
-    // Get the number of decimals in the rate and what's target precision.
-    const rateDecimals = countDecimals(rate);
-    const targetPrecision = getTargetPrecision(rateDecimals, decimals);
+  // Get the number of decimals in the rate and what's target precision.
+  const rateDecimals = countDecimals(rate);
+  const targetPrecision = getTargetPrecision(rateDecimals, decimals);
 
-    // Get how many decimal places we need to apply to the rate to match the amount precision.
-    // Usually the amount has more decimals than the rate, so we need to add zeros to the rate.
-    const ratePrecision = Math.max(decimals - rateDecimals, 0);
-    const rateUnits = bn.parseUnits(rate.toFixed(rateDecimals), rateDecimals);
-    const rateFixed = rateUnits.mul(bn(10).pow(ratePrecision));
+  // Get how many decimal places we need to apply to the rate to match the amount precision.
+  // Usually the amount has more decimals than the rate, so we need to add zeros to the rate.
+  const ratePrecision = Math.max(decimals - rateDecimals, 0);
+  const rateUnits = bn.parseUnits(rate.toFixed(rateDecimals), rateDecimals);
+  const rateFixed = rateUnits.mul(bn(10).pow(ratePrecision));
 
-    // Get how many decimal places we need to apply to the amount to match the rate precision.
-    // Sometimes the rate has more decimals than the amount, so we need to add zeros to the amount.
-    const amountPrecision = Math.max(rateDecimals - decimals, 0);
+  // Get how many decimal places we need to apply to the amount to match the rate precision.
+  // Sometimes the rate has more decimals than the amount, so we need to add zeros to the amount.
+  const amountPrecision = Math.max(rateDecimals - decimals, 0);
 
-    // Calculate the USD value in fixed-point: ((amount * 10^amountPrecision) * rateFixed) / 10^targetPrecision.
-    const amountFixed = amount.mul(bn(10).pow(amountPrecision));
-    const numerator = amountFixed.mul(bn(rateFixed));
-    const denominator = bn(10).pow(bn(targetPrecision));
-    const scaledUsdBN = numerator.div(denominator);
+  // Calculate the USD value in fixed-point: ((amount * 10^amountPrecision) * rateFixed) / 10^targetPrecision.
+  const amountFixed = amount.mul(bn(10).pow(amountPrecision));
+  const numerator = amountFixed.mul(bn(rateFixed));
+  const denominator = bn(10).pow(bn(targetPrecision));
+  const scaledUsdBN = numerator.div(denominator);
 
-    // Use BN.format to insert the decimal point.
-    const formattedUsd = scaledUsdBN.format({
-        minPrecision: MONEY_PRECISION,
-        precision: MONEY_PRECISION,
-        units: targetPrecision,
-    });
+  // Use BN.format to insert the decimal point.
+  const formattedUsd = scaledUsdBN.format({
+    minPrecision: MONEY_PRECISION,
+    precision: MONEY_PRECISION,
+    units: targetPrecision
+  });
 
-    return scaledUsdBN.isZero()
-        ? { value: 0, formatted: '$0' }
-        : {
-            value: Number(formattedUsd.replace(/,/g, '')),
-            formatted: `$${formattedUsd}`,
-        };
+  return scaledUsdBN.isZero()
+    ? { value: 0, formatted: '$0' }
+    : {
+      value: Number(formattedUsd.replace(/,/g, '')),
+      formatted: `$${formattedUsd}`
+    };
 }

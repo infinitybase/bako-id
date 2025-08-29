@@ -24,6 +24,8 @@ import { Link, useParams } from '@tanstack/react-router';
 import { useAccount, useBalance, useConnectUI } from '@fuels/react';
 import { bn } from 'fuels';
 import { useScreenSize } from '@/hooks';
+import { slugify } from '@/utils/slugify';
+import { useGetCollection } from '@/hooks/marketplace/useGetCollection';
 
 interface NftSaleCardProps {
   order: Order;
@@ -54,12 +56,17 @@ const NftSaleCard = ({
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { updatedOrders } = useProcessingOrdersStore();
   const { account } = useAccount();
-  const { collectionId } = useParams({ strict: false });
+  const { collectionName } = useParams({ strict: false });
   const { connect, isConnected } = useConnectUI();
   const [displayBuyButton, setDisplayBuyButton] = useState(false);
+  const slugifiedCollectionName = slugify(collectionName);
+
+  const { collection } = useGetCollection({
+    collectionId: slugifiedCollectionName,
+  });
 
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
-    collectionId ?? ''
+    collection?.data?.id ?? ''
   );
 
   const showDisplayBuyButton = displayBuyButton || isExecuting;
@@ -144,6 +151,9 @@ const NftSaleCard = ({
       }).format(Number(order.price.usd)),
     [order.price.usd]
   );
+  const orderPrice = useMemo(() => {
+    return Intl.NumberFormat('en-US').format(Number(order.price.amount));
+  }, [order.price.amount]);
 
   const assetSymbolUrl = order.price.image || UnknownAsset;
 
@@ -187,7 +197,7 @@ const NftSaleCard = ({
         to={
           isProfilePage
             ? undefined
-            : `/collection/${collectionId}/order/${order.id}`
+            : `/collection/${slugifiedCollectionName}/order/${order.id}`
         }
         flexDir="column"
       >
@@ -223,7 +233,7 @@ const NftSaleCard = ({
               <Tooltip label={order.asset?.name}>
                 <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
               </Tooltip>
-              {order.price.amount}
+              {orderPrice}
             </Heading>
             {order.price.usd && !displayBuyButton && (
               <Text color="grey.subtitle" fontSize="xs" lineHeight=".9">

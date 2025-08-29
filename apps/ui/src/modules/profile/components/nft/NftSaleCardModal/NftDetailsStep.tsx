@@ -53,9 +53,9 @@ export default function NftDetailsStep({
 }) {
   const { connect, isConnected } = useConnectUI();
   const { errorToast, successToast } = useCustomToast();
+  const { account } = useAccount();
   const homeUrl = getHomeUrl();
 
-  const { account } = useAccount();
   const {
     balance: walletAssetBalance,
     isLoading: isLoadingWalletBalance,
@@ -111,6 +111,10 @@ export default function NftDetailsStep({
     ? `@${sellerDomain}`
     : formatAddress(order.seller);
 
+  const orderPrice = useMemo(() => {
+    return Intl.NumberFormat('en-US').format(Number(value));
+  }, [value]);
+
   return (
     <Stack
       gap={8}
@@ -153,7 +157,7 @@ export default function NftDetailsStep({
             <Image src={assetSymbolUrl} alt="Asset icon" height={6} width={6} />
           </Tooltip>
           <Text fontSize="sm" color="grey.title" fontWeight="semibold">
-            {value}
+            {orderPrice}
           </Text>
           <Text fontSize="sm" color="grey.subtitle">
             ~ {usdValue}
@@ -171,7 +175,7 @@ export default function NftDetailsStep({
         <ShareOrder
           orderId={order.id}
           nftName={order.asset?.name ?? 'Unknown NFT'}
-          collectionId={order.collection?.address ?? ''}
+          collectionName={order.collection?.name ?? ''}
         />
       </Stack>
 
