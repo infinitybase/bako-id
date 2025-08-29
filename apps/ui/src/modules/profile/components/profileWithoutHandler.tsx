@@ -45,7 +45,6 @@ export default function ProfileWithoutHandler({
           orders={orders}
           isLoadingOrders={isLoadingOrders}
           paginationInfos={paginationInfos}
-          isProfilePage={true}
         />
 
         <NftCollections resolver={address} />

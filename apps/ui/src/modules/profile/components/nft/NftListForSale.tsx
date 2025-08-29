@@ -23,7 +23,6 @@ export const NftListForSale = ({
   isLoadingOrders,
   orders,
   paginationInfos,
-  isProfilePage,
 }: {
   address: string;
   isLoadingOrders?: boolean;
@@ -33,7 +32,6 @@ export const NftListForSale = ({
     hasNextPage: boolean;
     hasPreviousPage: boolean;
   };
-  isProfilePage?: boolean;
 }) => {
   const [isDelistOrder, setIsDelistOrder] = useState(false);
   const { page } = useSearch({ strict: false });
@@ -100,7 +98,7 @@ export const NftListForSale = ({
                 showBuyButton={!isOwner}
                 withHandle={!!data}
                 imageSize="full"
-                isProfilePage={isProfilePage}
+                isProfilePage={true}
               />
             </GridItem>
           ))}
@@ -126,6 +124,7 @@ export const NftListForSale = ({
           hasPreviousPage={paginationInfos.hasPreviousPage}
           isLoading={isLoadingOrders}
           onPageChange={handlePageChange}
+          isForSale
         />
       </GridItem>
     </Card>
