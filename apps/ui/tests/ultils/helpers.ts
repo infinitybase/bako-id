@@ -106,3 +106,24 @@ export async function getVaultAddress(page: Page) {
   await page.getByRole('button', { name: 'Sidebar Vault Address' }).click();
   return await page.evaluate(() => navigator.clipboard.readText());
 }
+
+export async function getAddress(fuelWalletTestHelper: FuelWalletTestHelper) {
+  const popupPage = await fuelWalletTestHelper.getWalletPopupPage();
+
+  await popupPage
+    .getByRole('article', { name: 'Account 1' })
+    .getByLabel('Copy to clipboard')
+    .click();
+  const address1 = await popupPage.evaluate(() =>
+    navigator.clipboard.readText(),
+  );
+  await popupPage
+    .getByRole('article', { name: 'Account 2' })
+    .getByLabel('Copy to clipboard')
+    .click();
+  const address2 = await popupPage.evaluate(() =>
+    navigator.clipboard.readText(),
+  );
+
+  return { address1, address2 };
+}

@@ -44,29 +44,6 @@ export class E2ETestUtils {
     return { fuelWalletTestHelper, genesisWallet };
   }
 
-  static async getTwoAddresses(context: BrowserContext) {
-    const page = await context.newPage();
-    await page.goto(
-      'chrome-extension://anmaphhhladdijnmeaihpboiajdjojlo/popup.html#/wallet',
-    );
-
-    await page.getByRole('button', { name: 'Copy to clipboard' }).click();
-    const address0 = await page.evaluate(() => navigator.clipboard.readText());
-
-    await page.getByRole('button', { name: 'Accounts' }).click();
-    await page.getByRole('button', { name: 'Add account' }).click();
-    await page
-      .getByText('Account 2', { exact: true })
-      .waitFor({ state: 'visible', timeout: 15000 });
-    await page.getByRole('button', { name: 'Copy to clipboard' }).click();
-    const address1 = await page.evaluate(() => navigator.clipboard.readText());
-
-    await page.getByRole('button', { name: 'Accounts' }).click();
-    await page.getByRole('heading', { name: 'Account 1' }).click();
-
-    return [address0, address1];
-  }
-
   static async setupPasskey(config: { page: Page }) {
     const provider = new Provider('http://testnet.fuel.network/v1/graphql');
     const genesisWallet = Wallet.fromPrivateKey(

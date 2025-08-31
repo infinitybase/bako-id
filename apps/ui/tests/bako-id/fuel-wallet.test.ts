@@ -6,6 +6,7 @@ import {
   editProfile,
   returnFundsToGenesisWallet,
   transfer,
+  getAddress,
 } from '../ultils/helpers';
 
 await E2ETestUtils.downloadFuelExtension({ test });
@@ -26,6 +27,7 @@ test.describe('Connect with Fuel Wallet', () => {
   });
 
   test.afterEach(async ({ extensionId, context }) => {
+    await fuelWalletTestHelper.switchAccount('Account 1');
     const genesisAddress = genesisWallet.address.toString();
 
     await returnFundsToGenesisWallet({
@@ -202,132 +204,133 @@ test.describe('Connect with Fuel Wallet', () => {
     });
   });
 
-  test.only('create new Bako to other resolver', async ({ page, context }) => {
-    // const [address0, address1] = await E2ETestUtils.getTwoAddresses(context);
+  test.only('create new Bako to other resolver', async ({ page }) => {
+    const newHandle = `automation${Date.now()}`;
+    console.log('new handle: ', newHandle);
 
-    // const newHandle = `automation${Date.now()}`;
-    // console.log('new handle: ', newHandle);
+    await fuelWalletTestHelper.addAccount();
+    await fuelWalletTestHelper.switchAccount('Account 1');
 
-    await test.step('connect wallet 2', async () => {
-      await fuelWalletTestHelper.addAccount();
+    await page.waitForTimeout(2000);
+    let address1: string;
+    let address2: string;
 
-      await page.getByRole('button', { name: 'Connect Wallet' }).click();
+    await test.step('create new handle to other resolver', async () => {
+      await page
+        .getByRole('textbox', { name: 'Search for an available Handle' })
+        .fill(newHandle);
+      await page.getByRole('button', { name: 'Continue' }).click();
 
-      await page.getByLabel('Connect to Fuel Wallet').click();
-      await fuelWalletTestHelper.walletConnect(['Account 2']);
+      await expect(page.getByText(newHandle)).toBeVisible();
+      await expect(page.getByText('Handles0.001 ETH')).toBeVisible();
+
+      const { value } = await getValueNewHandle(page);
+
+      await test.step('connect address 1', async () => {
+        try {
+          await page.getByRole('button', { name: 'Connect Wallet' }).click();
+          await page.getByLabel('Connect to Fuel Wallet').click();
+        } catch {
+          await page
+            .getByRole('button', { name: 'Connect Wallet' })
+            .nth(1)
+            .click();
+          await page.getByLabel('Connect to Fuel Wallet').click();
+        }
+
+        ({ address1, address2 } = await getAddress(fuelWalletTestHelper));
+
+        await transfer(genesisWallet, value, address1);
+        await page.waitForTimeout(500);
+
+        await fuelWalletTestHelper.walletConnect(['Account 1']);
+      });
+
+      await page.getByRole('textbox', { name: 'Address' }).fill(address2);
+
+      await page.getByRole('button', { name: 'Confirm Transaction' }).click();
+
+      await page
+        .getByLabel('Bako ID Terms Of Use Agreement')
+        .locator('div')
+        .filter({ hasText: '1. The Bako IDThe “Bako ID”' })
+        .nth(2)
+        .evaluate((el) => {
+          el.scrollTop = el.scrollHeight;
+        });
+      await page.getByRole('button', { name: 'Accept' }).click();
+
+      await E2ETestUtils.signMessageFuelWallet({ fuelWalletTestHelper, page });
+      await page.waitForTimeout(2500);
     });
 
-    // await test.step('create new handle', async () => {
-    //   await page
-    //     .getByRole('textbox', { name: 'Search for an available Handle' })
-    //     .fill(newHandle);
-    //   await page.getByRole('button', { name: 'Continue' }).click();
+    await test.step('verify owner datas', async () => {
+      await page.getByRole('img', { name: 'Bako logo' }).click();
+      await page.waitForTimeout(2500);
 
-    //   await expect(page.getByText(newHandle)).toBeVisible();
-    //   await expect(page.getByText('Handles0.001 ETH')).toBeVisible();
+      await page.getByRole('button', { name: /.* avatar$/ }).click();
+      await page.getByRole('menuitem', { name: 'Profile' }).click();
 
-    //   await test.step('connect wallet', async () => {
-    //     try {
-    //       await page.getByRole('button', { name: 'Connect Wallet' }).click();
-    //     } catch {
-    //       await page
-    //         .getByRole('button', { name: 'Connect Wallet' })
-    //         .nth(1)
-    //         .click();
-    //     }
-    //     await page.getByLabel('Connect to Fuel Wallet').click();
-    //     await fuelWalletTestHelper.walletConnect(['Account 1']);
-    //   });
+      try {
+        await expect(page.getByText(`BID @${newHandle}`)).toBeVisible();
+      } catch {
+        await page.reload();
+        await expect(page.getByText(`BID @${newHandle}`)).toBeVisible();
+      }
 
-    //   const { value } = await getValueNewHandle(page);
+      await page.getByRole('button', { name: 'My Handles' }).click();
+      await page.getByText(`${newHandle}`).click();
 
-    //   await transfer(genesisWallet, value, address0);
+      const shortened1 = `${address1.slice(0, 10)}...${address1.slice(-5)}`;
 
-    //   await page.getByRole('textbox', { name: 'Address' }).fill(address1);
+      await expect(page.getByText(`owner${shortened1}`)).toBeVisible();
 
-    //   await page.getByRole('button', { name: 'Confirm Transaction' }).click();
+      await test.step('edit handle as owner', async () => {
+        await page.getByRole('button', { name: 'Edit Profile' }).click();
+        await page
+          .locator('div')
+          .filter({ hasText: /^Nickname$/ })
+          .first()
+          .click();
+        await page
+          .getByRole('textbox', { name: 'Nickname' })
+          .fill(`${newHandle}`);
 
-    //   await page
-    //     .getByLabel('Bako ID Terms Of Use Agreement')
-    //     .locator('div')
-    //     .filter({ hasText: '1. The Bako IDThe “Bako ID”' })
-    //     .nth(2)
-    //     .evaluate((el) => {
-    //       el.scrollTop = el.scrollHeight;
-    //     });
-    //   await page.getByRole('button', { name: 'Accept' }).click();
+        await page.getByRole('button', { name: 'Save' }).click();
+        await page.getByRole('button', { name: 'Save changes' }).click();
+        await page.getByRole('button', { name: 'Confirm' }).click();
 
-    //   await E2ETestUtils.signMessageFuelWallet({ fuelWalletTestHelper, page });
-    // });
+        const { value, connectedAddress } =
+          await editProfile(fuelWalletTestHelper);
 
-    // await test.step('verify owner datas', async () => {
-    //   await page.getByRole('img', { name: 'Bako logo' }).click();
-    //   await page.waitForTimeout(2500);
+        await transfer(genesisWallet, value, connectedAddress);
 
-    //   await page.getByRole('button', { name: /.* avatar$/ }).click();
-    //   await page.getByRole('menuitem', { name: 'Profile' }).click();
+        await E2ETestUtils.signMessageFuelWallet({
+          fuelWalletTestHelper,
+          page,
+        });
+      });
+    });
 
-    //   await expect(page.getByText(`BID @${newHandle}`)).toBeVisible();
+    await test.step('verify data', async () => {
+      await page.getByRole('button', { name: /.* avatar$/ }).click();
+      await page.getByRole('menuitem', { name: 'Logout' }).dblclick();
 
-    //   await page.getByRole('button', { name: 'My Handles' }).click();
-    //   await page.getByText(`${newHandle}`).click();
+      await page.getByRole('button', { name: 'Connect Wallet' }).click();
+      await page.getByLabel('Connect to Fuel Wallet').dblclick();
 
-    //   const shortened0 = `${address0.slice(0, 10)}...${address0.slice(-5)}`;
-    //   const shortened1 = `${address0.slice(0, 10)}...${address0.slice(-5)}`;
+      await fuelWalletTestHelper.walletConnect(['Account 2']);
 
-    //   await expect(page.getByText(`owner${shortened0}`)).toBeVisible();
-    //   await expect(page.getByText(shortened1).nth(2)).toBeVisible();
+      await page.getByRole('button', { name: `${newHandle} avatar` }).click();
+      await page.getByRole('menuitem', { name: 'Profile' }).click();
 
-    //   await test.step('edit handle as owner', async () => {
-    //     await page.getByRole('button', { name: 'Edit Profile' }).click();
-    //     await page
-    //       .locator('div')
-    //       .filter({ hasText: /^Nickname$/ })
-    //       .first()
-    //       .click();
-    //     await page
-    //       .getByRole('textbox', { name: 'Nickname' })
-    //       .fill(`${newHandle}`);
+      await expect(page.getByText(`@${newHandle}`)).toBeVisible();
+      await expect(
+        page.getByRole('button', { name: 'Edit Profile' }),
+      ).not.toBeVisible();
 
-    //     await page.getByRole('button', { name: 'Save' }).click();
-    //     await page.getByRole('button', { name: 'Save changes' }).click();
-    //     await page.getByRole('button', { name: 'Confirm' }).click();
-
-    //     const { value, connectedAddress } =
-    //       await editProfile(fuelWalletTestHelper);
-
-    //     await transfer(genesisWallet, value, connectedAddress);
-
-    //     await E2ETestUtils.signMessageFuelWallet({
-    //       fuelWalletTestHelper,
-    //       page,
-    //     });
-    //   });
-    // });
-
-    // await test.step('verify data', async () => {
-    //   await page.getByRole('button', { name: /.* avatar$/ }).click();
-    //   await page.getByRole('menuitem', { name: 'Logout' }).dblclick();
-
-    //   await page.getByRole('button', { name: 'Connect Wallet' }).click();
-    //   await page.getByLabel('Connect to Fuel Wallet').dblclick();
-
-    //   const popupPage = await fuelWalletTestHelper.getWalletPopupPage();
-    //   await popupPage.getByRole('switch', { name: 'Toggle Account 2' }).click();
-    //   await popupPage.getByRole('switch', { name: 'Toggle Account 1' }).click();
-    //   await popupPage.getByRole('button', { name: 'Next' }).click();
-    //   await popupPage.getByRole('button', { name: 'Connect' }).click();
-
-    //   await page.getByRole('button', { name: `${newHandle} avatar` }).click();
-    //   await page.getByRole('menuitem', { name: 'Profile' }).click();
-
-    //   await expect(page.getByText(`@${newHandle}`)).toBeVisible();
-    //   await expect(
-    //     page.getByRole('button', { name: 'Edit Profile' }),
-    //   ).not.toBeVisible();
-
-    //   await page.getByRole('button', { name: 'My Handles' }).click();
-    //   await expect(page.getByText('It seems like you haven’t')).toBeVisible();
-    // });
+      await page.getByRole('button', { name: 'My Handles' }).click();
+      await expect(page.getByText('It seems like you haven’t')).toBeVisible();
+    });
   });
 });
