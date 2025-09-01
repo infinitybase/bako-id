@@ -12,7 +12,7 @@ export default defineConfig({
   reporter: 'blob',
   use: {
     headless: true,
-    screenshot: process.env.CI ? 'off' : 'only-on-failure',
+    screenshot: 'only-on-failure',
     trace: process.env.CI ? 'on-first-retry' : 'retain-on-failure',
     baseURL: 'https://preview.bako.id/',
     permissions: ['clipboard-read', 'clipboard-write'],

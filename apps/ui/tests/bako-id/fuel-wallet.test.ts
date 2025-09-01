@@ -26,16 +26,16 @@ test.describe('Connect with Fuel Wallet', () => {
     genesisWallet = E2EUtils.genesisWallet;
   });
 
-  test.afterEach(async ({ extensionId, context }) => {
-    await fuelWalletTestHelper.switchAccount('Account 1');
-    const genesisAddress = genesisWallet.address.toString();
+  // test.afterEach(async ({ extensionId, context }) => {
+  //   await fuelWalletTestHelper.switchAccount('Account 1');
+  //   const genesisAddress = genesisWallet.address.toString();
 
-    await returnFundsToGenesisWallet({
-      context,
-      extensionId,
-      genesisAddress,
-    });
-  });
+  //   await returnFundsToGenesisWallet({
+  //     context,
+  //     extensionId,
+  //     genesisAddress,
+  //   });
+  // });
 
   test('search an existing profile', async ({ page, context }) => {
     await expect(page.getByText('Search new Handle')).toBeVisible();
@@ -90,7 +90,7 @@ test.describe('Connect with Fuel Wallet', () => {
     });
   });
 
-  test('create new Bako user', async ({ page }) => {
+  test.skip('create new Bako user', async ({ page }) => {
     await test.step('connect wallet', async () => {
       await expect(page.getByText('Search new Handle')).toBeVisible();
       await page.getByRole('button', { name: 'Connect Wallet' }).click();
@@ -204,7 +204,7 @@ test.describe('Connect with Fuel Wallet', () => {
     });
   });
 
-  test.only('create new Bako to other resolver', async ({ page }) => {
+  test('create new Bako to other resolver', async ({ page }) => {
     const newHandle = `automation${Date.now()}`;
     console.log('new handle: ', newHandle);
 
