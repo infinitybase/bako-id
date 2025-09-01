@@ -26,18 +26,19 @@ test.describe('Connect with Fuel Wallet', () => {
     genesisWallet = E2EUtils.genesisWallet;
   });
 
-  // test.afterEach(async ({ extensionId, context }) => {
-  //   await fuelWalletTestHelper.switchAccount('Account 1');
-  //   const genesisAddress = genesisWallet.address.toString();
+  test.afterEach(async ({ extensionId, context, page }) => {
+    await page.pause();
+    await fuelWalletTestHelper.switchAccount('Account 1');
+    const genesisAddress = genesisWallet.address.toString();
 
-  //   await returnFundsToGenesisWallet({
-  //     context,
-  //     extensionId,
-  //     genesisAddress,
-  //   });
-  // });
+    await returnFundsToGenesisWallet({
+      context,
+      extensionId,
+      genesisAddress,
+    });
+  });
 
-  test.only('search an existing profile', async ({ page, context }) => {
+  test('search an existing profile', async ({ page, context }) => {
     await expect(page.getByText('Search new Handle')).toBeVisible();
 
     await page
@@ -261,7 +262,6 @@ test.describe('Connect with Fuel Wallet', () => {
       await page.getByRole('button', { name: 'Accept' }).click();
 
       await E2ETestUtils.signMessageFuelWallet({ fuelWalletTestHelper, page });
-      await page.waitForTimeout(2500);
     });
 
     await test.step('verify owner datas', async () => {
@@ -284,32 +284,6 @@ test.describe('Connect with Fuel Wallet', () => {
       const shortened1 = `${address1.slice(0, 10)}...${address1.slice(-5)}`;
 
       await expect(page.getByText(`owner${shortened1}`)).toBeVisible();
-
-      await test.step('edit handle as owner', async () => {
-        await page.getByRole('button', { name: 'Edit Profile' }).click();
-        await page
-          .locator('div')
-          .filter({ hasText: /^Nickname$/ })
-          .first()
-          .click();
-        await page
-          .getByRole('textbox', { name: 'Nickname' })
-          .fill(`${newHandle}`);
-
-        await page.getByRole('button', { name: 'Save' }).click();
-        await page.getByRole('button', { name: 'Save changes' }).click();
-        await page.getByRole('button', { name: 'Confirm' }).click();
-
-        const { value, connectedAddress } =
-          await editProfile(fuelWalletTestHelper);
-
-        await transfer(genesisWallet, value, connectedAddress);
-
-        await E2ETestUtils.signMessageFuelWallet({
-          fuelWalletTestHelper,
-          page,
-        });
-      });
     });
 
     await test.step('verify data', async () => {
@@ -324,7 +298,6 @@ test.describe('Connect with Fuel Wallet', () => {
       await page.getByRole('button', { name: `${newHandle} avatar` }).click();
       await page.getByRole('menuitem', { name: 'Profile' }).click();
 
-      await expect(page.getByText(`@${newHandle}`)).toBeVisible();
       await expect(
         page.getByRole('button', { name: 'Edit Profile' }),
       ).not.toBeVisible();

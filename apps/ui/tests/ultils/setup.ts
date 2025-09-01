@@ -75,5 +75,6 @@ export class E2ETestUtils {
     await page.waitForTimeout(2000);
     const popupPage = await fuelWalletTestHelper.getWalletPopupPage();
     await getButtonByText(popupPage, 'Submit').click();
+    await popupPage.waitForEvent('close');
   }
 }
