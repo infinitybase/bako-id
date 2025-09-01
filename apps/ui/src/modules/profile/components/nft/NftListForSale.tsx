@@ -9,7 +9,6 @@ import {
   Grid,
   GridItem,
   Heading,
-  Skeleton,
   Stack,
 } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
@@ -112,7 +111,7 @@ export const NftListForSale = ({
         alignItems="center"
       >
         <Pagination
-          page={Number(page ?? 1)}
+          page={Number(page ?? 0)}
           totalPages={paginationInfos.totalPages}
           hasNextPage={paginationInfos.hasNextPage}
           hasPreviousPage={paginationInfos.hasPreviousPage}
