@@ -4,7 +4,7 @@ import type { Order } from '@/types/marketplace';
 import { GridItem, Heading, SimpleGrid, Skeleton } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
 import { ZeroBytes32 } from 'fuels';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 interface OrderListProps {
@@ -30,10 +30,6 @@ export const OrderList = ({
   const { ref, inView } = useInView();
   const isEmptyOrders = !orders?.length;
   const { data } = useResolverName(wallet?.address.b256Address ?? ZeroBytes32);
-
-  const isOwner = useMemo(() => {
-    return wallet?.address.b256Address === orders[0].seller;
-  }, [wallet, orders]);
 
   useEffect(() => {
     if (
@@ -65,20 +61,23 @@ export const OrderList = ({
       }}
       mx={{ base: 'auto', sm: 'unset' }}
     >
-      {orders.map((order) => (
-        <NftSaleCard
-          key={order.id}
-          order={order}
-          isOwner={isOwner}
-          showAnimatedButton
-          withHandle={!!data}
-          openModalOnClick={false}
-          imageSize={{
-            xl: '260px',
-          }}
-          ctaButtonVariant="mktPrimary"
-        />
-      ))}
+      {orders.map((order) => {
+        const isOwner = wallet?.address.b256Address === order.seller;
+        return (
+          <NftSaleCard
+            key={order.id}
+            order={order}
+            isOwner={isOwner}
+            showAnimatedButton
+            withHandle={!!data}
+            openModalOnClick={false}
+            imageSize={{
+              xl: '260px',
+            }}
+            ctaButtonVariant="mktPrimary"
+          />
+        );
+      })}
 
       {isLoadingOrders &&
         !isPlaceholderData &&
