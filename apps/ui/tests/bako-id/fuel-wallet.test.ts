@@ -91,7 +91,7 @@ test.describe('Connect with Fuel Wallet', () => {
     });
   });
 
-  test.skip('create new Bako user', async ({ page }) => {
+  test.skip('create new handle', async ({ page }) => {
     await test.step('connect wallet', async () => {
       await expect(page.getByText('Search new Handle')).toBeVisible();
       await page.getByRole('button', { name: 'Connect Wallet' }).click();
@@ -205,10 +205,11 @@ test.describe('Connect with Fuel Wallet', () => {
     });
   });
 
-  test.only('create new Bako to other resolver', async ({ page }) => {
+  test.only('create new handle to other resolver', async ({ page }) => {
     const newHandle = `automation${Date.now()}`;
     console.log('new handle: ', newHandle);
 
+    await fuelWalletTestHelper.switchNetwork('Fuel Sepolia Testnet');
     await fuelWalletTestHelper.addAccount();
     await fuelWalletTestHelper.switchAccount('Account 1');
 
