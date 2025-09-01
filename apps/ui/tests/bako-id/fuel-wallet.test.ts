@@ -37,7 +37,7 @@ test.describe('Connect with Fuel Wallet', () => {
   //   });
   // });
 
-  test('search an existing profile', async ({ page, context }) => {
+  test.only('search an existing profile', async ({ page, context }) => {
     await expect(page.getByText('Search new Handle')).toBeVisible();
 
     await page
