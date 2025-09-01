@@ -24,6 +24,18 @@ test.describe('Connect with Fuel Wallet', () => {
 
     fuelWalletTestHelper = E2EUtils.fuelWalletTestHelper;
     genesisWallet = E2EUtils.genesisWallet;
+
+    const walletPage = fuelWalletTestHelper.getWalletPage();
+
+    const closeButton = walletPage.getByRole('button', {
+      name: 'Close dialog',
+    });
+    if (await closeButton.isVisible()) {
+      await closeButton.click();
+    }
+
+    await fuelWalletTestHelper.addAccount();
+    await fuelWalletTestHelper.switchAccount('Account 1');
   });
 
   // test.afterEach(async ({ extensionId, context, page }) => {
@@ -209,11 +221,6 @@ test.describe('Connect with Fuel Wallet', () => {
     const newHandle = `automation${Date.now()}`;
     console.log('new handle: ', newHandle);
 
-    await fuelWalletTestHelper.switchNetwork('Fuel Sepolia Testnet');
-    await fuelWalletTestHelper.addAccount();
-    await fuelWalletTestHelper.switchAccount('Account 1');
-
-    await page.waitForTimeout(2000);
     let address1: string;
     let address2: string;
 
