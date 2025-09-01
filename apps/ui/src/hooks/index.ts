@@ -7,3 +7,4 @@ export * from './useResolveDomainRequests';
 export * from './useResolverName';
 export * from './useScreenSize';
 export * from './useVerifyBrowserType';
+export * from './useAvatar';
