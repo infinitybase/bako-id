@@ -152,7 +152,10 @@ const NftSaleCard = ({
     [order.price.usd]
   );
   const orderPrice = useMemo(() => {
-    return Intl.NumberFormat('en-US').format(Number(order.price.amount));
+    return Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 8
+    }).format(Number(order.price.amount));
   }, [order.price.amount]);
 
   const assetSymbolUrl = order.price.image || UnknownAsset;

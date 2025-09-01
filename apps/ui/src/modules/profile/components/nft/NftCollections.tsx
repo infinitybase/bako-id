@@ -96,7 +96,6 @@ export const NftCollections = ({
             totalPages={totalPages}
             onPageChange={handlePageChange}
             isLoading={isPlaceholderData}
-            isForSale
           />
         </Stack>
       )}

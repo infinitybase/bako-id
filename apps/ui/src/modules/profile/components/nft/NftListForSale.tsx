@@ -88,7 +88,7 @@ export const NftListForSale = ({
         }}
         gap={6}
       >
-        {!isLoadingOrders &&
+        {
           orders?.map((order) => (
             <GridItem key={order.id}>
               <NftSaleCard
@@ -102,13 +102,7 @@ export const NftListForSale = ({
               />
             </GridItem>
           ))}
-        {isLoadingOrders &&
-          new Array(12).fill(null).map((_, index) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-            <GridItem key={index}>
-              <Skeleton height="260px" borderRadius="md" />
-            </GridItem>
-          ))}
+     
       </Grid>
 
       <GridItem

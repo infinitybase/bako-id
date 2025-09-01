@@ -23,7 +23,7 @@ export const Pagination = ({
   return (
     <>
       <Text fontSize="sm" mr={2}>
-        {isForSale ? page : page + 1} - {totalPages} of {totalPages}
+        {isForSale ? page + 1 : page} - {totalPages} of {totalPages}
       </Text>
       <IconButton
         aria-label="Previous Page"
