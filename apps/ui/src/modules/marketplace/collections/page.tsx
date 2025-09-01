@@ -79,6 +79,8 @@ export const CollectionPage = () => {
     collection?.data?.isMintable ?? false
   );
 
+  const stillMintable = Number(totalMinted) < Number(maxSupply);
+
   const wasAllSupplyMinted =
     Number(maxSupply) > 0 && Number(maxSupply) === Number(totalMinted);
 
@@ -107,7 +109,7 @@ export const CollectionPage = () => {
       sortDirection: column.includes('asc') ? 'asc' : 'desc',
     }));
   };
-  
+
   const data = useMemo(() => {
     // Remove the orders that were purchased from the list
     return (collectionOrders?.pages?.flatMap((page) => page.data) ?? []).filter(
@@ -141,7 +143,7 @@ export const CollectionPage = () => {
         setActiveTabIndex(0);
       }
     }
-  }, [hasItems, shouldShowMintTab, shouldDefaultToMintTab]) 
+  }, [hasItems, shouldShowMintTab, shouldDefaultToMintTab]);
 
   useEffect(() => {
     if (collection?.data === null) {
@@ -153,7 +155,10 @@ export const CollectionPage = () => {
 
   return (
     <Stack w="full" p={0} m={0}>
-      <CollectionPageBanner collection={collection?.data!} />
+      <CollectionPageBanner
+        collection={collection?.data!}
+        stillMintable={stillMintable}
+      />
 
       <Container
         maxW="1280px"

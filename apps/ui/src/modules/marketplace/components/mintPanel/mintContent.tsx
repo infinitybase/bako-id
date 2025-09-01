@@ -62,11 +62,11 @@ const MintContent = ({
     () => (progress / maxSupply) * 100,
     [progress, maxSupply]
   );
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+
   const mintPrice = useMemo(
     () =>
       formatAmount({
-        amount: tokenPrice,
+        amount: tokenPrice.mul(quantity),
         options: {
           units: asset?.decimals || 0,
           precision: Math.min(asset?.decimals || 0, 3),

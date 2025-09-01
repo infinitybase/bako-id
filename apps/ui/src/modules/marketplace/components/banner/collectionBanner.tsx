@@ -8,10 +8,12 @@ import { BannerRoot } from './root';
 
 type MarketplaceBannerProps = {
   collection: Collection;
+  stillMintable: boolean;
 };
 
 export const CollectionPageBanner = ({
   collection,
+  stillMintable,
 }: MarketplaceBannerProps) => {
   const hasBanner = !!collection?.config?.banner;
   const navigate = useNavigate();
@@ -102,7 +104,10 @@ export const CollectionPageBanner = ({
             e.stopPropagation();
           }}
         >
-          <BannerRoot.CollectionContent collection={collection} />
+          <BannerRoot.CollectionContent
+            collection={collection}
+            stillMintable={stillMintable}
+          />
         </Box>
       </Box>
     </Stack>
