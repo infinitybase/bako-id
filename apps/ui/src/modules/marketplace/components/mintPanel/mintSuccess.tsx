@@ -50,7 +50,7 @@ export default function MintSuccess({
   const slidesPerView =
     mints.length === 1 || isMobile ? 1 : mints.length === 2 ? 2 : 2.6;
   const getEdition = (name: string) => {
-    const edition = name.split('#')[1];
+    const edition = name?.split('#')[1];
     return edition ? `#${edition}` : '';
   };
 
@@ -92,7 +92,9 @@ export default function MintSuccess({
             }}
             onSwiper={setSwiper}
           >
-            {mints?.map((mint) => (
+            {mints?.map((mint) => {
+              const edition = getEdition(mint.name);
+              return(
               <SwiperSlide
                 key={mint.name}
                 style={{
@@ -101,10 +103,12 @@ export default function MintSuccess({
                   position: 'relative',
                 }}
               >
-                <NftCard.EditionBadge
-                  edition={getEdition(mint.name)}
+                {edition && (
+                  <NftCard.EditionBadge
+                  edition={edition}
                   zIndex={10}
-                />
+                  />
+                )}
                 <Flex
                   flexDir="column"
                   gap={4}
@@ -119,7 +123,7 @@ export default function MintSuccess({
                     }}
                     skeletonProps={{
                       borderRadius: '8px',
-                      boxSize: { base: '100%', md: '361px', lg: '382px' },
+                      boxSize: { base: '100%', md: '363px', lg: '384px' },
                     }}
                   />
 
@@ -153,7 +157,7 @@ export default function MintSuccess({
                   </Flex>
                 </Flex>
               </SwiperSlide>
-            ))}
+            )})}
           </Swiper>
 
           <CustomNavigation
