@@ -8,6 +8,7 @@ import { useMemo, useState } from 'react';
 import ProfileWithoutAssets from '../profileWithoutAssets';
 import { NftCollectionCard } from './NftCollectionCard';
 import { Card } from '@/components';
+import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
 
 export const NftCollections = ({
   resolver,
@@ -18,11 +19,15 @@ export const NftCollections = ({
   const [currentPage, setCurrentPage] = useState(1);
   const { wallet, isLoading: isLoadingWallet } = useWallet();
 
-  const { collections, isLoading, totalPages, isPlaceholderData } =
-    useCollections({
-      address: resolver,
-      page: currentPage,
-    });
+  const {
+    collections: notListedCollections,
+    isLoading,
+    totalPages,
+    isPlaceholderData,
+  } = useCollections({
+    address: resolver,
+    page: currentPage,
+  });
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -35,9 +40,14 @@ export const NftCollections = ({
     [ownerDomain, resolver]
   );
 
+  const notListedCollectionsWithoutHandles = notListedCollections.filter(
+    (collection) =>
+      !BAKO_CONTRACTS_IDS.includes(collection.assets[0]?.contractId ?? '')
+  );
+
   const emptyCollections = useMemo(
-    () => collections.length === 0,
-    [collections]
+    () => notListedCollectionsWithoutHandles.length === 0,
+    [notListedCollectionsWithoutHandles]
   );
 
   if (isLoading) {
@@ -57,7 +67,7 @@ export const NftCollections = ({
       <Flex mb={6} alignItems="center" justify="space-between">
         <Heading fontSize="lg">NFT</Heading>
       </Flex>
-      {collections.map((collection) => (
+      {notListedCollectionsWithoutHandles.map((collection) => (
         <Box key={collection.name} mb={5}>
           <Heading fontSize="md" mb={3}>
             {collection.name}
