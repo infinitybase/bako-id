@@ -8,9 +8,9 @@ import 'swiper/css/pagination';
 import { HexagonEmptyIcon } from '@/components/icons/hexagonEmpty';
 import { HexagonFillIcon } from '@/components/icons/hexagonFill';
 import { useListMintableCollections } from '@/hooks/marketplace/useListMintableCollections';
+import type { Collection } from '@/types/marketplace';
 import type { Swiper as SwiperType } from 'swiper';
 import { BannerRoot } from './root';
-import type { Collection } from '@/types/marketplace';
 
 export const MarketplaceBanner = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -24,7 +24,7 @@ export const MarketplaceBanner = () => {
     if (!banners) return;
     router.navigate({
       to: '/collection/$collectionName',
-      params: { collectionName: banners[activeIndex].name },
+      params: { collectionName: banners[activeIndex].slug },
     });
   };
 
@@ -46,7 +46,7 @@ export const MarketplaceBanner = () => {
           direction="horizontal"
           slidesPerView={1}
           modules={[Pagination, Mousewheel, Autoplay]}
-          autoplay={{ delay: 4000, disableOnInteraction: false }}
+          autoplay={{ delay: 6000, disableOnInteraction: false }}
           style={{
             height: '100%',
           }}

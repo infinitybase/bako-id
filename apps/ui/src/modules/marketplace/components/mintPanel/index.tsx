@@ -14,6 +14,7 @@ import type { AssetInfo, BN } from 'fuels';
 import type { CollectionConfig } from '../../utils/mint';
 import MintPanelSkeleton from '../skeletons/mintPanelSkeleton';
 import MintContent from './mintContent';
+import type { MintedAssetsTransaction } from '@/hooks/marketplace/useMintToken';
 
 const MAX_PER_WALLET = 70;
 
@@ -27,6 +28,7 @@ type MintPanelProps = {
   isLoading: boolean;
   wasAllSupplyMinted: boolean;
   collectionName: string;
+  onMintSuccess: (mintedAssetsTransaction: MintedAssetsTransaction) => void;
 };
 
 const MintPanel = ({
@@ -39,10 +41,11 @@ const MintPanel = ({
   isLoading,
   wasAllSupplyMinted,
   collectionName,
+  onMintSuccess,
 }: MintPanelProps) => {
   if (!collectionId) return null;
 
-  const { mintToken, isPending } = useMintToken(collectionId);
+  const { mintToken, isPending } = useMintToken(collectionId, onMintSuccess);
 
   if (!collectionId) return null;
   if (isLoading) return <MintPanelSkeleton />;
@@ -114,10 +117,10 @@ const MintPanel = ({
         />
       </Flex>
 
-      {config?.about?.map((about) => (
+      {config?.about?.map((about, index) => (
         <Grid
           gridTemplateColumns={{ base: '1fr', sm: 'repeat(2, 1fr)' }}
-          key={`about-${Math.random()}`}
+          key={about[index].type}
           gap={{ base: 4, sm: '60px', md: '173px' }}
           my={6}
           py={{ base: 10, sm: '72px' }}

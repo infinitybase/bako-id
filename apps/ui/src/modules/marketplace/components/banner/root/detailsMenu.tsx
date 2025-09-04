@@ -39,7 +39,8 @@ const DetailsMenu = ({ collection }: { collection: Collection }) => {
       <MenuButton
         ref={menuRef}
         h={4}
-        mt={2}
+        mt="auto"
+        mb={0.5}
         bg="transparent"
         color="grey.200"
         _hover={{ bg: 'transparent', color: 'white' }}
@@ -95,6 +96,7 @@ const DetailsMenu = ({ collection }: { collection: Collection }) => {
                     {collection.name}
                   </Heading>
                   <Icon
+                    cursor="pointer"
                     as={CloseIcon}
                     onClick={(e) => {
                       e.stopPropagation();

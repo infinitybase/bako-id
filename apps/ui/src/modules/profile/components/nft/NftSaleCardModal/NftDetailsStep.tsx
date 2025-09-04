@@ -3,7 +3,7 @@ import { EditIcon, LightIcon, UserIcon, useCustomToast } from '@/components';
 import { BTCIcon } from '@/components/icons/btcicon';
 import { CloseIcon } from '@/components/icons/closeIcon';
 import { ContractIcon } from '@/components/icons/contracticon';
-import { useResolverName } from '@/hooks';
+import { useResolverName, useScreenSize } from '@/hooks';
 import { useExecuteOrder } from '@/hooks/marketplace';
 import type { OrderWithMedatada } from '@/types/marketplace';
 import { formatAddress } from '@/utils/formatter';
@@ -40,6 +40,7 @@ export default function NftDetailsStep({
   isCanceling = false,
   onEdit,
   ctaButtonVariant,
+  onSuccess,
 }: {
   order: OrderWithMedatada;
   onClose: () => void;
@@ -49,12 +50,14 @@ export default function NftDetailsStep({
   onCancelOrder: () => Promise<void>;
   isCanceling?: boolean;
   onEdit: () => void;
+  onSuccess?: () => void;
   ctaButtonVariant?: 'primary' | 'mktPrimary';
 }) {
   const { connect, isConnected } = useConnectUI();
   const { errorToast, successToast } = useCustomToast();
   const { account } = useAccount();
   const homeUrl = getHomeUrl();
+  const { isMobile } = useScreenSize();
 
   const {
     balance: walletAssetBalance,
@@ -85,7 +88,7 @@ export default function NftDetailsStep({
     try {
       await executeOrderAsync(order.id);
       successToast({ title: 'Order executed successfully!' });
-      onClose();
+      onSuccess?.();
     } catch {
       errorToast({ title: 'Failed to execute order' });
     }
@@ -93,7 +96,7 @@ export default function NftDetailsStep({
     connect,
     executeOrderAsync,
     order.id,
-    onClose,
+    onSuccess,
     successToast,
     errorToast,
     isConnected,
@@ -127,22 +130,24 @@ export default function NftDetailsStep({
       maxH={{ md: '480px' }}
       position="relative"
     >
-      <Flex
-        alignItems="center"
-        justifyContent="space-between"
-        w="full"
-        position={{
-          base: 'relative',
-          sm: 'sticky',
-        }}
-        bg="background.900"
-        top={0}
-        right={0}
-        zIndex={1}
-      >
-        <Heading>{nftName}</Heading>
-        <Icon as={CloseIcon} cursor="pointer" onClick={onClose} />
-      </Flex>
+      {!isMobile && (
+        <Flex
+          alignItems="center"
+          justifyContent="space-between"
+          w="full"
+          position={{
+            base: 'relative',
+            sm: 'sticky',
+          }}
+          bg="background.900"
+          top={0}
+          right={0}
+          zIndex={1}
+        >
+          <Heading>{nftName}</Heading>
+          <Icon as={CloseIcon} cursor="pointer" onClick={onClose} />
+        </Flex>
+      )}
 
       <Stack spacing={2}>
         <Text>Description</Text>
