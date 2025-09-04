@@ -14,6 +14,7 @@ export const Image = ({ boxSize = { xl: '160px ' }, ...props }: ImageProps) => {
         ...rest,
         borderTopRadius: '8px',
         borderBottomRadius: '0',
+        aspectRatio: '1/1',
       }}
     />
   );
