@@ -9,6 +9,7 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  useDisclosure,
 } from '@chakra-ui/react';
 import {
   Outlet,
@@ -27,14 +28,10 @@ import { CollectionPageBanner } from '../components/banner/collectionBanner';
 import MarketplaceFilter from '../components/marketplaceFilter';
 import MintPanel from '../components/mintPanel';
 import { useProcessingOrdersStore } from '../stores/processingOrdersStore';
-import { slugify } from '@/utils/slugify';
+import MintSuccess from '../components/mintPanel/mintSuccess';
+import type { MintedAssetsTransaction } from '@/hooks/marketplace/useMintToken';
 
 export const CollectionPage = () => {
-  const navigate = useNavigate();
-  const { collectionName } = useParams({ strict: false });
-  const slugifiedCollectionName = slugify(collectionName);
-  const { search } = useSearch({ strict: false });
-  const debouncedSearch = useDebounce<string>(search?.trim() ?? '', 700);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [filters, setFilters] = useState<{
     sortBy: string;
@@ -43,7 +40,21 @@ export const CollectionPage = () => {
     sortBy: 'createdAt',
     sortDirection: 'desc',
   });
+  const [mintedAssets, setMintedAssets] =
+    useState<MintedAssetsTransaction | null>(null);
+  const { collectionName: slugifiedCollectionName } = useParams({
+    strict: false,
+  });
+  const navigate = useNavigate();
+  const { search } = useSearch({ strict: false });
+  const debouncedSearch = useDebounce<string>(search?.trim() ?? '', 700);
+  const successMintDialog = useDisclosure();
   const { purchasedOrders } = useProcessingOrdersStore();
+
+  const handleCloseMintSuccessDialog = useCallback(() => {
+    successMintDialog.onClose();
+    setMintedAssets(null);
+  }, [successMintDialog]);
 
   const collectionOrdersLimit = 10;
 
@@ -66,6 +77,7 @@ export const CollectionPage = () => {
   const { collection } = useGetCollection({
     collectionId: slugifiedCollectionName,
   });
+  const collectionName = collection?.data?.name ?? '';
 
   const {
     maxSupply,
@@ -152,6 +164,15 @@ export const CollectionPage = () => {
       });
     }
   }, [collection?.data, navigate]);
+
+  useEffect(() => {
+    if (
+      mintedAssets?.mintedAssets?.length &&
+      mintedAssets.mintedAssets.length > 0
+    ) {
+      successMintDialog.onOpen();
+    }
+  }, [mintedAssets, successMintDialog]);
 
   return (
     <Stack w="full" p={0} m={0}>
@@ -242,7 +263,7 @@ export const CollectionPage = () => {
               {shouldShowMintTab && (
                 <TabPanel p={0}>
                   <MintPanel
-                    collectionName={slugifiedCollectionName ?? ''}
+                    collectionName={collectionName ?? ''}
                     collectionId={collection?.data?.id ?? ''}
                     maxSupply={maxSupply}
                     totalMinted={totalMinted}
@@ -251,9 +272,17 @@ export const CollectionPage = () => {
                     asset={asset}
                     isLoading={isLoadingMintData || !isFetchedMintData}
                     wasAllSupplyMinted={wasAllSupplyMinted}
+                    onMintSuccess={setMintedAssets}
                   />
                 </TabPanel>
               )}
+              <MintSuccess
+                isOpen={successMintDialog.isOpen}
+                collectionName={collectionName ?? ''}
+                onClose={handleCloseMintSuccessDialog}
+                mints={mintedAssets?.mintedAssets ?? []}
+                transactionId={mintedAssets?.transactionId ?? ''}
+              />
             </TabPanels>
           </Tabs>
         )}
