@@ -90,11 +90,7 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
         minW={props.nftCardMinSize}
       >
         {edition && <NftCard.EditionBadge edition={`#${edition}`} />}
-        <NftCard.Image
-          minW="full"
-          src={props.asset.image ?? image}
-          {...props.nftImageProps}
-        />
+        <NftCard.Image minW="full" src={image} {...props.nftImageProps} />
         <NftCard.Content spacing={2} {...props.contentProps}>
           <Text
             fontSize="sm"
