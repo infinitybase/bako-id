@@ -4,7 +4,7 @@ import UnknownAsset from '@/assets/unknown-asset.png';
 import { ConfirmationDialog, useCustomToast } from '@/components';
 import { useCancelOrder, useExecuteOrder } from '@/hooks/marketplace';
 import type { Order } from '@/types/marketplace';
-import { parseURI } from '@/utils/formatter';
+import { orderPriceFormatter, parseURI } from '@/utils/formatter';
 import {
   type BoxProps,
   Button,
@@ -158,12 +158,10 @@ const NftSaleCard = ({
       }).format(Number(order.price.usd)),
     [order.price.usd]
   );
-  const orderPrice = useMemo(() => {
-    return Intl.NumberFormat('en-US', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 8
-    }).format(Number(order.price.amount));
-  }, [order.price.amount]);
+  const orderPrice = useMemo(
+    () => orderPriceFormatter(Number(order.price.amount)),
+    [order.price.amount]
+  );
 
   const assetSymbolUrl = order.price.image || UnknownAsset;
 
