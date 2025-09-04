@@ -28,18 +28,20 @@ export const SocialActionsMenu = ({
       alignItems="center"
     >
       <CopyText useNewCopyIcon value={collection.id} color="grey.200" />
-      <Icon
-        as={GlobalIcon}
-        color="grey.200"
-        cursor={siteLink ? 'pointer' : 'default'}
-        pointerEvents={siteLink ? 'auto' : 'none'}
-        _hover={{ color: 'white' }}
-        transition="color 0.2s"
-        onClick={(e) => {
-          e.stopPropagation();
-          handleRedirect(siteLink ?? '');
-        }}
-      />
+      {siteLink && (
+        <Icon
+          as={GlobalIcon}
+          color="grey.200"
+          cursor="pointer"
+          pointerEvents="auto"
+          _hover={{ color: 'white' }}
+          transition="color 0.2s"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleRedirect(siteLink ?? '');
+          }}
+        />
+      )}
       {xLink && (
         <Icon
           as={TwitterIcon}
@@ -72,7 +74,7 @@ export const SocialActionsMenu = ({
       )}
 
       <ShareMenu
-        collectionId={collection.id}
+        collectionIdOrSlug={collection.id}
         collectionName={collection.name}
       />
     </Flex>

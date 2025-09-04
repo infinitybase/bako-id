@@ -45,7 +45,7 @@ export interface Order {
     name: string;
     symbol: string;
     usd: number;
-    raw: string
+    raw: string;
   };
   seller: string;
   status: number;
@@ -131,6 +131,7 @@ export interface Collection {
   name: string;
   network: number;
   updatedAt: string;
+  slug: string;
   metrics: {
     sales: string;
     floorPrice: number;

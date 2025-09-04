@@ -52,19 +52,21 @@ const NftSaleCard = ({
   const { successToast, errorToast } = useCustomToast();
   const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const { updatedOrders } = useProcessingOrdersStore();
+  const { updatedOrders, addPurchasedOrder } = useProcessingOrdersStore();
   const { account } = useAccount();
   const { collectionName } = useParams({ strict: false });
   const { connect, isConnected } = useConnectUI();
   const [displayBuyButton, setDisplayBuyButton] = useState(false);
   const slugifiedCollectionName = slugify(collectionName);
+  const [txId, setTxId] = useState<string | null>(null);
 
   const { collection } = useGetCollection({
     collectionId: slugifiedCollectionName,
   });
 
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
-    collection?.data?.id ?? ''
+    collection?.data?.id ?? '',
+    setTxId
   );
 
   const showDisplayBuyButton = displayBuyButton || isExecuting;
@@ -91,8 +93,7 @@ const NftSaleCard = ({
       try {
         await executeOrderAsync(order.id);
         successToast({ title: 'Order executed successfully!' });
-        onClose();
-      } catch {
+        } catch {
         errorToast({ title: 'Failed to execute order' });
       }
     },
@@ -100,8 +101,7 @@ const NftSaleCard = ({
       connect,
       executeOrderAsync,
       order.id,
-      onClose,
-      successToast,
+        successToast,
       errorToast,
       isConnected,
     ]
@@ -109,10 +109,17 @@ const NftSaleCard = ({
 
   const handleOpenDialog = () => {
     onOpen();
+    if (txId) {
+      setTxId(null);
+    }
   };
 
   const handleCloseDialog = () => {
     onClose();
+    if (txId && order.id) {
+      addPurchasedOrder(order.id, txId);
+    }
+    setTxId(null);
   };
   const delistModal = useDisclosure();
 
@@ -271,11 +278,11 @@ const NftSaleCard = ({
           </Text>
         </ConfirmationDialog>
       )}
-      {isOpen && (
+      {(isOpen || txId) && (
         <NftSaleCardModal
           order={order}
           imageUrl={imageUrl}
-          isOpen={isOpen}
+          isOpen={isOpen || !!txId}
           onClose={handleCloseDialog}
           onCancelOrder={handleCancelOrder}
           isCanceling={isCanceling}
@@ -284,6 +291,7 @@ const NftSaleCard = ({
           isOwner={isOwner}
           withHandle={withHandle}
           ctaButtonVariant={ctaButtonVariant}
+          isExecuted={!!txId}
         />
       )}
     </NftCard.Root>
