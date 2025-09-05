@@ -9,7 +9,6 @@ import {
   Grid,
   GridItem,
   Heading,
-  Skeleton,
   Stack,
 } from '@chakra-ui/react';
 import { useWallet } from '@fuels/react';
@@ -23,7 +22,6 @@ export const NftListForSale = ({
   isLoadingOrders,
   orders,
   paginationInfos,
-  isProfilePage,
 }: {
   address: string;
   isLoadingOrders?: boolean;
@@ -33,7 +31,6 @@ export const NftListForSale = ({
     hasNextPage: boolean;
     hasPreviousPage: boolean;
   };
-  isProfilePage?: boolean;
 }) => {
   const [isDelistOrder, setIsDelistOrder] = useState(false);
   const { page } = useSearch({ strict: false });
@@ -90,7 +87,7 @@ export const NftListForSale = ({
         }}
         gap={6}
       >
-        {!isLoadingOrders &&
+        {
           orders?.map((order) => (
             <GridItem key={order.id}>
               <NftSaleCard
@@ -99,17 +96,12 @@ export const NftListForSale = ({
                 isOwner={isOwner}
                 showBuyButton={!isOwner}
                 withHandle={!!data}
-                isProfilePage={isProfilePage}
+                imageSize="full"
+                isProfilePage={true}
               />
             </GridItem>
           ))}
-        {isLoadingOrders &&
-          new Array(12).fill(null).map((_, index) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-            <GridItem key={index}>
-              <Skeleton height="260px" borderRadius="md" />
-            </GridItem>
-          ))}
+     
       </Grid>
 
       <GridItem
@@ -119,13 +111,13 @@ export const NftListForSale = ({
         alignItems="center"
       >
         <Pagination
-          isAccountOrders
-          page={Number(page ?? 1)}
+          page={Number(page ?? 0)}
           totalPages={paginationInfos.totalPages}
           hasNextPage={paginationInfos.hasNextPage}
           hasPreviousPage={paginationInfos.hasPreviousPage}
           isLoading={isLoadingOrders}
           onPageChange={handlePageChange}
+          isForSale
         />
       </GridItem>
     </Card>

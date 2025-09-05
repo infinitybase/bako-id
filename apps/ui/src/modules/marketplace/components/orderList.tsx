@@ -72,10 +72,8 @@ export const OrderList = ({
           showBuyButton
           withHandle={!!data}
           openModalOnClick={false}
-          imageSize={{
-            xl: '260px',
-          }}
           ctaButtonVariant="mktPrimary"
+          imageSize="full"
         />
       ))}
 

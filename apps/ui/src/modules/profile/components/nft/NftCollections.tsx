@@ -1,4 +1,3 @@
-import { Pagination } from '@/components/pagination';
 import { NFTCollectionSkeleton } from '@/components/skeletons/nftCollectionSkeleton';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
 import { useCollections } from '@/hooks/useCollections';
@@ -8,6 +7,7 @@ import { useMemo, useState } from 'react';
 import ProfileWithoutAssets from '../profileWithoutAssets';
 import { NftCollectionCard } from './NftCollectionCard';
 import { Card } from '@/components';
+import { Pagination } from '@/components/pagination';
 import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
 
 export const NftCollections = ({

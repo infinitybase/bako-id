@@ -6,7 +6,7 @@ import { ContractIcon } from '@/components/icons/contracticon';
 import { useResolverName, useScreenSize } from '@/hooks';
 import { useExecuteOrder } from '@/hooks/marketplace';
 import type { OrderWithMedatada } from '@/types/marketplace';
-import { formatAddress } from '@/utils/formatter';
+import { formatAddress, orderPriceFormatter } from '@/utils/formatter';
 import {
   Button,
   Flex,
@@ -114,9 +114,7 @@ export default function NftDetailsStep({
     ? `@${sellerDomain}`
     : formatAddress(order.seller);
 
-  const orderPrice = useMemo(() => {
-    return Intl.NumberFormat('en-US').format(Number(value));
-  }, [value]);
+  const orderPrice = useMemo(() => orderPriceFormatter(Number(value)), [value]);
 
   return (
     <Stack
