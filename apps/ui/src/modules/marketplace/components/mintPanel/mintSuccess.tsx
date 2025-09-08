@@ -24,7 +24,7 @@ type MintSuccessProps = {
   isOpen: boolean;
   onClose: () => void;
   transactionId: string;
-  mints: { name: string; image: string; id: string }[];
+  mints: { name: string | null; image: string | null; id: string }[];
   collectionName: string;
 };
 
@@ -110,8 +110,8 @@ export default function MintSuccess({
                     w={{ base: 'full', md: '361px', lg: '382px' }}
                   >
                     <ImageLoader
-                      src={parseURI(mint.image)}
-                      alt={mint.name}
+                      src={parseURI(mint.image ?? '')}
+                      alt={mint.name ?? ''}
                       imageProps={{
                         borderRadius: '8px',
                         boxSize: { base: '100%', md: '361px', lg: '382px' },

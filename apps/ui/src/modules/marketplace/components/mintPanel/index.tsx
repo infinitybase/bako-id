@@ -14,7 +14,7 @@ import type { AssetInfo, BN } from 'fuels';
 import type { CollectionConfig } from '../../utils/mint';
 import MintPanelSkeleton from '../skeletons/mintPanelSkeleton';
 import MintContent from './mintContent';
-import type { MintedAssetsTransaction } from '@/hooks/marketplace/useMintToken';
+import type { MintedAssetsTransaction } from '../../utils/minted-nfts-data';
 
 const MAX_PER_WALLET = 70;
 

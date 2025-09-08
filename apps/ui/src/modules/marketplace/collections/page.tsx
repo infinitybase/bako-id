@@ -29,7 +29,7 @@ import MarketplaceFilter from '../components/marketplaceFilter';
 import MintPanel from '../components/mintPanel';
 import { useProcessingOrdersStore } from '../stores/processingOrdersStore';
 import MintSuccess from '../components/mintPanel/mintSuccess';
-import type { MintedAssetsTransaction } from '@/hooks/marketplace/useMintToken';
+import type { MintedAssetsTransaction } from '../utils/minted-nfts-data';
 
 export const CollectionPage = () => {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
