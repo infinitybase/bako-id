@@ -2,66 +2,16 @@ import { useCustomToast } from '@/components';
 import collectionContractAbi from '@/modules/marketplace/utils/collection-contract-abi.json';
 import { MINT_TOKEN_LOG_ID } from '@/modules/marketplace/utils/constants';
 import { NFTCollection } from '@/modules/marketplace/utils/mint';
+import {
+    type FuelReceipt,
+    getMintedAssets,
+    type MintedAssetsTransaction,
+    type TransactionResultLog,
+} from '@/modules/marketplace/utils/minted-nfts-data';
 import { MarketplaceQueryKeys } from '@/utils/constants';
-import { fetchMetadata } from '@/utils/formatter';
 import { useWallet } from '@fuels/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { type BN, Interface } from 'fuels';
-
-type TransactionResultLog = {
-    asset: {
-        bits: string;
-    };
-    key: string;
-    metadata: Record<string, string>;
-};
-
-export type MintedAssetsTransaction = {
-    transactionId: string;
-    mintedAssets: {
-        name: string;
-        image: string;
-        id: string;
-    }[];
-};
-
-type FuelReceipt = {
-    rb: BN;
-    data: string;
-};
-
-const getMintedAssetMetadata = async (uri: string) => {
-    const metadata = await fetchMetadata(uri);
-    return metadata;
-};
-
-const getMintedAssets = async (logs: TransactionResultLog[]) => {
-    const uriLogs = logs.filter((log) => log.key === 'uri');
-
-    if (uriLogs.length === 0) return undefined;
-
-    const uniqueAssetsMap = new Map<string, TransactionResultLog>();
-
-    for (const log of uriLogs) {
-        const assetId = log.asset.bits;
-        if (!uniqueAssetsMap.has(assetId)) {
-            uniqueAssetsMap.set(assetId, log);
-        }
-    }
-
-    const mintedAssets = await Promise.all(
-        Array.from(uniqueAssetsMap.values()).map(async (log) => {
-            const metadata = await getMintedAssetMetadata(log.metadata.String);
-            return {
-                image: metadata.image,
-                name: metadata.name,
-                id: log.asset.bits,
-            };
-        })
-    );
-
-    return mintedAssets;
-};
+import { Interface } from 'fuels';
 
 export const useMintToken = (
     collectionId: string,

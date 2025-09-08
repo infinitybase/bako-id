@@ -49,10 +49,6 @@ export default function MintSuccess({
         : '1085px';
   const slidesPerView =
     mints.length === 1 || isMobile ? 1 : mints.length === 2 ? 2 : 2.6;
-  const getEdition = (name: string) => {
-    const edition = name?.split('#')[1];
-    return edition ? `#${edition}` : '';
-  };
 
   return (
     <NftModal.Root isOpen={isOpen} onClose={onClose} size={{ base: 'full' }}>
@@ -93,7 +89,6 @@ export default function MintSuccess({
             onSwiper={setSwiper}
           >
             {mints?.map((mint) => {
-              const edition = getEdition(mint.name);
               return (
                 <SwiperSlide
                   key={mint.name}
@@ -103,8 +98,11 @@ export default function MintSuccess({
                     position: 'relative',
                   }}
                 >
-                  {edition && (
-                    <NftCard.EditionBadge edition={edition} zIndex={10} />
+                  {mint.name && (
+                    <NftCard.EditionBadge
+                      edition={`#${mint.name}`}
+                      zIndex={10}
+                    />
                   )}
                   <Flex
                     flexDir="column"
