@@ -71,14 +71,11 @@ export const OrderList = ({
             showAnimatedButton
             withHandle={!!data}
             openModalOnClick={false}
-            imageSize={{
-              xl: '260px',
-            }}
+            imageSize="full"
             ctaButtonVariant="mktPrimary"
           />
         );
       })}
-
       {isLoadingOrders &&
         !isPlaceholderData &&
         Array.from({ length: 5 }, () => (

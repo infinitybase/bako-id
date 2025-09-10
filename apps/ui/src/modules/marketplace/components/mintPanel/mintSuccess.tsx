@@ -24,7 +24,7 @@ type MintSuccessProps = {
   isOpen: boolean;
   onClose: () => void;
   transactionId: string;
-  mints: { name: string; image: string }[];
+  mints: { name: string | null; image: string | null; id: string }[];
   collectionName: string;
 };
 
@@ -49,10 +49,6 @@ export default function MintSuccess({
         : '1085px';
   const slidesPerView =
     mints.length === 1 || isMobile ? 1 : mints.length === 2 ? 2 : 2.6;
-  const getEdition = (name: string) => {
-    const edition = name?.split('#')[1];
-    return edition ? `#${edition}` : '';
-  };
 
   return (
     <NftModal.Root isOpen={isOpen} onClose={onClose} size={{ base: 'full' }}>
@@ -93,71 +89,71 @@ export default function MintSuccess({
             onSwiper={setSwiper}
           >
             {mints?.map((mint) => {
-              const edition = getEdition(mint.name);
-              return(
-              <SwiperSlide
-                key={mint.name}
-                style={{
-                  width: 'full',
-                  maxWidth: '382px',
-                  position: 'relative',
-                }}
-              >
-                {edition && (
-                  <NftCard.EditionBadge
-                  edition={edition}
-                  zIndex={10}
-                  />
-                )}
-                <Flex
-                  flexDir="column"
-                  gap={4}
-                  w={{ base: 'full', md: '361px', lg: '382px' }}
+              return (
+                <SwiperSlide
+                  key={mint.name}
+                  style={{
+                    width: 'full',
+                    maxWidth: '382px',
+                    position: 'relative',
+                  }}
                 >
-                  <ImageLoader
-                    src={parseURI(mint.image)}
-                    alt={mint.name}
-                    imageProps={{
-                      borderRadius: '8px',
-                      boxSize: { base: '100%', md: '361px', lg: '382px' },
-                    }}
-                    skeletonProps={{
-                      borderRadius: '8px',
-                      boxSize: { base: '100%', md: '363px', lg: '384px' },
-                    }}
-                  />
-
-                  <Flex gap={2}>
-                    <Button
-                      w="full"
-                      variant="secondary"
-                      _hover={{
-                        borderColor: 'garage.100',
-                        color: 'garage.100',
-                      }}
-                      borderColor="section.500"
-                      fontWeight={400}
-                      letterSpacing="1px"
-                      onClick={() =>
-                        window.open(
-                          `${explorerUrl}/tx/${transactionId}`,
-                          '_blank'
-                        )
-                      }
-                    >
-                      View on explorer
-                    </Button>
-
-                    <ShareMenu
-                      collectionIdOrSlug={slugifiedCollectionName}
-                      collectionName={collectionName}
-                      onlyShareOnX
-                      twitterTitle={`Just minted my ${collectionName} on @garagedotzone`}
+                  {mint.name && (
+                    <NftCard.EditionBadge
+                      edition={`#${mint.name}`}
+                      zIndex={10}
                     />
+                  )}
+                  <Flex
+                    flexDir="column"
+                    gap={4}
+                    w={{ base: 'full', md: '361px', lg: '382px' }}
+                  >
+                    <ImageLoader
+                      src={parseURI(mint.image ?? '')}
+                      alt={mint.name ?? ''}
+                      imageProps={{
+                        borderRadius: '8px',
+                        boxSize: { base: '100%', md: '361px', lg: '382px' },
+                      }}
+                      skeletonProps={{
+                        borderRadius: '8px',
+                        boxSize: { base: '100%', md: '363px', lg: '384px' },
+                      }}
+                    />
+
+                    <Flex gap={2}>
+                      <Button
+                        w="full"
+                        variant="secondary"
+                        _hover={{
+                          borderColor: 'garage.100',
+                          color: 'garage.100',
+                        }}
+                        borderColor="section.500"
+                        fontWeight={400}
+                        letterSpacing="1px"
+                        onClick={() =>
+                          window.open(
+                            `${explorerUrl}/tx/${transactionId}`,
+                            '_blank'
+                          )
+                        }
+                      >
+                        View on explorer
+                      </Button>
+
+                      <ShareMenu
+                        collectionIdOrSlug={slugifiedCollectionName}
+                        collectionName={collectionName}
+                        onlyShareOnX
+                        twitterTitle={`Just minted my ${collectionName} on @garagedotzone`}
+                      />
+                    </Flex>
                   </Flex>
-                </Flex>
-              </SwiperSlide>
-            )})}
+                </SwiperSlide>
+              );
+            })}
           </Swiper>
 
           <CustomNavigation
