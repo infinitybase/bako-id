@@ -50,13 +50,16 @@ const networks: Record<number, string> = {
   0: 'https://explorer-indexer-testnet.fuel.network',
 };
 
+
+const FUEL_ASSETS_QUANTITY = 400;
+
 export class FuelAssetService {
   static async byAddress({
     address,
     chainId,
   }: ByAddress): Promise<ByAddressResponse> {
     const networkUrl = FuelAssetService.networkUrl(chainId);
-    const response = await fetch(`${networkUrl}/accounts/${address}/assets`);
+    const response = await fetch(`${networkUrl}/accounts/${address}/assets?last=${FUEL_ASSETS_QUANTITY}`);
     return response.json();
   }
 
