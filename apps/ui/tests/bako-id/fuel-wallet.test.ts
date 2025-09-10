@@ -19,6 +19,9 @@ test.describe('Connect with Fuel Wallet', () => {
   });
 
   test.afterEach(async () => {
+    if (!fuelWalletTestHelper) {
+      return;
+    }
     await fuelWalletTestHelper.switchAccount('Account 1');
     const genesisAddress = genesisWallet.address.toString();
 
@@ -28,7 +31,7 @@ test.describe('Connect with Fuel Wallet', () => {
     });
   });
 
-  test.only('search an existing profile', async ({ page, context }) => {
+  test('search an existing profile', async ({ page, context }) => {
     await expect(page.getByText('Search new Handle')).toBeVisible();
 
     await page
@@ -51,7 +54,7 @@ test.describe('Connect with Fuel Wallet', () => {
     await secondTab.getByRole('heading', { name: 'Account' }).click();
   });
 
-  test.only('search invalid handle', async ({ page }) => {
+  test('search invalid handle', async ({ page }) => {
     await expect(page.getByText('Search new Handle')).toBeVisible();
 
     await test.step('shows error for short handle', async () => {
@@ -81,7 +84,7 @@ test.describe('Connect with Fuel Wallet', () => {
     });
   });
 
-  test('create new handle', async ({ page, context, extensionId }) => {
+  test.only('create new handle', async ({ page, context, extensionId }) => {
     await test.step('setup fuel wallet', async () => {
       const E2EUtils = await E2ETestUtils.setupFuelWallet({
         page,
