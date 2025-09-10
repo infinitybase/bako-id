@@ -181,14 +181,14 @@ test.describe('Connect with Fuel Wallet', () => {
       await page
         .getByRole('textbox', { name: 'Nickname' })
         .fill(`${newHandle}`);
-      await page.getByRole('button', { name: 'Save' }).click();
+      await page.getByRole('button', { name: 'Save', exact: true }).click();
       await page
         .locator('div')
         .filter({ hasText: /^Short bio$/ })
         .first()
         .click();
       await page.getByRole('textbox', { name: 'Bio' }).fill('Short bio test');
-      await page.getByRole('button', { name: 'Save' }).click();
+      await page.getByRole('button', { name: 'Save', exact: true }).click();
       await page
         .locator('div')
         .filter({ hasText: /^Website$/ })
@@ -197,14 +197,14 @@ test.describe('Connect with Fuel Wallet', () => {
       await page
         .getByRole('textbox', { name: 'Website' })
         .fill('https://www.bako.global/');
-      await page.getByRole('button', { name: 'Save' }).click();
+      await page.getByRole('button', { name: 'Save', exact: true }).click();
       await page
         .locator('div')
         .filter({ hasText: /^Location$/ })
         .first()
         .click();
       await page.getByRole('textbox', { name: 'Location' }).fill('Brazil');
-      await page.getByRole('button', { name: 'Save' }).click();
+      await page.getByRole('button', { name: 'Save', exact: true }).click();
       await page
         .locator('div')
         .filter({ hasText: /^Twitter$/ })
@@ -213,7 +213,7 @@ test.describe('Connect with Fuel Wallet', () => {
       await page
         .getByRole('textbox', { name: 'X' })
         .fill('https://x.com/infinitybase_');
-      await page.getByRole('button', { name: 'Save' }).click();
+      await page.getByRole('button', { name: 'Save', exact: true }).click();
 
       await page.getByRole('button', { name: 'Save changes' }).click();
       await page.getByRole('button', { name: 'Confirm' }).click();
