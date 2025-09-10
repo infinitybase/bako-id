@@ -14,27 +14,8 @@ test.describe('Connect with Fuel Wallet', () => {
   let fuelWalletTestHelper: FuelWalletTestHelper;
   let genesisWallet: WalletUnlocked;
 
-  test.beforeEach(async ({ extensionId, context, page }) => {
-    const E2EUtils = await E2ETestUtils.setupFuelWallet({
-      page,
-      context,
-      extensionId,
-    });
-
-    fuelWalletTestHelper = E2EUtils.fuelWalletTestHelper;
-    genesisWallet = E2EUtils.genesisWallet;
-
-    const walletPage = fuelWalletTestHelper.getWalletPage();
-
-    const closeButton = walletPage.getByRole('button', {
-      name: 'Close dialog',
-    });
-    if (await closeButton.isVisible()) {
-      await closeButton.click();
-    }
-
-    await fuelWalletTestHelper.addAccount();
-    await fuelWalletTestHelper.switchAccount('Account 1');
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
   });
 
   test.afterEach(async () => {
@@ -47,7 +28,7 @@ test.describe('Connect with Fuel Wallet', () => {
     });
   });
 
-  test('search an existing profile', async ({ page, context }) => {
+  test.only('search an existing profile', async ({ page, context }) => {
     await expect(page.getByText('Search new Handle')).toBeVisible();
 
     await page
@@ -70,7 +51,7 @@ test.describe('Connect with Fuel Wallet', () => {
     await secondTab.getByRole('heading', { name: 'Account' }).click();
   });
 
-  test('search invalid handle', async ({ page }) => {
+  test.only('search invalid handle', async ({ page }) => {
     await expect(page.getByText('Search new Handle')).toBeVisible();
 
     await test.step('shows error for short handle', async () => {
@@ -100,7 +81,18 @@ test.describe('Connect with Fuel Wallet', () => {
     });
   });
 
-  test.only('create new handle', async ({ page }) => {
+  test('create new handle', async ({ page, context, extensionId }) => {
+    await test.step('setup fuel wallet', async () => {
+      const E2EUtils = await E2ETestUtils.setupFuelWallet({
+        page,
+        context,
+        extensionId,
+      });
+
+      fuelWalletTestHelper = E2EUtils.fuelWalletTestHelper;
+      genesisWallet = E2EUtils.genesisWallet;
+    });
+
     const newHandle = `automation${Date.now()}`;
     console.log('new handle: ', newHandle);
 
@@ -237,7 +229,22 @@ test.describe('Connect with Fuel Wallet', () => {
     });
   });
 
-  test('create new handle to other resolver', async ({ page }) => {
+  test('create new handle to other resolver', async ({
+    extensionId,
+    context,
+    page,
+  }) => {
+    await test.step('setup fuel wallet', async () => {
+      const E2EUtils = await E2ETestUtils.setupFuelWallet({
+        page,
+        context,
+        extensionId,
+      });
+
+      fuelWalletTestHelper = E2EUtils.fuelWalletTestHelper;
+      genesisWallet = E2EUtils.genesisWallet;
+    });
+
     const newHandle = `automation${Date.now()}`;
     console.log('new handle: ', newHandle);
 

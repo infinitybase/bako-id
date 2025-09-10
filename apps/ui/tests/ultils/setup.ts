@@ -38,6 +38,18 @@ export class E2ETestUtils {
       mnemonic: Mnemonic.generate(),
     });
 
+    const walletPage = fuelWalletTestHelper.getWalletPage();
+
+    const closeButton = walletPage.getByRole('button', {
+      name: 'Close dialog',
+    });
+    if (await closeButton.isVisible()) {
+      await closeButton.click();
+    }
+
+    await fuelWalletTestHelper.addAccount();
+    await fuelWalletTestHelper.switchAccount('Account 1');
+
     await config.page.goto('/');
     await config.page.bringToFront();
 
