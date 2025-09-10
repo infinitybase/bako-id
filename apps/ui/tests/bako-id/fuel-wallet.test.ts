@@ -2,12 +2,11 @@ import { expect, FuelWalletTestHelper, test } from '@fuels/playwright-utils';
 import { E2ETestUtils } from '../ultils/setup';
 import { WalletUnlocked } from 'fuels';
 import {
-  getValueNewHandle,
-  editProfile,
   returnFundsToGenesisWallet,
   transfer,
   getAddress,
 } from '../ultils/helpers';
+import { NewHandleService } from '../ultils/service/new-handle';
 
 await E2ETestUtils.downloadFuelExtension({ test });
 
@@ -38,17 +37,15 @@ test.describe('Connect with Fuel Wallet', () => {
     await fuelWalletTestHelper.switchAccount('Account 1');
   });
 
-  // test.afterEach(async ({ extensionId, context, page }) => {
-  //   await page.pause();
-  //   await fuelWalletTestHelper.switchAccount('Account 1');
-  //   const genesisAddress = genesisWallet.address.toString();
+  test.afterEach(async () => {
+    await fuelWalletTestHelper.switchAccount('Account 1');
+    const genesisAddress = genesisWallet.address.toString();
 
-  //   await returnFundsToGenesisWallet({
-  //     context,
-  //     extensionId,
-  //     genesisAddress,
-  //   });
-  // });
+    await returnFundsToGenesisWallet({
+      fuelWalletTestHelper,
+      genesisAddress,
+    });
+  });
 
   test('search an existing profile', async ({ page, context }) => {
     await expect(page.getByText('Search new Handle')).toBeVisible();
@@ -103,19 +100,11 @@ test.describe('Connect with Fuel Wallet', () => {
     });
   });
 
-  test.skip('create new handle', async ({ page }) => {
-    await test.step('connect wallet', async () => {
-      await expect(page.getByText('Search new Handle')).toBeVisible();
-      await page.getByRole('button', { name: 'Connect Wallet' }).click();
-      await page.getByLabel('Connect to Fuel Wallet').click();
-      await fuelWalletTestHelper.walletConnect();
-      await expect(
-        page.getByRole('button', { name: 'My Handles' }),
-      ).toBeVisible();
-    });
-
+  test.only('create new handle', async ({ page }) => {
     const newHandle = `automation${Date.now()}`;
     console.log('new handle: ', newHandle);
+
+    const { address1 } = await getAddress(fuelWalletTestHelper);
 
     await test.step('create new handle', async () => {
       await page
@@ -126,8 +115,25 @@ test.describe('Connect with Fuel Wallet', () => {
       await expect(page.getByText(newHandle)).toBeVisible();
       await expect(page.getByText('Handles0.001 ETH')).toBeVisible();
 
-      const { value, connectedAddress } = await getValueNewHandle(page);
-      await transfer(genesisWallet, value, connectedAddress);
+      const value = await NewHandleService.getValueNewHandle(page);
+
+      await test.step('connect address 1', async () => {
+        try {
+          await page.getByRole('button', { name: 'Connect Wallet' }).click();
+          await page.getByLabel('Connect to Fuel Wallet').click();
+        } catch {
+          await page
+            .getByRole('button', { name: 'Connect Wallet' })
+            .nth(1)
+            .click();
+          await page.getByLabel('Connect to Fuel Wallet').click();
+        }
+
+        await transfer(genesisWallet, value, address1);
+        await page.waitForTimeout(500);
+
+        await fuelWalletTestHelper.walletConnect(['Account 1']);
+      });
 
       await page.getByRole('button', { name: 'Confirm Transaction' }).click();
 
@@ -146,10 +152,25 @@ test.describe('Connect with Fuel Wallet', () => {
 
     await test.step('edit user', async () => {
       await page.getByRole('img', { name: 'Bako logo' }).click();
-      await page.waitForTimeout(2500);
-      await page.reload();
+      await page.waitForTimeout(1500);
+      const newHandleButton = page.getByRole('button', {
+        name: `${newHandle} avatar`,
+      });
+      if (!(await newHandleButton.isVisible())) {
+        await page.reload();
+      }
+      await page.waitForTimeout(500);
 
-      await page.getByRole('button', { name: `${newHandle} avatar` }).click();
+      const connectButton = page.getByRole('button', {
+        name: 'Connect Wallet',
+      });
+      if (await connectButton.isVisible()) {
+        await connectButton.click();
+        await page.getByLabel('Connect to Fuel Wallet').click();
+        await fuelWalletTestHelper.walletConnect(['Account 1']);
+      }
+
+      await newHandleButton.click();
       await page.getByRole('menuitem', { name: 'Profile' }).click();
 
       await expect(
@@ -198,17 +219,16 @@ test.describe('Connect with Fuel Wallet', () => {
         .getByRole('textbox', { name: 'X' })
         .fill('https://x.com/infinitybase_');
       await page.getByRole('button', { name: 'Save' }).click();
-      try {
-        await page.getByRole('button', { name: 'Save changes' }).click();
-        await page.getByRole('button', { name: 'Confirm' }).click();
-      } catch {
-        await page.getByRole('button', { name: 'Save changes' }).click();
-        await page.getByRole('button', { name: 'Confirm' }).click();
-      }
-      const { value, connectedAddress } =
-        await editProfile(fuelWalletTestHelper);
 
-      await transfer(genesisWallet, value, connectedAddress);
+      await page.getByRole('button', { name: 'Save changes' }).click();
+      await page.getByRole('button', { name: 'Confirm' }).click();
+
+      const value = await NewHandleService.getValueEditProfile(
+        fuelWalletTestHelper,
+        page,
+      );
+
+      await transfer(genesisWallet, value, address1);
 
       await E2ETestUtils.signMessageFuelWallet({
         fuelWalletTestHelper,
@@ -217,12 +237,11 @@ test.describe('Connect with Fuel Wallet', () => {
     });
   });
 
-  test.only('create new handle to other resolver', async ({ page }) => {
+  test('create new handle to other resolver', async ({ page }) => {
     const newHandle = `automation${Date.now()}`;
     console.log('new handle: ', newHandle);
 
-    let address1: string;
-    let address2: string;
+    const { address1, address2 } = await getAddress(fuelWalletTestHelper);
 
     await test.step('create new handle to other resolver', async () => {
       await page
@@ -233,7 +252,7 @@ test.describe('Connect with Fuel Wallet', () => {
       await expect(page.getByText(newHandle)).toBeVisible();
       await expect(page.getByText('Handles0.001 ETH')).toBeVisible();
 
-      const { value } = await getValueNewHandle(page);
+      const value = await NewHandleService.getValueNewHandle(page);
 
       await test.step('connect address 1', async () => {
         try {
@@ -246,8 +265,6 @@ test.describe('Connect with Fuel Wallet', () => {
             .click();
           await page.getByLabel('Connect to Fuel Wallet').click();
         }
-
-        ({ address1, address2 } = await getAddress(fuelWalletTestHelper));
 
         await transfer(genesisWallet, value, address1);
         await page.waitForTimeout(500);

@@ -1,11 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { AuthTestService } from '../ultils/service/auth-service';
-import {
-  getValueNewHandle,
-  getVaultAddress,
-  transfer,
-} from '../ultils/helpers';
+import { getVaultAddress, transfer } from '../ultils/helpers';
 import { Provider, Wallet } from 'fuels';
+import { NewHandleService } from '../ultils/service/new-handle';
 
 test.describe('Connect with Bako Safe', () => {
   test.fixme('create new bako user', async ({ context }) => {
@@ -48,7 +45,7 @@ test.describe('Connect with Bako Safe', () => {
 
       const vaultAddress = await getVaultAddress(bakoSafePage);
 
-      const { value } = await getValueNewHandle(bakoIdPage);
+      const { value } = await NewHandleService.getValueNewHandle(bakoIdPage);
 
       const provider = new Provider('http://testnet.fuel.network/v1/graphql');
       const genesisWallet = Wallet.fromPrivateKey(

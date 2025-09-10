@@ -1,50 +1,6 @@
 import { FuelWalletTestHelper } from '@fuels/playwright-utils';
-import { BrowserContext, expect, Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 import { WalletUnlocked } from 'fuels';
-
-export async function getValueNewHandle(page: Page) {
-  await page.locator('text=Estimated total').waitFor({ state: 'visible' });
-  const estimatedTotal = await page.evaluate(() => {
-    return (
-      document
-        .querySelector(
-          'div.chakra-stack.css-10t90fk p.chakra-text.css-io0ltg:nth-of-type(2)',
-        )
-        ?.textContent?.trim() ?? ''
-    );
-  });
-  const rawValue = parseFloat(estimatedTotal.replace('ETH', '').trim());
-  const value = rawValue + 0.0000002;
-
-  const connectedAddress = await page
-    .getByRole('textbox', { name: 'Address' })
-    .inputValue();
-
-  return { value, connectedAddress };
-}
-
-export async function editProfile(fuelWalletTestHelper: FuelWalletTestHelper) {
-  const popupPage = await fuelWalletTestHelper.getWalletPopupPage();
-
-  const estimatedTotal = parseFloat(
-    (await popupPage.locator('p[aria-label="fee value:Regular"]').innerText())
-      .replace('ETH', '')
-      .trim(),
-  );
-
-  const value = estimatedTotal + 0.0000002;
-
-  await popupPage
-    .locator('.fuel_Button.fuel_Button__size-md__ukxmg')
-    .first()
-    .click();
-
-  const connectedAddress = await popupPage.evaluate(
-    async () => await navigator.clipboard.readText(),
-  );
-
-  return { value, connectedAddress };
-}
 
 export async function transfer(
   genesisWallet: WalletUnlocked,
@@ -61,14 +17,12 @@ export async function transfer(
 }
 
 export async function returnFundsToGenesisWallet(config: {
-  context: BrowserContext;
-  extensionId: string;
+  fuelWalletTestHelper: FuelWalletTestHelper;
   genesisAddress: string;
 }) {
-  const { context, extensionId, genesisAddress } = config;
+  const { fuelWalletTestHelper, genesisAddress } = config;
 
-  const extensionPage = await context.newPage();
-  await extensionPage.goto(`chrome-extension://${extensionId}/popup.html`);
+  const extensionPage = fuelWalletTestHelper.getWalletPage();
 
   await extensionPage.waitForTimeout(2000);
 
@@ -108,22 +62,30 @@ export async function getVaultAddress(page: Page) {
 }
 
 export async function getAddress(fuelWalletTestHelper: FuelWalletTestHelper) {
-  const popupPage = await fuelWalletTestHelper.getWalletPopupPage();
+  const walletPage = fuelWalletTestHelper.getWalletPage();
 
-  await popupPage
+  await walletPage.getByRole('button', { name: 'Accounts' }).click();
+
+  await walletPage
     .getByRole('article', { name: 'Account 1' })
     .getByLabel('Copy to clipboard')
     .click();
-  const address1 = await popupPage.evaluate(() =>
+  const address1 = await walletPage.evaluate(() =>
     navigator.clipboard.readText(),
   );
-  await popupPage
+  await walletPage
     .getByRole('article', { name: 'Account 2' })
     .getByLabel('Copy to clipboard')
     .click();
-  const address2 = await popupPage.evaluate(() =>
+  const address2 = await walletPage.evaluate(() =>
     navigator.clipboard.readText(),
   );
+
+  await walletPage
+    .getByRole('button', {
+      name: 'Close dialog',
+    })
+    .click();
 
   return { address1, address2 };
 }
