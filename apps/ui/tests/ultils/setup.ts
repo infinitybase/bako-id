@@ -50,7 +50,6 @@ export class E2ETestUtils {
     await fuelWalletTestHelper.addAccount();
     await fuelWalletTestHelper.switchAccount('Account 1');
 
-    await config.page.goto('/');
     await config.page.bringToFront();
 
     return { fuelWalletTestHelper, genesisWallet };

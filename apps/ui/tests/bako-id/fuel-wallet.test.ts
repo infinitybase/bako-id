@@ -84,7 +84,7 @@ test.describe('Connect with Fuel Wallet', () => {
     });
   });
 
-  test.only('create new handle', async ({ page, context, extensionId }) => {
+  test('create new handle', async ({ page, context, extensionId }) => {
     await test.step('setup fuel wallet', async () => {
       const E2EUtils = await E2ETestUtils.setupFuelWallet({
         page,
