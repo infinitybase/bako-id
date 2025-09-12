@@ -46,10 +46,19 @@ export async function returnFundsToGenesisWallet(config: {
     .getByRole('textbox', { name: 'Address Input' })
     .fill(genesisAddress);
   await extensionPage.getByRole('button', { name: 'Max' }).click();
-  await extensionPage.getByRole('button', { name: 'Review' }).click();
-  await extensionPage.getByRole('button', { name: 'Submit' }).click();
+
+  await extensionPage.waitForTimeout(1500);
+  const reviewButton = extensionPage.getByRole('button', { name: 'Review' });
+  await expect(reviewButton).toBeEnabled();
+  await reviewButton.click();
+
+  await extensionPage.waitForTimeout(1500);
+  const submitButton = extensionPage.getByRole('button', { name: 'Submit' });
+  await expect(submitButton).toBeEnabled();
+  await submitButton.click();
 
   await expect(extensionPage.getByText('Transaction sent')).toBeVisible();
+  await expect(extensionPage.getByText('success')).toBeVisible();
 }
 
 export async function getVaultAddress(page: Page) {

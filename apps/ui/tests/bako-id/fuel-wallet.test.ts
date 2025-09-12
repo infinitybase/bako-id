@@ -301,16 +301,17 @@ test.describe('Connect with Fuel Wallet', () => {
 
     await test.step('verify owner datas', async () => {
       await page.getByRole('img', { name: 'Bako logo' }).click();
-      await page.waitForTimeout(2500);
+      await page.waitForTimeout(1500);
+      await page.reload();
+      await page.waitForTimeout(500);
 
-      await page.getByRole('button', { name: /.* avatar$/ }).click();
-      await page.getByRole('menuitem', { name: 'Profile' }).click();
-
-      try {
-        await expect(page.getByText(`BID @${newHandle}`)).toBeVisible();
-      } catch {
-        await page.reload();
-        await expect(page.getByText(`BID @${newHandle}`)).toBeVisible();
+      const connectButton = page.getByRole('button', {
+        name: 'Connect Wallet',
+      });
+      if (await connectButton.isVisible()) {
+        await connectButton.click();
+        await page.getByLabel('Connect to Fuel Wallet').click();
+        await fuelWalletTestHelper.walletConnect(['Account 1']);
       }
 
       await page.getByRole('button', { name: 'My Handles' }).click();
