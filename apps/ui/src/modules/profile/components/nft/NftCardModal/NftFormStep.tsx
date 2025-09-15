@@ -35,7 +35,7 @@ export default function NftFormStep({
           itemAsset: assetId,
           itemAmount: bn(1),
           sellPrice: bn.parseUnits(
-            data.sellPrice.toString(),
+            data.sellPrice?.toString() ?? '0',
             data.sellAsset.decimals
           ),
           sellAsset: data.sellAsset.id,

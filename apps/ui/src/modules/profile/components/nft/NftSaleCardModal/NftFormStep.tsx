@@ -36,7 +36,7 @@ export default function NftFormStep({
     async (data: NftSaleCardForm & { currentReceiveAmountInUsd: number }) => {
       try {
         const sellPrice = bn.parseUnits(
-          data.sellPrice.toString(),
+          data.sellPrice?.toString() ?? '0',
           data.sellAsset.decimals
         );
 
@@ -51,7 +51,7 @@ export default function NftFormStep({
         };
 
         const newPrice = {
-          newAmount,
+          newAmount: newAmount ?? 0,
           newRaw,
           usd: data.currentReceiveAmountInUsd,
         };
