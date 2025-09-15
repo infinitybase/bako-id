@@ -22,7 +22,7 @@ import {
 import { Link } from '@tanstack/react-router';
 import { bn } from 'fuels';
 import { isNaN as lodashIsNaN } from 'lodash';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { NftSearchAssetModal } from './NftSearchAssetModal';
 import SummaryFeeCard from './SummaryFeeCard';
@@ -85,6 +85,27 @@ export const NftCardSaleForm = ({
     setValue('sellPrice', 0);
   };
 
+  const currentValue = watch('sellPrice');
+
+  // Clear or adjust the sell price when the asset changes to prevent decimal validation errors
+  useEffect(() => {
+    if (!currentSellAsset || !currentValue) return;
+    
+    const tokenDecimals = currentSellAsset.metadata?.decimals || 9;
+    const currentValueStr = currentValue.toString();
+    
+    // Check if the current value has more decimal places than the asset allows
+    const decimalPlaces = currentValueStr.includes('.') 
+      ? currentValueStr.split('.')[1]?.length || 0 
+      : 0;
+    
+    // If the value has more decimals than allowed, adjust it
+    if (decimalPlaces > tokenDecimals) {
+      const adjustedValue = Number.parseFloat(currentValueStr).toFixed(tokenDecimals);
+      setValue('sellPrice', Number.parseFloat(adjustedValue));
+    }
+  }, [currentValue, currentSellAsset, setValue]);
+
   const userWithHandleFee = useMemo(() => {
     if (!currentSellAsset) return '0';
     return currentSellAsset.fees[1];
@@ -107,19 +128,30 @@ export const NftCardSaleForm = ({
     userWithoutHandleFee,
   ]);
 
-  const currentValue = watch('sellPrice');
-
   const valueToReceive = useMemo(() => {
     if (!currentSellAsset || !currentValue) return '0';
 
-    const valueInBaseUnits = bn.parseUnits(
-      currentValue.toString(),
-      currentSellAsset.metadata?.decimals || 9
-    );
-    const feeAmount = valueInBaseUnits.mul(currentFee).div(10000);
-    const valueAfterFee = valueInBaseUnits.sub(feeAmount);
+    const tokenDecimals = currentSellAsset.metadata?.decimals || 9;
+    const currentValueStr = currentValue.toString();
+    
+    // Check if the current value has more decimal places than the asset allows
+    const decimalPlaces = currentValueStr.includes('.') 
+      ? currentValueStr.split('.')[1]?.length || 0 
+      : 0;
+    
+    // If the value has more decimals than allowed, truncate it
+    let validValue = currentValueStr;
+    if (decimalPlaces > tokenDecimals) {
+      const truncatedValue = Number.parseFloat(currentValueStr).toFixed(tokenDecimals);
+      validValue = truncatedValue;
+    }
 
-    return valueAfterFee.formatUnits(currentSellAsset.metadata?.decimals || 9);
+      const valueInBaseUnits = bn.parseUnits(validValue, tokenDecimals);
+      const feeAmount = valueInBaseUnits.mul(currentFee).div(10000);
+      const valueAfterFee = valueInBaseUnits.sub(feeAmount);
+
+      return valueAfterFee.formatUnits(tokenDecimals);
+   
   }, [currentValue, currentSellAsset, currentFee]);
 
   const currentReceiveAmountInUsd = useMemo(() => {
@@ -254,6 +286,7 @@ export const NftCardSaleForm = ({
                   type="text"
                   size="lg"
                   isInvalid={!!errors.sellPrice}
+                  decimalLimit={currentSellAsset?.metadata?.decimals || 9}
                 />
                 <InputRightElement
                   position="absolute"

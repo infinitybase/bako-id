@@ -1,22 +1,26 @@
 import { Input, type InputProps } from '@chakra-ui/react';
 import { forwardRef } from 'react';
-import MaskedInput from 'react-text-mask';
 import { createNumberMask } from 'text-mask-addons';
+import MaskedInput from 'react-text-mask';
 
-const currencyMask = createNumberMask({
-  prefix: '',
-  suffix: '',
-  includeThousandsSeparator: true,
-  thousandsSeparatorSymbol: ',',
-  allowDecimal: true,
-  decimalSymbol: '.',
-  decimalLimit: 9,
-  allowNegative: false,
-  allowLeadingZeroes: false,
-});
+interface CurrencyInputProps extends InputProps {
+  decimalLimit?: number;
+}
 
-export const CurrencyInput = forwardRef<HTMLInputElement, InputProps>(
-  (props, ref) => {
+export const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
+  ({ decimalLimit = 9, ...props }, ref) => {
+    const currencyMask = createNumberMask({
+      prefix: '',
+      suffix: '',
+      includeThousandsSeparator: true,
+      thousandsSeparatorSymbol: ',',
+      allowDecimal: true,
+      decimalSymbol: '.',
+      decimalLimit,
+      allowNegative: false,
+      allowLeadingZeroes: false,
+    });
+
     const handleCommaToDot = (
       event: React.ChangeEvent<HTMLInputElement>,
       inputValue: string
@@ -65,36 +69,37 @@ export const CurrencyInput = forwardRef<HTMLInputElement, InputProps>(
       event.target.value = event.target.value.replace(/[^0-9.,]/g, '');
     };
 
-    const handleCurrencyChange =
-      (props: InputProps) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        const inputValue = event.target.value;
-        const currentValue = props.value ?? '';
-        const isBackspace =
-          inputValue.length < (currentValue as string)?.length;
+    const handleCurrencyChange = (
+      event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+      const inputValue = event.target.value;
+      const currentValue = props.value ?? '';
+      const isBackspace = inputValue.length < (currentValue as string)?.length;
 
-        // replace comma with dot
-        if (handleCommaToDot(event, inputValue)) {
-          props.onChange?.(event);
-          return;
-        }
-
-        // Handle leading zero
-        if (handleLeadingZero(event, inputValue, isBackspace)) {
-          props.onChange?.(event);
-          return;
-        }
-
-        // Remove invalid characters
-        removeInvalidCharacters(event);
-
+      // replace comma with dot
+      if (handleCommaToDot(event, inputValue)) {
         props.onChange?.(event);
-      };
+        return;
+      }
+
+      // Handle leading zero
+      if (handleLeadingZero(event, inputValue, isBackspace)) {
+        props.onChange?.(event);
+        return;
+      }
+
+      // Remove invalid characters
+      removeInvalidCharacters(event);
+
+      props.onChange?.(event);
+    };
 
     return (
       <MaskedInput
+        key={decimalLimit}
         mask={currencyMask}
         value={props.value}
-        onChange={handleCurrencyChange(props)}
+        onChange={handleCurrencyChange}
         onBlur={props.onBlur}
         render={(maskedRef, inputProps) => (
           <Input
