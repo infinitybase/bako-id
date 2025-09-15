@@ -101,6 +101,7 @@ export const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
         value={props.value}
         onChange={handleCurrencyChange}
         onBlur={props.onBlur}
+        maxLength={decimalLimit + 2}
         render={(maskedRef, inputProps) => (
           <Input
             {...props}

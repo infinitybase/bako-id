@@ -34,7 +34,7 @@ export type NftSaleCardForm = {
     icon?: string;
     decimals?: number;
   };
-  sellPrice: number;
+  sellPrice: number | null;
 };
 
 interface NftCardSaleFormProps {
@@ -63,6 +63,7 @@ export const NftCardSaleForm = ({
   });
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+
   const sellAssetId = watch('sellAsset.id');
 
   const currentSellAsset = useMemo(
@@ -87,24 +88,10 @@ export const NftCardSaleForm = ({
 
   const currentValue = watch('sellPrice');
 
-  // Clear or adjust the sell price when the asset changes to prevent decimal validation errors
-  useEffect(() => {
-    if (!currentSellAsset || !currentValue) return;
-    
-    const tokenDecimals = currentSellAsset.metadata?.decimals || 9;
-    const currentValueStr = currentValue.toString();
-    
-    // Check if the current value has more decimal places than the asset allows
-    const decimalPlaces = currentValueStr.includes('.') 
-      ? currentValueStr.split('.')[1]?.length || 0 
-      : 0;
-    
-    // If the value has more decimals than allowed, adjust it
-    if (decimalPlaces > tokenDecimals) {
-      const adjustedValue = Number.parseFloat(currentValueStr).toFixed(tokenDecimals);
-      setValue('sellPrice', Number.parseFloat(adjustedValue));
-    }
-  }, [currentValue, currentSellAsset, setValue]);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    useEffect(() => {
+    setValue('sellPrice', null);
+  }, [currentSellAsset, setValue]);
 
   const userWithHandleFee = useMemo(() => {
     if (!currentSellAsset) return '0';
@@ -259,7 +246,7 @@ export const NftCardSaleForm = ({
             required: 'Amount is required',
             validate: {
               positive: (value) => {
-                if (value <= 0) {
+                if (value && value <= 0) {
                   return 'Amount must be greater than 0';
                 }
                 return true;
@@ -276,10 +263,12 @@ export const NftCardSaleForm = ({
             <FormControl isInvalid={!!errors.sellPrice}>
               <InputGroup position="relative">
                 <CurrencyInput
+                
                   {...field}
                   onChange={(e) => {
                     field.onChange(e.target.value);
                   }}
+                  value={field.value ?? ''}
                   variant="outlined"
                   placeholder=" "
                   fontSize="xs"
@@ -319,7 +308,7 @@ export const NftCardSaleForm = ({
         <SummaryFeeCard
           assetSymbol={currentSellAsset?.metadata?.symbol || 'FUEL'}
           currentFee={currentFee}
-          currentValue={currentValue}
+          currentValue={currentValue ?? 0}
           currentReceiveAmountInUsd={currentReceiveAmountInUsd}
           valueToReceive={valueToReceive}
           isFuelToken={currentSellAsset?.id === FUEL_ASSET_ID}
