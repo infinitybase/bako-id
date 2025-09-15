@@ -4,8 +4,6 @@ import type { ImageProps } from '@chakra-ui/react';
 export const Image = ({ boxSize = { xl: '160px ' }, ...props }: ImageProps) => {
   const { src, alt, ...rest } = props;
 
-  console.log('src', src);
-
   return (
     <ImageLoader
       src={src!}
