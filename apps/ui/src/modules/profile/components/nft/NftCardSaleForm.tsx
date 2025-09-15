@@ -63,7 +63,6 @@ export const NftCardSaleForm = ({
   });
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-
   const sellAssetId = watch('sellAsset.id');
 
   const currentSellAsset = useMemo(
@@ -89,7 +88,7 @@ export const NftCardSaleForm = ({
   const currentValue = watch('sellPrice');
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-    useEffect(() => {
+  useEffect(() => {
     setValue('sellPrice', null);
   }, [currentSellAsset, setValue]);
 
@@ -120,25 +119,25 @@ export const NftCardSaleForm = ({
 
     const tokenDecimals = currentSellAsset.metadata?.decimals || 9;
     const currentValueStr = currentValue.toString();
-    
+
     // Check if the current value has more decimal places than the asset allows
-    const decimalPlaces = currentValueStr.includes('.') 
-      ? currentValueStr.split('.')[1]?.length || 0 
+    const decimalPlaces = currentValueStr.includes('.')
+      ? currentValueStr.split('.')[1]?.length || 0
       : 0;
-    
+
     // If the value has more decimals than allowed, truncate it
     let validValue = currentValueStr;
     if (decimalPlaces > tokenDecimals) {
-      const truncatedValue = Number.parseFloat(currentValueStr).toFixed(tokenDecimals);
+      const truncatedValue =
+        Number.parseFloat(currentValueStr).toFixed(tokenDecimals);
       validValue = truncatedValue;
     }
 
-      const valueInBaseUnits = bn.parseUnits(validValue, tokenDecimals);
-      const feeAmount = valueInBaseUnits.mul(currentFee).div(10000);
-      const valueAfterFee = valueInBaseUnits.sub(feeAmount);
+    const valueInBaseUnits = bn.parseUnits(validValue, tokenDecimals);
+    const feeAmount = valueInBaseUnits.mul(currentFee).div(10000);
+    const valueAfterFee = valueInBaseUnits.sub(feeAmount);
 
-      return valueAfterFee.formatUnits(tokenDecimals);
-   
+    return valueAfterFee.formatUnits(tokenDecimals);
   }, [currentValue, currentSellAsset, currentFee]);
 
   const currentReceiveAmountInUsd = useMemo(() => {
@@ -263,7 +262,6 @@ export const NftCardSaleForm = ({
             <FormControl isInvalid={!!errors.sellPrice}>
               <InputGroup position="relative">
                 <CurrencyInput
-                
                   {...field}
                   onChange={(e) => {
                     field.onChange(e.target.value);
