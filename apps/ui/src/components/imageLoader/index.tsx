@@ -6,7 +6,7 @@ import {
   type ImageProps,
   type SkeletonProps,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 type ImageLoaderProps = {
   src: string;
@@ -25,11 +25,20 @@ export const ImageLoader = ({
   onClick,
   fallbackSrc = nftEmpty,
 }: ImageLoaderProps) => {
-  const [isLoading, setIsLoading] = useState(() => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Check if image is already cached by the browser on mount
+  useEffect(() => {
     const img = new Image();
+    img.onload = () => setIsLoading(false);
+    img.onerror = () => setIsLoading(false);
     img.src = src;
-    return img.complete;
-  });
+
+    // If image is already cached, it will load immediately
+    if (img.complete) {
+      setIsLoading(false);
+    }
+  }, [src]);
 
   return (
     <Skeleton
