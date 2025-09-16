@@ -7,3 +7,4 @@ export * from './useUpdateOrder';
 export * from './useGetOrder';
 export * from './useListInfiniteOrdersByAddress';
 export * from './useGetTransactionCost';
+export * from './useCanPayGasFee';

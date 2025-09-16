@@ -5,7 +5,7 @@ import { ConfirmationDialog, useCustomToast } from '@/components';
 import {
   useCancelOrder,
   useExecuteOrder,
-  useGetTransactionCost,
+  useCanPayGasFee,
 } from '@/hooks/marketplace';
 import type { Order } from '@/types/marketplace';
 import { orderPriceFormatter, parseURI } from '@/utils/formatter';
@@ -30,8 +30,6 @@ import { useScreenSize } from '@/hooks';
 import { slugify } from '@/utils/slugify';
 import { useGetCollection } from '@/hooks/marketplace/useGetCollection';
 import { AnimatedCardButton } from './AnimatedCardButton';
-import { MarketplaceAction } from '@bako-id/marketplace';
-import { ETH_ID } from '@/utils/constants';
 
 interface NftSaleCardProps {
   order: Order;
@@ -84,32 +82,17 @@ const NftSaleCard = ({
       assetId: order.price.assetId,
     });
 
-  const { balance: ethBalance, isLoading: isLoadingEthBalance } = useBalance({
-    address: account,
-    assetId: ETH_ID,
-  });
-
   const notEnoughBalance = useMemo(() => {
     if (isLoadingWalletBalance || !walletAssetBalance) return true;
 
     return walletAssetBalance.lt(bn(order.price.raw));
   }, [walletAssetBalance, isLoadingWalletBalance, order.price.raw]);
 
-  const { data: transactionCost, isLoading: isEstimatingFee } =
-    useGetTransactionCost(
-      order.id,
-      MarketplaceAction.EXECUTE_ORDER,
-      isHovering && !notEnoughBalance
-    );
-
-  const canUserPayTheGasFee = useMemo(() => {
-    if (isEstimatingFee || isLoadingEthBalance) return false;
-
-    if (ethBalance?.eq(bn(0)) || !ethBalance || !transactionCost?.fee.gt(bn(0)))
-      return false;
-
-    return ethBalance?.gt(transactionCost?.fee);
-  }, [ethBalance, transactionCost, isEstimatingFee, isLoadingEthBalance]);
+  const { canUserPayTheGasFee, isEstimatingFee } = useCanPayGasFee({
+    orderId: order.id,
+    account: account || undefined,
+    shouldEstimateFee: isHovering && !notEnoughBalance,
+  });
 
   const handleExecuteOrder = useCallback(
     async (e: MouseEvent) => {
@@ -290,7 +273,8 @@ const NftSaleCard = ({
           isConnected={isConnected}
           ctaButtonVariant={ctaButtonVariant}
           isMobile={isMobile}
-          isLoading={isExecuting}
+          // TODO: Add a new loading state to the estimated fee state
+          isLoading={isExecuting || isEstimatingFee}
           isLoaded={!isLoadingWalletBalance}
           buttonAction={isOwner ? handleDelist : handleExecuteOrder}
           isOwner={isOwner}

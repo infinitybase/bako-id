@@ -4,7 +4,7 @@ import { BTCIcon } from '@/components/icons/btcicon';
 import { CloseIcon } from '@/components/icons/closeIcon';
 import { ContractIcon } from '@/components/icons/contracticon';
 import { useResolverName, useScreenSize } from '@/hooks';
-import { useExecuteOrder } from '@/hooks/marketplace';
+import { useCanPayGasFee, useExecuteOrder } from '@/hooks/marketplace';
 import type { OrderWithMedatada } from '@/types/marketplace';
 import { formatAddress, orderPriceFormatter } from '@/utils/formatter';
 import {
@@ -71,6 +71,7 @@ export default function NftDetailsStep({
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
     order.collection?.address ?? ''
   );
+
   const { data: sellerDomain, isLoading: isLoadingDomain } = useResolverName(
     order.seller
   );
@@ -79,6 +80,12 @@ export default function NftDetailsStep({
     if (isLoadingWalletBalance || !walletAssetBalance) return true;
     return walletAssetBalance.lt(bn(order.price.raw));
   }, [walletAssetBalance, isLoadingWalletBalance, order.price.raw]);
+
+  const { canUserPayTheGasFee, isEstimatingFee } = useCanPayGasFee({
+    orderId: order.id,
+    account: account || undefined,
+    shouldEstimateFee: !notEnoughBalance,
+  });
 
   const handleExecuteOrder = useCallback(async () => {
     if (!isConnected) {
@@ -200,17 +207,29 @@ export default function NftDetailsStep({
 
       {!isOwner && (
         <Skeleton
-          isLoaded={!isLoadingWalletBalance && !isFetchingBalance}
+          isLoaded={
+            !isLoadingWalletBalance && !isFetchingBalance && !isEstimatingFee
+          }
           borderRadius="md"
         >
           <Tooltip
-            label={notEnoughBalance && isConnected ? 'Not enough balance' : ''}
+            label={
+              notEnoughBalance && isConnected
+                ? 'Not enough balance'
+                : !canUserPayTheGasFee
+                  ? 'Not enough balance'
+                  : ''
+            }
           >
             <Button
               variant={ctaButtonVariant}
               py={4}
               isLoading={isExecuting}
-              disabled={(notEnoughBalance && isConnected) || isExecuting}
+              disabled={
+                (notEnoughBalance && isConnected) ||
+                isExecuting ||
+                !canUserPayTheGasFee
+              }
               onClick={handleExecuteOrder}
             >
               Buy
