@@ -70,7 +70,6 @@ export const OrderList = ({
             isOwner={isOwner}
             showAnimatedButton
             withHandle={!!data}
-            openModalOnClick={false}
             imageSize="full"
             ctaButtonVariant="mktPrimary"
           />

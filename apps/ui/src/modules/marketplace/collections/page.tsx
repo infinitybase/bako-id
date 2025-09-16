@@ -13,11 +13,12 @@ import {
 } from '@chakra-ui/react';
 import {
   Outlet,
+  useLocation,
   useNavigate,
   useParams,
   useSearch,
 } from '@tanstack/react-router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { OrderList } from '../components/orderList';
 
 import { useGetCollection } from '@/hooks/marketplace/useGetCollection';
@@ -33,6 +34,8 @@ import type { MintedAssetsTransaction } from '../utils/minted-nfts-data';
 
 export const CollectionPage = () => {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const isInitialPageLoadCompleted = useRef(false);
+
   const [filters, setFilters] = useState<{
     sortBy: string;
     sortDirection: 'desc' | 'asc';
@@ -46,6 +49,8 @@ export const CollectionPage = () => {
     strict: false,
   });
   const navigate = useNavigate();
+  const location = useLocation();
+  const isOrderRoute = location.pathname.includes('/order/');
   const { search } = useSearch({ strict: false });
   const debouncedSearch = useDebounce<string>(search?.trim() ?? '', 700);
   const successMintDialog = useDisclosure();
@@ -91,13 +96,20 @@ export const CollectionPage = () => {
     collection?.data?.isMintable ?? false
   );
 
-  const stillMintable = Number(totalMinted) < Number(maxSupply);
+  const stillMintable = useMemo(
+    () => Number(totalMinted) < Number(maxSupply),
+    [totalMinted, maxSupply]
+  );
 
-  const wasAllSupplyMinted =
-    Number(maxSupply) > 0 && Number(maxSupply) === Number(totalMinted);
+  const wasAllSupplyMinted = useMemo(
+    () => Number(maxSupply) > 0 && Number(maxSupply) === Number(totalMinted),
+    [maxSupply, totalMinted]
+  );
 
-  const isCollectionStillMintable =
-    Number(maxSupply) > 0 && Number(totalMinted) < Number(maxSupply);
+  const isCollectionStillMintable = useMemo(
+    () => Number(maxSupply) > 0 && Number(totalMinted) < Number(maxSupply),
+    [maxSupply, totalMinted]
+  );
 
   const shouldShowMintTab =
     !isLoadingMintData && (isCollectionStillMintable || wasAllSupplyMinted);
@@ -137,10 +149,13 @@ export const CollectionPage = () => {
     isFetched &&
     !isLoadingMintData &&
     collection?.data?.isMintable &&
-    isCollectionStillMintable;
+    isCollectionStillMintable &&
+    !isOrderRoute;
 
   const renderSkeletonTab =
-    collection?.data?.isMintable && (!isFetched || isLoadingMintData);
+    collection?.data?.isMintable &&
+    (!isFetched || isLoadingMintData) &&
+    !isInitialPageLoadCompleted.current;
 
   // Reset scroll to top when component mounts
   useEffect(() => {
@@ -148,7 +163,7 @@ export const CollectionPage = () => {
   }, []);
 
   useEffect(() => {
-    if (shouldDefaultToMintTab) {
+    if (shouldDefaultToMintTab && !isInitialPageLoadCompleted.current) {
       if (shouldShowMintTab && hasItems) {
         setActiveTabIndex(1);
       } else if (!shouldShowMintTab) {
@@ -173,6 +188,12 @@ export const CollectionPage = () => {
       successMintDialog.onOpen();
     }
   }, [mintedAssets, successMintDialog]);
+
+  useEffect(() => {
+    if (isFetched && !isLoadingMintData) {
+      isInitialPageLoadCompleted.current = true;
+    }
+  }, [isFetched, isLoadingMintData]);
 
   return (
     <Stack w="full" p={0} m={0}>

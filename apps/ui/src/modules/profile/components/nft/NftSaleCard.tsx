@@ -19,7 +19,7 @@ import { type MouseEvent, useCallback, useMemo, useState } from 'react';
 import { NftSaleCardModal } from './NftSaleCardModal';
 import { NftCard } from './card';
 import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
-import { Link, useParams } from '@tanstack/react-router';
+import { useParams } from '@tanstack/react-router';
 import { useAccount, useBalance, useConnectUI } from '@fuels/react';
 import { bn } from 'fuels';
 import { useScreenSize } from '@/hooks';
@@ -32,7 +32,6 @@ interface NftSaleCardProps {
   isOwner: boolean;
   showAnimatedButton: boolean;
   withHandle: boolean;
-  openModalOnClick?: boolean;
   imageSize?: BoxProps['boxSize'];
   ctaButtonVariant?: 'primary' | 'mktPrimary';
   isProfilePage?: boolean;
@@ -42,7 +41,6 @@ const NftSaleCard = ({
   order,
   isOwner,
   showAnimatedButton,
-  openModalOnClick = true,
   withHandle,
   imageSize,
   ctaButtonVariant = 'primary',
@@ -93,7 +91,7 @@ const NftSaleCard = ({
       try {
         await executeOrderAsync(order.id);
         successToast({ title: 'Order executed successfully!' });
-        } catch {
+      } catch {
         errorToast({ title: 'Failed to execute order' });
       }
     },
@@ -101,7 +99,7 @@ const NftSaleCard = ({
       connect,
       executeOrderAsync,
       order.id,
-        successToast,
+      successToast,
       errorToast,
       isConnected,
     ]
@@ -170,12 +168,6 @@ const NftSaleCard = ({
   const imageUrl = parseURI(order.asset?.image) || nftEmpty;
   const name = order.asset.name || 'Unknown NFT';
 
-  const handleCardClick = () => {
-    if (openModalOnClick) {
-      handleOpenDialog();
-    }
-  };
-
   const isProcessigNewPrices = useMemo(() => {
     const hasOrderUpdated = updatedOrders.find(
       (updatedOrder) => updatedOrder.orderId === order.id
@@ -189,7 +181,7 @@ const NftSaleCard = ({
 
   return (
     <NftCard.Root
-      onClick={handleCardClick}
+      onClick={handleOpenDialog}
       cursor="pointer"
       minH="240px"
       onMouseEnter={() =>
@@ -198,15 +190,7 @@ const NftSaleCard = ({
       onMouseLeave={() => setDisplayBuyButton(false)}
       position="relative"
     >
-      <Flex
-        as={Link}
-        to={
-          isProfilePage
-            ? undefined
-            : `/collection/${slugifiedCollectionName}/order/${order.id}`
-        }
-        flexDir="column"
-      >
+      <Flex flexDir="column">
         <NftCard.Image boxSize={imageSize} src={imageUrl} />
         <NftCard.Content h={showAnimatedButton ? 'full' : '70px'}>
           <Text
