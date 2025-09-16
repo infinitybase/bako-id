@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import {
   Outlet,
+  useLocation,
   useNavigate,
   useParams,
   useSearch,
@@ -48,6 +49,8 @@ export const CollectionPage = () => {
     strict: false,
   });
   const navigate = useNavigate();
+  const location = useLocation();
+  const isOrderRoute = location.pathname.includes('/order/');
   const { search } = useSearch({ strict: false });
   const debouncedSearch = useDebounce<string>(search?.trim() ?? '', 700);
   const successMintDialog = useDisclosure();
@@ -146,7 +149,8 @@ export const CollectionPage = () => {
     isFetched &&
     !isLoadingMintData &&
     collection?.data?.isMintable &&
-    isCollectionStillMintable;
+    isCollectionStillMintable &&
+    !isOrderRoute;
 
   const renderSkeletonTab =
     collection?.data?.isMintable &&
