@@ -1,6 +1,20 @@
-import { type Account, type BN, Provider } from 'fuels';
+import {
+  type Account,
+  type BN,
+  Provider,
+  type ScriptTransactionRequest,
+} from 'fuels';
 import { Marketplace } from '../artifacts';
 import { callAndWait, getContractId } from '../utils';
+
+/**
+ * @description Enum for marketplace actions that can be simulated
+ */
+export enum MarketplaceAction {
+  CREATE_OR_UPDATE_ORDER = 'create_or_update_order',
+  CANCEL_ORDER = 'cancel_order',
+  EXECUTE_ORDER = 'execute_order',
+}
 
 /**
  * @description Order type
@@ -204,5 +218,82 @@ export class MarketplaceContract {
     return {
       transactionResult: response.transactionResult,
     };
+  }
+
+  /**
+   * @description Simulate an order
+   * @param {Order} order - The order to be simulated
+   * @param {string} orderId - The order id
+   * @param {MarketplaceAction} actionToSimulate - The action to simulate
+   * @returns {Promise<{ fee: BN }>} - The estimated fee
+   */
+
+  async simulate(
+    orderId: string,
+    actionToSimulate: MarketplaceAction
+  ) {
+    if (!this.account) {
+      throw new Error('Account is not set');
+    }
+    const order = await this.getOrder(orderId);
+
+    if (!order) {
+      throw new Error('Order not found');
+    }
+
+    const { sellAsset, sellPrice } = order;
+
+
+    let transactionRequest: ScriptTransactionRequest;
+
+    switch (actionToSimulate) {
+      case MarketplaceAction.CREATE_OR_UPDATE_ORDER:
+        transactionRequest = await this.marketplace.functions
+          .create_order({ bits: order.sellAsset }, order.sellPrice)
+          .callParams({
+            forward: {
+              amount: order.itemAmount,
+              assetId: order.itemAsset,
+            },
+          })
+          .getTransactionRequest();
+        break;
+
+      case MarketplaceAction.CANCEL_ORDER:
+        transactionRequest = await this.marketplace.functions
+          .cancel_order(orderId)
+          .getTransactionRequest();
+        break;
+
+      case MarketplaceAction.EXECUTE_ORDER:
+        transactionRequest = await this.marketplace.functions
+          .execute_order(orderId)
+          .callParams({
+            forward: {
+              amount: sellPrice,
+              assetId: sellAsset,
+            },
+          })
+          .getTransactionRequest();
+        break;
+
+      default:
+        throw new Error(`Unknown action to simulate: ${actionToSimulate}`);
+    }
+
+    try {
+
+      const { gasUsed, minFee } =
+        await this.account.getTransactionCost(transactionRequest);
+
+      return {
+        fee: gasUsed.add(minFee),
+      };
+
+    } catch {
+      return null
+    }
+
+
   }
 }

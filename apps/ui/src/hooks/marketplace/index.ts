@@ -6,3 +6,4 @@ export * from './useMarketplace';
 export * from './useUpdateOrder';
 export * from './useGetOrder';
 export * from './useListInfiniteOrdersByAddress';
+export * from './useGetTransactionCost';

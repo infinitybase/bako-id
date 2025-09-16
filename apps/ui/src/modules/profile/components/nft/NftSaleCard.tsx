@@ -2,7 +2,11 @@
 import nftEmpty from '@/assets/nft-empty.png';
 import UnknownAsset from '@/assets/unknown-asset.png';
 import { ConfirmationDialog, useCustomToast } from '@/components';
-import { useCancelOrder, useExecuteOrder } from '@/hooks/marketplace';
+import {
+  useCancelOrder,
+  useExecuteOrder,
+  useGetTransactionCost,
+} from '@/hooks/marketplace';
 import type { Order } from '@/types/marketplace';
 import { orderPriceFormatter, parseURI } from '@/utils/formatter';
 import {
@@ -26,6 +30,7 @@ import { useScreenSize } from '@/hooks';
 import { slugify } from '@/utils/slugify';
 import { useGetCollection } from '@/hooks/marketplace/useGetCollection';
 import { AnimatedCardButton } from './AnimatedCardButton';
+import { MarketplaceAction } from '@bako-id/marketplace';
 
 interface NftSaleCardProps {
   order: Order;
@@ -57,8 +62,11 @@ const NftSaleCard = ({
   const { collectionName } = useParams({ strict: false });
   const { connect, isConnected } = useConnectUI();
   const [displayBuyButton, setDisplayBuyButton] = useState(false);
-  const slugifiedCollectionName = slugify(collectionName);
   const [txId, setTxId] = useState<string | null>(null);
+  const slugifiedCollectionName = slugify(collectionName);
+
+  const { data: transactionCost, isLoading: isLoadingTransactionCost } =
+    useGetTransactionCost(order.id, MarketplaceAction.EXECUTE_ORDER);
 
   const { collection } = useGetCollection({
     collectionId: slugifiedCollectionName,
@@ -93,7 +101,8 @@ const NftSaleCard = ({
       try {
         await executeOrderAsync(order.id);
         successToast({ title: 'Order executed successfully!' });
-        } catch {
+      } catch (e) {
+        console.log('error executing order', e);
         errorToast({ title: 'Failed to execute order' });
       }
     },
@@ -101,7 +110,7 @@ const NftSaleCard = ({
       connect,
       executeOrderAsync,
       order.id,
-        successToast,
+      successToast,
       errorToast,
       isConnected,
     ]

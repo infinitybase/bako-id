@@ -13,6 +13,7 @@ export enum MarketplaceQueryKeys {
   COLLECTION_ORDERS = 'collectionOrders',
   USER_ORDERS = 'userOrders',
   MINT_TOKEN = 'mintToken',
+  TRANSACTION_COST = 'transactionCost',
 }
 
 export enum BakoIDQueryKeys {
