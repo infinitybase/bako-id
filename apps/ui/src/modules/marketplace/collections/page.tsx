@@ -149,7 +149,9 @@ export const CollectionPage = () => {
     isCollectionStillMintable;
 
   const renderSkeletonTab =
-    collection?.data?.isMintable && (!isFetched || isLoadingMintData);
+    collection?.data?.isMintable &&
+    (!isFetched || isLoadingMintData) &&
+    !isInitialPageLoadCompleted.current;
 
   // Reset scroll to top when component mounts
   useEffect(() => {
