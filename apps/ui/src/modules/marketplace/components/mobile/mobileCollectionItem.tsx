@@ -5,6 +5,7 @@ import { Flex, Text, Grid, GridItem, Box } from '@chakra-ui/react';
 import { useRouter } from '@tanstack/react-router';
 import { isB256 } from 'fuels';
 import { useScrollReset } from '@/hooks/useScrollReset';
+import { slugify } from '@/utils/slugify';
 
 const MobileCollectionItem = ({ col }: { col: Collection }) => {
   const router = useRouter();
@@ -26,7 +27,7 @@ const MobileCollectionItem = ({ col }: { col: Collection }) => {
         await router.navigate({
           to: '/collection/$collectionName',
           params: {
-            collectionName: col.name,
+            collectionName: slugify(col.name),
           },
         });
         resetScroll();

@@ -41,11 +41,6 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
   const dialog = useDisclosure();
   const { nftIdToList, removeNftIdToList } = useListNowStore();
 
-  const image = useMemo(
-    () => props.asset.image || nftEmpty,
-    [props.asset.image]
-  );
-
   const hasSrc20Name = name && symbol;
   const isBakoIdNft = useMemo(
     () => BAKO_CONTRACTS_IDS.includes(contractId!),
@@ -74,7 +69,7 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
         nftName={nftName}
         contractId={contractId}
         metadata={defaultMetadata}
-        image={image}
+        image={props.asset.image ?? nftEmpty}
         isOpen={dialog.isOpen || nftIdToList === assetId}
         onClose={handleCloseDialog}
         isOwner={props.isOwner}
@@ -92,7 +87,11 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
         {edition && (
           <NftCard.EditionBadge zIndex={30} edition={`#${edition}`} />
         )}
-        <NftCard.Image minW="full" src={image} {...props.nftImageProps} />
+        <NftCard.Image
+          minW="full"
+          src={props.asset.image}
+          {...props.nftImageProps}
+        />
         <NftCard.Content spacing={2} {...props.contentProps}>
           <Text
             fontSize="sm"
