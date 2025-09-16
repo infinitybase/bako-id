@@ -31,6 +31,7 @@ import { slugify } from '@/utils/slugify';
 import { useGetCollection } from '@/hooks/marketplace/useGetCollection';
 import { AnimatedCardButton } from './AnimatedCardButton';
 import { MarketplaceAction } from '@bako-id/marketplace';
+import { ETH_ID } from '@/utils/constants';
 
 interface NftSaleCardProps {
   order: Order;
@@ -64,9 +65,7 @@ const NftSaleCard = ({
   const [displayBuyButton, setDisplayBuyButton] = useState(false);
   const [txId, setTxId] = useState<string | null>(null);
   const slugifiedCollectionName = slugify(collectionName);
-
-  const { data: transactionCost, isLoading: isLoadingTransactionCost } =
-    useGetTransactionCost(order.id, MarketplaceAction.EXECUTE_ORDER);
+  const [isHovering, setIsHovering] = useState(false);
 
   const { collection } = useGetCollection({
     collectionId: slugifiedCollectionName,
@@ -85,11 +84,32 @@ const NftSaleCard = ({
       assetId: order.price.assetId,
     });
 
+  const { balance: ethBalance, isLoading: isLoadingEthBalance } = useBalance({
+    address: account,
+    assetId: ETH_ID,
+  });
+
   const notEnoughBalance = useMemo(() => {
     if (isLoadingWalletBalance || !walletAssetBalance) return true;
 
     return walletAssetBalance.lt(bn(order.price.raw));
   }, [walletAssetBalance, isLoadingWalletBalance, order.price.raw]);
+
+  const { data: transactionCost, isLoading: isEstimatingFee } =
+    useGetTransactionCost(
+      order.id,
+      MarketplaceAction.EXECUTE_ORDER,
+      isHovering && !notEnoughBalance
+    );
+
+  const canUserPayTheGasFee = useMemo(() => {
+    if (isEstimatingFee || isLoadingEthBalance) return false;
+
+    if (ethBalance?.eq(bn(0)) || !ethBalance || !transactionCost?.fee.gt(bn(0)))
+      return false;
+
+    return ethBalance?.gt(transactionCost?.fee);
+  }, [ethBalance, transactionCost, isEstimatingFee, isLoadingEthBalance]);
 
   const handleExecuteOrder = useCallback(
     async (e: MouseEvent) => {
@@ -201,10 +221,14 @@ const NftSaleCard = ({
       onClick={handleCardClick}
       cursor="pointer"
       minH="240px"
-      onMouseEnter={() =>
-        isMobile ? null : setDisplayBuyButton(!isProfilePage)
-      }
-      onMouseLeave={() => setDisplayBuyButton(false)}
+      onMouseEnter={() => {
+        setIsHovering(true);
+        isMobile ? null : setDisplayBuyButton(!isProfilePage);
+      }}
+      onMouseLeave={() => {
+        setIsHovering(false);
+        setDisplayBuyButton(false);
+      }}
       position="relative"
     >
       <Flex
@@ -262,7 +286,7 @@ const NftSaleCard = ({
         <AnimatedCardButton
           showDisplayBuyButton={showDisplayBuyButton}
           displayBuyButton={displayBuyButton}
-          notEnoughBalance={notEnoughBalance}
+          notEnoughBalance={notEnoughBalance || !canUserPayTheGasFee}
           isConnected={isConnected}
           ctaButtonVariant={ctaButtonVariant}
           isMobile={isMobile}

@@ -1,5 +1,6 @@
 import {
   type Account,
+  bn,
   type BN,
   Provider,
   type ScriptTransactionRequest,
@@ -276,24 +277,23 @@ export class MarketplaceContract {
           })
           .getTransactionRequest();
         break;
-
-      default:
-        throw new Error(`Unknown action to simulate: ${actionToSimulate}`);
     }
 
-    try {
+    let fee = bn(0);
 
+    try {
       const { gasUsed, minFee } =
         await this.account.getTransactionCost(transactionRequest);
 
-      return {
-        fee: gasUsed.add(minFee),
-      };
-
+      fee = gasUsed.add(minFee);
     } catch {
-      return null
+      fee = bn(0);
     }
 
+
+    return {
+      fee
+    };
 
   }
 }

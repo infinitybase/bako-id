@@ -5,28 +5,38 @@ import { MarketplaceQueryKeys } from '@/utils/constants';
 
 export const useGetTransactionCost = (
   orderId: string,
-  actionToSimulate: MarketplaceAction
+  actionToSimulate: MarketplaceAction,
+  enabled: boolean
 ) => {
   const marketplaceContract = useMarketplace();
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: [MarketplaceQueryKeys.TRANSACTION_COST, orderId, actionToSimulate],
+
+  const { data, isFetching, error } = useQuery({
+    queryKey: [
+      MarketplaceQueryKeys.TRANSACTION_COST,
+      orderId,
+      actionToSimulate,
+    ],
     queryFn: async () => {
       const marketplace = await marketplaceContract;
 
       const { fee } = await marketplace.simulate(orderId, actionToSimulate);
 
-      console.log('fee', fee.toString());
-
       return {
         fee,
       };
     },
+    enabled,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    // Cache data for 5 minutes to avoid refetching whenever users hover the card
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 
   return {
     data,
-    isLoading,
+    isLoading: isFetching,
     error,
   };
 };
