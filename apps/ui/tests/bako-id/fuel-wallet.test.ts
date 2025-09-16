@@ -7,6 +7,7 @@ import {
   getAddress,
 } from '../ultils/helpers';
 import { NewHandleService } from '../ultils/service/new-handle';
+import { AuthTestService } from '../ultils/service/auth-service';
 
 await E2ETestUtils.downloadFuelExtension({ test });
 
@@ -84,7 +85,11 @@ test.describe('Connect with Fuel Wallet', () => {
     });
   });
 
-  test('create new handle', async ({ page, context, extensionId }) => {
+  test('create new handle and edit profile', async ({
+    page,
+    context,
+    extensionId,
+  }) => {
     await test.step('setup fuel wallet', async () => {
       const E2EUtils = await E2ETestUtils.setupFuelWallet({
         page,
@@ -340,6 +345,182 @@ test.describe('Connect with Fuel Wallet', () => {
 
       await page.getByRole('button', { name: 'My Handles' }).click();
       await expect(page.getByText('It seems like you haven’t')).toBeVisible();
+    });
+  });
+
+  test('create a new handle without assets', async ({
+    page,
+    context,
+    extensionId,
+  }) => {
+    await test.step('setup fuel wallet', async () => {
+      const E2EUtils = await E2ETestUtils.setupFuelWallet({
+        page,
+        context,
+        extensionId,
+      });
+
+      fuelWalletTestHelper = E2EUtils.fuelWalletTestHelper;
+      genesisWallet = E2EUtils.genesisWallet;
+    });
+
+    const newHandle = `automation${Date.now()}`;
+    console.log('new handle: ', newHandle);
+
+    await test.step('connect address 1', async () => {
+      await page.getByRole('button', { name: 'Connect Wallet' }).click();
+      await page.getByLabel('Connect to Fuel Wallet').click();
+
+      await page.waitForTimeout(500);
+
+      await fuelWalletTestHelper.walletConnect(['Account 1']);
+    });
+
+    await page
+      .getByRole('textbox', { name: 'Search for an available Handle' })
+      .fill(newHandle);
+    await page.getByRole('button', { name: 'Continue' }).click();
+
+    await expect(page.getByText(newHandle)).toBeVisible();
+    await expect(
+      page.getByText(
+        /You need at least\s*[0-9]+(?:\.[0-9]+)?\s*ETH to buy this domain\./i,
+      ),
+    ).toBeVisible();
+  });
+
+  test('create and search new handle', async ({
+    page,
+    context,
+    extensionId,
+  }) => {
+    await test.step('setup fuel wallet', async () => {
+      const E2EUtils = await E2ETestUtils.setupFuelWallet({
+        page,
+        context,
+        extensionId,
+      });
+
+      fuelWalletTestHelper = E2EUtils.fuelWalletTestHelper;
+      genesisWallet = E2EUtils.genesisWallet;
+    });
+
+    const newHandle = `automation${Date.now()}`;
+    console.log('new handle: ', newHandle);
+
+    const { address1 } = await getAddress(fuelWalletTestHelper);
+
+    await test.step('create new handle', async () => {
+      await page
+        .getByRole('textbox', { name: 'Search for an available Handle' })
+        .fill(newHandle);
+      await page.getByRole('button', { name: 'Continue' }).click();
+
+      await expect(page.getByText(newHandle)).toBeVisible();
+      await expect(page.getByText('Handles0.001 ETH')).toBeVisible();
+
+      const value = await NewHandleService.getValueNewHandle(page);
+
+      await test.step('connect address 1', async () => {
+        try {
+          await page.getByRole('button', { name: 'Connect Wallet' }).click();
+          await page.getByLabel('Connect to Fuel Wallet').click();
+        } catch {
+          await page
+            .getByRole('button', { name: 'Connect Wallet' })
+            .nth(1)
+            .click();
+          await page.getByLabel('Connect to Fuel Wallet').click();
+        }
+
+        await transfer(genesisWallet, value, address1);
+        await page.waitForTimeout(500);
+
+        await fuelWalletTestHelper.walletConnect(['Account 1']);
+      });
+
+      await page.getByRole('button', { name: 'Confirm Transaction' }).click();
+
+      await page
+        .getByLabel('Bako ID Terms Of Use Agreement')
+        .locator('div')
+        .filter({ hasText: '1. The Bako IDThe “Bako ID”' })
+        .nth(2)
+        .evaluate((el) => {
+          el.scrollTop = el.scrollHeight;
+        });
+      await page.getByRole('button', { name: 'Accept' }).click();
+
+      await E2ETestUtils.signMessageFuelWallet({ fuelWalletTestHelper, page });
+
+      await page.getByRole('img', { name: 'Bako logo' }).click();
+      await page.waitForTimeout(1500);
+      const newHandleButton = page.getByRole('button', {
+        name: `${newHandle} avatar`,
+      });
+      if (!(await newHandleButton.isVisible())) {
+        await page.reload();
+      }
+      await page.waitForTimeout(500);
+
+      const connectButton = page.getByRole('button', {
+        name: 'Connect Wallet',
+      });
+      if (await connectButton.isVisible()) {
+        await connectButton.click();
+        await page.getByLabel('Connect to Fuel Wallet').click();
+        await fuelWalletTestHelper.walletConnect(['Account 1']);
+      }
+
+      await newHandleButton.click();
+      await page.getByRole('menuitem', { name: 'Profile' }).click();
+
+      await expect(
+        page.getByText(`@${newHandle}`, { exact: true }),
+      ).toBeVisible();
+    });
+
+    // await test.step('search handle in Fuel Wallet', async () => {
+    //   const extensionPage = fuelWalletTestHelper.getWalletPage();
+
+    //   await extensionPage.getByRole('button', { name: 'Send Button' }).click();
+    //   await extensionPage
+    //     .getByRole('textbox', { name: 'Address Input' })
+    //     .fill(`@${newHandle}`);
+    // });
+
+    await test.step('search handle in bako safe', async () => {
+      await page.goto('https://safe.bako.global/');
+
+      await AuthTestService.loginAuth(page);
+
+      await page.getByRole('img', { name: 'Close window' }).click();
+
+      await page.getByRole('button', { name: 'Home' }).click();
+      await page.getByTestId('adressBookTab').click();
+      await page.getByLabel('Select networks').click();
+      await page.getByText('Fuel Sepolia Testnet').click();
+      await page.getByRole('button', { name: 'Add new favorite' }).click();
+      const modal = page.locator('[id^="chakra-modal--body-"]');
+      await modal
+        .first()
+        .getByLabel('Name or Label', { exact: true })
+        .fill(`new Handle`);
+      await modal
+        .nth(1)
+        .getByLabel('Address', { exact: true })
+        .fill(`@${newHandle}`);
+      await expect(page.locator('circle').nth(3)).not.toBeVisible();
+      const addButton = page
+        .locator('button[aria-label="Create address book"]')
+        .first();
+      await page.waitForTimeout(2000);
+      await addButton.evaluate((el: HTMLButtonElement) => el.click());
+      await expect(
+        page.getByRole('heading', { name: 'new handle' }),
+      ).toBeVisible();
+
+      await page.pause();
     });
   });
 });
