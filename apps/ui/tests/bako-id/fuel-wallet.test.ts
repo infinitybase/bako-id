@@ -223,10 +223,7 @@ test.describe('Connect with Fuel Wallet', () => {
       await page.getByRole('button', { name: 'Save changes' }).click();
       await page.getByRole('button', { name: 'Confirm' }).click();
 
-      const value = await NewHandleService.getValueEditProfile(
-        fuelWalletTestHelper,
-        page,
-      );
+      const value = 0.000005;
 
       await transfer(genesisWallet, value, address1);
 
@@ -480,14 +477,21 @@ test.describe('Connect with Fuel Wallet', () => {
       ).toBeVisible();
     });
 
-    // await test.step('search handle in Fuel Wallet', async () => {
-    //   const extensionPage = fuelWalletTestHelper.getWalletPage();
+    await test.step('search handle in Fuel Wallet', async () => {
+      const extensionPage = fuelWalletTestHelper.getWalletPage();
 
-    //   await extensionPage.getByRole('button', { name: 'Send Button' }).click();
-    //   await extensionPage
-    //     .getByRole('textbox', { name: 'Address Input' })
-    //     .fill(`@${newHandle}`);
-    // });
+      await extensionPage.getByRole('button', { name: 'Send Button' }).click();
+      await extensionPage
+        .getByRole('textbox', { name: 'Address Input' })
+        .fill(`@${newHandle}`);
+      await expect(
+        extensionPage
+          .getByRole('menu', { name: `@${newHandle}` })
+          .locator('div')
+          .nth(1),
+      ).toBeVisible();
+      await page.getByRole('button', { name: 'Back' }).click();
+    });
 
     await test.step('search handle in bako safe', async () => {
       await page.goto('https://safe.bako.global/');
@@ -519,8 +523,6 @@ test.describe('Connect with Fuel Wallet', () => {
       await expect(
         page.getByRole('heading', { name: 'new handle' }),
       ).toBeVisible();
-
-      await page.pause();
     });
   });
 });

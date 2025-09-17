@@ -8,7 +8,7 @@ import type { BrowserContext, Page } from '@playwright/test';
 import { Mnemonic, Provider, Wallet } from 'fuels';
 
 export class E2ETestUtils {
-  static FUEL_WALLET_VERSION = '0.46.1';
+  static FUEL_WALLET_VERSION = '0.55.1';
 
   static async downloadFuelExtension(config: { test: typeof test }) {
     const path = await downloadFuel(E2ETestUtils.FUEL_WALLET_VERSION);

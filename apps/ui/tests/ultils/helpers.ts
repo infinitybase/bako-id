@@ -26,14 +26,16 @@ export async function returnFundsToGenesisWallet(config: {
 
   await extensionPage.waitForTimeout(2000);
 
-  const ethValue = await extensionPage.evaluate(() => {
-    const el = document.querySelector('p[data-account-name="Account 1"]');
-    if (!el || !el.textContent) return 0;
-    const parts = el.textContent.split('ETH');
-    if (parts.length < 2) return 0;
-    return parseFloat(parts[1].trim());
-  });
-  if (ethValue === 0) {
+  const isZeroBalance = await extensionPage
+    .locator('p[data-account-name="Account 1"]')
+    .evaluate((el) => {
+      const text = el.textContent ?? '';
+      const value = parseFloat(text.replace('$', '').trim());
+      return value === 0;
+    });
+
+  if (isZeroBalance) {
+    console.log('No ETH balance found to return to genesis wallet.');
     return;
   }
 
