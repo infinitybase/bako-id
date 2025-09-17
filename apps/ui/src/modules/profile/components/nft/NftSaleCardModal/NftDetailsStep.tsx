@@ -85,8 +85,10 @@ export default function NftDetailsStep({
   const { canUserPayTheGasFee, isEstimatingFee } = useCanPayGasFee({
     orderId: order.id,
     account,
-    shouldEstimateFee: !notEnoughBalance,
-    actionToSimulate: MarketplaceAction.EXECUTE_ORDER,
+    shouldEstimateFee: isOwner ? true : !notEnoughBalance,
+    actionToSimulate: isOwner
+      ? MarketplaceAction.CANCEL_ORDER
+      : MarketplaceAction.EXECUTE_ORDER,
   });
 
   const handleExecuteOrder = useCallback(async () => {
@@ -203,7 +205,7 @@ export default function NftDetailsStep({
             bg: 'tertiary',
           }}
         >
-          Delist NFT
+          Delist
         </Button>
       )}
 

@@ -89,11 +89,15 @@ const NftSaleCard = ({
     return walletAssetBalance.lt(bn(order.price.raw));
   }, [walletAssetBalance, isLoadingWalletBalance, order.price.raw]);
 
+  const shouldEstimateFee = isOwner ? true : isHovering && !notEnoughBalance;
+
   const { canUserPayTheGasFee, isEstimatingFee } = useCanPayGasFee({
     orderId: order.id,
     account: account,
-    shouldEstimateFee: isHovering && !notEnoughBalance,
-    actionToSimulate: MarketplaceAction.EXECUTE_ORDER,
+    shouldEstimateFee,
+    actionToSimulate: isOwner
+      ? MarketplaceAction.CANCEL_ORDER
+      : MarketplaceAction.EXECUTE_ORDER,
   });
 
   const handleExecuteOrder = useCallback(
