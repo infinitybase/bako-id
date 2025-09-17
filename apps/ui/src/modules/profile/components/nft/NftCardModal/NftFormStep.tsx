@@ -1,9 +1,9 @@
 import { useCustomToast } from '@/components';
 import { useCreateOrder } from '@/hooks/marketplace';
 import type { Asset } from '@/types/marketplace';
-import { Button, Heading, Stack, Text } from '@chakra-ui/react';
+import { Button, Heading, Stack, Text, Tooltip } from '@chakra-ui/react';
 import { bn } from 'fuels';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { NftCardSaleForm, type NftSaleCardForm } from '../NftCardSaleForm';
 
 export default function NftFormStep({
@@ -27,11 +27,16 @@ export default function NftFormStep({
 }) {
   const { createOrderAsync, isPending } = useCreateOrder();
   const { errorToast, successToast } = useCustomToast();
+  const [gasFeeData, setGasFeeData] = useState({
+    isEstimatingFee: false,
+    canUserPayTheGasFee: false,
+    currentValue: 0,
+  });
 
   const handleCreateOrder = useCallback(
     async (data: NftSaleCardForm) => {
       try {
-        await createOrderAsync({
+        const orderData = {
           itemAsset: assetId,
           itemAmount: bn(1),
           sellPrice: bn.parseUnits(
@@ -40,7 +45,10 @@ export default function NftFormStep({
           ),
           sellAsset: data.sellAsset.id,
           image: nftImage,
-        });
+        };
+
+        await createOrderAsync(orderData);
+
         successToast({ title: 'Order created successfully!' });
         onClose();
       } catch (e) {
@@ -71,6 +79,8 @@ export default function NftFormStep({
         assets={assets}
         onSubmit={handleCreateOrder}
         userWithHandle={userWithHandle}
+        nftAssetId={assetId}
+        setGasFeeData={setGasFeeData}
       />
 
       <Stack direction="row" justifyContent="space-between" mt="auto">
@@ -86,14 +96,25 @@ export default function NftFormStep({
         >
           Cancel
         </Button>
-        <Button
-          variant={ctaButtonVariant}
-          type="submit"
-          form="nft-sale-form"
-          isLoading={isPending}
+        <Tooltip
+          label={
+            !gasFeeData.canUserPayTheGasFee && gasFeeData.currentValue > 0
+              ? 'Not enough balance'
+              : ''
+          }
         >
-          Confirm listing
-        </Button>
+          <Button
+            variant={ctaButtonVariant}
+            type="submit"
+            form="nft-sale-form"
+            isLoading={isPending || gasFeeData.isEstimatingFee}
+            disabled={
+              !gasFeeData.canUserPayTheGasFee || gasFeeData.currentValue === 0
+            }
+          >
+            Confirm listing
+          </Button>
+        </Tooltip>
       </Stack>
     </Stack>
   );

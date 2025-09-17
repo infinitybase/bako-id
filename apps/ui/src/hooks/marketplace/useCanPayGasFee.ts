@@ -4,23 +4,30 @@ import { bn } from 'fuels';
 import { ETH_ID } from '@/utils/constants';
 import { useGetTransactionCost } from './useGetTransactionCost';
 import { MarketplaceAction } from '@bako-id/marketplace';
+import type { Order as OrderFromFuel } from '@bako-id/marketplace';
 
 interface UseCanPayGasFeeParams {
     orderId: string;
-    account: string | undefined;
+    account: string | null;
     shouldEstimateFee: boolean;
+    orderData?: OrderFromFuel
+    actionToSimulate: MarketplaceAction
 }
 
 export const useCanPayGasFee = ({
+    actionToSimulate = MarketplaceAction.EXECUTE_ORDER,
     orderId,
     account,
     shouldEstimateFee,
+    orderData,
 }: UseCanPayGasFeeParams) => {
+
     const { data: transactionCost, isLoading: isEstimatingFee } =
         useGetTransactionCost(
             orderId,
-            MarketplaceAction.EXECUTE_ORDER,
-            shouldEstimateFee
+            actionToSimulate,
+            shouldEstimateFee,
+            orderData
         );
 
     const { balance: ethBalance, isLoading: isLoadingEthBalance } = useBalance({

@@ -231,30 +231,31 @@ export class MarketplaceContract {
 
   async simulate(
     orderId: string,
-    actionToSimulate: MarketplaceAction
+    actionToSimulate: MarketplaceAction,
+    orderToCreate?: Order
   ) {
+
     if (!this.account) {
       throw new Error('Account is not set');
     }
-    const order = await this.getOrder(orderId);
 
-    if (!order) {
-      throw new Error('Order not found');
+    let order: Order | null = null;
+
+
+    if (orderId.length > 0) {
+      order = await this.getOrder(orderId);
     }
-
-    const { sellAsset, sellPrice } = order;
-
 
     let transactionRequest: ScriptTransactionRequest;
 
     switch (actionToSimulate) {
       case MarketplaceAction.CREATE_OR_UPDATE_ORDER:
         transactionRequest = await this.marketplace.functions
-          .create_order({ bits: order.sellAsset }, order.sellPrice)
+          .create_order({ bits: orderToCreate!.sellAsset }, orderToCreate!.sellPrice)
           .callParams({
             forward: {
-              amount: order.itemAmount,
-              assetId: order.itemAsset,
+              amount: orderToCreate!.itemAmount,
+              assetId: orderToCreate!.itemAsset,
             },
           })
           .getTransactionRequest();
@@ -271,8 +272,8 @@ export class MarketplaceContract {
           .execute_order(orderId)
           .callParams({
             forward: {
-              amount: sellPrice,
-              assetId: sellAsset,
+              amount: order!.sellPrice,
+              assetId: order!.sellAsset,
             },
           })
           .getTransactionRequest();
@@ -287,7 +288,8 @@ export class MarketplaceContract {
 
       fee = gasUsed.add(minFee);
     } catch {
-      fee = bn(0);
+      // Around 0.000445 ETH
+      fee = bn(445);
     }
 
 

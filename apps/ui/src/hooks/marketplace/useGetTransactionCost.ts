@@ -2,11 +2,13 @@ import { useMarketplace } from './useMarketplace';
 import { useQuery } from '@tanstack/react-query';
 import type { MarketplaceAction } from '@bako-id/marketplace';
 import { MarketplaceQueryKeys } from '@/utils/constants';
+import type { Order as OrderFromFuel } from '@bako-id/marketplace';
 
 export const useGetTransactionCost = (
   orderId: string,
   actionToSimulate: MarketplaceAction,
-  enabled: boolean
+  enabled: boolean,
+  orderData?: OrderFromFuel
 ) => {
   const marketplaceContract = useMarketplace();
 
@@ -20,7 +22,7 @@ export const useGetTransactionCost = (
     queryFn: async () => {
       const marketplace = await marketplaceContract;
 
-      const { fee } = await marketplace.simulate(orderId, actionToSimulate);
+      const { fee } = await marketplace.simulate(orderId, actionToSimulate, orderData);
 
       return {
         fee,

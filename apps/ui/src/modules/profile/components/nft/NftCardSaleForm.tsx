@@ -22,10 +22,13 @@ import {
 import { Link } from '@tanstack/react-router';
 import { bn } from 'fuels';
 import { isNaN as lodashIsNaN } from 'lodash';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { NftSearchAssetModal } from './NftSearchAssetModal';
 import SummaryFeeCard from './SummaryFeeCard';
+import { useCanPayGasFee } from '@/hooks/marketplace';
+import { useAccount } from '@fuels/react';
+import { MarketplaceAction } from '@bako-id/marketplace';
 
 export type NftSaleCardForm = {
   sellAsset: {
@@ -44,6 +47,14 @@ interface NftCardSaleFormProps {
   ) => void;
   assets: Asset[];
   userWithHandle: boolean;
+  nftAssetId: string;
+  setGasFeeData: React.Dispatch<
+    React.SetStateAction<{
+      isEstimatingFee: boolean;
+      canUserPayTheGasFee: boolean;
+      currentValue: number;
+    }>
+  >;
 }
 
 export const NftCardSaleForm = ({
@@ -51,6 +62,8 @@ export const NftCardSaleForm = ({
   onSubmit,
   assets,
   userWithHandle,
+  nftAssetId,
+  setGasFeeData,
 }: NftCardSaleFormProps) => {
   const {
     control,
@@ -62,6 +75,7 @@ export const NftCardSaleForm = ({
     defaultValues: initialValues,
   });
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { account } = useAccount();
 
   const sellAssetId = watch('sellAsset.id');
 
@@ -109,6 +123,16 @@ export const NftCardSaleForm = ({
 
   const currentValue = watch('sellPrice');
 
+  const [debouncedSellPrice, setDebouncedSellPrice] = useState(currentValue);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSellPrice(currentValue);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [currentValue]);
+
   const valueToReceive = useMemo(() => {
     if (!currentSellAsset || !currentValue) return '0';
 
@@ -132,6 +156,37 @@ export const NftCardSaleForm = ({
       currency: 'USD',
     })}`;
   }, [currentSellAsset, valueToReceive]);
+
+  const orderData = useMemo(() => {
+    return {
+      itemAsset: nftAssetId,
+      itemAmount: bn(1),
+      sellPrice: bn.parseUnits(
+        debouncedSellPrice?.toString() || '0',
+        currentSellAsset?.metadata?.decimals || 9
+      ),
+      sellAsset: currentSellAsset?.id || '',
+    };
+  }, [currentSellAsset, debouncedSellPrice, nftAssetId]);
+
+  const { canUserPayTheGasFee, isEstimatingFee } = useCanPayGasFee({
+    actionToSimulate: MarketplaceAction.CREATE_OR_UPDATE_ORDER,
+    orderId: '',
+    account,
+    shouldEstimateFee:
+      orderData.sellPrice.gt(0) && orderData.sellAsset.length > 0,
+    orderData,
+  });
+
+  useEffect(() => {
+    if (orderData.sellPrice.gt(0) && orderData.sellAsset.length > 0) {
+      setGasFeeData({
+        isEstimatingFee,
+        canUserPayTheGasFee,
+        currentValue: orderData.sellPrice.toNumber(),
+      });
+    }
+  }, [isEstimatingFee, canUserPayTheGasFee, setGasFeeData, orderData]);
 
   return (
     <Grid

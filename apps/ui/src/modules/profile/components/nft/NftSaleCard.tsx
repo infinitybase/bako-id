@@ -30,6 +30,7 @@ import { useScreenSize } from '@/hooks';
 import { slugify } from '@/utils/slugify';
 import { useGetCollection } from '@/hooks/marketplace/useGetCollection';
 import { AnimatedCardButton } from './AnimatedCardButton';
+import { MarketplaceAction } from '@bako-id/marketplace';
 
 interface NftSaleCardProps {
   order: Order;
@@ -90,8 +91,9 @@ const NftSaleCard = ({
 
   const { canUserPayTheGasFee, isEstimatingFee } = useCanPayGasFee({
     orderId: order.id,
-    account: account || undefined,
+    account: account,
     shouldEstimateFee: isHovering && !notEnoughBalance,
+    actionToSimulate: MarketplaceAction.EXECUTE_ORDER,
   });
 
   const handleExecuteOrder = useCallback(

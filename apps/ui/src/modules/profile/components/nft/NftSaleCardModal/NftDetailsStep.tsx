@@ -29,6 +29,7 @@ import { NftListMetadata } from '../NftListMetadata';
 import { NftMetadataBlock } from '../NftMetadataBlock';
 import ShareOrder from '../ShareOrder';
 import { getHomeUrl } from '@/utils/getHomeUrl';
+import { MarketplaceAction } from '@bako-id/marketplace';
 
 export default function NftDetailsStep({
   onClose,
@@ -83,8 +84,9 @@ export default function NftDetailsStep({
 
   const { canUserPayTheGasFee, isEstimatingFee } = useCanPayGasFee({
     orderId: order.id,
-    account: account || undefined,
+    account,
     shouldEstimateFee: !notEnoughBalance,
+    actionToSimulate: MarketplaceAction.EXECUTE_ORDER,
   });
 
   const handleExecuteOrder = useCallback(async () => {
