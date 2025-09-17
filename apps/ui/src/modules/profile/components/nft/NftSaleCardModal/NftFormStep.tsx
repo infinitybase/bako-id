@@ -2,10 +2,12 @@ import { useCustomToast } from '@/components';
 import { useUpdateOrder } from '@/hooks/marketplace';
 import { useListAssets } from '@/hooks/marketplace/useListAssets';
 import type { Order } from '@/types/marketplace';
-import { Button, Heading, Stack, Text } from '@chakra-ui/react';
+import { Button, Heading, Flex, Stack, Text, Icon } from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { useCallback, useMemo } from 'react';
 import { NftCardSaleForm, type NftSaleCardForm } from '../NftCardSaleForm';
+import { CloseIcon } from '@/components/icons/closeIcon';
+import { useScreenSize } from '@/hooks';
 
 export default function NftFormStep({
   assetSymbolUrl,
@@ -29,12 +31,12 @@ export default function NftFormStep({
   const { updateOrderAsync, isPending } = useUpdateOrder();
   const { errorToast, successToast } = useCustomToast();
   const { assets } = useListAssets();
-
+  const { isMobile } = useScreenSize();
   const handleUpdateOrder = useCallback(
     async (data: NftSaleCardForm & { currentReceiveAmountInUsd: number }) => {
       try {
         const sellPrice = bn.parseUnits(
-          data.sellPrice.toString(),
+          data.sellPrice?.toString() ?? '0',
           data.sellAsset.decimals
         );
 
@@ -49,7 +51,7 @@ export default function NftFormStep({
         };
 
         const newPrice = {
-          newAmount,
+          newAmount: newAmount ?? 0,
           newRaw,
           usd: data.currentReceiveAmountInUsd,
         };
@@ -78,7 +80,24 @@ export default function NftFormStep({
 
   return (
     <Stack w="full" spacing={4}>
-      <Heading>{name}</Heading>
+      {!isMobile && (
+        <Flex
+          alignItems="center"
+          justifyContent="space-between"
+          w="full"
+          position={{
+            base: 'relative',
+            sm: 'sticky',
+          }}
+          bg="background.900"
+          top={0}
+          right={0}
+          zIndex={1}
+        >
+          <Heading>{name}</Heading>
+          <Icon as={CloseIcon} cursor="pointer" onClick={onClose} />
+        </Flex>
+      )}
       <Text color="grey.subtitle">
         Select new asset and price for your listing.
       </Text>

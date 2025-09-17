@@ -4,10 +4,9 @@ import UnknownAsset from '@/assets/unknown-asset.png';
 import { ConfirmationDialog, useCustomToast } from '@/components';
 import { useCancelOrder, useExecuteOrder } from '@/hooks/marketplace';
 import type { Order } from '@/types/marketplace';
-import { parseURI } from '@/utils/formatter';
+import { orderPriceFormatter, parseURI } from '@/utils/formatter';
 import {
   type BoxProps,
-  Button,
   Flex,
   Heading,
   Image,
@@ -20,18 +19,19 @@ import { type MouseEvent, useCallback, useMemo, useState } from 'react';
 import { NftSaleCardModal } from './NftSaleCardModal';
 import { NftCard } from './card';
 import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
-import { Link, useParams } from '@tanstack/react-router';
+import { useParams } from '@tanstack/react-router';
 import { useAccount, useBalance, useConnectUI } from '@fuels/react';
 import { bn } from 'fuels';
 import { useScreenSize } from '@/hooks';
+import { slugify } from '@/utils/slugify';
+import { useGetCollection } from '@/hooks/marketplace/useGetCollection';
+import { AnimatedCardButton } from './AnimatedCardButton';
 
 interface NftSaleCardProps {
   order: Order;
-  showDelistButton: boolean;
   isOwner: boolean;
-  showBuyButton: boolean;
+  showAnimatedButton: boolean;
   withHandle: boolean;
-  openModalOnClick?: boolean;
   imageSize?: BoxProps['boxSize'];
   ctaButtonVariant?: 'primary' | 'mktPrimary';
   isProfilePage?: boolean;
@@ -39,10 +39,8 @@ interface NftSaleCardProps {
 
 const NftSaleCard = ({
   order,
-  showDelistButton,
   isOwner,
-  showBuyButton,
-  openModalOnClick = true,
+  showAnimatedButton,
   withHandle,
   imageSize,
   ctaButtonVariant = 'primary',
@@ -52,14 +50,21 @@ const NftSaleCard = ({
   const { successToast, errorToast } = useCustomToast();
   const { cancelOrderAsync, isPending: isCanceling } = useCancelOrder();
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const { updatedOrders } = useProcessingOrdersStore();
+  const { updatedOrders, addPurchasedOrder } = useProcessingOrdersStore();
   const { account } = useAccount();
-  const { collectionId } = useParams({ strict: false });
+  const { collectionName } = useParams({ strict: false });
   const { connect, isConnected } = useConnectUI();
   const [displayBuyButton, setDisplayBuyButton] = useState(false);
+  const slugifiedCollectionName = slugify(collectionName);
+  const [txId, setTxId] = useState<string | null>(null);
+
+  const { collection } = useGetCollection({
+    collectionId: slugifiedCollectionName,
+  });
 
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
-    collectionId ?? ''
+    collection?.data?.id ?? '',
+    setTxId
   );
 
   const showDisplayBuyButton = displayBuyButton || isExecuting;
@@ -76,34 +81,43 @@ const NftSaleCard = ({
     return walletAssetBalance.lt(bn(order.price.raw));
   }, [walletAssetBalance, isLoadingWalletBalance, order.price.raw]);
 
-  const handleExecuteOrder = useCallback(async () => {
-    if (!isConnected) {
-      connect();
-      return;
-    }
-    try {
-      await executeOrderAsync(order.id);
-      successToast({ title: 'Order executed successfully!' });
-      onClose();
-    } catch {
-      errorToast({ title: 'Failed to execute order' });
-    }
-  }, [
-    connect,
-    executeOrderAsync,
-    order.id,
-    onClose,
-    successToast,
-    errorToast,
-    isConnected,
-  ]);
+  const handleExecuteOrder = useCallback(
+    async (e: MouseEvent) => {
+      e.stopPropagation();
+      if (!isConnected) {
+        connect();
+        return;
+      }
+      try {
+        await executeOrderAsync(order.id);
+        successToast({ title: 'Order executed successfully!' });
+      } catch {
+        errorToast({ title: 'Failed to execute order' });
+      }
+    },
+    [
+      connect,
+      executeOrderAsync,
+      order.id,
+      successToast,
+      errorToast,
+      isConnected,
+    ]
+  );
 
   const handleOpenDialog = () => {
     onOpen();
+    if (txId) {
+      setTxId(null);
+    }
   };
 
   const handleCloseDialog = () => {
     onClose();
+    if (txId && order.id) {
+      addPurchasedOrder(order.id, txId);
+    }
+    setTxId(null);
   };
   const delistModal = useDisclosure();
 
@@ -144,17 +158,15 @@ const NftSaleCard = ({
       }).format(Number(order.price.usd)),
     [order.price.usd]
   );
+  const orderPrice = useMemo(
+    () => typeof order.price.amount === 'string' ? order.price.amount : orderPriceFormatter(order.price.amount),
+    [order.price.amount]
+  );
 
   const assetSymbolUrl = order.price.image || UnknownAsset;
 
   const imageUrl = parseURI(order.asset?.image) || nftEmpty;
   const name = order.asset.name || 'Unknown NFT';
-
-  const handleCardClick = () => {
-    if (openModalOnClick) {
-      handleOpenDialog();
-    }
-  };
 
   const isProcessigNewPrices = useMemo(() => {
     const hasOrderUpdated = updatedOrders.find(
@@ -169,7 +181,7 @@ const NftSaleCard = ({
 
   return (
     <NftCard.Root
-      onClick={handleCardClick}
+      onClick={handleOpenDialog}
       cursor="pointer"
       minH="240px"
       onMouseEnter={() =>
@@ -178,21 +190,9 @@ const NftSaleCard = ({
       onMouseLeave={() => setDisplayBuyButton(false)}
       position="relative"
     >
-      {/* {order.nft?.edition && (
-        <NftCard.EditionBadge edition={order.nft?.edition} />
-      )} */}
-      {showDelistButton && <NftCard.DelistButton onDelist={handleDelist} />}
-      <Flex
-        as={Link}
-        to={
-          isProfilePage
-            ? undefined
-            : `/collection/${collectionId}/order/${order.id}`
-        }
-        flexDir="column"
-      >
+      <Flex flexDir="column">
         <NftCard.Image boxSize={imageSize} src={imageUrl} />
-        <NftCard.Content h={showBuyButton ? 'full' : '70px'}>
+        <NftCard.Content h={showAnimatedButton ? 'full' : '70px'}>
           <Text
             fontSize="xs"
             color="text.700"
@@ -223,7 +223,7 @@ const NftSaleCard = ({
               <Tooltip label={order.asset?.name}>
                 <Image src={assetSymbolUrl} alt="Asset Icon" w={4} height={4} />
               </Tooltip>
-              {order.price.amount}
+              {orderPrice}
             </Heading>
             {order.price.usd && !displayBuyButton && (
               <Text color="grey.subtitle" fontSize="xs" lineHeight=".9">
@@ -233,51 +233,19 @@ const NftSaleCard = ({
           </Skeleton>
         </NftCard.Content>
       </Flex>
-      {showBuyButton && (
-        <Skeleton
+      {showAnimatedButton && (
+        <AnimatedCardButton
+          showDisplayBuyButton={showDisplayBuyButton}
+          displayBuyButton={displayBuyButton}
+          notEnoughBalance={notEnoughBalance}
+          isConnected={isConnected}
+          ctaButtonVariant={ctaButtonVariant}
+          isMobile={isMobile}
+          isLoading={isExecuting}
           isLoaded={!isLoadingWalletBalance}
-          borderRadius="md"
-          display="flex"
-          alignItems="center"
-          transition="transform 0.25s ease, opacity 0.25s ease"
-          bgColor="grey.600"
-          w="93%"
-          mx="auto"
-          boxShadow="0 0 10px 4px rgba(39, 39, 39, 0.84)"
-          position={isMobile ? 'relative' : 'absolute'}
-          mb={isMobile ? 2 : 0}
-          bottom={isMobile ? 0 : 2}
-          left={0}
-          right={0}
-          zIndex={10}
-          opacity={isMobile ? 1 : showDisplayBuyButton ? 1 : 0}
-          transform={
-            isMobile
-              ? 'translateY(0)'
-              : showDisplayBuyButton
-                ? 'translateY(0)'
-                : 'translateY(12px)'
-          }
-          pointerEvents={isMobile ? 'auto' : displayBuyButton ? 'auto' : 'none'}
-        >
-          <Tooltip
-            label={notEnoughBalance && isConnected ? 'Not enough balance' : ''}
-          >
-            <Button
-              variant={ctaButtonVariant}
-              h={isMobile ? '32px' : '24px'}
-              py={1.5}
-              isLoading={isExecuting}
-              disabled={(notEnoughBalance && isConnected) || isExecuting}
-              onClick={(e) => {
-                e.stopPropagation();
-                void handleExecuteOrder();
-              }}
-            >
-              Buy Now
-            </Button>
-          </Tooltip>
-        </Skeleton>
+          buttonAction={isOwner ? handleDelist : handleExecuteOrder}
+          isOwner={isOwner}
+        />
       )}
       {delistModal.isOpen && (
         <ConfirmationDialog
@@ -286,19 +254,20 @@ const NftSaleCard = ({
           onClose={delistModal.onClose}
           onConfirm={handleConfirmDelist}
           isConfirming={isCanceling}
-          confirmActionVariant="tertiary"
+          confirmActionVariant="mktPrimary"
           confirmActionLabel="Yes, delist NFT"
+          isGarage
         >
           <Text fontSize="sm" color="grey.subtitle">
             Are you sure you want to delist this NFT?
           </Text>
         </ConfirmationDialog>
       )}
-      {isOpen && (
+      {(isOpen || txId) && (
         <NftSaleCardModal
           order={order}
           imageUrl={imageUrl}
-          isOpen={isOpen}
+          isOpen={isOpen || !!txId}
           onClose={handleCloseDialog}
           onCancelOrder={handleCancelOrder}
           isCanceling={isCanceling}
@@ -307,6 +276,7 @@ const NftSaleCard = ({
           isOwner={isOwner}
           withHandle={withHandle}
           ctaButtonVariant={ctaButtonVariant}
+          isExecuted={!!txId}
         />
       )}
     </NftCard.Root>

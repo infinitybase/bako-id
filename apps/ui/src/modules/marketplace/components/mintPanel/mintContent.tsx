@@ -11,8 +11,10 @@ import {
   Progress,
   Stack,
   Text,
+  Tooltip,
 } from '@chakra-ui/react';
-import type { AssetInfo, BN } from 'fuels';
+import { useAccount, useBalance, useConnectUI } from '@fuels/react';
+import { bn, type AssetInfo, type BN } from 'fuels';
 import { useEffect, useMemo, useState } from 'react';
 
 type MintContentProps = {
@@ -45,20 +47,40 @@ const MintContent = ({
     if (maxSupply) return maxSupply - progress;
   }, [progress, maxSupply]);
 
+  const { connect, isConnected, isConnecting } = useConnectUI();
+  const { account } = useAccount();
+  const {
+    balance: walletAssetBalance,
+    isLoading: isLoadingWalletBalance,
+    isFetching: isFetchingBalance,
+  } = useBalance({
+    address: account,
+    assetId: asset?.assetId,
+  });
+
   const progressPercentage = useMemo(
     () => (progress / maxSupply) * 100,
     [progress, maxSupply]
   );
+
   const mintPrice = useMemo(
-    () => formatAmount({
-      amount: tokenPrice,
-      options: {
-        units: asset?.decimals || 0,
-        precision: Math.min(asset?.decimals || 0, 3),
-      }
-    }),
+    () =>
+      formatAmount({
+        amount: tokenPrice.mul(quantity),
+        options: {
+          units: asset?.decimals || 0,
+          precision: Math.min(asset?.decimals || 0, 3),
+        },
+      }),
     [tokenPrice, quantity, asset?.decimals]
   );
+
+  const notEnoughBalance = useMemo(() => {
+    if (isLoadingWalletBalance || !walletAssetBalance) return true;
+
+    return walletAssetBalance.lt(bn(tokenPrice.mul(quantity).toString()));
+  }, [walletAssetBalance, isLoadingWalletBalance, tokenPrice, quantity]);
+
   const usdPrice = useMemo(
     () =>
       convertToUsd(
@@ -70,6 +92,10 @@ const MintContent = ({
   );
 
   const handleMint = () => {
+    if (!isConnected && !isConnecting) {
+      connect();
+      return;
+    }
     onMint(quantity);
   };
 
@@ -177,22 +203,29 @@ const MintContent = ({
             </Flex>
           )}
         </Stack>
-        <Button
-          mt={wasAllSupplyMinted ? 4 : 0}
-          variant="mktPrimary"
-          size="lg"
-          w="full"
-          fontWeight="bold"
-          borderRadius="md"
-          letterSpacing=".5px"
-          onClick={handleMint}
-          isLoading={isMinting}
-          isDisabled={isMinting || wasAllSupplyMinted}
-        >
-          {wasAllSupplyMinted
-            ? 'Minted'
-            : `Mint ${quantity} NFT${quantity > 1 ? 's' : ''}`}
-        </Button>
+        <Tooltip label={notEnoughBalance ? 'Not enough balance' : ''}>
+          <Button
+            mt={wasAllSupplyMinted ? 4 : 0}
+            variant="mktPrimary"
+            size="lg"
+            w="full"
+            fontWeight="bold"
+            borderRadius="md"
+            letterSpacing=".5px"
+            onClick={handleMint}
+            isLoading={isMinting}
+            isDisabled={
+              isMinting ||
+              wasAllSupplyMinted ||
+              notEnoughBalance ||
+              isFetchingBalance
+            }
+          >
+            {wasAllSupplyMinted
+              ? 'Minted'
+              : `Mint ${quantity} NFT${quantity > 1 ? 's' : ''}`}
+          </Button>
+        </Tooltip>
       </Stack>
     </Flex>
   );

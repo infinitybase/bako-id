@@ -133,4 +133,11 @@ export const usdValueFormatter = (value: number) => {
   }).format(value);
 };
 
+export const orderPriceFormatter = (value: number) => {
+  return Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 8,
+  }).format(value);
+};
+
 export { formatAddress, formatTimeWithTimeZone };

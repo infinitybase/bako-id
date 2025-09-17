@@ -10,6 +10,7 @@ export * from './disabledFarcasterBadgeIcon';
 export * from './disabledTwitterBadgeIcon';
 export * from './discordIcon';
 export * from './doubleArrowRightIcon';
+export * from './doubleArrowLeftIcon';
 export * from './editIcon';
 export * from './errorIcon';
 export * from './ethereumIcon';

@@ -12,6 +12,7 @@ interface ConfirmationDialogProps {
   confirmActionLabel?: string;
   cancelActionLabel?: string;
   cancelActionVariant?: ButtonProps['variant'];
+  isGarage?: boolean;
 }
 
 export const ConfirmationDialog = ({
@@ -25,6 +26,7 @@ export const ConfirmationDialog = ({
   confirmActionLabel = 'Confirm',
   cancelActionLabel = 'Cancel',
   cancelActionVariant = 'secondary',
+  isGarage,
 }: ConfirmationDialogProps) => {
   return (
     <Dialog.Modal
@@ -40,13 +42,25 @@ export const ConfirmationDialog = ({
           variant={cancelActionVariant}
           onClick={onClose}
           isDisabled={isConfirming}
+          {...(isGarage && {
+            _hover: {
+              borderColor: 'garage.100',
+              color: 'garage.100',
+            },
+          })}
         >
           {cancelActionLabel}
         </Dialog.SecondaryAction>
         <Dialog.PrimaryAction
           isLoading={isConfirming}
           onClick={onConfirm}
-          variant={confirmActionVariant}
+          variant={isGarage ? 'mktPrimary' : confirmActionVariant}
+          {...(isGarage && {
+            _disabled: {
+              opacity: 0.7,
+              cursor: 'not-allowed',
+            },
+          })}
         >
           {confirmActionLabel}
         </Dialog.PrimaryAction>

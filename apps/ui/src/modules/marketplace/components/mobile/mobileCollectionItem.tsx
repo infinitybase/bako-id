@@ -5,6 +5,7 @@ import { Flex, Text, Grid, GridItem, Box } from '@chakra-ui/react';
 import { useRouter } from '@tanstack/react-router';
 import { isB256 } from 'fuels';
 import { useScrollReset } from '@/hooks/useScrollReset';
+import { slugify } from '@/utils/slugify';
 
 const MobileCollectionItem = ({ col }: { col: Collection }) => {
   const router = useRouter();
@@ -24,9 +25,9 @@ const MobileCollectionItem = ({ col }: { col: Collection }) => {
       cursor="pointer"
       onClick={async () => {
         await router.navigate({
-          to: '/collection/$collectionId',
+          to: '/collection/$collectionName',
           params: {
-            collectionId: col.id,
+            collectionName: slugify(col.name),
           },
         });
         resetScroll();
@@ -64,16 +65,6 @@ const MobileCollectionItem = ({ col }: { col: Collection }) => {
           <Flex direction="column" align="start" flex={1}>
             <Text color="white" fontSize="xs" minW="120px">
               {isB256(col.name) ? formatAddress(col.name) : col.name}
-            </Text>
-            <Text
-              fontSize="xs"
-              color="section.500"
-              fontWeight={300}
-              textOverflow="ellipsis"
-              noOfLines={1}
-              maxW="320px"
-            >
-              {col.config.description}
             </Text>
           </Flex>
         </Box>
