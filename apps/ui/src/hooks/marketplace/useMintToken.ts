@@ -8,22 +8,41 @@ import {
     type MintedAssetsTransaction,
     type TransactionResultLog,
 } from '@/modules/marketplace/utils/minted-nfts-data';
-import { MarketplaceQueryKeys } from '@/utils/constants';
-import { useWallet } from '@fuels/react';
+import { ETH_ID, MarketplaceQueryKeys } from '@/utils/constants';
+import { useBalance, useAccount, useWallet } from '@fuels/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Interface } from 'fuels';
+
+const TRANSACTION_FEE_ERROR = 'Insufficient balance to cover the transaction fee';
 
 export const useMintToken = (
     collectionId: string,
     onSuccess?: (mintedAssetsTransaction: MintedAssetsTransaction) => void
 ) => {
     const { successToast, errorToast } = useCustomToast();
+    const { account } = useAccount();
+    const { balance: ethBalance } = useBalance({
+        address: account,
+        assetId: ETH_ID,
+    });
 
     const queryClient = useQueryClient();
     const { wallet } = useWallet();
     const { mutateAsync: mintToken, isPending } = useMutation({
         mutationFn: async (quantity: number) => {
             const mintContract = new NFTCollection(collectionId, wallet!);
+
+            const { fee } = await mintContract.simulateMint(quantity);
+
+            if (ethBalance?.lt(fee)) {
+                errorToast({
+                    title: 'Not enough ETH',
+                    description: 'Insufficient balance to cover the transaction fee'
+                });
+
+                throw new Error(TRANSACTION_FEE_ERROR);
+            }
+
             const { transactionResult } = await mintContract.mint(quantity);
             const contractInterface = new Interface(collectionContractAbi);
 
@@ -58,16 +77,19 @@ export const useMintToken = (
             onSuccess?.({ transactionId, mintedAssets: mintedAssets || [] });
         },
         onError: (err) => {
-            const isConnectionClosed = err.message.includes('Client disconnected');
-            const description = err.message.includes('insufficient coins available')
-                ? 'Insufficient balance to cover the transaction'
-                : 'An error occurred while minting the tokens';
-            errorToast({
-                title: 'Transaction error',
-                description: isConnectionClosed
-                    ? 'User declined the transaction'
-                    : description,
-            });
+
+            if (!err.message.includes(TRANSACTION_FEE_ERROR)) {
+                const isConnectionClosed = err.message.includes('Client disconnected');
+                const description = err.message.includes('insufficient coins available')
+                    ? 'Insufficient balance to cover the transaction'
+                    : 'An error occurred while minting the tokens';
+                errorToast({
+                    title: 'Transaction error',
+                    description: isConnectionClosed
+                        ? 'User declined the transaction'
+                        : description,
+                });
+            }
         },
     });
 

@@ -283,10 +283,10 @@ export class MarketplaceContract {
     let fee = bn(0);
 
     try {
-      const { gasUsed, minFee } =
+      const { maxFee, } =
         await this.account.getTransactionCost(transactionRequest);
 
-      fee = gasUsed.add(minFee);
+      fee = maxFee;
     } catch {
       // Around 0.000445 ETH
       fee = bn(445);

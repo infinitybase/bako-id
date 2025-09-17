@@ -3,6 +3,8 @@ import {
     type Provider,
     Contract,
     type FunctionResult,
+    type BN,
+    bn,
 } from 'fuels';
 import abi from './collection-contract-abi.json';
 
@@ -157,5 +159,52 @@ export class NFTCollection {
             value: [asset, amount],
         } = await this.contract.functions.mint_price!().get();
         return { asset: asset.bits, amount };
+    }
+
+    /**
+     * Simulates the minting process by creating a transaction request and estimating the fee.
+     *
+     * @param {number} quantity - The quantity of NFTs to mint.
+     * @return {Promise<{ fee: BN }>} A promise that resolves with an object containing the estimated fee.
+     */
+
+    async simulateMint(quantity = 1): Promise<{ fee: BN }> {
+        if ('url' in this.account)
+            throw new Error('Cannot mint NFTs from a provider');
+
+        const {
+            value: [asset, amount],
+        } = await this.contract.functions.mint_price!().get();
+
+        let fee = bn(0);
+
+
+        const transactionRequest = await this.contract.functions.mint!(
+            undefined,
+            Identity.address(this.account as Account)
+        )
+            .callParams({
+                forward: {
+                    assetId: asset.bits,
+                    amount,
+                },
+            })
+            .getTransactionRequest();
+
+        try {
+            const { maxFee, } =
+                await this.account.getTransactionCost(transactionRequest);
+
+            const singleMintFee = maxFee;
+
+            fee = singleMintFee.mul(quantity);
+        } catch {
+            // Fallback fee per mint (around $0.002 USD)
+            fee = bn(445).mul(quantity);
+        }
+
+        return {
+            fee
+        };
     }
 }
