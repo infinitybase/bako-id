@@ -159,7 +159,7 @@ const NftSaleCard = ({
     [order.price.usd]
   );
   const orderPrice = useMemo(
-    () => orderPriceFormatter(Number(order.price.amount)),
+    () => typeof order.price.amount === 'string' ? order.price.amount : orderPriceFormatter(order.price.amount),
     [order.price.amount]
   );
 
