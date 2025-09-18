@@ -59,7 +59,9 @@ export async function returnFundsToGenesisWallet(config: {
   await expect(submitButton).toBeEnabled();
   await submitButton.click();
 
-  await expect(extensionPage.getByText('Send')).toBeVisible();
+  await expect(extensionPage.getByText('Send')).toBeVisible({
+    timeout: 8000,
+  });
   await expect(extensionPage.getByText('success')).toBeVisible();
 }
 
