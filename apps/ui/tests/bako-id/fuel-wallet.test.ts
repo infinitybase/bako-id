@@ -32,7 +32,7 @@ test.describe('Connect with Fuel Wallet', () => {
     });
   });
 
-  test.only('search an existing profile', async ({ page, context }) => {
+  test('search an existing profile', async ({ page, context }) => {
     await expect(page.getByText('Search new Handle')).toBeVisible();
 
     await page
@@ -55,7 +55,7 @@ test.describe('Connect with Fuel Wallet', () => {
     await secondTab.getByRole('heading', { name: 'Account' }).click();
   });
 
-  test.only('search invalid handle', async ({ page }) => {
+  test('search invalid handle', async ({ page }) => {
     await expect(page.getByText('Search new Handle')).toBeVisible();
 
     await test.step('shows error for short handle', async () => {

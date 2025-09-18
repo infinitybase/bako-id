@@ -5,7 +5,7 @@ export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 2 : 2,
+  workers: process.env.CI ? 2 : 1,
   timeout: 160000,
   expect: {
     timeout: 8000,
