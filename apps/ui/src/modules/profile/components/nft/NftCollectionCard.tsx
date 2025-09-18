@@ -15,6 +15,7 @@ import { BAKO_CONTRACTS_IDS } from '@/utils/constants';
 import { formatAddress } from '@/utils/formatter';
 import { NftCardModal } from './NftCardModal';
 import { NftCard } from './card';
+import { useListNowStore } from '@/modules/marketplace/stores/listNowStore';
 
 interface NftCollectionCardProps {
   asset: NFTWithImage;
@@ -38,11 +39,7 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
   } = props.asset;
   const [step, setStep] = useState(1);
   const dialog = useDisclosure();
-
-  const image = useMemo(
-    () => props.asset.image || nftEmpty,
-    [props.asset.image]
-  );
+  const { nftIdToList, removeNftIdToList } = useListNowStore();
 
   const hasSrc20Name = name && symbol;
   const isBakoIdNft = useMemo(
@@ -59,6 +56,10 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
   );
 
   const edition = defaultMetadata?.edition;
+  const handleCloseDialog = () => {
+    dialog.onClose();
+    removeNftIdToList(assetId);
+  };
 
   return (
     <>
@@ -68,9 +69,9 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
         nftName={nftName}
         contractId={contractId}
         metadata={defaultMetadata}
-        image={image}
-        isOpen={dialog.isOpen}
-        onClose={dialog.onClose}
+        image={props.asset.image ?? nftEmpty}
+        isOpen={dialog.isOpen || nftIdToList === assetId}
+        onClose={handleCloseDialog}
         isOwner={props.isOwner}
         collection={collection}
         ctaButtonVariant={props.ctaButtonVariant}
@@ -83,10 +84,12 @@ export const NftCollectionCard = (props: NftCollectionCardProps) => {
         cursor="pointer"
         minW={props.nftCardMinSize}
       >
-        {edition && <NftCard.EditionBadge edition={`#${edition}`} />}
+        {edition && (
+          <NftCard.EditionBadge zIndex={30} edition={`#${edition}`} />
+        )}
         <NftCard.Image
           minW="full"
-          src={props.asset.image ?? image}
+          src={props.asset.image}
           {...props.nftImageProps}
         />
         <NftCard.Content spacing={2} {...props.contentProps}>

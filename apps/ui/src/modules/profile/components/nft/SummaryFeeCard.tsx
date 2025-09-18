@@ -1,5 +1,6 @@
 import FuelLogo from '@/assets/fuel-token-logo.png';
 import { Card, QuestionIcon } from '@/components';
+import { orderPriceFormatter } from '@/utils/formatter';
 import { removeRightZeros } from '@/utils/removeRightZeros';
 import {
   Divider,
@@ -108,7 +109,7 @@ export default function SummaryFeeCard({
           </Text>
           <Stack gap={0} alignItems="flex-end">
             <Text fontSize="xs" color="grey.100">
-              {Number(valueToReceive) || '0'} {assetSymbol}
+              {orderPriceFormatter((Number(valueToReceive)))} {assetSymbol}
             </Text>
             <Text fontSize="2xs" color="grey.subtitle">
               {currentReceiveAmountInUsd}

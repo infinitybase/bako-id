@@ -1,12 +1,13 @@
 import type { UpdateOrder } from '@bako-id/marketplace';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { useAccount, useChainId } from '@fuels/react';
+import { useAccount } from '@fuels/react';
 import { useMarketplace } from './useMarketplace';
 import { useProcessingOrdersStore } from '@/modules/marketplace/stores/processingOrdersStore';
 import { MarketplaceQueryKeys } from '@/utils/constants';
 import { Networks } from '@/utils/resolverNetwork';
 import { marketplaceService } from '@/services/marketplace';
+import { useChainId } from '../useChainId';
 
 type TUpdateOrder = UpdateOrder & {
   orderId: string;
