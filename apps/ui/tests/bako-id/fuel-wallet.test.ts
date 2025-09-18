@@ -591,23 +591,6 @@ test.describe('Connect with Fuel Wallet', () => {
       await E2ETestUtils.signMessageFuelWallet({ fuelWalletTestHelper, page });
     });
 
-    await test.step('connect address 1', async () => {
-      try {
-        await page.getByRole('button', { name: 'Connect Wallet' }).click();
-        await page.getByLabel('Connect to Fuel Wallet').click();
-      } catch {
-        await page
-          .getByRole('button', { name: 'Connect Wallet' })
-          .nth(1)
-          .click();
-        await page.getByLabel('Connect to Fuel Wallet').click();
-      }
-
-      await page.waitForTimeout(500);
-
-      await fuelWalletTestHelper.walletConnect(['Account 1']);
-    });
-
     await test.step('edit resolver', async () => {
       await page.getByRole('img', { name: 'Bako logo' }).click();
       await page.waitForTimeout(1500);
@@ -668,10 +651,11 @@ test.describe('Connect with Fuel Wallet', () => {
           .getByRole('textbox', { name: 'Address Input' })
           .fill(`@${newHandle}`);
         const accountPrefix = address2.slice(0, 6);
-        const uiText = await page.getByText(/0x/).innerText();
+        const uiText = await extensionPage.getByText(/0x/).innerText();
         expect(uiText.startsWith(accountPrefix)).toBe(true);
 
-        await page.getByRole('button', { name: 'Back' }).click();
+        await extensionPage.locator('html').click();
+        await extensionPage.getByRole('button', { name: 'Back' }).click();
       });
     });
 
