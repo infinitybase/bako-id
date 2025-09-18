@@ -1,10 +1,11 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
+  globalSetup: './tests/ultils/global-setup.ts',
   testDir: './tests',
   fullyParallel: true,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 2 : 1,
+  workers: process.env.CI ? 2 : 2,
   timeout: 160000,
   expect: {
     timeout: 8000,
