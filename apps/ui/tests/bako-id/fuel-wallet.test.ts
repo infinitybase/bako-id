@@ -85,7 +85,7 @@ test.describe('Connect with Fuel Wallet', () => {
     });
   });
 
-  test.only('create new handle and edit profile', async ({
+  test('create new handle and edit profile', async ({
     page,
     context,
     extensionId,
