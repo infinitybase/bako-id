@@ -386,7 +386,7 @@ test.describe('Connect with Fuel Wallet', () => {
     ).toBeVisible();
   });
 
-  test.only('create and search new handle', async ({
+  test('create and search new handle', async ({
     page,
     context,
     extensionId,
@@ -527,7 +527,7 @@ test.describe('Connect with Fuel Wallet', () => {
     });
   });
 
-  test.only('edit resolver and ownership', async ({
+  test('edit resolver and ownership', async ({
     page,
     context,
     extensionId,
@@ -640,7 +640,12 @@ test.describe('Connect with Fuel Wallet', () => {
         navigator.clipboard.readText(),
       );
 
-      expect(copiedAddress).toBe(address2);
+      await page.reload();
+      try {
+        expect(copiedAddress).toBe(address2);
+      } catch {
+        expect(copiedAddress).toBe(address2);
+      }
 
       await test.step('search new resolver in Fuel Wallet', async () => {
         const extensionPage = fuelWalletTestHelper.getWalletPage();
