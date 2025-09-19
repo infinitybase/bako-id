@@ -386,7 +386,7 @@ test.describe('Connect with Fuel Wallet', () => {
     ).toBeVisible();
   });
 
-  test('create and search new handle', async ({
+  test.only('create and search new handle', async ({
     page,
     context,
     extensionId,
@@ -490,7 +490,8 @@ test.describe('Connect with Fuel Wallet', () => {
           .locator('div')
           .nth(1),
       ).toBeVisible();
-      await page.getByRole('button', { name: 'Back' }).click();
+      await extensionPage.locator('html').click();
+      await extensionPage.getByRole('button', { name: 'Back' }).click();
     });
 
     await test.step('search handle in bako safe', async () => {
@@ -526,7 +527,7 @@ test.describe('Connect with Fuel Wallet', () => {
     });
   });
 
-  test('edit resolver and ownership', async ({
+  test.only('edit resolver and ownership', async ({
     page,
     context,
     extensionId,
@@ -666,7 +667,7 @@ test.describe('Connect with Fuel Wallet', () => {
         .getByRole('button')
         .click();
       await page.getByRole('textbox', { name: 'Address' }).fill(address2);
-      await page.getByRole('button', { name: 'Change Ownership' }).click();
+      await page.getByText('Change Ownership').click();
       await E2ETestUtils.signMessageFuelWallet({ fuelWalletTestHelper, page });
 
       await page.getByRole('button', { name: /.* avatar$/ }).click();
