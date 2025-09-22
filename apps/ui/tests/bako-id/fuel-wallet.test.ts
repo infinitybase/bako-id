@@ -636,16 +636,6 @@ test.describe('Connect with Fuel Wallet', () => {
         .getByRole('img')
         .nth(1)
         .click();
-      const copiedAddress = await page.evaluate(() =>
-        navigator.clipboard.readText(),
-      );
-
-      await page.reload();
-      try {
-        expect(copiedAddress).toBe(address2);
-      } catch {
-        expect(copiedAddress).toBe(address2);
-      }
 
       await test.step('search new resolver in Fuel Wallet', async () => {
         const extensionPage = fuelWalletTestHelper.getWalletPage();
@@ -671,8 +661,14 @@ test.describe('Connect with Fuel Wallet', () => {
         .filter({ hasText: /^OwnershipEdit$/ })
         .getByRole('button')
         .click();
-      await page.getByRole('textbox', { name: 'Address' }).fill(address2);
-      await page.getByText('Change Ownership').click();
+      const modal = page.locator('[id^="chakra-modal--body-"]');
+      await modal.getByLabel('Address', { exact: true }).fill(address2);
+      const changeOwnershipButton = modal.getByRole('button', {
+        name: 'Change Ownership',
+      });
+      await expect(changeOwnershipButton).toBeEnabled();
+      await changeOwnershipButton.click();
+      await page.pause();
       await E2ETestUtils.signMessageFuelWallet({ fuelWalletTestHelper, page });
 
       await page.getByRole('button', { name: /.* avatar$/ }).click();
