@@ -668,7 +668,6 @@ test.describe('Connect with Fuel Wallet', () => {
       });
       await expect(changeOwnershipButton).toBeEnabled();
       await changeOwnershipButton.click();
-      await page.pause();
       await E2ETestUtils.signMessageFuelWallet({ fuelWalletTestHelper, page });
 
       await page.getByRole('button', { name: /.* avatar$/ }).click();
@@ -682,7 +681,7 @@ test.describe('Connect with Fuel Wallet', () => {
       await page.getByRole('button', { name: `${newHandle} avatar` }).click();
       await page.getByRole('menuitem', { name: 'Profile' }).click();
 
-      await expect(page.getByText(newHandle)).toBeVisible();
+      await expect(page.getByText(`@${newHandle}`)).toBeVisible();
       await expect(
         page.getByRole('button', { name: 'Edit Profile' }),
       ).toBeVisible();
