@@ -1,6 +1,7 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
+  globalSetup: './tests/ultils/global-setup.ts',
   testDir: './tests',
   fullyParallel: true,
   retries: process.env.CI ? 2 : 0,
@@ -11,14 +12,14 @@ export default defineConfig({
   },
   reporter: 'blob',
   use: {
-    headless: false,
+    headless: true,
     screenshot: 'only-on-failure',
     trace: process.env.CI ? 'on-first-retry' : 'retain-on-failure',
-    baseURL: 'http://localhost:5174',
+    baseURL: 'https://preview.bako.id/',
     permissions: ['clipboard-read', 'clipboard-write'],
   },
   webServer: {
-    command: 'pnpm vite preview --port 5174',
+    command: 'pnpm vite preview --mode test --port 5174',
     url: 'http://localhost:5174',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
