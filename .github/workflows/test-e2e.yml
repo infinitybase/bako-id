@@ -22,23 +22,39 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Build UI
+      - name: Run node
+        working-directory: docker
+        run: docker compose -p test-node up -d --build
+        env:
+          PROJECT: bako-id
+          MIN_GAS_PRICE: 1
+          WALLET_SECRET: 
+          DISPENSE_AMOUNT: 2000000
+          FUEL_CORE_PORT: 4000
+          FUEL_FAUCET_PORT: 4040
+          FUEL_IP: 0.0.0.0
+
+      - name: Copy server .env.test to .env
+        working-directory: apps/server
+        run: cp .env.test .env
+
+      - name: Build server
+        run: pnpm build:server
+
+      - name: Copy ui .env.test to .env
+        working-directory: apps/ui
+        run: cp .env.test .env
+
+      - name: Build ui
         run: pnpm build:ui
 
       - name: Install Playwright Browsers
-        run: |
-          cd apps/ui  
-          pnpm exec playwright install --with-deps
-
-      - name: Build UI test mode
-        run: |
-          cd apps/ui
-          pnpm vite build --mode test
+        working-directory: apps/ui
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Run Playwright tests
-        run: | 
-          cd apps/ui
-          xvfb-run -a pnpm exec playwright test
+        working-directory: apps/ui
+        run: xvfb-run --auto-servernum -- pnpm exec playwright test tests/bako-id/fuel-wallet.test.ts
 
       - name: Upload report to GitHub Actions Artifacts
         uses: actions/upload-artifact@v4

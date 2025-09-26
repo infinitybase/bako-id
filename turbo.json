@@ -6,7 +6,7 @@
       "cache": true
     },
     "build": {
-      "dependsOn": ["codegen:sdk", "^build"],
+      "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**"],
       "env": [
         "API_URL",

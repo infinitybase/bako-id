@@ -15,13 +15,23 @@ export default defineConfig({
     headless: true,
     screenshot: 'only-on-failure',
     trace: process.env.CI ? 'on-first-retry' : 'retain-on-failure',
-    baseURL: 'https://preview.bako.id/',
+    baseURL: 'http://localhost:5173',
     permissions: ['clipboard-read', 'clipboard-write'],
   },
-  webServer: {
-    command: 'pnpm vite preview --mode test --port 5174',
-    url: 'http://localhost:5174',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120000,
-  },
+  webServer: [
+    {
+      command: 'pnpm --filter ui dev',
+      url: 'http://localhost:5173',
+      name: 'UI',
+      timeout: 120_000,
+      reuseExistingServer: !process.env.CI,
+    },
+    {
+      command: 'pnpm --filter server start',
+      url: 'http://localhost:3000',
+      name: 'Server',
+      timeout: 120_000,
+      reuseExistingServer: !process.env.CI,
+    }
+  ],
 });
