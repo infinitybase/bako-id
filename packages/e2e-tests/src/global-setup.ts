@@ -6,7 +6,7 @@ const downloadFuelExtension = async (): Promise<string> => {
   const FUEL_WALLET_VERSION = '0.55.1';
 
   const absCacheDir = path.resolve(
-    `./tests/.cache/fuel-wallet/v${FUEL_WALLET_VERSION}`,
+    `./.cache/fuel-wallet/v${FUEL_WALLET_VERSION}`,
   );
   const relCacheDir = path.relative(process.cwd(), absCacheDir);
 
@@ -34,6 +34,9 @@ const downloadFuelExtension = async (): Promise<string> => {
 };
 
 const globalSetup = async () => {
+  const isLocal = process.env.PREVIEW_MODE !== 'true';
+  process.env.TEST_NETWORK = isLocal ? process.env.NETWORK_LOCAL : process.env.NETWORK_PREVIEW;
+
   process.env.FUEL_EXTENSION_PATH = await downloadFuelExtension();
 };
 
