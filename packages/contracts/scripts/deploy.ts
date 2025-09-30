@@ -59,7 +59,7 @@ const deployContractWithProxy = async (config: DeployConfig) => {
     await waitForResult();
 
     logger.success(
-      `Proxy for ${contract.name} deployed! Id: ${proxy.id.toB256()}`
+      `Proxy for ${contract.name} deployed! Id: ${proxy.id.toB256()} Target: ${contractId}`
     );
     const proxyAddress = proxy.id.toB256();
     setContractId(provider.url, contract.name, proxyAddress);
