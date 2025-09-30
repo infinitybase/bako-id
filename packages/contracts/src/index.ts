@@ -1,7 +1,7 @@
 import contracts from './artifacts/contracts-fuel.json';
 
 export type NetworkKeys = keyof typeof contracts;
-type ContractKeys<N extends NetworkKeys> = keyof (typeof contracts)[N];
+export type Contracts = 'manager' | 'registry' | 'resolver' | 'nft';
 
 const DEFAULT_NETWORK: NetworkKeys = 'testnet';
 
@@ -23,7 +23,7 @@ export const resolveNetwork = (provider: string) => {
 
 export const getContractId = <N extends NetworkKeys>(
   provider: string,
-  contract: ContractKeys<N>
+  contract: Contracts
 ) => {
   const network = resolveNetwork(provider) as N;
   return contracts[network]?.[contract];
