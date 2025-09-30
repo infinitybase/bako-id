@@ -8,10 +8,3 @@ name = "manager"
 lib = { path = "../../lib" }
 standards = { git = "https://github.com/FuelLabs/sway-standards", tag = "v0.6.1" }
 sway_libs = { git = "https://github.com/FuelLabs/sway-libs", tag = "v0.24.0" }
-
-[proxy]
-enabled = true
-# Testnet
-address = "0x39140d7233297276196c49bf13c78ce056083ca8bf61af2698ee3fdeb8af1a8b"
-# Mainnet
-#address = "0x3ca7ac3db222a740e1c89158d9255afc2c3591ee3f34aedcaaf7cfeceebd0833"
