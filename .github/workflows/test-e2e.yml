@@ -11,50 +11,66 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22.6.0
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Run node
+      - name: Run local node
         working-directory: docker
-        run: docker compose -p test-node up -d --build
+        run: docker compose -p dev up -d --build
         env:
           PROJECT: bako-id
           MIN_GAS_PRICE: 1
-          WALLET_SECRET: 
+          WALLET_SECRET: # secret
           DISPENSE_AMOUNT: 2000000
           FUEL_CORE_PORT: 4000
           FUEL_FAUCET_PORT: 4040
           FUEL_IP: 0.0.0.0
 
+      - name: Deploy contracts
+        working-directory: packages/contracts
+        run: pnpm exec ts-node scripts/deploy.ts
+        env: 
+          PROVIDER_URL: http://localhost:4000/v1/graphql
+          PRIVATE_KEY: # secret
+          RECIPIENT_ADDRESS: # secret
+
+      - name: Start contracts
+        working-directory: packages/contracts
+        run: pnpm exec ts-node scripts/construct-contracts.ts
+        env: 
+          PROVIDER_URL: http://localhost:4000/v1/graphql
+          PRIVATE_KEY: # secret
+          RECIPIENT_ADDRESS: # secret
+
       - name: Copy server .env.test to .env
         working-directory: apps/server
         run: cp .env.test .env
-
-      - name: Build server
-        run: pnpm build:server
 
       - name: Copy ui .env.test to .env
         working-directory: apps/ui
         run: cp .env.test .env
 
-      - name: Build ui
-        run: pnpm build:ui
+      - name: Copy e2e-tests .env.example to .env
+        working-directory: packages/e2e-tests
+        run: cp .env.example .env
 
-      - name: Install Playwright Browsers
-        working-directory: apps/ui
+      - name: Install Playwright
+        working-directory: packages/e2e-tests
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Run Playwright tests
-        working-directory: apps/ui
-        run: xvfb-run --auto-servernum -- pnpm exec playwright test tests/bako-id/fuel-wallet.test.ts
+        run: pnpm run test:e2e
+        env: 
+          TEST_WALLET_PRIVATE_KEY: # secret
 
       - name: Upload report to GitHub Actions Artifacts
         uses: actions/upload-artifact@v4

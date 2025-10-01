@@ -37,7 +37,6 @@
       "dependsOn": ["@bako-id/server#build", "@bako-id/ui#build"],
       "passThroughEnv": [
         "PLAYWRIGHT_*",
-        "TEST_NETWORK",
         "TEST_WALLET_PRIVATE_KEY"
       ]
     },

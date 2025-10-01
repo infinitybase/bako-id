@@ -69,6 +69,14 @@ if (isPreview || !shouldRenderMarketplace() || import.meta.env.DEV) {
   });
 }
 
+const isLocal = import.meta.env.VITE_ENVIRONMENT === 'local';
+if (isLocal) {
+  BASE_NETWORK_CONFIGS.push({
+    chainId: CHAIN_IDS.fuel.devnet,
+    url: 'http://localhost:4000/v1/graphql',
+  });
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ChakraProvider theme={defaultTheme}>
