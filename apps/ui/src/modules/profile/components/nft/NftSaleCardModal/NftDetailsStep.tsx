@@ -254,6 +254,7 @@ export default function NftDetailsStep({
           <Skeleton isLoaded={!isLoadingDomain} borderRadius="md">
             <Link
               to={`${homeUrl}profile/${sellerDomain ? sellerDomain : order.seller}`}
+              target='_blank'
             >
               <NftMetadataBlock
                 title="Seller"
