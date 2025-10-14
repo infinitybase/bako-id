@@ -3,8 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test:dev": "playwright test src/tests/bako-id/fuel-wallet.test.ts",
-    "test:preview": "PREVIEW_MODE=true playwright test src/tests/bako-id/fuel-wallet.test.ts",
+    "test:dev": "playwright test src/tests/",
+    "test:preview": "PREVIEW_MODE=true playwright test src/tests/",
+    "test:garage": "PREVIEW_MODE=true playwright test --project=garage",
+    "test:id": "PREVIEW_MODE=true playwright test --project=bako-id",
     "test:e2e": "xvfb-run --auto-servernum -- pnpm exec playwright test src/tests/bako-id/fuel-wallet.test.ts"
   },
   "dependencies": {

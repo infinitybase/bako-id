@@ -1,4 +1,4 @@
-import { getByAriaLabel } from '@fuels/playwright-utils';
+import { FuelWalletTestHelper, getByAriaLabel } from '@fuels/playwright-utils';
 import { Page } from '@playwright/test';
 import { WalletUnlocked } from 'fuels';
 
@@ -14,33 +14,50 @@ export class AuthTestService {
     page: Page,
     wallet: WalletUnlocked | null = null,
   ): Promise<LoginAuthTestResponse> {
+    await page.getByRole('button', { name: 'Connect Wallet' }).click();
+    await page.getByLabel('Connect to Bako Safe').click();
+    const popup = await page.waitForEvent('popup');
+
     if (!wallet) {
-      const { genesisWallet } = await E2ETestUtils.setupPasskey({ page });
+      const { genesisWallet } = await E2ETestUtils.setupPasskey({
+        page: popup,
+      });
       wallet = genesisWallet;
     }
 
-    const usernameInput = page.locator('#fixed_id');
+    const usernameInput = popup.locator('#fixed_id');
     const name = `teste${Date.now()}`;
     await usernameInput.fill(name);
 
-    await page.waitForTimeout(1000);
-    await getByAriaLabel(page, 'Create account')
-      .filter({ has: page.locator(':visible') })
+    await popup.waitForTimeout(1000);
+    await getByAriaLabel(popup, 'Create account')
+      .filter({ has: popup.locator(':visible') })
       .click();
 
-    const termsOfUseDialog = await page.$('[aria-label="Terms of Use"]');
+    const termsOfUseDialog = await popup.$('[aria-label="Terms of Use"]');
     if (termsOfUseDialog) {
       await termsOfUseDialog.evaluate((element) => {
         element.scrollTop = element.scrollHeight;
       });
     }
 
-    await getByAriaLabel(page, 'Accept Terms of Use').click();
-    await getByAriaLabel(page, 'Begin')
-      .filter({ has: page.locator(':visible') })
+    await getByAriaLabel(popup, 'Accept Terms of Use').click();
+    await getByAriaLabel(popup, 'Begin')
+      .filter({ has: popup.locator(':visible') })
       .click();
-    await page.waitForTimeout(1000);
+
+    await popup.waitForEvent('close');
 
     return { username: name, genesisWallet: wallet };
+  }
+
+  static async loginWalletConnection(
+    page: Page,
+    fuelWalletTestHelper: FuelWalletTestHelper,
+    account: string = 'Account 1',
+  ) {
+    await page.getByRole('button', { name: 'Connect Wallet' }).click();
+    await page.getByLabel('Connect to Fuel Wallet').click();
+    await fuelWalletTestHelper.walletConnect([account]);
   }
 }

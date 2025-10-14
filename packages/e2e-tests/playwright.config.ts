@@ -20,24 +20,39 @@ export default defineConfig({
     headless: true,
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',
-    baseURL: isLocal ? process.env.BASE_URL_LOCAL : process.env.BASE_URL_PREVIEW,
     permissions: ['clipboard-read', 'clipboard-write'],
   },
-  webServer:
-    isLocal ? [
-      {
-        command: 'pnpm --filter ui dev',
-        url: process.env.BASE_URL_LOCAL,
-        name: 'UI',
-        timeout: 120_000,
-        reuseExistingServer: !process.env.CI,
+  projects: [
+    {
+      name: 'garage',
+      testDir: './src/tests/garage',
+    },
+    {
+      name: 'bako-id',
+      testDir: './src/tests/bako-id',
+      use: {
+        baseURL: isLocal
+          ? process.env.BAKO_ID_BASE_URL_LOCAL
+          : process.env.BAKO_ID_BASE_URL_PREVIEW,
       },
-      {
-        command: 'pnpm --filter server exec next start -p 3033',
-        url: 'http://localhost:3033',
-        name: 'Server',
-        timeout: 120_000,
-        reuseExistingServer: !process.env.CI,
-      }
-    ] : undefined,
+    },
+  ],
+  webServer: isLocal
+    ? [
+        {
+          command: 'pnpm --filter ui dev',
+          url: process.env.BASE_URL_LOCAL,
+          name: 'UI',
+          timeout: 120_000,
+          reuseExistingServer: !process.env.CI,
+        },
+        {
+          command: 'pnpm --filter server exec next start -p 3033',
+          url: 'http://localhost:3033',
+          name: 'Server',
+          timeout: 120_000,
+          reuseExistingServer: !process.env.CI,
+        },
+      ]
+    : undefined,
 });
