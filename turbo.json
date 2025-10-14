@@ -6,7 +6,7 @@
       "cache": true
     },
     "build": {
-      "dependsOn": ["codegen:sdk", "^build"],
+      "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**"],
       "env": [
         "API_URL",
@@ -32,6 +32,13 @@
       "dependsOn": ["^build", "^test", "pretest"],
       "outputLogs": "new-only",
       "cache": false
+    },
+    "test:e2e": {
+      "dependsOn": ["@bako-id/server#build", "@bako-id/ui#build"],
+      "passThroughEnv": [
+        "PLAYWRIGHT_*",
+        "TEST_WALLET_PRIVATE_KEY"
+      ]
     },
     "codegen:sdk": {
       "env": ["GRAPHQL_API_URL"],

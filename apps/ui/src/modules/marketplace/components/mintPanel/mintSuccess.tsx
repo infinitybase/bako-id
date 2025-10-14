@@ -69,7 +69,13 @@ export default function MintSuccess({
             objectPosition="center"
             maxH="116px"
           />
-          <Icon as={CloseIcon} cursor="pointer" onClick={onClose} mb="auto" />
+          <Icon
+            as={CloseIcon}
+            data-testid="close-modal-button"
+            cursor="pointer"
+            onClick={onClose}
+            mb="auto"
+          />
         </Flex>
 
         <Box position="relative">
@@ -136,7 +142,7 @@ export default function MintSuccess({
                         onClick={() =>
                           window.open(
                             `${explorerUrl}/tx/${transactionId}`,
-                            '_blank'
+                            '_blank',
                           )
                         }
                       >
@@ -169,7 +175,10 @@ export default function MintSuccess({
 const CustomNavigation = ({
   swiper,
   showGradient,
-}: { swiper: SwiperType | null; showGradient: boolean }) => {
+}: {
+  swiper: SwiperType | null;
+  showGradient: boolean;
+}) => {
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
 

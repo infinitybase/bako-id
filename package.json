@@ -14,6 +14,7 @@
     "build:ui": "turbo run build --filter=@bako-id/ui",
     "build:doc": "turbo run docs:build",
     "test": "turbo run test --filter='./packages/*'",
+    "test:e2e": "turbo run test:e2e",
     "node:up": "make -C ./docker up",
     "node:down": "make -C ./docker down",
     "node:clean": "make -C ./docker clean"

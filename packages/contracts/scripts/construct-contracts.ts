@@ -1,28 +1,19 @@
-import { getContractId, Manager, Nft, Registry, Resolver } from '../src';
+import { Manager, Nft, Registry, Resolver, getContractId } from '../src';
 import { logger, setup } from './utils';
 
-const main = async () => {
-  const { provider, wallet } = await setup();
-
-  const managerId = getContractId(provider.url, 'manager');
-  const resolverId = getContractId(provider.url, 'resolver');
-  const registryId = getContractId(provider.url, 'registry');
-  const nftId = getContractId(provider.url, 'nft');
-
-  const manager = new Manager(managerId, wallet);
-  const resolver = new Resolver(resolverId, wallet);
-  const registry = new Registry(registryId, wallet);
+export const constructNft = async (wallet: any, registryId: string) => {
+  const nftId = getContractId(wallet.provider.url, 'nft');
   const nft = new Nft(nftId, wallet);
 
   try {
-    const { value: nftOwner } = await manager.functions.owner().get();
+    const { value: nftOwner } = await nft.functions.owner().get();
 
     // @ts-ignore
     if (nftOwner === 'Uninitialized') {
       const nftConstruct = await nft.functions
         .constructor(
           { Address: { bits: wallet.address.toB256() } },
-          { ContractId: { bits: registryId } },
+          { ContractId: { bits: registryId } }
         )
         .call();
       await nftConstruct.waitForResult();
@@ -44,6 +35,13 @@ const main = async () => {
     }
   }
 
+  return nftId;
+};
+
+export const constructManager = async (wallet: any, registryId: string) => {
+  const managerId = getContractId(wallet.provider.url, 'manager');
+  const manager = new Manager(managerId, wallet);
+
   try {
     const { value: managerOwner } = await manager.functions.owner().get();
 
@@ -52,7 +50,7 @@ const main = async () => {
       const managerConstruct = await manager.functions
         .constructor(
           { Address: { bits: wallet.address.toB256() } },
-          { ContractId: { bits: registryId } },
+          { ContractId: { bits: registryId } }
         )
         .call();
       await managerConstruct.waitForResult();
@@ -74,6 +72,13 @@ const main = async () => {
     }
   }
 
+  return managerId;
+};
+
+export const constructResolver = async (wallet: any, managerId: string) => {
+  const resolverId = getContractId(wallet.provider.url, 'resolver');
+  const resolver = new Resolver(resolverId, wallet);
+
   try {
     const resolverConstruct = await resolver.functions
       .constructor({ bits: managerId })
@@ -88,12 +93,23 @@ const main = async () => {
     }
   }
 
+  return resolverId;
+};
+
+export const constructRegistry = async (
+  wallet: any,
+  managerId: string,
+  nftId: string
+) => {
+  const registryId = getContractId(wallet.provider.url, 'registry');
+  const registry = new Registry(registryId, wallet);
+
   try {
     const registryConstruct = await registry.functions
       .constructor(
         { bits: wallet.address.toB256() },
         { bits: managerId },
-        { bits: nftId },
+        { bits: nftId }
       )
       .call();
     await registryConstruct.waitForResult();
@@ -105,6 +121,19 @@ const main = async () => {
       logger.error('Registry construct failed', e);
     }
   }
+
+  return registryId;
+};
+
+const main = async () => {
+  const { provider, wallet } = await setup();
+
+  const registryId = getContractId(provider.url, 'registry');
+
+  const nftId = await constructNft(wallet, registryId);
+  const managerId = await constructManager(wallet, registryId);
+  await constructResolver(wallet, managerId);
+  await constructRegistry(wallet, managerId, nftId);
 };
 
 main()

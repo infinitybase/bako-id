@@ -64,7 +64,7 @@ const NftSaleCard = ({
 
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
     collection?.data?.id ?? '',
-    setTxId
+    setTxId,
   );
 
   const showDisplayBuyButton = displayBuyButton || isExecuting;
@@ -102,7 +102,7 @@ const NftSaleCard = ({
       successToast,
       errorToast,
       isConnected,
-    ]
+    ],
   );
 
   const handleOpenDialog = () => {
@@ -156,11 +156,14 @@ const NftSaleCard = ({
         style: 'currency',
         currency: 'USD',
       }).format(Number(order.price.usd)),
-    [order.price.usd]
+    [order.price.usd],
   );
   const orderPrice = useMemo(
-    () => typeof order.price.amount === 'string' ? order.price.amount : orderPriceFormatter(order.price.amount),
-    [order.price.amount]
+    () =>
+      typeof order.price.amount === 'string'
+        ? order.price.amount
+        : orderPriceFormatter(order.price.amount),
+    [order.price.amount],
   );
 
   const assetSymbolUrl = order.price.image || UnknownAsset;
@@ -170,7 +173,7 @@ const NftSaleCard = ({
 
   const isProcessigNewPrices = useMemo(() => {
     const hasOrderUpdated = updatedOrders.find(
-      (updatedOrder) => updatedOrder.orderId === order.id
+      (updatedOrder) => updatedOrder.orderId === order.id,
     );
     return (
       hasOrderUpdated &&
@@ -189,6 +192,7 @@ const NftSaleCard = ({
       }
       onMouseLeave={() => setDisplayBuyButton(false)}
       position="relative"
+      data-testid="nft-sale-card"
     >
       <Flex flexDir="column">
         <NftCard.Image boxSize={imageSize} src={imageUrl} />

@@ -12,6 +12,7 @@
   },
   "linter": {
     "enabled": true,
+    "ignore": ["scripts/**"],
     "rules": {
       "recommended": true,
       "correctness": {
@@ -49,7 +50,6 @@
     "ignore": [
       ".vscode",
       ".idea",
-      "scripts/**",
       "node_modules/**",
       ".turbo/**",
       "build/**",

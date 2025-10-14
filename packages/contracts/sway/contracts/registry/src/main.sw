@@ -210,10 +210,10 @@ impl Constructor for Contract {
         require(manager_id != ContractId::zero(), RegistryContractError::ContractNotBeZero);
         require(token_id != ContractId::zero(), RegistryContractError::ContractNotBeZero);
 
-        let contract_id = storage.manager_id.read();
+        let contract_id = storage.manager_id.try_read().unwrap_or(ContractId::zero());
         require(contract_id == ContractId::zero(), RegistryContractError::AlreadyInitialized);
 
-        let contract_id = storage.token_id.read();
+        let contract_id = storage.token_id.try_read().unwrap_or(ContractId::zero());
         require(contract_id == ContractId::zero(), RegistryContractError::AlreadyInitialized);
 
         storage.manager_id.write(manager_id);

@@ -6,6 +6,16 @@ import {
 import type { BrowserContext, Page } from '@playwright/test';
 import { Mnemonic, Provider, Wallet } from 'fuels';
 
+const buildProvider = () => {
+  const provider = new Provider(process.env.TEST_NETWORK!);
+  const genesisWallet = Wallet.fromPrivateKey(
+    process.env.TEST_WALLET_PRIVATE_KEY!,
+    provider,
+  );
+
+  return { provider, genesisWallet };
+};
+
 export class E2ETestUtils {
   static async downloadFuelExtension(config: { test: typeof test }) {
     config.test.use({ pathToExtension: process.env.FUEL_EXTENSION_PATH });
@@ -17,11 +27,7 @@ export class E2ETestUtils {
     extensionId: string;
   }) {
     const { context, extensionId } = config;
-    const provider = new Provider('http://testnet.fuel.network/v1/graphql');
-    const genesisWallet = Wallet.fromPrivateKey(
-      '0x5ac4a3075cfeb0a1238efc082978aa6a7a2efe11e6f2ce2b564d708807fab6ad',
-      provider,
-    );
+    const { provider, genesisWallet } = buildProvider();
 
     const fuelWalletTestHelper = await FuelWalletTestHelper.walletSetup({
       context,
@@ -34,14 +40,6 @@ export class E2ETestUtils {
       mnemonic: Mnemonic.generate(),
     });
 
-    const walletPage = fuelWalletTestHelper.getWalletPage();
-
-    const closeBtn = walletPage.getByRole('button', { name: 'Close dialog' });
-
-    if (await closeBtn.isVisible()) {
-      await closeBtn.click();
-    }
-
     await fuelWalletTestHelper.addAccount();
     await fuelWalletTestHelper.switchAccount('Account 1');
 
@@ -51,11 +49,7 @@ export class E2ETestUtils {
   }
 
   static async setupPasskey(config: { page: Page }) {
-    const provider = new Provider('http://testnet.fuel.network/v1/graphql');
-    const genesisWallet = Wallet.fromPrivateKey(
-      '0x5ac4a3075cfeb0a1238efc082978aa6a7a2efe11e6f2ce2b564d708807fab6ad',
-      provider,
-    );
+    const { genesisWallet } = buildProvider();
 
     const client = await config.page.context().newCDPSession(config.page);
     await client.send('WebAuthn.enable');

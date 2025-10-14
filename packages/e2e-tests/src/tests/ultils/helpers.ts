@@ -1,5 +1,5 @@
 import { FuelWalletTestHelper } from '@fuels/playwright-utils';
-import { expect, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 import { WalletUnlocked } from 'fuels';
 
 export async function transfer(
@@ -14,6 +14,16 @@ export async function transfer(
   await transfer.waitForResult();
 
   console.log(`Transferido ${baseUnits} base units para ${connectedAddress}`);
+}
+
+export async function modalCloseTest(page: Page, element: Locator) {
+  await element.click();
+  await page.getByLabel('Close modal').click();
+  await page.waitForTimeout(750);
+  await element.click();
+  await page.getByText('Cancel').click();
+  await page.waitForTimeout(750);
+  await element.click();
 }
 
 export async function returnFundsToGenesisWallet(config: {
@@ -103,4 +113,23 @@ export async function getAddress(fuelWalletTestHelper: FuelWalletTestHelper) {
     .click();
 
   return { address1, address2 };
+}
+
+export async function mockAssets(page: Page) {
+  await page.route('**/assets', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        {
+          id: '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07',
+          fees: [400, 300],
+        },
+        {
+          id: '0x324d0c35a4299ef88138a656d5272c5a3a9ccde2630ae055dacaf9d13443d53b',
+          fees: [100, 0],
+        },
+      ]),
+    });
+  });
 }
