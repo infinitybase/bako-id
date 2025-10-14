@@ -3,7 +3,6 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { ImageLoader } from '@/components/imageLoader';
 import type { Collection } from '@/types/marketplace';
-import { useNavigate } from '@tanstack/react-router';
 import { BannerRoot } from './root';
 
 type MarketplaceBannerProps = {
@@ -16,7 +15,6 @@ export const CollectionPageBanner = ({
   stillMintable,
 }: MarketplaceBannerProps) => {
   const hasBanner = !!collection?.config?.banner;
-  const navigate = useNavigate();
 
   return (
     <Stack
@@ -39,9 +37,7 @@ export const CollectionPageBanner = ({
           left={0}
           onClick={(e) => {
             e.stopPropagation();
-            navigate({ to: '/' });
           }}
-          cursor="pointer"
           zIndex={1}
         >
           <ImageLoader
@@ -73,10 +69,8 @@ export const CollectionPageBanner = ({
           height="full"
           bgGradient="linear-gradient(0deg, rgba(21, 20, 19, 0.85) 0%, rgba(21, 20, 19, 0) 100%)"
           zIndex={2}
-          cursor="pointer"
           onClick={(e) => {
             e.stopPropagation();
-            navigate({ to: '/' });
           }}
           _before={
             !hasBanner

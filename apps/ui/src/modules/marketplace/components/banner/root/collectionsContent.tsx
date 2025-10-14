@@ -26,8 +26,6 @@ const CollectionsContent = ({
       position="relative"
       w="full"
       h="full"
-      cursor="pointer"
-      onClick={handleRedirect}
       _before={{
         content: '""',
         display: 'block',
@@ -120,6 +118,7 @@ const CollectionsContent = ({
           h={{ base: '55px', sm: 'unset' }}
           fontSize={{ base: '12px', sm: '16px' }}
           whiteSpace="nowrap"
+          onClick={() => handleRedirect()}
         >
           <VStack
             spacing={0}
