@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import nftEmpty from '@/assets/nft-empty.png';
 import UnknownAsset from '@/assets/unknown-asset.png';
 import { ConfirmationDialog, useCustomToast } from '@/components';
@@ -113,16 +112,16 @@ const NftSaleCard = ({
     }
   };
 
-  const handleCloseDialog = () => {
+  const handleCloseDialog = useCallback(() => {
     onClose();
     if (txId && order.id) {
       addPurchasedOrder(order.id, txId);
     }
     setTxId(null);
-  };
+  }, [onClose, txId, order.id, addPurchasedOrder]);
+
   const delistModal = useDisclosure();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const handleCancelOrder = useCallback(async () => {
     try {
       await cancelOrderAsync(order.id);
@@ -137,7 +136,7 @@ const NftSaleCard = ({
         description: 'An error occurred while delisting your order.',
       });
     }
-  }, [cancelOrderAsync, order.id, successToast, errorToast]);
+  }, [cancelOrderAsync, order.id, successToast, errorToast, handleCloseDialog]);
 
   const handleDelist = (e: MouseEvent) => {
     e.stopPropagation();
