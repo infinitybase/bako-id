@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import nftEmpty from '@/assets/nft-empty.png';
 import UnknownAsset from '@/assets/unknown-asset.png';
 import { ConfirmationDialog, useCustomToast } from '@/components';
@@ -64,7 +63,6 @@ const NftSaleCard = ({
 
   const { executeOrderAsync, isPending: isExecuting } = useExecuteOrder(
     collection?.data?.id ?? '',
-    setTxId
   );
 
   const showDisplayBuyButton = displayBuyButton || isExecuting;
@@ -89,7 +87,8 @@ const NftSaleCard = ({
         return;
       }
       try {
-        await executeOrderAsync(order.id);
+        const { txId } = await executeOrderAsync(order.id);
+        setTxId(txId);
         successToast({ title: 'Order executed successfully!' });
       } catch {
         errorToast({ title: 'Failed to execute order' });
@@ -99,6 +98,7 @@ const NftSaleCard = ({
       connect,
       executeOrderAsync,
       order.id,
+      setTxId,
       successToast,
       errorToast,
       isConnected,
@@ -112,16 +112,16 @@ const NftSaleCard = ({
     }
   };
 
-  const handleCloseDialog = () => {
+  const handleCloseDialog = useCallback(() => {
     onClose();
     if (txId && order.id) {
       addPurchasedOrder(order.id, txId);
     }
     setTxId(null);
-  };
+  }, [onClose, txId, order.id, addPurchasedOrder]);
+
   const delistModal = useDisclosure();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const handleCancelOrder = useCallback(async () => {
     try {
       await cancelOrderAsync(order.id);
@@ -136,7 +136,7 @@ const NftSaleCard = ({
         description: 'An error occurred while delisting your order.',
       });
     }
-  }, [cancelOrderAsync, order.id, successToast, errorToast]);
+  }, [cancelOrderAsync, order.id, successToast, errorToast, handleCloseDialog]);
 
   const handleDelist = (e: MouseEvent) => {
     e.stopPropagation();
@@ -277,6 +277,7 @@ const NftSaleCard = ({
           withHandle={withHandle}
           ctaButtonVariant={ctaButtonVariant}
           isExecuted={!!txId}
+          setTxId={setTxId}
         />
       )}
     </NftCard.Root>

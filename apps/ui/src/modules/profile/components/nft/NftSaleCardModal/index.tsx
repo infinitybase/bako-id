@@ -26,6 +26,7 @@ interface NftSaleCardModalProps {
   withHandle: boolean;
   ctaButtonVariant?: 'primary' | 'mktPrimary';
   isExecuted?: boolean;
+  setTxId?: (txId: string | null) => void;
 }
 
 export const NftSaleCardModal = ({
@@ -42,6 +43,7 @@ export const NftSaleCardModal = ({
   order,
   ctaButtonVariant = 'primary',
   isExecuted,
+  setTxId,
 }: NftSaleCardModalProps) => {
   const [step, setStep] = useState(0);
 
@@ -58,10 +60,6 @@ export const NftSaleCardModal = ({
 
   const handleChangeStepToDetails = () => {
     setStep(0);
-  };
-
-  const handleChangeStepToSuccess = () => {
-    setStep(2);
   };
 
   const nftName = orderData?.asset?.name ?? 'Unknown NFT';
@@ -119,7 +117,7 @@ export const NftSaleCardModal = ({
                 value={value}
                 onEdit={handleChangeStepToSell}
                 ctaButtonVariant={ctaButtonVariant}
-                onSuccess={handleChangeStepToSuccess}
+                setTxId={setTxId}
               />
             )}
 

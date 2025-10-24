@@ -40,7 +40,7 @@ export default function NftDetailsStep({
   isCanceling = false,
   onEdit,
   ctaButtonVariant,
-  onSuccess,
+  setTxId,
 }: {
   order: OrderWithMedatada;
   onClose: () => void;
@@ -50,8 +50,8 @@ export default function NftDetailsStep({
   onCancelOrder: () => Promise<void>;
   isCanceling?: boolean;
   onEdit: () => void;
-  onSuccess?: () => void;
   ctaButtonVariant?: 'primary' | 'mktPrimary';
+  setTxId?: (txId: string | null) => void;
 }) {
   const { connect, isConnected } = useConnectUI();
   const { errorToast, successToast } = useCustomToast();
@@ -86,9 +86,9 @@ export default function NftDetailsStep({
       return;
     }
     try {
-      await executeOrderAsync(order.id);
+      const { txId } = await executeOrderAsync(order.id);
+      setTxId?.(txId);
       successToast({ title: 'Order executed successfully!' });
-      onSuccess?.();
     } catch {
       errorToast({ title: 'Failed to execute order' });
     }
@@ -96,7 +96,7 @@ export default function NftDetailsStep({
     connect,
     executeOrderAsync,
     order.id,
-    onSuccess,
+    setTxId,
     successToast,
     errorToast,
     isConnected,
