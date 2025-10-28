@@ -12,9 +12,9 @@ import {
 } from '@chakra-ui/react';
 import type { AssetInfo, BN } from 'fuels';
 import type { CollectionConfig } from '../../utils/mint';
+import type { MintedAssetsTransaction } from '../../utils/minted-nfts-data';
 import MintPanelSkeleton from '../skeletons/mintPanelSkeleton';
 import MintContent from './mintContent';
-import type { MintedAssetsTransaction } from '../../utils/minted-nfts-data';
 
 const MAX_PER_WALLET = 70;
 
@@ -29,6 +29,7 @@ type MintPanelProps = {
   wasAllSupplyMinted: boolean;
   collectionName: string;
   onMintSuccess: (mintedAssetsTransaction: MintedAssetsTransaction) => void;
+  isPaused?: boolean;
 };
 
 const MintPanel = ({
@@ -42,6 +43,7 @@ const MintPanel = ({
   wasAllSupplyMinted,
   collectionName,
   onMintSuccess,
+  isPaused,
 }: MintPanelProps) => {
   if (!collectionId) return null;
 
@@ -114,6 +116,7 @@ const MintPanel = ({
           onMint={mintToken}
           asset={asset}
           wasAllSupplyMinted={wasAllSupplyMinted}
+          isPaused={isPaused}
         />
       </Flex>
 

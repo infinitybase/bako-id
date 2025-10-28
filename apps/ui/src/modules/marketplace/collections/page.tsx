@@ -28,8 +28,8 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { CollectionPageBanner } from '../components/banner/collectionBanner';
 import MarketplaceFilter from '../components/marketplaceFilter';
 import MintPanel from '../components/mintPanel';
-import { useProcessingOrdersStore } from '../stores/processingOrdersStore';
 import MintSuccess from '../components/mintPanel/mintSuccess';
+import { useProcessingOrdersStore } from '../stores/processingOrdersStore';
 import type { MintedAssetsTransaction } from '../utils/minted-nfts-data';
 
 export const CollectionPage = () => {
@@ -89,6 +89,7 @@ export const CollectionPage = () => {
     totalMinted,
     mintPrice,
     asset,
+    isPaused,
     isLoading: isLoadingMintData,
     isFetched: isFetchedMintData,
   } = useGetMintData(
@@ -294,6 +295,7 @@ export const CollectionPage = () => {
                     isLoading={isLoadingMintData || !isFetchedMintData}
                     wasAllSupplyMinted={wasAllSupplyMinted}
                     onMintSuccess={setMintedAssets}
+                    isPaused={isPaused}
                   />
                 </TabPanel>
               )}

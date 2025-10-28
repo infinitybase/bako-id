@@ -14,7 +14,7 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import { useAccount, useBalance, useConnectUI } from '@fuels/react';
-import { bn, type AssetInfo, type BN } from 'fuels';
+import { type AssetInfo, type BN, bn } from 'fuels';
 import { useEffect, useMemo, useState } from 'react';
 
 type MintContentProps = {
@@ -28,6 +28,7 @@ type MintContentProps = {
   asset: AssetInfo | null | undefined;
   onMint: (quantity: number) => void;
   wasAllSupplyMinted: boolean;
+  isPaused?: boolean;
 };
 
 const MintContent = ({
@@ -41,6 +42,7 @@ const MintContent = ({
   asset,
   onMint,
   wasAllSupplyMinted,
+  isPaused,
 }: MintContentProps) => {
   const [quantity, setQuantity] = useState(1);
   const remainingSupply = useMemo(() => {
@@ -177,7 +179,7 @@ const MintContent = ({
                 icon={<MinusIcon />}
                 color="white"
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                isDisabled={quantity <= 1}
+                isDisabled={quantity <= 1 || isPaused}
               />
               <Text
                 fontWeight="bold"
@@ -197,7 +199,8 @@ const MintContent = ({
                 onClick={() => setQuantity((q) => q + 1)}
                 isDisabled={
                   quantity >= maxPerWallet ||
-                  Boolean(remainingSupply && quantity >= remainingSupply)
+                  Boolean(remainingSupply && quantity >= remainingSupply) ||
+                  isPaused
                 }
               />
             </Flex>
@@ -215,15 +218,18 @@ const MintContent = ({
             onClick={handleMint}
             isLoading={isMinting}
             isDisabled={
+              isPaused ||
               isMinting ||
               wasAllSupplyMinted ||
               notEnoughBalance ||
               isFetchingBalance
             }
           >
-            {wasAllSupplyMinted
-              ? 'Minted'
-              : `Mint ${quantity} NFT${quantity > 1 ? 's' : ''}`}
+            {isPaused
+              ? 'Mint ended'
+              : wasAllSupplyMinted
+                ? 'Minted'
+                : `Mint ${quantity} NFT${quantity > 1 ? 's' : ''}`}
           </Button>
         </Tooltip>
       </Stack>
