@@ -94,26 +94,27 @@ export const CollectionPage = () => {
     isFetched: isFetchedMintData,
   } = useGetMintData(
     collection?.data?.id ?? '',
-    collection?.data?.isMintable ?? false
+    collection?.data?.isMintable ?? false,
   );
 
   const stillMintable = useMemo(
-    () => Number(totalMinted) < Number(maxSupply),
-    [totalMinted, maxSupply]
+    () => Number(totalMinted) < Number(maxSupply) && !isPaused,
+    [totalMinted, maxSupply, isPaused],
   );
 
   const wasAllSupplyMinted = useMemo(
     () => Number(maxSupply) > 0 && Number(maxSupply) === Number(totalMinted),
-    [maxSupply, totalMinted]
+    [maxSupply, totalMinted],
   );
 
   const isCollectionStillMintable = useMemo(
     () => Number(maxSupply) > 0 && Number(totalMinted) < Number(maxSupply),
-    [maxSupply, totalMinted]
+    [maxSupply, totalMinted],
   );
 
   const shouldShowMintTab =
-    !isLoadingMintData && (isCollectionStillMintable || wasAllSupplyMinted);
+    !isLoadingMintData &&
+    (wasAllSupplyMinted || (isCollectionStillMintable && !isPaused));
 
   const handleChangeSearch = useCallback(
     (search: string) => {
@@ -124,7 +125,7 @@ export const CollectionPage = () => {
         },
       });
     },
-    [navigate]
+    [navigate],
   );
 
   const handleSortChange = (column: string) => {
@@ -140,8 +141,8 @@ export const CollectionPage = () => {
     return (collectionOrders?.pages?.flatMap((page) => page.data) ?? []).filter(
       (order) =>
         !purchasedOrders.some(
-          (purchasedOrder) => purchasedOrder.orderId === order.id
-        )
+          (purchasedOrder) => purchasedOrder.orderId === order.id,
+        ),
     );
   }, [collectionOrders, purchasedOrders]);
 

@@ -14,12 +14,12 @@ const CollectionsContent = ({
   collection,
   handleRedirect,
 }: CollectionsContentProps) => {
-  const { maxSupply, totalMinted } = useGetMintData(
+  const { maxSupply, totalMinted, isPaused } = useGetMintData(
     collection.id,
-    collection.isMintable ?? false
+    collection.isMintable ?? false,
   );
 
-  const isMintable = Number(totalMinted) < Number(maxSupply);
+  const isMintable = Number(totalMinted) < Number(maxSupply) && !isPaused;
 
   return (
     <Box
