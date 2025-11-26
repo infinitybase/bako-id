@@ -114,8 +114,7 @@ export const CollectionPage = () => {
 
   const shouldShowMintTab =
     !isLoadingMintData &&
-    !isPaused &&
-    (isCollectionStillMintable || wasAllSupplyMinted);
+    (wasAllSupplyMinted || (isCollectionStillMintable && !isPaused));
 
   const handleChangeSearch = useCallback(
     (search: string) => {
