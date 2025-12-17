@@ -1,4 +1,4 @@
-![twitter](https://img.shields.io/twitter/follow/bakoidentity?style=social)
+[![twitter](https://img.shields.io/twitter/follow/bakoidentity?style=social)](https://x.com/bakoidentity)
 
 # 📦 Bako ID SDK
 
