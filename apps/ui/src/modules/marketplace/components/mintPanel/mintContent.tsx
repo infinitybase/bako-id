@@ -71,7 +71,7 @@ const MintContent = ({
         amount: tokenPrice.mul(quantity),
         options: {
           units: asset?.decimals || 0,
-          precision: Math.min(asset?.decimals || 0, 3),
+          precision: 2,
         },
       }),
     [tokenPrice, quantity, asset?.decimals]
