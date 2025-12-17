@@ -14,7 +14,7 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import { useAccount, useBalance, useConnectUI } from '@fuels/react';
-import { bn, type AssetInfo, type BN } from 'fuels';
+import { type AssetInfo, type BN, bn } from 'fuels';
 import { useEffect, useMemo, useState } from 'react';
 
 type MintContentProps = {
@@ -69,7 +69,7 @@ const MintContent = ({
         amount: tokenPrice.mul(quantity),
         options: {
           units: asset?.decimals || 0,
-          precision: Math.min(asset?.decimals || 0, 3),
+          precision: 2,
         },
       }),
     [tokenPrice, quantity, asset?.decimals]
