@@ -1,4 +1,4 @@
-import { TestHelpers } from 'generated';
+import { TestHelpers } from "envio";
 const { MockDb } = TestHelpers;
 
 describe('Manager contract NewRecordEvent event tests', () => {

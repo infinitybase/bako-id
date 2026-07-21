@@ -11,7 +11,7 @@ contracts:
         logId: '4160095253491321915'
       - name: ResolverChangedEvent
         logId: '2059351015524214332'
-networks:
+chains:
   - id: 0
     start_block: 0
     contracts:
