@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { Manager } from 'generated';
+import { indexer, Manager } from "envio";
 
 const parseNetworkName = (chainId: number): 'MAINNET' | 'TESTNET' | 'DEFAULT' => {
   switch (chainId) {
@@ -20,7 +20,9 @@ function hash(str: string) {
 const parseSchemaId = (nameHash: string, chain: string) =>
   hash(`${nameHash}-${chain}`);
 
-Manager.ManagerLogEvent.handler(async ({ event, context }) => {
+indexer.onEvent(
+  { contract: "Manager", event: "ManagerLogEvent" },
+  async ({ event, context }) => {
   const networkName = parseNetworkName(event.chainId);
 
   const recordId = parseSchemaId(event.params.name_hash, networkName);
@@ -49,9 +51,12 @@ Manager.ManagerLogEvent.handler(async ({ event, context }) => {
       record_id: recordId,
     });
   }
-});
+}
+);
 
-Manager.OwnerChangedEvent.handler(async ({ event, context }) => {
+indexer.onEvent(
+  { contract: "Manager", event: "OwnerChangedEvent" },
+  async ({ event, context }) => {
   const networkName = parseNetworkName(event.chainId);
   const recordId = parseSchemaId(event.params.name_hash, networkName);
   const record = await context.Records.get(recordId);
@@ -62,9 +67,12 @@ Manager.OwnerChangedEvent.handler(async ({ event, context }) => {
     ...record,
     owner: event.params.new_owner.payload.bits,
   });
-});
+}
+);
 
-Manager.ResolverChangedEvent.handler(async ({ event, context }) => {
+indexer.onEvent(
+  { contract: "Manager", event: "ResolverChangedEvent" },
+  async ({ event, context }) => {
   const networkName = parseNetworkName(event.chainId);
 
   const recordId = parseSchemaId(event.params.name_hash, networkName);
@@ -101,4 +109,5 @@ Manager.ResolverChangedEvent.handler(async ({ event, context }) => {
       ...record,
       resolver: event.params.new_resolver.payload.bits,
     });
-});
+}
+);

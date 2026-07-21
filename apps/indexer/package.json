@@ -9,7 +9,7 @@
     "codegen": "envio codegen",
     "dev": "envio dev",
     "test": "pnpm mocha",
-    "start": "ts-node generated/src/Index.bs.js"
+    "start": "envio start"
   },
   "devDependencies": {
     "@types/chai": "^4.3.11",
@@ -22,9 +22,10 @@
     "typescript": "5.2.2"
   },
   "dependencies": {
-    "envio": "2.32.3"
+    "envio": "3.2.1"
   },
-  "optionalDependencies": {
-    "generated": "./generated"
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
   }
 }
